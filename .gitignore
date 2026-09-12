@@ -11,6 +11,7 @@ __pycache__/
 venv/
 env/
 tmp/
+/.auto_pipeline*.sh
 *.log
 *.tmp
 
