@@ -87,7 +87,7 @@ def main() -> None:
     selected: list[int] = []
     for label in range(len(names)):
         indices = grouped[label]
-        if len(indices) > args.per_emotion:
+        if args.per_emotion and len(indices) > args.per_emotion:
             stride = max(1, len(indices) // args.per_emotion)
             indices = indices[::stride][: args.per_emotion]
         selected.extend(indices)
