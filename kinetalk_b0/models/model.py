@@ -59,6 +59,9 @@ class Stage1Model(nn.Module):
     def __init__(self, cfg: dict[str, Any]):
         super().__init__()
         data, model = _dimensions(cfg)
+        # Stage1 tensor shapes and computation are unchanged; keep v7
+        # compatibility so the existing frozen Stage1 checkpoint remains
+        # valid while Stage2-4 are retrained under the new residual protocol.
         self.register_buffer("architecture_version", torch.tensor(7))
         self.motion_dim = int(data["motion_dim"])
         self.neutral_indices = list(dict.fromkeys(int(i) for i in data["neutral_output_indices"]))
@@ -132,7 +135,7 @@ class Stage2Model(nn.Module):
         self.style_emotion_probe = nn.Linear(int(model["style_dim"]), num_emotions)
         self.style_content_probe = nn.Linear(int(model["style_dim"]), int(data["content_dim"]))
         self.style_grl = GradientReversal(float(model.get("style_grl_lambda", 0.1)))
-        self.register_buffer("architecture_version", torch.tensor(7))
+        self.register_buffer("architecture_version", torch.tensor(8))
         self.renderer = ResidualDiT(
             motion_dim=int(data["motion_dim"]),
             content_dim=int(model["content_dim"]),
@@ -217,7 +220,7 @@ class Stage3Model(nn.Module):
         # The loader validates this marker before Stage-4 can consume the
         # audio prior, which prevents mixing checkpoints from incompatible
         # architecture revisions.
-        self.register_buffer("architecture_version", torch.tensor(7))
+        self.register_buffer("architecture_version", torch.tensor(8))
         self.audio = AudioEmotionDistributionEncoder(
             int(data["audio_emotion_dim"]), int(model["emotion_dim"]),
             int(model["hidden_dim"]), int(model["heads"]),
@@ -280,7 +283,7 @@ class Stage4Model(nn.Module):
     def __init__(self, cfg: dict[str, Any], stage1: Stage1Model, stage2: Stage2Model, stage3: Stage3Model):
         super().__init__()
         model = cfg["model"]
-        self.register_buffer("architecture_version", torch.tensor(7))
+        self.register_buffer("architecture_version", torch.tensor(8))
         self.stage1 = stage1
         self.factor_emotion = stage2.emotion
         self.factor_style = stage2.style
@@ -296,9 +299,11 @@ class Stage4Model(nn.Module):
         freeze_module(self.factor_style)
         freeze_module(self.audio_prior)
         freeze_module(self.renderer)
-        # Calibrators are the only trainable Stage-4 adapters.  They learn the
-        # small distribution shift from predicted audio factors to the frozen
-        # Stage-2 renderer coordinate system.
+        # Unfreeze only condition modulation layers. Content, motion backbone,
+        # Stage1, and factor encoders remain frozen.
+        for name, parameter in self.renderer.named_parameters():
+            if any(key in name for key in ("modulation", "style_modulation", "local_emotion")):
+                parameter.requires_grad_(True)
 
     def conditions(self, batch: dict[str, Any], *, training_target: bool = False) -> dict[str, torch.Tensor]:
         query = batch["query"]
@@ -309,9 +314,15 @@ class Stage4Model(nn.Module):
         # cross-sentence/cross-speaker style render to match query frames.
         b0_reference_motion = query["b0_gt"] if training_target else reference["motion"]
         b0_reference_mask = query["mask"] if training_target else reference["mask"]
-        style_motion = query["motion"] if training_target else reference["motion"]
-        style_mask = query["mask"] if training_target else reference["mask"]
-        style_audio = query["audio_emotion"] if training_target else reference["audio_emotion"]
+        # During Stage4 training use the same-sentence cross-emotion donor when
+        # available. This makes audio emotion the causal source of emotion,
+        # while the donor style is counterfactual.
+        donor = batch.get("emotion_pair") if training_target else reference
+        use_donor = training_target and donor is not None and bool(batch.get("relations", {}).get("emotion", torch.zeros(1, dtype=torch.bool)).any())
+        style_source = donor if use_donor else (query if training_target else reference)
+        style_motion = style_source["motion"]
+        style_mask = style_source["mask"]
+        style_audio = style_source["audio_emotion"]
         with torch.no_grad():
             query_stage1 = self.stage1(query["content"], query["mask"])
             reference_stage1 = self.stage1(
@@ -319,7 +330,8 @@ class Stage4Model(nn.Module):
             )
             # Stage 4 deliberately uses predicted B0 for its deployment-facing
             # target/reference. This is distinct from the Stage-2 R_gt teacher.
-            style_stage1 = reference_stage1 if not training_target else query_stage1
+            donor_stage1 = self.stage1(style_source["content"], style_source["mask"])
+            style_stage1 = donor_stage1 if use_donor else (reference_stage1 if not training_target else query_stage1)
             style_residual = style_motion - style_stage1["b0"]
             raw_style = self.factor_style(style_residual, style_mask, style_audio)
             audio = self.audio_prior(query["audio_emotion"], query["mask"])

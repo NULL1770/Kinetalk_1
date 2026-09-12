@@ -260,8 +260,24 @@ def stage4_loss(
     flow_prediction: torch.Tensor,
     flow_target: torch.Tensor,
     mask: torch.Tensor,
+    generated_factors: dict[str, torch.Tensor] | None = None,
+    target_factors: dict[str, torch.Tensor] | None = None,
+    *,
+    factor_weight: float = 0.0,
 ) -> dict[str, torch.Tensor]:
-    """Stage-4 flow matching objective without auxiliary dynamic paths."""
+    """Stage-4 flow matching plus optional factor-coordinate consistency."""
     flow = masked_mse(flow_prediction, flow_target, mask)
-    return {"total": flow, "flow": flow}
+    total = flow
+    result = {"total": total, "flow": flow}
+    if generated_factors is not None and target_factors is not None and factor_weight > 0.0:
+        emotion = 1.0 - F.cosine_similarity(generated_factors["global"], target_factors["global"].detach(), dim=-1)
+        local = F.smooth_l1_loss(generated_factors["local"], target_factors["local"].detach())
+        style = 1.0 - F.cosine_similarity(generated_factors["style"], target_factors["style"].detach(), dim=-1)
+        factor = emotion.mean() + local + style.mean()
+        result["factor"] = factor
+        result["factor_emotion"] = emotion.mean()
+        result["factor_local"] = local
+        result["factor_style"] = style.mean()
+        result["total"] = total + factor_weight * factor
+    return result
 

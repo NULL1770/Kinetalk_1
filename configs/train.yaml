@@ -80,6 +80,7 @@ loss:
   stage3_local: 1.0
   stage3_classification: 1.0
   stage3_intensity: 0.5
+  stage4_factor_consistency: 0.1
 paths:
   output_dir: outputs_protocol_v1
   stage1_ckpt: outputs_protocol_v1/stage1_neutral.pt

@@ -205,18 +205,19 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                     query["content"], query["mask"],
                 )
                 h0 = query_stage1["h0"]
-                query_style_residual = query["motion"] - query_stage1["b0"]
+                query_residual = query["motion"] - query_stage1["b0"]
+                query_style_residual = query_residual
             with _autocast(config, device):
                 factors = model.encode_factors(
-                    query["residual_gt"], query["residual_mask"],
+                    query_residual, query["residual_mask"],
                     query.get("audio_emotion", query.get("audio")),
                     style_residual=query_style_residual,
                 )
-                flow_prediction, flow_target = model.flow_prediction(query["residual_gt"], h0, factors, query["residual_mask"])
+                flow_prediction, flow_target = model.flow_prediction(query_residual, h0, factors, query["residual_mask"])
                 losses = stage2_loss(
                     flow_prediction,
                     flow_target,
-                    query["residual_gt"],
+                    query_residual,
                     query["residual_mask"],
                     factors,
                     query["emotion_id"],
@@ -258,8 +259,9 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                             emotion["content"], emotion["mask"],
                         )
                         emotion_style_residual = emotion["motion"] - emotion_stage1["b0"]
+                    emotion_residual = emotion["motion"] - emotion_stage1["b0"]
                     emotion_factors = model.encode_factors(
-                        emotion["residual_gt"], emotion["residual_mask"],
+                        emotion_residual, emotion["residual_mask"],
                         emotion.get("audio_emotion", emotion.get("audio")),
                         style_residual=emotion_style_residual,
                     )
@@ -286,9 +288,9 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                         style_stage1 = stage1(
                             style_reference["content"], style_reference["mask"],
                         )
-                        style_reference_residual = style_reference["motion"] - style_stage1["b0"]
+                    style_reference_residual = style_reference["motion"] - style_stage1["b0"]
                     style_factors = model.encode_factors(
-                        style_reference["residual_gt"], style_reference["residual_mask"],
+                        style_reference_residual, style_reference["residual_mask"],
                         style_reference.get("audio_emotion", style_reference.get("audio")),
                         style_residual=style_reference_residual,
                     )
@@ -366,12 +368,13 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
 
 def _load_stage2(config: dict[str, Any], device: torch.device) -> Stage2Model:
     model = Stage2Model(config).to(device)
-    payload = load_checkpoint(config["paths"]["stage2_ckpt"], model, map_location=device, strict=True, expected_architecture_version=7)
+    payload = load_checkpoint(config["paths"]["stage2_ckpt"], model, map_location=device, strict=True, expected_architecture_version=8)
     require_training_protocol(payload, config["data_protocol"])
     return model
 
 
 def _stage3(config: dict[str, Any], device: torch.device) -> None:
+    stage1 = _load_stage1(config, device)
     stage2 = _load_stage2(config, device)
     model = Stage3Model(config, stage2).to(device)
     optimizer = _optimizer(config, model)
@@ -383,11 +386,13 @@ def _stage3(config: dict[str, Any], device: torch.device) -> None:
         for batch in loader:
             batch = move_to_device(batch, device)
             query = batch["query"]
+            # Stage3 distills the frozen Stage2 emotion teacher in the same
+            # predicted-B0 residual coordinate used by Stage2 and Stage4.
+            with torch.no_grad():
+                query_stage1 = stage1(query["content"], query["mask"])
             with _autocast(config, device):
                 audio_factors = model(query["audio_emotion"], query["mask"])
-                teacher = model.teacher(
-                    query["residual_gt"], query["residual_mask"],
-                )
+                teacher = model.teacher(query["motion"] - query_stage1["b0"], query["residual_mask"])
                 losses = stage3_loss(
                     audio_factors,
                     teacher,
@@ -406,7 +411,7 @@ def _stage3(config: dict[str, Any], device: torch.device) -> None:
 
 def _load_stage3(config: dict[str, Any], device: torch.device, stage2: Stage2Model) -> Stage3Model:
     model = Stage3Model(config, stage2).to(device)
-    payload = load_checkpoint(config["paths"]["stage3_ckpt"], model, map_location=device, strict=True, expected_architecture_version=7)
+    payload = load_checkpoint(config["paths"]["stage3_ckpt"], model, map_location=device, strict=True, expected_architecture_version=8)
     require_training_protocol(payload, config["data_protocol"])
     return model
 
@@ -427,10 +432,31 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
             with _autocast(config, device):
                 conditions = model.conditions(batch, training_target=True)
                 flow_pred, flow_target, _ = model.flow_prediction(batch, conditions)
+                generated_residual = model.renderer.decode(
+                    conditions["h0"], conditions["global"], conditions["intensity_value"],
+                    conditions["style"], batch["query"]["mask"],
+                    residual_scale=model.residual_scale,
+                    steps=int(config["model"].get("render_steps", 4)),
+                    stochastic=False,
+                    local_emotion=conditions.get("local"),
+                )
+                with torch.no_grad():
+                    target_emotion = {
+                        "global": conditions["global"].detach(),
+                        "local": conditions["local"].detach(),
+                    }
+                    target_style = conditions["style"].detach()
+                generated_factors = {
+                    **model.factor_emotion(generated_residual, batch["query"]["mask"]),
+                    "style": model.factor_style(generated_residual, batch["query"]["mask"], None),
+                }
                 losses = stage4_loss(
                     flow_pred,
                     flow_target,
                     batch["query"]["mask"],
+                    generated_factors=generated_factors,
+                    target_factors={**target_emotion, "style": target_style},
+                    factor_weight=float(loss_cfg.get("stage4_factor_consistency", 0.1)),
                 )
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
             totals += float(losses["total"].detach())
