@@ -430,7 +430,7 @@ class B0ResidualDataset(Dataset):
             # v2 features are already on a motion-rate aligned clock and are
             # retained as the audio/affect teacher while v3 supplies the
             # higher quality HuBERT canonical content and motion pair.
-            def legacy(kind: str, key: str, dim: int) -> np.ndarray:
+            def legacy(kind: str, key: str, dim: int, target_len: int | None = None) -> np.ndarray:
                 candidates = [
                     self.legacy_aligned_root / kind / dataset / f"{clip_id}.npz",
                     self.legacy_aligned_root / kind / f"{clip_id}.npz",
@@ -446,15 +446,26 @@ class B0ResidualDataset(Dataset):
                 with np.load(path, allow_pickle=False) as archive:
                     if key not in archive.files:
                         raise KeyError(f"Missing {key} in {path}")
-                    return self._fit_dim(self._resample_time(archive[key], len(motion)), dim)
+                    raw = self._fit_dim(archive[key], dim)
+                    return raw if target_len is None else self._resample_time(raw, target_len)
             if reference:
-                motion = legacy("bs", "coeffs", self.motion_dim)
-                motion = self._resample_time(motion, canonical_length)
+                # The pair artifact's canonical_content is source content
+                # warped onto the neutral/reference clock.  It is valid for
+                # the source branch only.  A style reference must pair its
+                # own BS with its own content; otherwise
+                # `reference_BS - Stage1(source_content)` mixes phonetic
+                # content and emotion into the Style residual.
+                # Keep the reference clip on its own motion-rate clock.  The
+                # helper below uses len(motion) as the common reference clock.
+                motion = legacy("bs", "coeffs", self.motion_dim, target_len=None)
+                reference_length = len(motion)
+                content = legacy("content", "content", self.content_dim, target_len=reference_length)
             else:
                 motion = self._resample_time(motion, canonical_length)
-            audio = legacy("audio", "feat", self.audio_dim)
-            teacher = legacy("audio", "emotion", self.audio_teacher_dim)
-            affect = legacy("affect", "affect", self.affect_dim)
+            target_length = len(motion)
+            audio = legacy("audio", "feat", self.audio_dim, target_len=target_length)
+            teacher = legacy("audio", "emotion", self.audio_teacher_dim, target_len=target_length)
+            affect = legacy("affect", "affect", self.affect_dim, target_len=target_length)
             emotion_audio = self._fit_dim(np.concatenate([audio, teacher, affect], axis=-1), self.audio_emotion_dim)
             return motion, content, audio, emotion_audio
         clip_id = str(record["clip_id"])

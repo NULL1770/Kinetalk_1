@@ -17,6 +17,8 @@
 
    参考音频和目标音频可以是不同句子、不同长度、不同情感；只要求参考音频与参考 BS 在自己的时间轴上对齐。
 4. Style Encoder 不复制参考时间轨迹，也不直接把原始参考 BS 当作 Style 输入。
+   参考分支必须使用参考片段自己的 content 与 BS；pair artifact 中的
+   `canonical_content` 是 source content 的 DTW 映射，只能用于 source 分支。
 5. Emotion 由目标音频的情感/韵律特征提供，主要作用于 residual renderer；离散 emotion/intensity 只作为辅助监督。
 6. 最终输出保持完整 ARKit-52：`M_hat = B0_target + DeltaM`。
 
@@ -43,6 +45,10 @@ reference BS - B0_ref -> motion Style Encoder -> S_ref
 
 - Style 表示说话人的执行习惯：幅度、速度、联动和整体动作方式。仍然
   只有一个 motion-only Style 空间，不拆成 `s_art`/`s_expr`。
+- 该空间由训练集中的多说话人 residual 学到一个连续的执行习惯流形，
+  不是一个只能查表的 speaker ID。对训练中未见过的参考人，推理会把其
+  residual 映射到这个空间中的近似方向；泛化质量取决于训练说话人的覆盖，
+  因此必须单独报告 speaker-disjoint style transfer 结果。
 - Emotion encoder 同时输出 `E_local[t]` 和 `E_global`；局部场描述音节级
   情感变化，全局 code 描述 clip-level 情感。
 - 同说话人不同句子/crop 拉近，不同说话人区分，同说话人跨情感保持稳定。

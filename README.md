@@ -16,6 +16,8 @@ M_hat = B0_target + ResidualDiT(target_audio, target_affect, S_ref, noise)
 ```
 
 The reference audio and BS can contain different content from the target. They only need to be aligned to each other on their own time axis. The reference audio is not used as a target and is not mixed into target content.
+The reference branch uses the reference clip's own content clock; source-side
+DTW `canonical_content` is never reused to compute reference Style.
 
 ## Pipeline
 
