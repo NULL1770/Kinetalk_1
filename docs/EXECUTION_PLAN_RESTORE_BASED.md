@@ -34,31 +34,37 @@ target HuBERT content -> DLP -> B0_target
 - 训练完成后冻结 DLP。
 - Prototype/VQ、通道硬切分和 GRL 不属于当前主路径。
 
-### Stage 2: reference residual Style encoder
+### Stage 2: reference residual Style encoder + local emotion field
 
 ```text
 reference audio/content -> frozen DLP -> B0_ref
 reference BS - B0_ref -> motion Style Encoder -> S_ref
 ```
 
-- Style 表示说话人的执行习惯：幅度、速度、联动和整体动作方式。
+- Style 表示说话人的执行习惯：幅度、速度、联动和整体动作方式。仍然
+  只有一个 motion-only Style 空间，不拆成 `s_art`/`s_expr`。
+- Emotion encoder 同时输出 `E_local[t]` 和 `E_global`；局部场描述音节级
+  情感变化，全局 code 描述 clip-level 情感。
 - 同说话人不同句子/crop 拉近，不同说话人区分，同说话人跨情感保持稳定。
 - 不做跨句子逐帧重建。
 
-### Stage 3: audio affect + residual Flow-Matching DiT
+### Stage 3: audio affect + residual Flow-Matching DiT prior
 
 ```text
 B0_target + target audio content + target audio affect + S_ref + noise
     -> Residual DiT -> DeltaM
 ```
 
+- Stage3 的音频编码器同时拟合冻结 Stage2 的 `E_local[t]`、`E_global` 和
+  intensity；分类只作辅助监督。
 - DiT 训练在每条样本自己的 audio-motion 对齐时间轴上完成。
 - 主要 loss：flow matching、endpoint/reconstruction、velocity、情感分类/强度、轻量 Style consistency 和 mouth-clock preservation。
 - Style 从 DiT 早期 block 注入，并支持适度 style dropout。
 
 ### Stage 4: deployment and causal validation
 
-- 训练时使用同片段 reference residual，保证有合法逐帧目标。
+- 训练时以同片段 residual 作为 flow matching 的数值目标；Style 条件通过
+  独立 FiLM/AdaLN 路径注入。部署时替换为任意 reference residual style。
 - 部署时替换为任意 reference audio + reference BS，计算 `S_ref`。
 - 固定目标音频和初始噪声，只替换 Style；检查口型时间保持、情感保持、动作幅度/速度/联动变化。
 - 固定 Style，只替换目标音频；检查内容、口型和情感随目标音频变化。

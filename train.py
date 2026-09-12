@@ -176,7 +176,7 @@ def _stage1(config: dict[str, Any], device: torch.device) -> None:
 
 def _load_stage1(config: dict[str, Any], device: torch.device) -> Stage1Model:
     model = Stage1Model(config).to(device)
-    payload = load_checkpoint(config["paths"]["stage1_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    payload = load_checkpoint(config["paths"]["stage1_ckpt"], model, map_location=device, strict=True, expected_architecture_version=7)
     require_training_protocol(payload, config["data_protocol"])
     for parameter in model.parameters():
         parameter.requires_grad_(False)
@@ -366,7 +366,7 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
 
 def _load_stage2(config: dict[str, Any], device: torch.device) -> Stage2Model:
     model = Stage2Model(config).to(device)
-    payload = load_checkpoint(config["paths"]["stage2_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    payload = load_checkpoint(config["paths"]["stage2_ckpt"], model, map_location=device, strict=True, expected_architecture_version=7)
     require_training_protocol(payload, config["data_protocol"])
     return model
 
@@ -396,6 +396,7 @@ def _stage3(config: dict[str, Any], device: torch.device) -> None:
                     global_weight=float(loss_cfg.get("stage3_global", 1.0)),
                     classification_weight=float(loss_cfg.get("stage3_classification", 1.0)),
                     intensity_weight=float(loss_cfg.get("stage3_intensity", 0.5)),
+                    local_weight=float(loss_cfg.get("stage3_local", 1.0)),
                 )
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
             totals += float(losses["total"].detach())
@@ -405,7 +406,7 @@ def _stage3(config: dict[str, Any], device: torch.device) -> None:
 
 def _load_stage3(config: dict[str, Any], device: torch.device, stage2: Stage2Model) -> Stage3Model:
     model = Stage3Model(config, stage2).to(device)
-    payload = load_checkpoint(config["paths"]["stage3_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    payload = load_checkpoint(config["paths"]["stage3_ckpt"], model, map_location=device, strict=True, expected_architecture_version=7)
     require_training_protocol(payload, config["data_protocol"])
     return model
 

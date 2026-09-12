@@ -244,13 +244,15 @@ def stage3_loss(
     global_weight: float = 1.0,
     classification_weight: float = 1.0,
     intensity_weight: float = 1.0,
+    local_weight: float = 1.0,
 ) -> dict[str, torch.Tensor]:
     global_align = cosine_distance(audio["global"], teacher["global"])
+    local_align = F.smooth_l1_loss(audio["local"], teacher["local"].detach())
     emotion_ce = F.cross_entropy(audio["emotion_logits"], emotion_id)
     intensity_ce = F.cross_entropy(audio["intensity_logits"], intensity_id)
-    total = global_weight * global_align + classification_weight * emotion_ce + intensity_weight * intensity_ce
+    total = global_weight * global_align + local_weight * local_align + classification_weight * emotion_ce + intensity_weight * intensity_ce
     return {
-        "total": total, "global": global_align, "emotion_ce": emotion_ce, "intensity_ce": intensity_ce,
+        "total": total, "global": global_align, "local": local_align, "emotion_ce": emotion_ce, "intensity_ce": intensity_ce,
     }
 
 

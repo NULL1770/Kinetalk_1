@@ -59,7 +59,7 @@ class Stage1Model(nn.Module):
     def __init__(self, cfg: dict[str, Any]):
         super().__init__()
         data, model = _dimensions(cfg)
-        self.register_buffer("architecture_version", torch.tensor(6))
+        self.register_buffer("architecture_version", torch.tensor(7))
         self.motion_dim = int(data["motion_dim"])
         self.neutral_indices = list(dict.fromkeys(int(i) for i in data["neutral_output_indices"]))
         self.art_indices = list(dict.fromkeys(int(i) for i in model.get("articulatory_indices", self.neutral_indices)))
@@ -132,7 +132,7 @@ class Stage2Model(nn.Module):
         self.style_emotion_probe = nn.Linear(int(model["style_dim"]), num_emotions)
         self.style_content_probe = nn.Linear(int(model["style_dim"]), int(data["content_dim"]))
         self.style_grl = GradientReversal(float(model.get("style_grl_lambda", 0.1)))
-        self.register_buffer("architecture_version", torch.tensor(6))
+        self.register_buffer("architecture_version", torch.tensor(7))
         self.renderer = ResidualDiT(
             motion_dim=int(data["motion_dim"]),
             content_dim=int(model["content_dim"]),
@@ -181,6 +181,7 @@ class Stage2Model(nn.Module):
             self.intensity_condition(factors),
             factors["style"],
             mask,
+            local_emotion=factors.get("local"),
         )
         return prediction, velocity_target
 
@@ -202,6 +203,7 @@ class Stage2Model(nn.Module):
             residual_scale=self.residual_scale,
             steps=steps,
             stochastic=stochastic,
+            local_emotion=factors.get("local"),
         )
 
 
@@ -215,7 +217,7 @@ class Stage3Model(nn.Module):
         # The loader validates this marker before Stage-4 can consume the
         # audio prior, which prevents mixing checkpoints from incompatible
         # architecture revisions.
-        self.register_buffer("architecture_version", torch.tensor(6))
+        self.register_buffer("architecture_version", torch.tensor(7))
         self.audio = AudioEmotionDistributionEncoder(
             int(data["audio_emotion_dim"]), int(model["emotion_dim"]),
             int(model["hidden_dim"]), int(model["heads"]),
@@ -278,7 +280,7 @@ class Stage4Model(nn.Module):
     def __init__(self, cfg: dict[str, Any], stage1: Stage1Model, stage2: Stage2Model, stage3: Stage3Model):
         super().__init__()
         model = cfg["model"]
-        self.register_buffer("architecture_version", torch.tensor(6))
+        self.register_buffer("architecture_version", torch.tensor(7))
         self.stage1 = stage1
         self.factor_emotion = stage2.emotion
         self.factor_style = stage2.style
@@ -329,6 +331,7 @@ class Stage4Model(nn.Module):
             "h0": query_stage1["h0"],
             "global": global_code,
             "intensity_value": audio["intensity_value"],
+            "local": audio["local"],
             "style": style_code,
         }
 
@@ -342,7 +345,7 @@ class Stage4Model(nn.Module):
         deployment_target = query["motion"] - conditions["b0_pred"]
         x_t, time, velocity_target = self.renderer.flow_inputs(deployment_target, self.residual_scale)
         prediction = self.renderer(
-            x_t, time, conditions["h0"], conditions["global"], conditions["intensity_value"], conditions["style"], query["mask"]
+            x_t, time, conditions["h0"], conditions["global"], conditions["intensity_value"], conditions["style"], query["mask"], local_emotion=conditions.get("local")
         )
         return prediction, velocity_target, deployment_target
 
@@ -357,6 +360,7 @@ class Stage4Model(nn.Module):
             residual_scale=self.residual_scale,
             steps=steps,
             stochastic=stochastic,
+            local_emotion=conditions.get("local"),
         )
         return conditions["b0_pred"] + residual, residual
 

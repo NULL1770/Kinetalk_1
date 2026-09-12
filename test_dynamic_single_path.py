@@ -9,7 +9,7 @@ from kinetalk_b0.models import Stage1Model
 def test_stage3_audio_outputs_global_emotion_and_intensity_only():
     encoder = AudioEmotionDistributionEncoder(69, 8, 16, 2, 3, 4, 0.0)
     audio = encoder(torch.randn(2, 12, 69), torch.ones(2, 12, dtype=torch.bool))
-    assert {"global", "emotion_logits", "intensity_logits", "intensity_value", "hidden"} == set(audio)
+    assert {"global", "local", "emotion_logits", "intensity_logits", "intensity_value", "hidden"} == set(audio)
     assert audio["intensity_value"].shape == (2, 1)
 
 
@@ -17,10 +17,11 @@ def test_stage3_loss_uses_global_emotion_and_intensity_only():
     batch = 2
     audio = {
         "global": torch.randn(batch, 8, requires_grad=True),
+        "local": torch.randn(batch, 12, 8, requires_grad=True),
         "emotion_logits": torch.randn(batch, 3, requires_grad=True),
         "intensity_logits": torch.randn(batch, 2, requires_grad=True),
     }
-    teacher = {"global": torch.randn(2, 8)}
+    teacher = {"global": torch.randn(2, 8), "local": torch.randn(2, 12, 8)}
     losses = stage3_loss(audio, teacher, torch.zeros(2, dtype=torch.long), torch.zeros(2, dtype=torch.long))
     losses["total"].backward()
     assert torch.isfinite(losses["total"])

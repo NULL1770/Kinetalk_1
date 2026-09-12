@@ -33,6 +33,8 @@ class DiTBlock(nn.Module):
         self.cross_attention = nn.MultiheadAttention(dim, heads, dropout=dropout, batch_first=True)
         self.norm_mlp = nn.LayerNorm(dim, elementwise_affine=False)
         self.mlp = nn.Sequential(nn.Linear(dim, dim * 4), nn.GELU(), nn.Dropout(dropout), nn.Linear(dim * 4, dim))
+        self.style_norm = nn.LayerNorm(dim, elementwise_affine=False)
+        self.style_modulation = nn.Sequential(nn.SiLU(), nn.Linear(dim, dim * 3))
         # shift/scale/gates for self attention, cross attention and MLP.
         self.modulation = nn.Sequential(nn.SiLU(), nn.Linear(dim, dim * 9))
 
@@ -45,6 +47,7 @@ class DiTBlock(nn.Module):
         tokens: torch.Tensor,
         context: torch.Tensor,
         global_condition: torch.Tensor,
+        style_condition: torch.Tensor,
         mask: torch.Tensor | None,
     ) -> torch.Tensor:
         values = self.modulation(global_condition).chunk(9, dim=-1)
@@ -54,6 +57,9 @@ class DiTBlock(nn.Module):
             self_input, self_input, self_input, key_padding_mask=None if mask is None else ~mask, need_weights=False
         )
         tokens = tokens + torch.tanh(gate_self).unsqueeze(1) * self_output
+        style_shift, style_scale, style_gate = self.style_modulation(style_condition).chunk(3, dim=-1)
+        style_tokens = self.style_norm(tokens) * (1.0 + style_scale.unsqueeze(1)) + style_shift.unsqueeze(1)
+        tokens = tokens + 0.25 * torch.tanh(style_gate).unsqueeze(1) * style_tokens
         cross_input = self._modulate(self.norm_cross(tokens), shift_cross, scale_cross)
         cross_output, _ = self.cross_attention(
             cross_input, context, context, key_padding_mask=None if mask is None else ~mask, need_weights=False
@@ -90,6 +96,7 @@ class ResidualDiT(nn.Module):
         self.context_input = nn.Sequential(nn.Linear(content_dim, dim), nn.SiLU(), nn.Linear(dim, dim))
         self.time = TimeEmbedding(dim)
         self.emotion = nn.Linear(emotion_dim + intensity_dim, dim)
+        self.local_emotion = nn.Linear(emotion_dim, dim)
         self.style = nn.Linear(style_dim, dim)
         self.blocks = nn.ModuleList([DiTBlock(dim, heads, dropout) for _ in range(depth)])
         self.output_norm = nn.LayerNorm(dim, elementwise_affine=False)
@@ -114,16 +121,19 @@ class ResidualDiT(nn.Module):
         style: torch.Tensor,
         mask: torch.Tensor | None = None,
         *,
+        local_emotion: torch.Tensor | None = None,
         condition_dropout: bool = True,
     ) -> torch.Tensor:
         if condition_dropout:
             global_emotion = self._drop_condition(global_emotion, self.global_dropout, self.training)
             style = self._drop_condition(style, self.style_dropout, self.training)
         context = self.context_input(content)
+        if local_emotion is not None:
+            context = context + self.local_emotion(local_emotion)
         tokens = self.motion_input(x_t) + context
         global_condition = self.time(time) + self.emotion(torch.cat([global_emotion, intensity], dim=-1)) + self.style(style)
         for block in self.blocks:
-            tokens = block(tokens, context, global_condition, mask)
+            tokens = block(tokens, context, global_condition, self.style(style), mask)
         shift, scale = self.output_modulation(global_condition).chunk(2, dim=-1)
         tokens = self.output_norm(tokens) * (1.0 + scale.unsqueeze(1)) + shift.unsqueeze(1)
         velocity = self.output(tokens)
@@ -152,6 +162,7 @@ class ResidualDiT(nn.Module):
         residual_scale: float,
         steps: int = 4,
         stochastic: bool = False,
+        local_emotion: torch.Tensor | None = None,
     ) -> torch.Tensor:
         if steps < 1:
             raise ValueError("DiT decode steps must be at least one")
@@ -163,7 +174,7 @@ class ResidualDiT(nn.Module):
         times = torch.linspace(0.0, 1.0, steps + 1, device=content.device, dtype=content.dtype)
         for index in range(steps):
             current = torch.full((content.shape[0],), times[index], device=content.device, dtype=content.dtype)
-            velocity = self(state, current, content, global_emotion, intensity, style, mask, condition_dropout=False)
+            velocity = self(state, current, content, global_emotion, intensity, style, mask, local_emotion=local_emotion, condition_dropout=False)
             state = state + (times[index + 1] - times[index]) * velocity
             if mask is not None:
                 state = state * mask.unsqueeze(-1).to(state.dtype)

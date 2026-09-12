@@ -195,7 +195,7 @@ class NeutralArticulationDecoder(nn.Module):
 
 
 class ResidualEmotionEncoder(nn.Module):
-    """BS residual teacher: global emotion and intensity only."""
+    """BS residual teacher with local and global affect coordinates."""
 
     def __init__(
         self,
@@ -210,15 +210,20 @@ class ResidualEmotionEncoder(nn.Module):
         super().__init__()
         self.backbone = TemporalBackbone(motion_dim * 2, hidden_dim, heads=heads, dropout=dropout)
         self.global_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
+        self.local_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
         self.emotion_classifier = nn.Linear(emotion_dim, num_emotions)
         self.intensity_classifier = nn.Linear(emotion_dim, num_intensities)
 
     def forward(self, residual: torch.Tensor, mask: torch.Tensor | None = None) -> dict[str, torch.Tensor]:
         hidden = self.backbone(torch.cat([residual, residual_velocity(residual)], dim=-1), mask)
         global_code = self.global_head(masked_mean(hidden, mask))
+        local_code = self.local_head(hidden)
+        if mask is not None:
+            local_code = local_code * mask.unsqueeze(-1).to(local_code.dtype)
         intensity_logits = self.intensity_classifier(global_code)
         return {
             "global": global_code,
+            "local": local_code,
             "emotion_logits": self.emotion_classifier(global_code),
             "intensity_logits": intensity_logits,
             "intensity_value": torch.softmax(intensity_logits, dim=-1) @ torch.arange(intensity_logits.shape[-1], device=global_code.device, dtype=global_code.dtype).unsqueeze(-1),
@@ -266,12 +271,7 @@ class ResidualStyleEncoder(nn.Module):
 
 
 class AudioEmotionDistributionEncoder(nn.Module):
-    """Audio affect field used by Stage 3.
-
-    Stage 3 predicts only the global coordinates consumed by the frozen
-    residual renderer.  Frame-level affect is intentionally absent until it
-    has a real teacher and a renderer path that uses it.
-    """
+    """Audio affect field used by Stage 3 (local and global)."""
 
     def __init__(
         self,
@@ -286,16 +286,21 @@ class AudioEmotionDistributionEncoder(nn.Module):
         super().__init__()
         self.backbone = TemporalBackbone(input_dim, hidden_dim, heads=heads, dropout=dropout)
         self.global_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
+        self.local_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
         self.emotion_classifier = nn.Linear(emotion_dim, num_emotions)
         self.intensity_classifier = nn.Linear(emotion_dim, num_intensities)
 
     def forward(self, audio_emotion: torch.Tensor, mask: torch.Tensor | None = None) -> dict[str, torch.Tensor]:
         hidden = self.backbone(audio_emotion, mask)
         global_code = self.global_head(masked_mean(hidden, mask))
+        local_code = self.local_head(hidden)
+        if mask is not None:
+            local_code = local_code * mask.unsqueeze(-1).to(local_code.dtype)
         emotion_logits = self.emotion_classifier(global_code)
         intensity_logits = self.intensity_classifier(global_code)
         return {
             "global": global_code,
+            "local": local_code,
             "emotion_logits": emotion_logits,
             "intensity_logits": intensity_logits,
             "intensity_value": torch.softmax(intensity_logits, dim=-1) @ torch.arange(intensity_logits.shape[-1], device=global_code.device, dtype=global_code.dtype).unsqueeze(-1),
