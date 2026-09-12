@@ -32,7 +32,7 @@ target HuBERT content -> DLP -> B0_target
 - 不使用 reference motion 生成 B0。
 - 主 loss：masked L1/Huber、velocity、acceleration。
 - 训练完成后冻结 DLP。
-- prototype、通道硬切分、GRL 不属于主路径；如保留只能作为独立消融。
+- Prototype/VQ、通道硬切分和 GRL 不属于当前主路径。
 
 ### Stage 2: reference residual Style encoder
 
@@ -69,7 +69,7 @@ B0_target + target audio content + target audio affect + S_ref + noise
 - 恢复 DLP 风格的 audio-only neutral decoder；保留现有 residual DiT 主体。
 - 为 Stage2/4 明确构造 `reference_b0 = Stage1(reference_content)` 与 `reference_residual = reference_motion - reference_b0`。
 - Style encoder 只编码 residual 的中心化轨迹、速度和可选加速度。
-- Stage4 的 reference style 不再覆盖为 raw-motion `s_expr`；统一使用 reference residual encoder 输出。
+- Stage4 的 reference style 统一使用 reference residual encoder 输出。
 - 旧 prototype checkpoint 与 architecture version 不兼容，必须重新训练 Stage1→Stage2→Stage3→Stage4。
 
 ## Acceptance criteria

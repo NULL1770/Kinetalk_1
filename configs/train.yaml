@@ -3,10 +3,14 @@ device: cuda
 amp: true
 amp_dtype: bfloat16
 data:
+  records_manifest: data/processed/mead_media_v1/manifest_mead.jsonl
   # Replace data/ with the root of the prepared KineTalk data tree.
-  manifest: data/processed/safe_supervision_v1/teacher_manifest_gated.jsonl
-  val_manifest: data/processed/safe_supervision_v1/teacher_manifest_gated.jsonl
-  stage1_manifest: data/processed/safe_supervision_v1/teacher_manifest_gated.jsonl
+  train_manifest: data/processed/protocol_speaker_disjoint_v1/stage2_4_train.jsonl
+  val_manifest: data/processed/protocol_speaker_disjoint_v1/stage2_4_val.jsonl
+  test_manifest: data/processed/protocol_speaker_disjoint_v1/stage2_4_test.jsonl
+  stage1_manifest: data/processed/protocol_speaker_disjoint_v1/stage1_train.jsonl
+  stage1_val_manifest: data/processed/protocol_speaker_disjoint_v1/stage1_val.jsonl
+  stage1_test_manifest: data/processed/protocol_speaker_disjoint_v1/stage1_test.jsonl
   stage1_target_root: data/processed/stage1_canonical_neutral_v1
   aligned_dtw_root: data/processed/aligned_dtw_v3_hubert_strict
   legacy_aligned_root: data/processed/aligned_dtw_v2
@@ -76,8 +80,8 @@ loss:
   stage3_classification: 1.0
   stage3_intensity: 0.5
 paths:
-  output_dir: outputs_b0_residual
-  stage1_ckpt: outputs_b0_residual/stage1_neutral.pt
-  stage2_ckpt: outputs_b0_residual/stage2_factors.pt
-  stage3_ckpt: outputs_b0_residual/stage3_audio_emotion.pt
-  stage4_ckpt: outputs_b0_residual/stage4_generator.pt
+  output_dir: outputs_protocol_v1
+  stage1_ckpt: outputs_protocol_v1/stage1_neutral.pt
+  stage2_ckpt: outputs_protocol_v1/stage2_factors.pt
+  stage3_ckpt: outputs_protocol_v1/stage3_audio_emotion.pt
+  stage4_ckpt: outputs_protocol_v1/stage4_generator.pt

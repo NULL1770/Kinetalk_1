@@ -104,7 +104,8 @@ def append(store: dict[str, list[torch.Tensor]], name: str, value: torch.Tensor)
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=Path("configs/train.yaml"))
-    parser.add_argument("--split", choices=("train", "val", "test"), default="train")
+    parser.add_argument("--split", choices=("train", "val", "test"), default="val",
+                        help="Manifest split; validation is the default and test is for final frozen evaluation")
     parser.add_argument("--per-emotion", type=int, default=0, help="0 evaluates every accepted example")
     parser.add_argument("--steps", type=int, default=4)
     parser.add_argument("--batch-size", type=int, default=16)
@@ -197,6 +198,8 @@ def main() -> None:
     result = {
         "schema_version": 1,
         "evaluation_mode": "deployment_semantic_consistency",
+        "independent_motion_recognizer": False,
+        "generator_heldout_generalization_established": False,
         "split": args.split,
         "selected_samples": int(target_tensor.numel()),
         "checkpoints": checkpoints,

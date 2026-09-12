@@ -53,28 +53,6 @@ class NativeFeatureAggregator(nn.Module):
         return output
 
 
-class ArticulatoryPrototypeHead(nn.Module):
-    """Predict prototype logits and a bounded continuous patch residual."""
-
-    def __init__(self, hidden_dim: int, bank: NeutralArticulatoryPrototypeBank, residual_limit: float = 0.25):
-        super().__init__()
-        self.bank = bank
-        self.patch_size = bank.patch_size
-        self.art_dim = bank.art_dim
-        self.residual_limit = float(residual_limit)
-        self.logits = nn.Linear(hidden_dim, bank.num_prototypes)
-        self.residual = nn.Linear(hidden_dim, bank.patch_size * bank.art_dim)
-        nn.init.zeros_(self.residual.weight)
-        nn.init.zeros_(self.residual.bias)
-
-    def forward(self, hidden: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        logits = self.logits(hidden)
-        residual = self.residual(hidden).view(hidden.shape[0], hidden.shape[1], self.patch_size, self.art_dim)
-        residual = self.residual_limit * torch.tanh(residual)
-        prototype = torch.einsum("btk,kpa->btpa", torch.softmax(logits, dim=-1), self.bank.codebook)
-        return logits, residual, prototype + residual
-
-
 class Stage1Model(nn.Module):
     """Emotional or neutral content audio -> the same neutral articulation B0."""
 
@@ -145,7 +123,7 @@ class Stage2Model(nn.Module):
             num_emotions=num_emotions,
             num_intensities=num_intensities,
         )
-        self.s_expr = ResidualStyleEncoder(
+        self.style_encoder = ResidualStyleEncoder(
             **common,
             style_dim=int(model["style_dim"]),
             reference_audio_dim=int(data.get("audio_emotion_dim", data.get("audio_dim", 0))),
@@ -171,17 +149,16 @@ class Stage2Model(nn.Module):
 
     @property
     def style(self) -> ResidualStyleEncoder:
-        """Compatibility view: the renderer's style coordinate is ``s_expr``."""
-        return self.s_expr
+        """Motion-only execution-style encoder used by the renderer."""
+        return self.style_encoder
 
     def encode_factors(self, residual: torch.Tensor, mask: torch.Tensor | None, reference_audio: torch.Tensor | None = None, *, style_residual: torch.Tensor | None = None) -> dict[str, torch.Tensor]:
         emotion = self.emotion(residual, mask)
-        emotion["s_expr"] = self.s_expr(residual if style_residual is None else style_residual, mask, reference_audio)
-        emotion["style"] = emotion["s_expr"]
-        emotion["style_emotion_probe_logits"] = self.style_emotion_probe(self.style_grl(emotion["s_expr"]))
-        emotion["style_content_probe"] = self.style_content_probe(self.style_grl(emotion["s_expr"]))
-        emotion["style_emotion_probe_detached"] = self.style_emotion_probe(emotion["s_expr"].detach())
-        emotion["style_content_probe_detached"] = self.style_content_probe(emotion["s_expr"].detach())
+        emotion["style"] = self.style_encoder(residual if style_residual is None else style_residual, mask, reference_audio)
+        emotion["style_emotion_probe_logits"] = self.style_emotion_probe(self.style_grl(emotion["style"]))
+        emotion["style_content_probe"] = self.style_content_probe(self.style_grl(emotion["style"]))
+        emotion["style_emotion_probe_detached"] = self.style_emotion_probe(emotion["style"].detach())
+        emotion["style_content_probe_detached"] = self.style_content_probe(emotion["style"].detach())
         return emotion
 
     @staticmethod

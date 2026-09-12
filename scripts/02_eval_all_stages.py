@@ -67,6 +67,8 @@ def _add(store: dict[str, list[float]], key: str, value: torch.Tensor | float) -
 def main() -> None:
     parser = argparse.ArgumentParser(description="End-to-end evaluation for trained KineTalk stages")
     parser.add_argument("--config", type=Path, default=Path("configs/train.yaml"))
+    parser.add_argument("--split", choices=("train", "val", "test"), default="val",
+                        help="Manifest split; validation is the default and test is for final frozen evaluation")
     parser.add_argument("--per-emotion", type=int, default=24)
     args = parser.parse_args()
 
@@ -74,7 +76,7 @@ def main() -> None:
     seed_everything(int(cfg.get("seed", 42)))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     cfg["data"]["num_workers"] = min(int(cfg["data"].get("num_workers", 0)), 2)
-    dataset = B0ResidualDataset(cfg, split="train", random_crop=False)
+    dataset = B0ResidualDataset(cfg, split=args.split, random_crop=False)
     names = [str(item).lower() for item in cfg["data"]["emotion_classes"]]
     grouped: dict[int, list[int]] = defaultdict(list)
     for index, record in enumerate(dataset.items):
@@ -227,7 +229,7 @@ def main() -> None:
                     final[row : row + 1], query["motion"][row : row + 1], query["mask"][row : row + 1]
                 ).item()))
 
-    print(f"samples={len(selected)} device={device} render_steps={render_steps}")
+    print(f"split={args.split} samples={len(selected)} device={device} render_steps={render_steps}")
     print(f"checkpoint_epochs stage1={p1.get('epoch')} stage2={p2.get('epoch')} stage3={p3.get('epoch')} stage4={p4.get('epoch')}")
     for key in sorted(metrics):
         values = metrics[key]

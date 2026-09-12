@@ -18,4 +18,6 @@ Stage 3 trains the residual DiT with target audio affect, emotion/intensity auxi
 
 Stage 4 is deployment and causal validation. Inference requires target audio and a reference audio+BS pair. Fixed-noise swaps test that changing Style changes execution behavior while preserving target content and mouth timing; changing target audio tests affect/content control at fixed Style.
 
-Prototype quantization, bounded `B0_art` calibration, native lag attention, and the previous `s_art`/`s_expr` split are not active main-path components. Old checkpoints are incompatible and all four stages must be retrained.
+The source tree has one active style coordinate (`style`) and one active
+restore-based path. Old prototype/calibration checkpoints are incompatible;
+all four stages must be retrained under the current protocol.

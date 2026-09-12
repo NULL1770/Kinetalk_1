@@ -180,7 +180,7 @@ def evaluate(loader: DataLoader, stage2: Stage2Model, stage3: Stage3Model,
         result[output_key]["intensity"]["expected_scalar_mae"] = float(
             (values[f"{prefix}_intensity_value"] - values["intensity_id"]).abs().mean())
         result[output_key]["intensity"]["expected_scalar_units"] = f"ordinal label units, 0..{levels - 1}"
-    result["stage3"]["global_cosine_to_independent_stage2"] = float(values["global_cosine"].mean())
+    result["stage3"]["global_cosine_to_separately_loaded_stage2"] = float(values["global_cosine"].mean())
     for label, name in enumerate(names):
         selection = values["emotion_id"] == label
         if selection.any():
@@ -227,6 +227,9 @@ def main() -> None:
     stage2.to(device).eval()
     stage3.to(device).eval()
     report: dict[str, Any] = {
+        "evaluation_mode": "internal_teacher_and_audio_prior_diagnostic",
+        "independent_motion_recognizer": False,
+        "generator_heldout_generalization_established": False,
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "config": {"path": str(args.config.resolve()), "sha256": sha256(args.config), "values": cfg},
         "checkpoints": {"stage2": stage2_info, "stage3": stage3_info},

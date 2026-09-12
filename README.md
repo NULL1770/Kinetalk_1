@@ -41,6 +41,22 @@ The reference audio and BS may contain different content from the target.
 Style is computed from the reference BS minus the DLP output for that same
 reference clip, so reference mouth timing is not copied into the target.
 
+Evaluation must use an explicit held-out split. The CSV exporter and full
+stage evaluator default to `val`; use `--split test` only for the final frozen
+report after model selection. The previous no-argument CSV command used the
+training split and is therefore only a qualitative training diagnostic.
+
+```text
+python scripts/export_blender_semantic_csv.py --split val --output-dir artifacts/blender/semantic_val
+python scripts/02_eval_all_stages.py --split val --per-emotion 0
+python scripts/05_eval_stage1_fidelity.py --split val --output artifacts/eval/stage1_val.json
+python scripts/08_eval_stage4_fidelity.py --split val --output artifacts/eval/stage4_val.json
+python scripts/09_eval_stage4_semantics.py --split val --output artifacts/eval/stage4_semantics_val.json
+```
+
+After freezing the protocol and checkpoint selection, repeat the same reports
+with `--split test`; test results are never used for tuning.
+
 ## Repository layout
 
 - `kinetalk_b0/`: datasets, losses, encoders, DLP, residual DiT, and stage models
@@ -52,5 +68,6 @@ reference clip, so reference mouth timing is not copied into the target.
 For Blender evaluation, `scripts/export_blender_semantic_csv.py` writes the
 model's ARKit-52 output by name into the project's 51-channel Blender order.
 
-Prototype and bounded articulation calibration code is retained only as legacy
-source for comparison; it is not instantiated by the active Stage 1 model.
+The active tree contains only the restore-based model path. Historical
+prototype/calibration implementations are kept outside the source tree in the
+ignored `artifacts/` archive and are not importable by training code.

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-import json
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +8,8 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-from .utils import channel_mask, first_array, jsonl_records, safe_intensity
+from .utils import channel_mask, first_array
+from .protocol import load_split, statistics, legacy_path
 
 
 class CanonicalStage1Dataset(Dataset):
@@ -22,22 +22,11 @@ class CanonicalStage1Dataset(Dataset):
 
     def __init__(self, cfg: dict[str, Any], split: str = "train", random_crop: bool = True):
         data = cfg["data"]
-        if split == "train":
-            manifest = data.get("stage1_manifest", data.get("manifest"))
-        elif split == "test":
-            manifest = data.get(
-                "stage1_test_manifest",
-                data.get("stage1_val_manifest", data.get("val_manifest", data.get("stage1_manifest", data.get("manifest")))),
-            )
-        else:
-            manifest = data.get(
-                "stage1_val_manifest",
-                data.get("val_manifest", data.get("stage1_manifest", data.get("manifest"))),
-            )
-        if not manifest:
-            raise ValueError("data.stage1_manifest or data.manifest is required")
-        rows = jsonl_records(manifest)
+        rows, manifest = load_split(data, split, stage1=True)
         self.items = [dict(r) for r in rows if r.get("stage1_target_artifact") or r.get("teacher_artifact")]
+        if len(self.items) != len(rows):
+            raise ValueError(f"Stage1 manifest contains rows without teacher artifacts: {manifest}")
+        self.protocol_stats = statistics(self.items)
         self.split = split
         if not self.items:
             raise ValueError(f"No Stage1 pair rows in {manifest}")
@@ -273,77 +262,20 @@ class B0ResidualDataset(Dataset):
     def __init__(self, cfg: dict[str, Any], split: str = "train", random_crop: bool = True):
         data_cfg = cfg["data"]
         self.cfg_data = data_cfg
-        manifest_path = data_cfg.get("manifest") if split == "train" else data_cfg.get("val_manifest", data_cfg.get("manifest"))
-        if not manifest_path:
-            raise ValueError("data.manifest is required")
-        records = jsonl_records(manifest_path)
-        # Pair manifests use source_clip_id while legacy clip manifests use
-        # clip_id. Normalize the former without changing the on-disk record.
-        records = [dict(record, clip_id=record.get("clip_id", record.get("source_clip_id"))) for record in records]
-        # The gated v3 manifest intentionally keeps only audit fields.  Pair
-        # metadata is the authoritative source for speaker, sentence/content,
-        # and source/reference ids needed by the Stage2 sampling relations.
-        for record in records:
-            artifact = Path(str(record.get("teacher_artifact", "")))
-            if not artifact.is_file():
-                artifact = Path(data_cfg.get("aligned_dtw_root", "")) / "pairs" / artifact.name
-            if artifact.is_file():
-                try:
-                    with np.load(artifact, allow_pickle=False) as archive:
-                        raw = archive["metadata"] if "metadata" in archive.files else None
-                        metadata = json.loads(str(raw.item() if hasattr(raw, "item") else raw)) if raw is not None else {}
-                    record.setdefault("speaker", str(metadata.get("speaker", "")))
-                    record.setdefault("sentence_id", str(metadata.get("content_id", "")))
-                    record.setdefault("content_id", str(metadata.get("content_id", "")))
-                    record.setdefault("source_clip_id", str(metadata.get("source_clip_id", record.get("clip_id", ""))))
-                    record.setdefault("reference_clip_id", str(metadata.get("reference_clip_id", "")))
-                except (OSError, ValueError, TypeError, json.JSONDecodeError):
-                    pass
-        split_records = [record for record in records if split == "all" or record.get("split", split) == split]
+        split_records, manifest_path = load_split(data_cfg, split)
+        self.split = split
         self.aligned_root = Path(data_cfg["aligned_dtw_root"])
         self.legacy_aligned_root = Path(data_cfg.get("legacy_aligned_root", self.aligned_root.parent / "aligned_dtw_v2"))
-        # Stage2-4 need both sides of every style pair.  The v3 teacher
-        # manifest can contain clips whose legacy prosody/affect cache was not
-        # materialized; drop those rows deterministically at construction time
-        # instead of failing later inside a worker after random sampling.
-        def has_legacy(kind: str, clip_id: str) -> bool:
-            candidates = [
-                self.legacy_aligned_root / kind / str(record.get("dataset", "mead")) / f"{clip_id}.npz",
-                self.legacy_aligned_root / kind / f"{clip_id}.npz",
-            ]
-            if kind == "bs":
-                candidates.extend([
-                    self.legacy_aligned_root.parent / "coeffs_final" / str(record.get("dataset", "mead")) / f"{clip_id}.npz",
-                    self.legacy_aligned_root.parent / "coeffs_final" / f"{clip_id}.npz",
-                ])
-            return any(path.is_file() for path in candidates)
-
-        complete_records = []
         for record in split_records:
             if not record.get("teacher_artifact"):
-                complete_records.append(record)
-                continue
+                raise ValueError(f"Missing teacher artifact: {record['clip_id']}")
             source_id = str(record.get("source_clip_id", record.get("clip_id", "")))
             reference_id = str(record.get("reference_clip_id", ""))
-            if reference_id and all(has_legacy(kind, clip_id) for kind in ("audio", "affect", "bs") for clip_id in (source_id, reference_id)):
-                complete_records.append(record)
-        split_records = complete_records
-        quality_path = Path(data_cfg.get("aligned_dtw_quality", self.aligned_root / "quality.jsonl"))
-        accepted_status = set(data_cfg.get("aligned_dtw_status", ["ok", "cached"]))
-        accepted: set[str] = set()
-        for quality in jsonl_records(quality_path):
-            # v3 quality rows are pair records and identify the source as
-            # ``source_clip_id``; older quality caches used ``clip_id``.
-            # ``teacher_eligible`` is the canonical boolean gate because the
-            # v3 status is ``accepted`` rather than ``teacher_eligible``.
-            status = str(quality.get("status", "")).lower()
-            if status not in accepted_status and not bool(quality.get("teacher_eligible", False)):
-                continue
-            for key in ("clip_id", "source_clip_id"):
-                value = quality.get(key)
-                if value:
-                    accepted.add(str(value))
-        self.items = [dict(record) for record in split_records if record.get("teacher_artifact") or str(record.get("clip_id")) in accepted]
+            for kind in ("audio", "affect", "bs"):
+                for clip_id in (source_id, reference_id):
+                    if legacy_path(self.legacy_aligned_root, kind, clip_id, record.get("dataset", "mead")) is None:
+                        raise FileNotFoundError(f"Missing {kind}: {clip_id}; rebuild protocol manifests to record exclusions")
+        self.items = [dict(record) for record in split_records]
         if not self.items:
             raise ValueError(f"No accepted {split} records after quality filtering: {manifest_path}")
 
@@ -381,14 +313,17 @@ class B0ResidualDataset(Dataset):
             if candidates:
                 self.neutral_by_group[group] = min(
                     candidates,
-                    key=lambda index: safe_intensity(self.items[index].get("intensity", 0), self.intensity_levels),
+                    key=lambda index: self.items[index]["intensity_id"],
                 )
         if self.require_neutral_partner:
             kept = [item for item in self.items if self._group_key(item) in self.neutral_by_group]
-            if not kept:
-                raise ValueError("No accepted records have a same-speaker/same-sentence neutral partner")
-            self.items = kept
-            self._rebuild_indices()
+            if len(kept) != len(self.items):
+                raise ValueError("Manifest includes records without a neutral partner; rebuild protocol manifests")
+            for item in self.items:
+                neutral = self.items[self.neutral_by_group[self._group_key(item)]]
+                if neutral["clip_id"] != item["reference_clip_id"]:
+                    raise ValueError(f"Ambiguous neutral clock for {item['clip_id']}; expected {item['reference_clip_id']}")
+        self.protocol_stats = statistics(self.items)
 
     def _rebuild_indices(self) -> None:
         self.by_group = {}
@@ -403,7 +338,7 @@ class B0ResidualDataset(Dataset):
             if candidates:
                 self.neutral_by_group[group] = min(
                     candidates,
-                    key=lambda index: safe_intensity(self.items[index].get("intensity", 0), self.intensity_levels),
+                    key=lambda index: self.items[index]["intensity_id"],
                 )
 
     @staticmethod
@@ -426,7 +361,7 @@ class B0ResidualDataset(Dataset):
 
     def _emotion_name(self, record: dict[str, Any]) -> str:
         aliases = {"disgusted": "disgust", "fearful": "fear", "surprised": "surprise"}
-        raw = str(record.get("emotion", "neutral")).lower()
+        raw = str(record["emotion"]).lower()
         return aliases.get(raw, raw)
 
     def __len__(self) -> int:
@@ -600,8 +535,8 @@ class B0ResidualDataset(Dataset):
             "speaker": self._group_key(record)[0],
             "sentence_id": self._group_key(record)[1],
             "clip_id": str(record["clip_id"]),
-            "emotion_id": self.emotion_to_id.get(emotion, 0),
-            "intensity_id": safe_intensity(record.get("intensity", 0), self.intensity_levels),
+            "emotion_id": self.emotion_to_id[emotion],
+            "intensity_id": record["intensity_id"],
             "crop_start": start,
             "source_length": length,
         }

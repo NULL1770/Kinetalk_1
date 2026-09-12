@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import argparse
 import random
 from pathlib import Path
 
@@ -92,11 +93,18 @@ def write_csv(path: Path, values: torch.Tensor) -> None:
 
 
 def main() -> None:
-    cfg = load_yaml('configs/train.yaml')
+    parser = argparse.ArgumentParser(description='Export representative Stage-4 outputs in Blender semantic order')
+    parser.add_argument('--config', type=Path, default=Path('configs/train.yaml'))
+    parser.add_argument('--split', choices=('train', 'val', 'test'), default='val',
+                        help='Manifest split to export; validation is the default')
+    parser.add_argument('--output-dir', type=Path, default=Path('artifacts/blender/_semantic_latest'))
+    parser.add_argument('--seed', type=int, default=1234)
+    args = parser.parse_args()
+    cfg = load_yaml(args.config)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    random.seed(1234)
-    torch.manual_seed(1234)
-    dataset = B0ResidualDataset(cfg, split='train', random_crop=False)
+    random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    dataset = B0ResidualDataset(cfg, split=args.split, random_crop=False)
     query_index, angry_index, donor_index = pick_indices(dataset)
     query = branch(dataset, query_index)
     angry = branch(dataset, angry_index, start=query['crop_start'])
@@ -134,7 +142,7 @@ def main() -> None:
         emotion_conditions['intensity_value'] = a_audio['intensity_value']
         emotion_swap, _ = stage4.render(base_batch, emotion_conditions, steps=steps, stochastic=False)
 
-    output_dir = Path('artifacts/blender/_semantic_latest')
+    output_dir = args.output_dir
     write_csv(output_dir / 'gt.csv', q['motion'][0])
     write_csv(output_dir / 'reconstruction.csv', reconstruction[0])
     write_csv(output_dir / 'emotion_swap_happy_to_angry.csv', emotion_swap[0])
@@ -142,7 +150,7 @@ def main() -> None:
     print(f'query={query["clip_id"]} speaker={query["speaker"]} emotion={emotion_name(dataset, query_index)}')
     print(f'angry={angry["clip_id"]} speaker={angry["speaker"]} emotion={emotion_name(dataset, angry_index)}')
     print(f'donor={donor["clip_id"]} speaker={donor["speaker"]} emotion={emotion_name(dataset, donor_index)}')
-    print(f'output_dir={output_dir.resolve()} channels={len(BS_NAMES)} frames={q["motion"].shape[1]}')
+    print(f'split={args.split} output_dir={output_dir.resolve()} channels={len(BS_NAMES)} frames={q["motion"].shape[1]}')
 
 
 if __name__ == '__main__':

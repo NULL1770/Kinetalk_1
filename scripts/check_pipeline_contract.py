@@ -9,6 +9,7 @@ import torch
 from kinetalk_b0.data import B0ResidualDataset, CanonicalStage1Dataset, collate_b0_residual, collate_stage1
 from kinetalk_b0.models import Stage1Model, Stage2Model, Stage3Model, Stage4Model
 from kinetalk_b0.utils import load_yaml, move_to_device
+from kinetalk_b0.protocol import audit_config
 
 
 def main() -> None:
@@ -16,6 +17,8 @@ def main() -> None:
     parser.add_argument("--config", type=Path, default=Path("configs/train.yaml"))
     args = parser.parse_args()
     cfg = load_yaml(args.config)
+    protocol = audit_config(cfg["data"])
+    print(f"protocol={protocol['version']} stage1={[(s, protocol['stage1']['splits'][s]['n']) for s in ('train','val','test')]} stage2_4={[(s, protocol['stage2_4']['splits'][s]['n']) for s in ('train','val','test')]}")
     device = torch.device(str(cfg.get("device", "cuda")) if torch.cuda.is_available() else "cpu")
 
     stage1_ds = CanonicalStage1Dataset(cfg, split="train", random_crop=False)

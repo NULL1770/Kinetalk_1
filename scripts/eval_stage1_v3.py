@@ -32,7 +32,7 @@ def main() -> None:
     cfg["_eval_split"] = args.split
     if args.manifest:
         data_cfg = cfg.setdefault("data", {})
-        data_cfg["stage1_manifest" if args.split == "train" else "stage1_val_manifest"] = args.manifest
+        data_cfg[{"train": "stage1_manifest", "val": "stage1_val_manifest", "test": "stage1_test_manifest"}[args.split]] = args.manifest
     result = evaluate(cfg, args.ckpt)
     Path(args.out).write_text(json.dumps(result, indent=2, allow_nan=False), encoding="utf-8")
     print(json.dumps(result, indent=2, allow_nan=False))

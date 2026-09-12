@@ -167,9 +167,38 @@ def channel_mask(motion_dim: int, active_indices: Iterable[int], device: torch.d
 
 
 def safe_intensity(value: Any, levels: int) -> int:
+    """Parse an already canonical intensity id.
+
+    Missing labels are invalid supervision.  Callers that still accept legacy
+    MEAD records should normalize them first with ``canonical_intensity``.
+    """
+    if value is None or (isinstance(value, str) and not value.strip()):
+        raise ValueError("intensity label is missing")
     if isinstance(value, str):
-        value = {"low": 1, "medium": 2, "mid": 2, "high": 3}.get(value.lower().strip(), 0)
+        value = {"low": 1, "medium": 2, "mid": 2, "high": 3}.get(value.lower().strip(), value)
     try:
-        return max(0, min(levels - 1, int(value or 0)))
-    except (TypeError, ValueError):
+        parsed = int(value)
+        if isinstance(value, bool) or float(value) != parsed or not 0 <= parsed < levels:
+            raise ValueError("out of range or non-integral")
+        return parsed
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"invalid intensity label: {value!r}") from exc
+
+
+def canonical_intensity(value: Any, emotion: Any, levels: int) -> int:
+    """Map MEAD labels to the experiment's canonical ordinal ids.
+
+    Neutral has no expressive level and is always id 0; expressive MEAD
+    levels 1..3 retain their ordinal ids.  No missing value is fabricated.
+    """
+    name = str(emotion or "").strip().lower()
+    if not name:
+        raise ValueError("emotion is required to normalize intensity")
+    parsed = safe_intensity(value, levels)
+    if name == "neutral":
+        if parsed not in (0, 1):
+            raise ValueError(f"neutral intensity must be 0 or MEAD level 1, got {value!r}")
         return 0
+    if parsed < 1 or parsed >= levels:
+        raise ValueError(f"expressive intensity must be in 1..{levels - 1}, got {value!r}")
+    return parsed

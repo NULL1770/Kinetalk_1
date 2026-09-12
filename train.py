@@ -25,6 +25,7 @@ from kinetalk_b0.losses import (
 )
 from kinetalk_b0.models import Stage1Model, Stage2Model, Stage3Model, Stage4Model
 from kinetalk_b0.utils import load_checkpoint, load_yaml, move_to_device, save_checkpoint, seed_everything
+from kinetalk_b0.protocol import audit_config, require_training_protocol
 
 
 def _device(config: dict[str, Any]) -> torch.device:
@@ -167,15 +168,16 @@ def _stage1(config: dict[str, Any], device: torch.device) -> None:
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
             totals += float(losses["total"].detach())
         print(f"stage1 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage1_ckpt"], model, optimizer, epoch + 1, stage="stage1")
+        save_checkpoint(config["paths"]["stage1_ckpt"], model, optimizer, epoch + 1, stage="stage1", data_protocol=config["data_protocol"])
         epoch_dir = config["paths"].get("stage1_epoch_ckpt_dir")
         if epoch_dir:
-            save_checkpoint(Path(epoch_dir) / f"stage1_epoch_{epoch + 1:03d}.pt", model, optimizer, epoch + 1, stage="stage1")
+            save_checkpoint(Path(epoch_dir) / f"stage1_epoch_{epoch + 1:03d}.pt", model, optimizer, epoch + 1, stage="stage1", data_protocol=config["data_protocol"])
 
 
 def _load_stage1(config: dict[str, Any], device: torch.device) -> Stage1Model:
     model = Stage1Model(config).to(device)
-    load_checkpoint(config["paths"]["stage1_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    payload = load_checkpoint(config["paths"]["stage1_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    require_training_protocol(payload, config["data_protocol"])
     for parameter in model.parameters():
         parameter.requires_grad_(False)
     model.eval()
@@ -358,13 +360,14 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
             totals += float(losses["total"].detach())
         print(f"stage2 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage2_ckpt"], model, optimizer, epoch + 1, stage="stage2")
+        save_checkpoint(config["paths"]["stage2_ckpt"], model, optimizer, epoch + 1, stage="stage2", data_protocol=config["data_protocol"])
     
 
 
 def _load_stage2(config: dict[str, Any], device: torch.device) -> Stage2Model:
     model = Stage2Model(config).to(device)
-    load_checkpoint(config["paths"]["stage2_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    payload = load_checkpoint(config["paths"]["stage2_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    require_training_protocol(payload, config["data_protocol"])
     return model
 
 
@@ -397,12 +400,13 @@ def _stage3(config: dict[str, Any], device: torch.device) -> None:
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
             totals += float(losses["total"].detach())
         print(f"stage3 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage3_ckpt"], model, optimizer, epoch + 1, stage="stage3")
+        save_checkpoint(config["paths"]["stage3_ckpt"], model, optimizer, epoch + 1, stage="stage3", data_protocol=config["data_protocol"])
 
 
 def _load_stage3(config: dict[str, Any], device: torch.device, stage2: Stage2Model) -> Stage3Model:
     model = Stage3Model(config, stage2).to(device)
-    load_checkpoint(config["paths"]["stage3_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    payload = load_checkpoint(config["paths"]["stage3_ckpt"], model, map_location=device, strict=True, expected_architecture_version=6)
+    require_training_protocol(payload, config["data_protocol"])
     return model
 
 
@@ -430,7 +434,7 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
             totals += float(losses["total"].detach())
         print(f"stage4 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage4_ckpt"], model, optimizer, epoch + 1, stage="stage4")
+        save_checkpoint(config["paths"]["stage4_ckpt"], model, optimizer, epoch + 1, stage="stage4", data_protocol=config["data_protocol"])
 
 
 def main() -> None:
@@ -440,6 +444,7 @@ def main() -> None:
     parser.add_argument("--pipeline", action="store_true", help="Run stages 1-4 sequentially after contract checks")
     args = parser.parse_args()
     config = load_yaml(args.config)
+    config["data_protocol"] = audit_config(config["data"])
     seed_everything(int(config.get("seed", 42)))
     device = _device(config)
     _configure_torch(config, device)

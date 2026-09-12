@@ -49,7 +49,7 @@ audio/mouth event correlation >= 0.10
 
 v3 的数据契约：音频特征保留 native audio frame timeline，DTW 前不把音频重采样到 motion 长度；path 在 native audio 坐标中计算；再通过 path 把源 motion、audio、content 和 affect 映射到 canonical neutral motion timeline。路径使用 repeat penalty，并保存长度、覆盖、重复率、局部 slope、cost 和事件粗筛指标。`ok` 只表示通过路径几何 gate；保存的两通道 audio proxy 相关性不作为最终硬 gate。`review` 不进入逐帧 Stage1/Stage2 teacher，最多低权重用于统计或干预训练。
 
-release builder 为 [scripts/build_aligned_dtw_v3.py](../scripts/build_aligned_dtw_v3.py)。根目录的旧 prototype 仍禁止用于训练；release builder 只写新目录。在全量质量 gate 通过前，不切换训练配置，不启动 Stage1–Stage4 重训。
+release builder 为 [scripts/build_aligned_dtw_v3.py](../scripts/build_aligned_dtw_v3.py)，只写独立的新目录。在全量质量 gate 通过前，不切换训练配置，不启动 Stage1–Stage4 重训。
 
 ### 2026-09-10 数据入口与全量审计结果
 
