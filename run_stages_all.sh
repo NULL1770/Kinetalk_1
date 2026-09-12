@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd /root/autodl-tmp/kinetalk_b0_residual_train
-PYTHON=/root/miniconda3/bin/python
-CONFIG=configs/train.yaml
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT_DIR"
+PYTHON="${PYTHON:-python}"
+CONFIG="${CONFIG:-configs/train.yaml}"
 mkdir -p logs outputs_b0_residual
 
 echo "[$(date '+%F %T')] pipeline started"

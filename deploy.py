@@ -26,10 +26,10 @@ from pathlib import Path
 import paramiko
 
 
-HOST = "connect.nmb1.seetacloud.com"
-PORT = 31948
-USER = "root"
-REMOTE_ROOT = "/root/autodl-tmp/kinetalk_b0_residual_train"
+HOST = os.environ.get("KINETALK_SSH_HOST", "connect.nmb1.seetacloud.com")
+PORT = int(os.environ.get("KINETALK_SSH_PORT", "11473"))
+USER = os.environ.get("KINETALK_SSH_USER", "root")
+REMOTE_ROOT = os.environ.get("KINETALK_REMOTE_ROOT", "/root/autodl-tmp/kinetalk_b0_residual_train")
 LOCAL_ROOT = Path(__file__).resolve().parent
 
 MODIFIED_FILES = [
