@@ -325,7 +325,7 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                         )
                         positive_style_residual = positive["motion"] - positive_stage1["b0"]
                     positive_factors = model.encode_factors(
-                        positive["residual_gt"],
+                        positive_style_residual,
                         positive["residual_mask"],
                         positive.get("audio_emotion", positive.get("audio")),
                         style_residual=positive_style_residual,
@@ -344,7 +344,7 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                             )
                             negative_style_residual = negative["motion"] - negative_stage1["b0"]
                         negative_factors = model.encode_factors(
-                            negative["residual_gt"],
+                            negative_style_residual,
                             negative["residual_mask"],
                             negative.get("audio_emotion", negative.get("audio")),
                             style_residual=negative_style_residual,
