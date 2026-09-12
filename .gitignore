@@ -1,0 +1,41 @@
+# Python and editor artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.vscode/
+
+# Local environments and temporary files
+.venv/
+venv/
+env/
+tmp/
+*.log
+*.tmp
+
+# Training outputs and checkpoints
+outputs*/
+checkpoints*/
+*.pt
+*.pth
+*.ckpt
+
+# Local datasets and generated artifacts
+artifacts/*
+artifacts/mead_media_v1/
+artifacts/*.tar
+artifacts/*.tar.zst
+artifacts/blender/_semantic_latest/
+artifacts/blender/_semantic_stage4_latest/
+artifacts/*/pairs/
+
+# Machine-specific generated reports
+stage4_disentanglement_evaluation.csv
+findings.md
+progress.md
+task_plan.md
+
+# OS files
+Thumbs.db
+.DS_Store

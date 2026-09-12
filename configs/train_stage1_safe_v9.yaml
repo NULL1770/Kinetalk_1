@@ -1,0 +1,49 @@
+seed: 42
+device: cuda
+amp: true
+amp_dtype: bfloat16
+data:
+  manifest: /root/autodl-tmp/kinetalk_data/processed/safe_supervision_v1/teacher_manifest_gated.jsonl
+  val_manifest: /root/autodl-tmp/kinetalk_data/processed/safe_supervision_v1/teacher_manifest_gated.jsonl
+  stage1_manifest: /root/autodl-tmp/kinetalk_data/processed/safe_supervision_v1/teacher_manifest_gated.jsonl
+  stage1_target_root: /root/autodl-tmp/kinetalk_data/processed/stage1_canonical_neutral_v1
+  aligned_dtw_root: /root/autodl-tmp/kinetalk_data/processed/aligned_dtw_v3_hubert_strict
+  window: 96
+  stage1_random_crop: true
+  motion_dim: 52
+  content_dim: 768
+  neutral_output_indices: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 51]
+  num_workers: 4
+  batch_size: 16
+model:
+  articulatory_indices: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+  prototype_count: 128
+  prototype_span: 5
+  prototype_ema_decay: 0.99
+  prototype_residual_limit: 0.25
+  stage1_output_activation: linear
+  content_dim: 128
+  hidden_dim: 192
+  heads: 6
+  dropout: 0.1
+optim:
+  lr: 0.0003
+  weight_decay: 0.00001
+  stage1_epochs: 20
+  grad_clip: 1.0
+loss:
+  stage1_velocity: 0.2
+  stage1_acceleration: 0.1
+  stage1_active_weight: 1.0
+  stage1_prototype_weight: 1.0
+  stage1_envelope_weight: 0.1
+  stage1_alignment_weight: 0.1
+  stage1_art_probe_weight: 0.1
+  stage1_art_contrastive_weight: 0.1
+  stage1_art_temperature: 0.1
+  stage1_cross_emotion_start_epoch: 5
+  stage1_art_start_epoch: 10
+paths:
+  output_dir: outputs_b0_residual
+  stage1_epoch_ckpt_dir: outputs_b0_residual/stage1_epochs_safe_v9
+  stage1_ckpt: outputs_b0_residual/stage1_neutral_safe_v9_20.pt
