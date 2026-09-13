@@ -223,6 +223,7 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                     query_residual, query["residual_mask"],
                     query.get("audio_emotion", query.get("audio")),
                     style_residual=query_style_residual,
+                    emotion_residual=query_residual - neutral_style_residual,
                 )
                 # The neutral paired view removes the labelled emotion signal;
                 # the raw emotional view preserves the deployment input contract.
@@ -422,9 +423,14 @@ def _stage3(config: dict[str, Any], device: torch.device) -> None:
             # predicted-B0 residual coordinate used by Stage2 and Stage4.
             with torch.no_grad():
                 query_stage1 = stage1(query["content"], query["mask"])
+                neutral = batch["neutral"]
+                neutral_stage1 = stage1(neutral["content"], neutral["mask"])
             with _autocast(config, device):
                 audio_factors = model(query["audio_emotion"], query["mask"])
-                teacher = model.teacher(query["motion"] - query_stage1["b0"], query["residual_mask"])
+                teacher = model.teacher(
+                    query["motion"] - query_stage1["b0"], query["residual_mask"],
+                    neutral_residual=neutral["motion"] - neutral_stage1["b0"],
+                )
                 losses = stage3_loss(
                     audio_factors,
                     teacher,
@@ -473,15 +479,17 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
                     stochastic=False,
                     local_emotion=self_conditions.get("local"),
                 )
+                generated_final = model.bounded_motion(self_conditions["b0_pred"], generated_residual)
                 with torch.no_grad():
                     target_emotion = {
                         "global": self_conditions["global"].detach(),
                         "local": self_conditions["local"].detach(),
                     }
                     target_style = self_conditions["style"].detach()
+                generated_effective_residual = generated_final - self_conditions["b0_pred"]
                 generated_factors = {
-                    **model.factor_emotion(generated_residual, batch["query"]["mask"]),
-                    "style": model.factor_style(generated_residual, batch["query"]["mask"], None),
+                    **model.factor_emotion(generated_effective_residual, batch["query"]["mask"]),
+                    "style": model.factor_style(generated_effective_residual, batch["query"]["mask"], None),
                 }
                 losses = stage4_loss(
                     flow_pred,
@@ -491,6 +499,15 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
                     target_factors={**target_emotion, "style": target_style},
                     factor_weight=float(loss_cfg.get("stage4_factor_consistency", 0.1)),
                 )
+                # A direct self target anchors the deployment renderer to the
+                # frozen B0 baseline; the flow objective alone can drift in
+                # residual coordinates and hurt fidelity.
+                valid = batch["query"]["mask"].unsqueeze(-1).to(generated_final.dtype)
+                self_recon = (torch.nn.functional.smooth_l1_loss(
+                    generated_final, batch["query"]["motion"], reduction="none", beta=0.03
+                ) * valid).sum() / valid.sum().clamp_min(1.0)
+                losses["self_reconstruction"] = self_recon
+                losses["total"] = losses["total"] + float(loss_cfg.get("stage4_self_reconstruction", 1.0)) * self_recon
                 # Cross-style intervention has no unique framewise target.
                 # It is supervised only by factor preservation, style donor
                 # recovery, and target mouth/content timing.
@@ -503,10 +520,11 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
                     stochastic=False,
                     local_emotion=cross_conditions.get("local"),
                 )
-                cross_final = cross_conditions["b0_pred"] + cross_residual
+                cross_final = model.bounded_motion(cross_conditions["b0_pred"], cross_residual)
+                cross_effective_residual = cross_final - cross_conditions["b0_pred"]
                 cross_factors = {
-                    **model.factor_emotion(cross_residual, batch["query"]["mask"]),
-                    "style": model.factor_style(cross_residual, batch["query"]["mask"], None),
+                    **model.factor_emotion(cross_effective_residual, batch["query"]["mask"]),
+                    "style": model.factor_style(cross_effective_residual, batch["query"]["mask"], None),
                 }
                 cross_target = {
                     "global": self_conditions["global"].detach(),

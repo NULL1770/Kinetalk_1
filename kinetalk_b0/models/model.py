@@ -155,8 +155,11 @@ class Stage2Model(nn.Module):
         """Motion-only execution-style encoder used by the renderer."""
         return self.style_encoder
 
-    def encode_factors(self, residual: torch.Tensor, mask: torch.Tensor | None, reference_audio: torch.Tensor | None = None, *, style_residual: torch.Tensor | None = None) -> dict[str, torch.Tensor]:
-        emotion = self.emotion(residual, mask)
+    def encode_factors(self, residual: torch.Tensor, mask: torch.Tensor | None, reference_audio: torch.Tensor | None = None, *, style_residual: torch.Tensor | None = None, emotion_residual: torch.Tensor | None = None) -> dict[str, torch.Tensor]:
+        # Affect is estimated from the emotion-minus-neutral residual when a
+        # paired neutral view is available. Style still sees the raw residual
+        # so the deployment reference contract remains unchanged.
+        emotion = self.emotion(residual if emotion_residual is None else emotion_residual, mask)
         emotion["style"] = self.style_encoder(residual if style_residual is None else style_residual, mask, reference_audio)
         emotion["style_emotion_probe_logits"] = self.style_emotion_probe(self.style_grl(emotion["style"]))
         emotion["style_content_probe"] = self.style_content_probe(self.style_grl(emotion["style"]))
@@ -232,6 +235,11 @@ class Stage3Model(nn.Module):
         self.teacher_emotion = stage2.emotion
         self.renderer = stage2.renderer
         self.residual_scale = stage2.residual_scale
+        self.logit_residual_bound = float(model.get("stage4_logit_residual_bound", 0.35))
+        self.max_residual_gate = float(model.get("stage4_max_residual_gate", 0.6))
+        init_gate = float(model.get("stage4_initial_residual_gate", 0.10))
+        init_gate = min(max(init_gate, 1e-4), self.max_residual_gate - 1e-4)
+        self.residual_gate_logit = nn.Parameter(torch.tensor(torch.logit(torch.tensor(init_gate / self.max_residual_gate))))
         freeze_module(self.teacher_emotion)
         freeze_module(self.renderer)
 
@@ -247,13 +255,15 @@ class Stage3Model(nn.Module):
         reference_audio: torch.Tensor | None = None,
         reference_style_audio: torch.Tensor | None = None,
         style_residual: torch.Tensor | None = None,
+        neutral_residual: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor]:
         """Frozen Stage-2 factors as the audio distillation target.
 
         The teacher provides only global emotion and intensity targets.
         """
         with torch.no_grad():
-            factors = self.teacher_emotion(residual_gt, mask)
+            affect = residual_gt if neutral_residual is None else residual_gt - neutral_residual
+            factors = self.teacher_emotion(affect, mask)
         return factors
 
     def render_closure(
@@ -283,7 +293,7 @@ class Stage4Model(nn.Module):
     def __init__(self, cfg: dict[str, Any], stage1: Stage1Model, stage2: Stage2Model, stage3: Stage3Model):
         super().__init__()
         model = cfg["model"]
-        self.register_buffer("architecture_version", torch.tensor(8))
+        self.register_buffer("architecture_version", torch.tensor(9))
         self.stage1 = stage1
         self.factor_emotion = stage2.emotion
         self.factor_style = stage2.style
@@ -310,6 +320,20 @@ class Stage4Model(nn.Module):
         for name, parameter in self.renderer.named_parameters():
             if any(key in name for key in ("modulation", "style_modulation", "local_emotion")):
                 parameter.requires_grad_(True)
+        self.residual_gate_logit.requires_grad_(True)
+
+    def bounded_motion(self, b0: torch.Tensor, raw_residual: torch.Tensor) -> torch.Tensor:
+        """Map residual around B0 with asymmetric bounds, guaranteeing [0,1].
+
+        Unlike a plain ``B0 + residual``, the positive/negative room is
+        data-dependent: a zero upper-face B0 channel can only move upward,
+        while an already-active channel cannot cross either endpoint.
+        """
+        gate = self.max_residual_gate * torch.sigmoid(self.residual_gate_logit)
+        normalized = torch.tanh(raw_residual / max(self.residual_scale, 1e-6))
+        room = torch.where(normalized >= 0.0, 1.0 - b0, b0)
+        delta = gate * self.logit_residual_bound * normalized * room
+        return (b0 + delta).clamp(0.0, 1.0)
 
     def conditions(
         self,
@@ -402,5 +426,6 @@ class Stage4Model(nn.Module):
             stochastic=stochastic,
             local_emotion=conditions.get("local"),
         )
-        return conditions["b0_pred"] + residual, residual
+        final = self.bounded_motion(conditions["b0_pred"], residual)
+        return final, residual
 

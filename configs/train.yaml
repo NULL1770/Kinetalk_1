@@ -49,7 +49,12 @@ model:
   # Style must not see audio_emotion: those channels contain emotion teacher
   # and affect features and otherwise create a direct emotion shortcut.
   style_use_audio_hint: false
-  style_grl_lambda: 0.5
+  # Keep Style speaker-discriminative while making the emotion nuisance
+  # adversary gentle enough not to erase upper-face execution cues.
+  style_grl_lambda: 0.15
+  stage4_logit_residual_bound: 0.35
+  stage4_max_residual_gate: 0.6
+  stage4_initial_residual_gate: 0.10
   global_condition_dropout: 0.1
   style_condition_dropout: 0.1
 optim:
@@ -78,6 +83,8 @@ loss:
   stage2_style_triplet_margin: 0.2
   stage2_style_cross_emotion: 0.5
   stage2_style_view_consistency: 0.5
+  # Affect teacher uses emotional residual minus paired neutral residual.
+  stage2_affect_residual: true
   stage3_global: 1.0
   stage3_local: 1.0
   stage3_classification: 1.0
@@ -87,6 +94,7 @@ loss:
   # subordinate to self reconstruction while preserving affect/style factors
   # and lower-face timing.
   stage4_cross_style: 0.25
+  stage4_self_reconstruction: 1.0
 paths:
   output_dir: outputs_protocol_v1
   stage1_ckpt: outputs_protocol_v1/stage1_neutral.pt
