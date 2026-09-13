@@ -20,7 +20,7 @@ from torch.utils.data import DataLoader, Dataset
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from kinetalk_b0.data import B0ResidualDataset
-from kinetalk_b0.models import Stage2Model
+from kinetalk_b0.models import Stage1Model, Stage2Model
 from kinetalk_b0.utils import load_checkpoint, load_yaml, seed_everything
 
 
@@ -45,7 +45,7 @@ class QueryNeutralDataset(Dataset):
         return {
             key: query[key]
             for key in (
-                "residual_gt", "residual_mask", "audio_emotion", "emotion_id",
+                "content", "motion", "mask", "residual_mask", "audio_emotion", "emotion_id",
                 "intensity_id", "speaker", "sentence_id", "clip_id",
             )
         }
@@ -93,7 +93,7 @@ def load_style(cfg, checkpoint, device, audio_hint=None):
 
 
 @torch.inference_mode()
-def extract(dataset, models, args, device, split):
+def extract(dataset, models, stage1, args, device, split):
     indices = sample_indices(dataset, args.per_emotion, args.seed)
     loader = DataLoader(
         QueryNeutralDataset(dataset, indices), batch_size=args.batch_size,
@@ -108,7 +108,9 @@ def extract(dataset, models, args, device, split):
         skipped += int((~keep).sum().item())
         if not keep.any():
             continue
-        residual = batch["residual_gt"].to(device)[keep]
+        with torch.no_grad():
+            b0 = stage1(batch["content"].to(device)[keep], batch["mask"].to(device)[keep])["b0"]
+        residual = batch["motion"].to(device)[keep] - b0
         audio = batch["audio_emotion"].to(device)[keep]
         valid = keep.cpu().numpy().astype(bool)
         for name, model in models.items():
@@ -296,6 +298,9 @@ def main():
     device = torch.device(args.device)
     cfg = load_yaml(args.config)
     models, model_info = {}, {}
+    stage1 = Stage1Model(cfg)
+    load_checkpoint(cfg["paths"]["stage1_ckpt"], stage1, map_location="cpu", strict=True)
+    stage1.to(device).eval()
     models["current"], model_info["current"] = load_style(cfg, args.checkpoint, device)
     if args.baseline_checkpoint:
         models["baseline"], model_info["baseline"] = load_style(
@@ -311,7 +316,7 @@ def main():
             unavailable[split] = str(error)
             print(f"split {split} unavailable: {error}", flush=True)
             continue
-        features[split], splits[split] = extract(dataset, models, args, device, split)
+        features[split], splits[split] = extract(dataset, models, stage1, args, device, split)
     if args.feature_cache:
         cache_path = Path(args.feature_cache)
         cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -322,7 +327,7 @@ def main():
     report = {
         "protocol_version": 1, "model_checkpoints": model_info,
         "arguments": vars(args), "splits": splits, "unavailable_splits": unavailable,
-        "canonical_style_input": "query_motion - channel_mask * neutral_GT; intersect query/neutral valid masks; center crop",
+        "canonical_style_input": "query_motion - Stage1_predicted_B0; intersect query/neutral valid masks; center crop",
         "probe": "fresh independent CPU linear multinomial logistic regression; train-only standardization; inverse-count CE; fixed ridge; no tuning on evaluation labels",
         "caveats": [
             "High emotion predictability establishes linearly accessible leakage; a low linear probe does not establish full independence.",

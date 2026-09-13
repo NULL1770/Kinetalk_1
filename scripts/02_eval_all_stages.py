@@ -125,8 +125,9 @@ def main() -> None:
             b0_mae = _masked_mae(q_out["b0"], query["b0_gt"], query["mask"])
             _add(metrics, "stage1_b0_mae", b0_mae)
 
-            factors = stage2.encode_factors(query["residual_gt"], query["residual_mask"], query.get("audio_emotion", query.get("audio")))
-            flow_pred, flow_target = stage2.flow_prediction(query["residual_gt"], q_out["h0"], factors, query["residual_mask"])
+            predicted_residual = query["motion"] - q_out["b0"]
+            factors = stage2.encode_factors(predicted_residual, query["residual_mask"], query.get("audio_emotion", query.get("audio")))
+            flow_pred, flow_target = stage2.flow_prediction(predicted_residual, q_out["h0"], factors, query["residual_mask"])
             _add(metrics, "stage2_flow_rmse", _masked_rmse(flow_pred, flow_target, query["residual_mask"]))
             _add(metrics, "stage2_emotion_acc", (factors["emotion_logits"].argmax(-1) == query["emotion_id"]).float().mean())
             _add(metrics, "stage2_intensity_acc", (factors["intensity_logits"].argmax(-1) == query["intensity_id"]).float().mean())
@@ -136,12 +137,12 @@ def main() -> None:
                 query["mask"],
                 steps=render_steps,
             )
-            _add(metrics, "stage2_render_residual_mae", _masked_mae(stage2_render, query["residual_gt"], query["residual_mask"]))
+            _add(metrics, "stage2_render_residual_mae", _masked_mae(stage2_render, predicted_residual, query["residual_mask"]))
             _add(metrics, "stage2_render_final_mae", _masked_mae(stage2_render + query["b0_gt"], query["motion"], query["mask"]))
 
             audio = stage3(query["audio_emotion"], query["mask"])
             teacher = stage3.teacher(
-                query["residual_gt"],
+                predicted_residual,
                 query["residual_mask"],
                 reference_audio=query.get("audio_emotion", query.get("audio")),
             )
@@ -169,10 +170,11 @@ def main() -> None:
             re_encoded_pairs: list[tuple[torch.Tensor, torch.Tensor]] = []
             ref = batch["style_reference"]
             for ref_shift in (1, 2):
-                if ref["residual_gt"].shape[0] <= ref_shift:
+                if ref["motion"].shape[0] <= ref_shift:
                     continue
+                ref_stage1 = stage1(ref["content"][ref_shift:ref_shift+1], ref["mask"][ref_shift:ref_shift+1])
                 donor = stage2.encode_factors(
-                    ref["residual_gt"][ref_shift:ref_shift+1], ref["residual_mask"][ref_shift:ref_shift+1],
+                    ref["motion"][ref_shift:ref_shift+1] - ref_stage1["b0"], ref["residual_mask"][ref_shift:ref_shift+1],
                     ref.get("audio_emotion", ref.get("audio"))[ref_shift:ref_shift+1]
                 )["style"].expand(query["motion"].shape[0], -1)
                 c = dict(conditions); c["style"] = donor

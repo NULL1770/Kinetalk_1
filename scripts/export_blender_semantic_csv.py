@@ -135,7 +135,8 @@ def main() -> None:
         style_swap, _ = stage4.render(donor_batch, stage4.conditions(donor_batch), steps=steps, stochastic=False)
         q_audio = stage3(q['audio_emotion'], q['mask'])
         a_audio = stage3(a['audio_emotion'], a['mask'])
-        style = stage2.encode_factors(q['residual_gt'], q['residual_mask'], q['audio_emotion'])['style']
+        q_b0 = stage1(q['content'], q['mask'])['b0']
+        style = stage2.encode_factors(q['motion'] - q_b0, q['residual_mask'], q['audio_emotion'])['style']
         conditions = stage4.conditions(base_batch)
         emotion_conditions = dict(conditions)
         emotion_conditions['global'] = a_audio['global']

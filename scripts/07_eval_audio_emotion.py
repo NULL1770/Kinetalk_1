@@ -49,7 +49,7 @@ class QueryNeutralDataset(Dataset):
         neutral = self.base._read(self.base.items[neutral_index], start=query["crop_start"])
         self.base._attach_targets(query, neutral, neutral_valid)
         return {key: query[key] for key in (
-            "audio_emotion", "mask", "residual_gt", "residual_mask", "emotion_id", "intensity_id"
+            "audio_emotion", "content", "motion", "mask", "residual_mask", "emotion_id", "intensity_id"
         )}
 
 
@@ -136,7 +136,7 @@ def dataset_metadata(dataset: B0ResidualDataset, indices: list[int]) -> dict[str
 
 
 @torch.inference_mode()
-def evaluate(loader: DataLoader, stage2: Stage2Model, stage3: Stage3Model,
+def evaluate(loader: DataLoader, stage1: Stage1Model, stage2: Stage2Model, stage3: Stage3Model,
              names: list[str], levels: int, device: torch.device, split: str) -> dict[str, Any]:
     saved: dict[str, list[torch.Tensor]] = defaultdict(list)
     seen, excluded, last_print = 0, 0, 0
@@ -148,7 +148,9 @@ def evaluate(loader: DataLoader, stage2: Stage2Model, stage3: Stage3Model,
             continue
         batch = {key: value[valid] for key, value in batch.items()}
         audio = stage3(batch["audio_emotion"], batch["mask"])
-        teacher = stage2.emotion(batch["residual_gt"], batch["residual_mask"])
+        with torch.no_grad():
+            b0 = stage1(batch["content"], batch["mask"])["b0"]
+        teacher = stage2.emotion(batch["motion"] - b0, batch["residual_mask"])
         for prefix, factors in (("stage3", audio), ("stage2", teacher)):
             for label in ("emotion", "intensity"):
                 logits = factors[f"{label}_logits"]
@@ -218,6 +220,9 @@ def main() -> None:
     seed_everything(seed)
     torch.set_num_threads(min(torch.get_num_threads(), 4))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    stage1 = Stage1Model(cfg)
+    checkpoint_info(Path(cfg["paths"]["stage1_ckpt"]), stage1)
+    stage1.to(device).eval()
     stage2 = Stage2Model(cfg)
     stage2_info = checkpoint_info(Path(cfg["paths"]["stage2_ckpt"]), stage2)
     # This separate instance ensures loading Stage3 cannot mutate `stage2`.
@@ -276,7 +281,7 @@ def main() -> None:
         loader = DataLoader(QueryNeutralDataset(datasets[split], selected[split]),
                             batch_size=args.batch_size, shuffle=False, num_workers=args.workers,
                             pin_memory=device.type == "cuda", persistent_workers=False)
-        result = evaluate(loader, stage2, stage3, list(cfg["data"]["emotion_classes"]),
+        result = evaluate(loader, stage1, stage2, stage3, list(cfg["data"]["emotion_classes"]),
                           int(cfg["data"]["num_intensity_levels"]), device, split)
         report["results"][split] = result
         split_report = {key: value for key, value in report.items() if key != "results"}
