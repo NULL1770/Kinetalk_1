@@ -22,6 +22,7 @@ from kinetalk_b0.losses import (
     style_view_consistency_loss,
     stage3_loss,
     stage4_loss,
+    stage4_cross_style_loss,
     stage1_clean_loss,
 )
 from kinetalk_b0.models import Stage1Model, Stage2Model, Stage3Model, Stage4Model
@@ -205,9 +206,16 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                 query_stage1 = stage1(
                     query["content"], query["mask"],
                 )
+                neutral = batch["neutral"]
+                neutral_stage1 = stage1(neutral["content"], neutral["mask"])
                 h0 = query_stage1["h0"]
                 query_residual = query["motion"] - query_stage1["b0"]
-                neutral_style_residual = query["b0_gt"] - query_stage1["b0"]
+                # Use the aligned neutral clip's full-face motion for the
+                # auxiliary Style view.  `b0_gt` is intentionally lower-face
+                # only (upper-face channels are zero), so using it here would
+                # erase eye/brow/cheek execution style from the consistency
+                # target.
+                neutral_style_residual = neutral["motion"] - neutral_stage1["b0"]
                 neutral_valid = batch["relations"]["neutral"]
                 query_style_residual = query_residual
             with _autocast(config, device):
@@ -221,8 +229,8 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                 # Matching their style codes is the single cross-view disentangling
                 # objective, rather than another unconstrained style subspace.
                 neutral_style_factors = model.encode_factors(
-                    neutral_style_residual, query["residual_mask"],
-                    query.get("audio_emotion", query.get("audio")),
+                    neutral_style_residual, neutral["mask"],
+                    neutral.get("audio_emotion", neutral.get("audio")),
                     style_residual=neutral_style_residual,
                 )
                 flow_prediction, flow_target = model.flow_prediction(query_residual, h0, factors, query["residual_mask"])
@@ -270,7 +278,12 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                     # emotion/content while the style encoder receives reversed
                     # gradients and is discouraged from carrying those signals.
                     losses["style_probe"] = style_probe_loss(factors, query["emotion_id"], query["content"])
-                    losses["total"] = losses["total"] + probe_weight * losses["style_probe"]
+                    # Apply the same nuisance-removal pressure to the paired
+                    # neutral view.  The label is the source clip emotion;
+                    # through GRL this discourages either view from encoding
+                    # that nuisance coordinate in Style.
+                    losses["neutral_style_probe"] = style_probe_loss(neutral_style_factors, query["emotion_id"], query["content"])
+                    losses["total"] = losses["total"] + probe_weight * (losses["style_probe"] + losses["neutral_style_probe"]) * 0.5
                 emotion_factors = None
                 if bool(batch["relations"]["emotion"].any()):
                     with torch.no_grad():
@@ -449,22 +462,23 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
         for batch in loader:
             batch = move_to_device(batch, device)
             with _autocast(config, device):
-                conditions = model.conditions(batch, training_target=True)
-                flow_pred, flow_target, _ = model.flow_prediction(batch, conditions)
+                # Self-style reconstruction has a valid framewise target.
+                self_conditions = model.conditions(batch, training_target=True, style_mode="self")
+                flow_pred, flow_target, _ = model.flow_prediction(batch, self_conditions)
                 generated_residual = model.renderer.decode(
-                    conditions["h0"], conditions["global"], conditions["intensity_value"],
-                    conditions["style"], batch["query"]["mask"],
+                    self_conditions["h0"], self_conditions["global"], self_conditions["intensity_value"],
+                    self_conditions["style"], batch["query"]["mask"],
                     residual_scale=model.residual_scale,
                     steps=int(config["model"].get("render_steps", 4)),
                     stochastic=False,
-                    local_emotion=conditions.get("local"),
+                    local_emotion=self_conditions.get("local"),
                 )
                 with torch.no_grad():
                     target_emotion = {
-                        "global": conditions["global"].detach(),
-                        "local": conditions["local"].detach(),
+                        "global": self_conditions["global"].detach(),
+                        "local": self_conditions["local"].detach(),
                     }
-                    target_style = conditions["style"].detach()
+                    target_style = self_conditions["style"].detach()
                 generated_factors = {
                     **model.factor_emotion(generated_residual, batch["query"]["mask"]),
                     "style": model.factor_style(generated_residual, batch["query"]["mask"], None),
@@ -477,6 +491,35 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
                     target_factors={**target_emotion, "style": target_style},
                     factor_weight=float(loss_cfg.get("stage4_factor_consistency", 0.1)),
                 )
+                # Cross-style intervention has no unique framewise target.
+                # It is supervised only by factor preservation, style donor
+                # recovery, and target mouth/content timing.
+                cross_conditions = model.conditions(batch, training_target=True, style_mode="cross")
+                cross_residual = model.renderer.decode(
+                    cross_conditions["h0"], cross_conditions["global"], cross_conditions["intensity_value"],
+                    cross_conditions["style"], batch["query"]["mask"],
+                    residual_scale=model.residual_scale,
+                    steps=int(config["model"].get("render_steps", 4)),
+                    stochastic=False,
+                    local_emotion=cross_conditions.get("local"),
+                )
+                cross_final = cross_conditions["b0_pred"] + cross_residual
+                cross_factors = {
+                    **model.factor_emotion(cross_residual, batch["query"]["mask"]),
+                    "style": model.factor_style(cross_residual, batch["query"]["mask"], None),
+                }
+                cross_target = {
+                    "global": self_conditions["global"].detach(),
+                    "local": self_conditions["local"].detach(),
+                    "style": cross_conditions["style"].detach(),
+                }
+                cross = stage4_cross_style_loss(
+                    cross_factors, cross_target, cross_final, batch["query"]["motion"],
+                    batch["query"]["mask"],
+                    mouth_indices=config["data"].get("neutral_output_indices", []),
+                )
+                losses["cross_style"] = cross
+                losses["total"] = losses["total"] + float(loss_cfg.get("stage4_cross_style", 0.25)) * cross
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
             totals += float(losses["total"].detach())
         print(f"stage4 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)

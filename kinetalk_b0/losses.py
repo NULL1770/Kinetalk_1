@@ -297,3 +297,41 @@ def stage4_loss(
         result["total"] = total + factor_weight * factor
     return result
 
+
+def stage4_cross_style_loss(
+    generated_factors: dict[str, torch.Tensor],
+    target_factors: dict[str, torch.Tensor],
+    generated_motion: torch.Tensor,
+    target_motion: torch.Tensor,
+    mask: torch.Tensor,
+    *,
+    mouth_indices: list[int] | tuple[int, ...],
+) -> torch.Tensor:
+    """Supervise a cross-style intervention without a false frame target.
+
+    The donor style is counterfactual, so generated motion is not compared to
+    the query motion with an absolute framewise loss.  Only the requested
+    emotion, donor style, and lower-face temporal direction are constrained.
+    """
+    global_loss = 1.0 - F.cosine_similarity(
+        generated_factors["global"], target_factors["global"].detach(), dim=-1
+    ).mean()
+    local_loss = F.smooth_l1_loss(generated_factors["local"], target_factors["local"].detach())
+    style_loss = 1.0 - F.cosine_similarity(
+        generated_factors["style"], target_factors["style"].detach(), dim=-1
+    ).mean()
+    indices = [int(i) for i in mouth_indices]
+    if len(indices) < 1 or generated_motion.shape[1] < 2:
+        timing_loss = generated_motion.new_zeros(())
+    else:
+        generated_velocity = torch.diff(generated_motion[..., indices], dim=1)
+        target_velocity = torch.diff(target_motion[..., indices], dim=1)
+        velocity_mask = mask[:, 1:] & mask[:, :-1]
+        # Compare direction/activation timing, while allowing style to change
+        # the absolute mouth amplitude.
+        generated_velocity = F.normalize(generated_velocity, dim=-1, eps=1e-4)
+        target_velocity = F.normalize(target_velocity, dim=-1, eps=1e-4)
+        cosine = (generated_velocity * target_velocity).sum(dim=-1)
+        timing_loss = ((1.0 - cosine) * velocity_mask.to(cosine.dtype)).sum() / velocity_mask.sum().clamp_min(1).to(cosine.dtype)
+    return global_loss + local_loss + style_loss + timing_loss
+

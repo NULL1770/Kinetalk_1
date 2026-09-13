@@ -311,7 +311,13 @@ class Stage4Model(nn.Module):
             if any(key in name for key in ("modulation", "style_modulation", "local_emotion")):
                 parameter.requires_grad_(True)
 
-    def conditions(self, batch: dict[str, Any], *, training_target: bool = False) -> dict[str, torch.Tensor]:
+    def conditions(
+        self,
+        batch: dict[str, Any],
+        *,
+        training_target: bool = False,
+        style_mode: str = "deployment",
+    ) -> dict[str, torch.Tensor]:
         query = batch["query"]
         reference = batch["style_reference"]
         # A framewise flow target is valid only when the style condition comes
@@ -323,9 +329,21 @@ class Stage4Model(nn.Module):
         # During Stage4 training use the same-sentence cross-emotion donor when
         # available. This makes audio emotion the causal source of emotion,
         # while the donor style is counterfactual.
+        if style_mode not in {"deployment", "self", "cross"}:
+            raise ValueError(f"Unknown Stage4 style mode: {style_mode}")
         donor = batch.get("emotion_pair") if training_target else reference
-        use_donor = training_target and donor is not None and bool(batch.get("relations", {}).get("emotion", torch.zeros(1, dtype=torch.bool)).any())
-        style_source = donor if use_donor else (query if training_target else reference)
+        use_donor = (
+            training_target
+            and style_mode == "cross"
+            and donor is not None
+            and bool(batch.get("relations", {}).get("emotion", torch.zeros(1, dtype=torch.bool)).any())
+        )
+        if training_target and style_mode == "self":
+            style_source = query
+        elif use_donor:
+            style_source = donor
+        else:
+            style_source = reference
         # Keep Stage-4 training on the same raw-reference residual contract as
         # deployment. Stage-2's paired neutral/emotional view constraint is
         # what removes the emotion shortcut from this input, rather than a

@@ -75,6 +75,31 @@ B0_target + target audio content + target audio affect + S_ref + noise
 - 固定目标音频和初始噪声，只替换 Style；检查口型时间保持、情感保持、动作幅度/速度/联动变化。
 - 固定 Style，只替换目标音频；检查内容、口型和情感随目标音频变化。
 
+#### Stage 4 training supervision
+
+Training separates a frame-valid self reconstruction path from a
+counterfactual cross-style path:
+
+1. **Self path:** query Style is used with the query residual as the
+   framewise flow-matching target. This is the primary fidelity objective.
+2. **Cross path:** a same-sentence emotion partner supplies donor Style. Since
+   the donor changes execution behavior, query motion is not a valid absolute
+   frame target. The loss only enforces target global/local affect, donor Style
+   recovery, and lower-face velocity direction/timing.
+
+The cross-style term is weighted below self reconstruction (`0.25` in the
+active config) so it cannot trade away the B0 mouth/content baseline.
+
+#### Paired neutral Style view
+
+Stage 2 encodes an aligned neutral view using
+`neutral_motion - Stage1(neutral_content)`. The neutral target is full-face
+motion; `b0_gt` is intentionally lower-face-only and has zero upper-face
+channels. Using `b0_gt - Stage1(query_content)` would therefore remove
+eye/brow/cheek execution style and make the Style consistency loss suppress
+those signals. Stage 1 remains lower-face-only; upper-face expression stays
+in the residual Style/affect branch.
+
 ## Planned code changes
 
 - 删除 Stage1 主训练中的 prototype assignment/reconstruction、bounded `B0_art` calibration 和 native attention 强制路径。

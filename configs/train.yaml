@@ -83,6 +83,10 @@ loss:
   stage3_classification: 1.0
   stage3_intensity: 0.5
   stage4_factor_consistency: 0.1
+  # Cross-style intervention has no unique framewise target; keep it
+  # subordinate to self reconstruction while preserving affect/style factors
+  # and lower-face timing.
+  stage4_cross_style: 0.25
 paths:
   output_dir: outputs_protocol_v1
   stage1_ckpt: outputs_protocol_v1/stage1_neutral.pt
