@@ -111,6 +111,8 @@ Mhat = sigmoid(zhat)
   输出上计算，避免把未约束 raw residual 当作最终 BS。
 - 配置默认 `style_grl_lambda=0.15`、`stage4_initial_residual_gate=0.10`、
   `stage4_max_residual_gate=0.6`、`stage4_self_reconstruction=1.0`。
+- self reconstruction 对有效帧和全部 52 个 BS 通道共同取均值。只按帧数
+  归一化会把该项放大约 52 倍，导致 Stage4 过度追逐重建并压制 Style 调制。
 
 ## 本地验证记录
 

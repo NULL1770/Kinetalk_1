@@ -235,6 +235,11 @@ class Stage3Model(nn.Module):
         self.teacher_emotion = stage2.emotion
         self.renderer = stage2.renderer
         self.residual_scale = stage2.residual_scale
+        # Compatibility shim for the first v2 Stage3 run, which briefly
+        # serialized the Stage4 gate before its constructor was corrected.
+        # It is frozen and unused; keeping the key lets that valid Stage3
+        # checkpoint remain loadable without retraining Stage3.
+        self.residual_gate_logit = nn.Parameter(torch.zeros(()), requires_grad=False)
         freeze_module(self.teacher_emotion)
         freeze_module(self.renderer)
 

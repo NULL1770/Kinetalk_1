@@ -505,7 +505,9 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
                 valid = batch["query"]["mask"].unsqueeze(-1).to(generated_final.dtype)
                 self_recon = (torch.nn.functional.smooth_l1_loss(
                     generated_final, batch["query"]["motion"], reduction="none", beta=0.03
-                ) * valid).sum() / valid.sum().clamp_min(1.0)
+                ) * valid).sum() / (
+                    valid.sum() * generated_final.shape[-1]
+                ).clamp_min(1.0)
                 losses["self_reconstruction"] = self_recon
                 losses["total"] = losses["total"] + float(loss_cfg.get("stage4_self_reconstruction", 1.0)) * self_recon
                 # Cross-style intervention has no unique framewise target.
