@@ -235,11 +235,6 @@ class Stage3Model(nn.Module):
         self.teacher_emotion = stage2.emotion
         self.renderer = stage2.renderer
         self.residual_scale = stage2.residual_scale
-        self.logit_residual_bound = float(model.get("stage4_logit_residual_bound", 0.35))
-        self.max_residual_gate = float(model.get("stage4_max_residual_gate", 0.6))
-        init_gate = float(model.get("stage4_initial_residual_gate", 0.10))
-        init_gate = min(max(init_gate, 1e-4), self.max_residual_gate - 1e-4)
-        self.residual_gate_logit = nn.Parameter(torch.tensor(torch.logit(torch.tensor(init_gate / self.max_residual_gate))))
         freeze_module(self.teacher_emotion)
         freeze_module(self.renderer)
 
@@ -300,6 +295,12 @@ class Stage4Model(nn.Module):
         self.audio_prior = stage3.audio
         self.renderer = stage3.renderer
         self.residual_scale = stage2.residual_scale
+        self.logit_residual_bound = float(model.get("stage4_logit_residual_bound", 0.35))
+        self.max_residual_gate = float(model.get("stage4_max_residual_gate", 0.6))
+        init_gate = float(model.get("stage4_initial_residual_gate", 0.10))
+        init_gate = min(max(init_gate, 1e-4), self.max_residual_gate - 1e-4)
+        gate_ratio = torch.tensor(init_gate / self.max_residual_gate, dtype=torch.float32)
+        self.residual_gate_logit = nn.Parameter(torch.logit(gate_ratio))
         # Stage 4 is a deployment adapter, not a second factor-learning
         # stage.  Global emotion and Stage-2 style coordinates stay frozen.
         self.global_calibrator = IdentityCalibrator(int(model["emotion_dim"]))
