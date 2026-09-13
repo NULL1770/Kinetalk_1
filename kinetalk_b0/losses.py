@@ -276,31 +276,15 @@ def stage4_loss(
     flow_prediction: torch.Tensor,
     flow_target: torch.Tensor,
     mask: torch.Tensor,
-    generated_factors: dict[str, torch.Tensor] | None = None,
-    target_factors: dict[str, torch.Tensor] | None = None,
-    *,
-    factor_weight: float = 0.0,
 ) -> dict[str, torch.Tensor]:
-    """Stage-4 flow matching plus optional factor-coordinate consistency."""
+    """Stage-4 flow matching in the real residual coordinate."""
     flow = masked_mse(flow_prediction, flow_target, mask)
-    total = flow
-    result = {"total": total, "flow": flow}
-    if generated_factors is not None and target_factors is not None and factor_weight > 0.0:
-        emotion = 1.0 - F.cosine_similarity(generated_factors["global"], target_factors["global"].detach(), dim=-1)
-        local = F.smooth_l1_loss(generated_factors["local"], target_factors["local"].detach())
-        style = 1.0 - F.cosine_similarity(generated_factors["style"], target_factors["style"].detach(), dim=-1)
-        factor = emotion.mean() + local + style.mean()
-        result["factor"] = factor
-        result["factor_emotion"] = emotion.mean()
-        result["factor_local"] = local
-        result["factor_style"] = style.mean()
-        result["total"] = total + factor_weight * factor
-    return result
+    return {"total": flow, "flow": flow}
 
 
 def stage4_cross_style_loss(
-    generated_factors: dict[str, torch.Tensor],
-    target_factors: dict[str, torch.Tensor],
+    generated_style: torch.Tensor,
+    target_style: torch.Tensor,
     generated_motion: torch.Tensor,
     target_motion: torch.Tensor,
     mask: torch.Tensor,
@@ -309,16 +293,15 @@ def stage4_cross_style_loss(
 ) -> torch.Tensor:
     """Supervise a cross-style intervention without a false frame target.
 
-    The donor style is counterfactual, so generated motion is not compared to
-    the query motion with an absolute framewise loss.  Only the requested
-    emotion, donor style, and lower-face temporal direction are constrained.
+    The donor Style is counterfactual, so generated motion has no absolute
+    framewise target. The two non-redundant constraints are donor-Style
+    recovery and query mouth timing. Affect is deliberately not re-encoded by
+    the frozen internal emotion encoder: self flow/reconstruction already
+    supervise the real query motion and are less prone to internal self-score
+    shortcuts.
     """
-    global_loss = 1.0 - F.cosine_similarity(
-        generated_factors["global"], target_factors["global"].detach(), dim=-1
-    ).mean()
-    local_loss = F.smooth_l1_loss(generated_factors["local"], target_factors["local"].detach())
     style_loss = 1.0 - F.cosine_similarity(
-        generated_factors["style"], target_factors["style"].detach(), dim=-1
+        generated_style, target_style.detach(), dim=-1
     ).mean()
     indices = [int(i) for i in mouth_indices]
     if len(indices) < 1 or generated_motion.shape[1] < 2:
@@ -333,5 +316,5 @@ def stage4_cross_style_loss(
         target_velocity = F.normalize(target_velocity, dim=-1, eps=1e-4)
         cosine = (generated_velocity * target_velocity).sum(dim=-1)
         timing_loss = ((1.0 - cosine) * velocity_mask.to(cosine.dtype)).sum() / velocity_mask.sum().clamp_min(1).to(cosine.dtype)
-    return global_loss + local_loss + style_loss + timing_loss
+    return style_loss + timing_loss
 

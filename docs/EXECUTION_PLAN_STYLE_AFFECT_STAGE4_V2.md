@@ -130,6 +130,62 @@ Mhat = sigmoid(zhat)
 5. 多 donor 的 upper-face execution statistics 可区分，Style swap 不破坏 mouth timing。
 6. 若声称大小眼/静态左右眼差异，必须先证明 neutral BS 存在跨 speaker 差异；否则需单独 geometry identity 分支。
 
+## 下一轮优化方案：Style 强度与 affect 可观测性
+
+### P0：先做可证伪诊断，不立即重训 Stage2/3
+
+固定同一个 query content/audio，使用两个不同 speaker 的 reference，扫描
+Style 插值 `alpha = 0, 0.25, 0.5, 1.0, 1.5`，记录输出对 Style 的 Jacobian/有限差分
+以及 upper/lower/mouth、左右不对称、速度统计。同步扫描 affect=zero、query affect
+和 donor affect。若 `Delta_style` 小而 `Delta_affect` 大，说明是 Renderer 使用不足；
+若 Style code 本身 speaker probe 低，才回到 Stage2。
+
+### P1：Stage4-only 的连续 Style intervention
+
+先修复训练语义而不是增加 loss：旧 `cross` 路径错误使用了同 speaker 的
+`emotion_pair`，无法教会跨 speaker Style 交换。新路径必须使用
+`style_reference` 作为 donor。
+
+上一轮最小实验验证了 Style 可以增强，但同时把 Affect 干预幅度从 `0.01487`
+压到 `0.00829`，独立真实 BS 情感识别仍为随机水平。因此不能继续在共享 DiT
+调制层上放大 Style。
+
+v12 改为冻结已有 Stage4/v2 生成器，只训练一个零初始化的、全脸连续 Style
+residual adapter。adapter 读取 query content 与 reference Style，不读取 audio
+affect；它通过有界增量叠加到冻结基座的 residual 上。这样 Style 能改变眉眼、左右
+不对称、嘴部执行习惯等任意可观测通道，但不会覆盖基座的 affect 坐标。
+
+v12 Stage4 只保留两个互不重复的目标：
+
+1. `self reconstruction`：直接约束最终 BS，防止结果退化到 B0 以下；
+2. `cross-style`：只做 donor Style recovery 与 query mouth timing 保持。
+
+删除 Stage4 self factor consistency，以及 cross-style 中 global/local emotion 的内部
+encoder 回环。这些项与真实 self target 重复，而且会优化已经证明“内部自洽但不等于
+真实情感”的分数。`style_stat`、插值/Jacobian、左右不对称和 swap margin 暂时只作为
+评估指标；只有最小模型仍发生 Style collapse 时，才单独加入一个可证伪项做消融。
+
+训练时只解冻 adapter 和它的有界 gate；基座 DiT、generic AdaLN、local emotion、
+motion backbone 与 Stage1 都冻结，避免在增强 Style 的实验中同时改写 affect 路径。
+
+### P2：若 P0/P1 仍显示 affect 路径压制，再重训 Stage2/3
+
+对 Stage2 emotion global/local 增加小权重 speaker GRL（建议从 `0.02` 起），并在
+Stage3 audio encoder 增加 speaker adversary。teacher 不只蒸馏 latent，还增加 affect
+statistics head，直接预测 `delta_affect` 的幅度、速度和事件统计。Stage3 的正样本使用
+同情感跨 speaker，负样本使用同 speaker 跨情感，避免音色身份成为 affect shortcut。
+
+Stage4 再加入 `audio_swap`：固定 content/style，仅替换 query audio affect，要求独立
+real-BS evaluator 的情感统计改变而 Style statistics 不变。这比单纯提高分类 loss 更
+接近论文中的可交换条件约束。
+
+### 静态大小眼/眉眼身份的边界
+
+如果 Stage1/B0 和 neutral target 已将上半脸 BS 结构性置零，那么 BS residual 中没有
+可恢复的静态大小眼身份信息。连续 Style 可以表达动态左右不对称和执行习惯，但不能凭空
+重建静态几何；若数据审计证明 neutral geometry 存在 speaker 差异，应另加 reference
+neutral geometry/identity embedding，不能把该信息塞进 Emotion encoder。
+
 ## 禁止回归
 
 - 不把 Style 硬编码为上半脸独占通道。

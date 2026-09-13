@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import torch
@@ -287,13 +288,47 @@ class Stage3Model(nn.Module):
         )
 
 
+class FullFaceStyleAdapter(nn.Module):
+    """Zero-initialized full-face residual adapter conditioned only on Style.
+
+    The frozen DiT remains the authoritative content/affect generator. This
+    branch can alter all motion channels continuously, but it receives no
+    audio-affect code and therefore cannot rewrite or suppress that pathway.
+    """
+
+    def __init__(self, content_dim: int, style_dim: int, hidden_dim: int, motion_dim: int):
+        super().__init__()
+        self.content_norm = nn.LayerNorm(content_dim)
+        self.content = nn.Linear(content_dim, hidden_dim)
+        self.style = nn.Sequential(nn.SiLU(), nn.Linear(style_dim, hidden_dim * 2))
+        self.temporal = nn.Sequential(
+            nn.SiLU(),
+            nn.Conv1d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.SiLU(),
+            nn.Conv1d(hidden_dim, motion_dim, kernel_size=3, padding=1),
+        )
+        nn.init.zeros_(self.temporal[-1].weight)
+        nn.init.zeros_(self.temporal[-1].bias)
+
+    def forward(
+        self, content: torch.Tensor, style: torch.Tensor, mask: torch.Tensor | None
+    ) -> torch.Tensor:
+        tokens = self.content(self.content_norm(content))
+        shift, scale = self.style(style).chunk(2, dim=-1)
+        tokens = tokens * (1.0 + 0.5 * torch.tanh(scale).unsqueeze(1)) + shift.unsqueeze(1)
+        output = self.temporal(tokens.transpose(1, 2)).transpose(1, 2)
+        if mask is not None:
+            output = output * mask.unsqueeze(-1).to(output.dtype)
+        return output
+
+
 class Stage4Model(nn.Module):
     """Deployment path: audio B0 + audio emotion + BS style -> raw BS."""
 
     def __init__(self, cfg: dict[str, Any], stage1: Stage1Model, stage2: Stage2Model, stage3: Stage3Model):
         super().__init__()
         model = cfg["model"]
-        self.register_buffer("architecture_version", torch.tensor(9))
+        self.register_buffer("architecture_version", torch.tensor(12))
         self.stage1 = stage1
         self.factor_emotion = stage2.emotion
         self.factor_style = stage2.style
@@ -306,6 +341,19 @@ class Stage4Model(nn.Module):
         init_gate = min(max(init_gate, 1e-4), self.max_residual_gate - 1e-4)
         gate_ratio = torch.tensor(init_gate / self.max_residual_gate, dtype=torch.float32)
         self.residual_gate_logit = nn.Parameter(torch.logit(gate_ratio))
+        adapter_max_gate = float(model.get("stage4_style_adapter_max_gate", 1.0))
+        adapter_initial_gate = float(model.get("stage4_style_adapter_initial_gate", 0.10))
+        adapter_initial_gate = min(max(adapter_initial_gate, 1e-4), adapter_max_gate - 1e-4)
+        self.style_adapter_max_gate = adapter_max_gate
+        self.style_adapter_gate_logit = nn.Parameter(
+            torch.logit(torch.tensor(adapter_initial_gate / adapter_max_gate))
+        )
+        self.style_adapter = FullFaceStyleAdapter(
+            int(model["content_dim"]),
+            int(model["style_dim"]),
+            int(model.get("stage4_style_adapter_hidden", model["hidden_dim"])),
+            int(cfg["data"]["motion_dim"]),
+        )
         # Stage 4 is a deployment adapter, not a second factor-learning
         # stage.  Global emotion and Stage-2 style coordinates stay frozen.
         self.global_calibrator = IdentityCalibrator(int(model["emotion_dim"]))
@@ -321,12 +369,48 @@ class Stage4Model(nn.Module):
         # corrections and hide a renderer failure.
         freeze_module(self.global_calibrator)
         freeze_module(self.style_calibrator)
-        # Unfreeze only condition modulation layers. Content, motion backbone,
-        # Stage1, and factor encoders remain frozen.
-        for name, parameter in self.renderer.named_parameters():
-            if any(key in name for key in ("modulation", "style_modulation", "local_emotion")):
-                parameter.requires_grad_(True)
-        self.residual_gate_logit.requires_grad_(True)
+        # The complete pre-trained generator stays frozen. Stage4 learns only
+        # a zero-initialized parallel Style correction, preserving the base
+        # audio-affect response by construction.
+        self.residual_gate_logit.requires_grad_(False)
+        self.style_adapter.requires_grad_(True)
+        self.style_adapter_gate_logit.requires_grad_(True)
+
+    def load_frozen_base(self, path: str | Path, map_location: str | torch.device = "cpu") -> dict[str, Any]:
+        """Strictly import an architecture-v9 Stage4 deployment as the base."""
+        payload = torch.load(path, map_location=map_location, weights_only=False)
+        state = payload.get("model", payload)
+        version = state.get("architecture_version")
+        if version is None or int(version) != 9:
+            raise RuntimeError(f"Stage4 adapter base must be architecture v9, got {version!r}")
+        target = self.state_dict()
+        new_keys = {
+            key for key in target
+            if key.startswith("style_adapter.") or key == "style_adapter_gate_logit"
+        }
+        required_base = set(target) - new_keys - {"architecture_version"}
+        missing = sorted(required_base - set(state))
+        shape_mismatch = sorted(
+            key for key in required_base & set(state) if target[key].shape != state[key].shape
+        )
+        unexpected = sorted(set(state) - required_base - {"architecture_version"})
+        if missing or shape_mismatch or unexpected:
+            raise RuntimeError(
+                "Stage4 v9 base is not structurally compatible: "
+                f"missing={missing[:3]}, shape_mismatch={shape_mismatch[:3]}, "
+                f"unexpected={unexpected[:3]}"
+            )
+        incompatible = self.load_state_dict(
+            {key: state[key] for key in required_base}, strict=False
+        )
+        expected_missing = new_keys | {"architecture_version"}
+        if set(incompatible.missing_keys) != expected_missing or incompatible.unexpected_keys:
+            raise RuntimeError(
+                "Audited Stage4 base load failed: "
+                f"missing={incompatible.missing_keys}, unexpected={incompatible.unexpected_keys}"
+            )
+        self.architecture_version.fill_(12)
+        return payload
 
     def bounded_motion(self, b0: torch.Tensor, raw_residual: torch.Tensor) -> torch.Tensor:
         """Map residual around B0 with asymmetric bounds, guaranteeing [0,1].
@@ -356,22 +440,13 @@ class Stage4Model(nn.Module):
         # cross-sentence/cross-speaker style render to match query frames.
         b0_reference_motion = query["b0_gt"] if training_target else reference["motion"]
         b0_reference_mask = query["mask"] if training_target else reference["mask"]
-        # During Stage4 training use the same-sentence cross-emotion donor when
-        # available. This makes audio emotion the causal source of emotion,
-        # while the donor style is counterfactual.
+        # Cross-style must use the external style reference.  The emotion_pair
+        # branch is same-speaker and is useful for factor invariance in Stage2,
+        # but using it here cannot teach a cross-speaker Style intervention.
         if style_mode not in {"deployment", "self", "cross"}:
             raise ValueError(f"Unknown Stage4 style mode: {style_mode}")
-        donor = batch.get("emotion_pair") if training_target else reference
-        use_donor = (
-            training_target
-            and style_mode == "cross"
-            and donor is not None
-            and bool(batch.get("relations", {}).get("emotion", torch.zeros(1, dtype=torch.bool)).any())
-        )
         if training_target and style_mode == "self":
             style_source = query
-        elif use_donor:
-            style_source = donor
         else:
             style_source = reference
         # Keep Stage-4 training on the same raw-reference residual contract as
@@ -388,8 +463,7 @@ class Stage4Model(nn.Module):
             )
             # Stage 4 deliberately uses predicted B0 for its deployment-facing
             # target/reference. This is distinct from the Stage-2 R_gt teacher.
-            donor_stage1 = self.stage1(style_source["content"], style_source["mask"])
-            style_stage1 = donor_stage1 if use_donor else (reference_stage1 if not training_target else query_stage1)
+            style_stage1 = query_stage1 if style_source is query else reference_stage1
             style_residual = style_motion - style_stage1["b0"]
             raw_style = self.factor_style(style_residual, style_mask, style_audio)
             audio = self.audio_prior(query["audio_emotion"], query["mask"])
@@ -403,6 +477,7 @@ class Stage4Model(nn.Module):
             "intensity_value": audio["intensity_value"],
             "local": audio["local"],
             "style": style_code,
+            "style_gain": style_code.new_ones(()),
         }
 
     def generate(self, query_audio: torch.Tensor, reference_audio: torch.Tensor, reference_motion: torch.Tensor, query_content: torch.Tensor, reference_content: torch.Tensor, query_mask: torch.Tensor, reference_mask: torch.Tensor, *, steps: int = 4, stochastic: bool = True) -> torch.Tensor:
@@ -432,6 +507,11 @@ class Stage4Model(nn.Module):
             stochastic=stochastic,
             local_emotion=conditions.get("local"),
         )
-        final = self.bounded_motion(conditions["b0_pred"], residual)
-        return final, residual
+        adapter_gate = self.style_adapter_max_gate * torch.sigmoid(self.style_adapter_gate_logit)
+        style_delta = adapter_gate * self.residual_scale * torch.tanh(
+            self.style_adapter(conditions["h0"], conditions["style"], query["mask"])
+        )
+        combined_residual = residual + style_delta
+        final = self.bounded_motion(conditions["b0_pred"], combined_residual)
+        return final, combined_residual
 

@@ -459,46 +459,27 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
     stage2 = _load_stage2(config, device)
     stage3 = _load_stage3(config, device, stage2)
     model = Stage4Model(config, stage1, stage2, stage3).to(device)
+    base_checkpoint = config["paths"].get("stage4_base_ckpt")
+    if not base_checkpoint:
+        raise ValueError("Stage4 adapter training requires paths.stage4_base_ckpt")
+    model.load_frozen_base(base_checkpoint, map_location=device)
     optimizer = _optimizer(config, model)
     loader = _loader(config, "generator")
     loss_cfg = config["loss"]
     scaler = _scaler(config, device)
     for epoch in range(int(config["optim"].get("stage4_epochs", config["optim"].get("epochs", 1)))):
-        totals = 0.0
+        totals = {"total": 0.0, "self": 0.0, "cross": 0.0}
         for batch in loader:
             batch = move_to_device(batch, device)
             with _autocast(config, device):
                 # Self-style reconstruction has a valid framewise target.
                 self_conditions = model.conditions(batch, training_target=True, style_mode="self")
-                flow_pred, flow_target, _ = model.flow_prediction(batch, self_conditions)
-                generated_residual = model.renderer.decode(
-                    self_conditions["h0"], self_conditions["global"], self_conditions["intensity_value"],
-                    self_conditions["style"], batch["query"]["mask"],
-                    residual_scale=model.residual_scale,
+                generated_final, _ = model.render(
+                    batch, self_conditions,
                     steps=int(config["model"].get("render_steps", 4)),
                     stochastic=False,
-                    local_emotion=self_conditions.get("local"),
                 )
-                generated_final = model.bounded_motion(self_conditions["b0_pred"], generated_residual)
-                with torch.no_grad():
-                    target_emotion = {
-                        "global": self_conditions["global"].detach(),
-                        "local": self_conditions["local"].detach(),
-                    }
-                    target_style = self_conditions["style"].detach()
-                generated_effective_residual = generated_final - self_conditions["b0_pred"]
-                generated_factors = {
-                    **model.factor_emotion(generated_effective_residual, batch["query"]["mask"]),
-                    "style": model.factor_style(generated_effective_residual, batch["query"]["mask"], None),
-                }
-                losses = stage4_loss(
-                    flow_pred,
-                    flow_target,
-                    batch["query"]["mask"],
-                    generated_factors=generated_factors,
-                    target_factors={**target_emotion, "style": target_style},
-                    factor_weight=float(loss_cfg.get("stage4_factor_consistency", 0.1)),
-                )
+                losses = {"total": generated_final.new_zeros(())}
                 # A direct self target anchors the deployment renderer to the
                 # frozen B0 baseline; the flow objective alone can drift in
                 # residual coordinates and hurt fidelity.
@@ -514,35 +495,37 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
                 # It is supervised only by factor preservation, style donor
                 # recovery, and target mouth/content timing.
                 cross_conditions = model.conditions(batch, training_target=True, style_mode="cross")
-                cross_residual = model.renderer.decode(
-                    cross_conditions["h0"], cross_conditions["global"], cross_conditions["intensity_value"],
-                    cross_conditions["style"], batch["query"]["mask"],
-                    residual_scale=model.residual_scale,
+                cross_final, _ = model.render(
+                    batch, cross_conditions,
                     steps=int(config["model"].get("render_steps", 4)),
                     stochastic=False,
-                    local_emotion=cross_conditions.get("local"),
                 )
-                cross_final = model.bounded_motion(cross_conditions["b0_pred"], cross_residual)
                 cross_effective_residual = cross_final - cross_conditions["b0_pred"]
-                cross_factors = {
-                    **model.factor_emotion(cross_effective_residual, batch["query"]["mask"]),
-                    "style": model.factor_style(cross_effective_residual, batch["query"]["mask"], None),
-                }
-                cross_target = {
-                    "global": self_conditions["global"].detach(),
-                    "local": self_conditions["local"].detach(),
-                    "style": cross_conditions["style"].detach(),
-                }
+                cross_style = model.factor_style(
+                    cross_effective_residual, batch["query"]["mask"], None
+                )
                 cross = stage4_cross_style_loss(
-                    cross_factors, cross_target, cross_final, batch["query"]["motion"],
+                    cross_style, cross_conditions["style"],
+                    cross_final, batch["query"]["motion"],
                     batch["query"]["mask"],
                     mouth_indices=config["data"].get("neutral_output_indices", []),
                 )
                 losses["cross_style"] = cross
                 losses["total"] = losses["total"] + float(loss_cfg.get("stage4_cross_style", 0.25)) * cross
             _step_optimizer(losses["total"], optimizer, model, config, scaler)
-            totals += float(losses["total"].detach())
-        print(f"stage4 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
+            totals["total"] += float(losses["total"].detach())
+            totals["self"] += float(self_recon.detach())
+            totals["cross"] += float(cross.detach())
+        denominator = max(len(loader), 1)
+        style_gain = float(model.style_adapter_max_gate * torch.sigmoid(model.style_adapter_gate_logit.detach()))
+        residual_gate = float(model.max_residual_gate * torch.sigmoid(model.residual_gate_logit.detach()))
+        print(
+            f"stage4 epoch={epoch + 1} loss={totals['total'] / denominator:.6f} "
+            f"self={totals['self'] / denominator:.6f} "
+            f"cross={totals['cross'] / denominator:.6f} "
+            f"style_adapter_gate={style_gain:.4f} base_residual_gate={residual_gate:.4f}",
+            flush=True,
+        )
         save_checkpoint(config["paths"]["stage4_ckpt"], model, optimizer, epoch + 1, stage="stage4", data_protocol=config["data_protocol"])
 
 
