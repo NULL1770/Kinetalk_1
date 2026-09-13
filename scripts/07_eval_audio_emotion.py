@@ -21,7 +21,7 @@ from torch.utils.data import DataLoader, Dataset
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from kinetalk_b0.data import B0ResidualDataset
-from kinetalk_b0.models import Stage2Model, Stage3Model
+from kinetalk_b0.models import Stage1Model, Stage2Model, Stage3Model
 from kinetalk_b0.utils import load_checkpoint, load_yaml, move_to_device, seed_everything
 
 
