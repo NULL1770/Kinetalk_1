@@ -196,6 +196,22 @@ def style_factor_invariance_loss(style: torch.Tensor, emotion_logits: torch.Tens
     return (s.transpose(0, 1) @ y / max(style.shape[0], 1)).square().mean()
 
 
+def style_view_consistency_loss(neutral_style: torch.Tensor, emotional_style: torch.Tensor, valid: torch.Tensor | None = None) -> torch.Tensor:
+    """Match style codes from paired neutral and emotional motion views.
+
+    Both views belong to the same speaker/content instance.  The neutral view
+    removes the labelled affect signal while the emotional view matches the
+    deployment input contract, so this single paired objective teaches the
+    encoder to retain speaker articulation while ignoring emotion.
+    """
+    distance = 1.0 - F.cosine_similarity(neutral_style, emotional_style, dim=-1)
+    if valid is None:
+        return distance.mean()
+    if not bool(valid.any()):
+        return distance.new_zeros(())
+    return distance[valid].mean()
+
+
 def style_content_invariance_loss(style: torch.Tensor, content: torch.Tensor) -> torch.Tensor:
     """Remove linear correlation between global style and frame-mean content."""
     c = content.mean(dim=1) if content.ndim == 3 else content

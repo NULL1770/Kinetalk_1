@@ -299,6 +299,12 @@ class Stage4Model(nn.Module):
         freeze_module(self.factor_style)
         freeze_module(self.audio_prior)
         freeze_module(self.renderer)
+        # The calibrators are identity bridges kept for checkpoint/API
+        # compatibility. Stage4 must optimize only DiT condition modulation
+        # layers; otherwise these unrestricted adapters can absorb factor
+        # corrections and hide a renderer failure.
+        freeze_module(self.global_calibrator)
+        freeze_module(self.style_calibrator)
         # Unfreeze only condition modulation layers. Content, motion backbone,
         # Stage1, and factor encoders remain frozen.
         for name, parameter in self.renderer.named_parameters():
@@ -320,6 +326,10 @@ class Stage4Model(nn.Module):
         donor = batch.get("emotion_pair") if training_target else reference
         use_donor = training_target and donor is not None and bool(batch.get("relations", {}).get("emotion", torch.zeros(1, dtype=torch.bool)).any())
         style_source = donor if use_donor else (query if training_target else reference)
+        # Keep Stage-4 training on the same raw-reference residual contract as
+        # deployment. Stage-2's paired neutral/emotional view constraint is
+        # what removes the emotion shortcut from this input, rather than a
+        # train/deploy distribution change here.
         style_motion = style_source["motion"]
         style_mask = style_source["mask"]
         style_audio = style_source["audio_emotion"]

@@ -42,6 +42,9 @@ B0 target + target affect + style -> residual DiT -> final BS
 The reference audio and BS may contain different content from the target.
 Style is computed from the reference BS minus the DLP output for that same
 reference clip, so reference mouth timing is not copied into the target.
+During Stage2 training, a paired aligned neutral view of the same query is
+encoded as an auxiliary Style consistency target. Stage4 still uses the raw
+reference residual, matching deployment.
 
 Evaluation must use an explicit held-out split. The CSV exporter and full
 stage evaluator default to `val`; use `--split test` only for the final frozen

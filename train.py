@@ -19,6 +19,7 @@ from kinetalk_b0.losses import (
     style_probe_loss,
     stage2_style_triplet_loss,
     stage2_style_cross_emotion_loss,
+    style_view_consistency_loss,
     stage3_loss,
     stage4_loss,
     stage1_clean_loss,
@@ -206,12 +207,23 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                 )
                 h0 = query_stage1["h0"]
                 query_residual = query["motion"] - query_stage1["b0"]
+                neutral_style_residual = query["b0_gt"] - query_stage1["b0"]
+                neutral_valid = batch["relations"]["neutral"]
                 query_style_residual = query_residual
             with _autocast(config, device):
                 factors = model.encode_factors(
                     query_residual, query["residual_mask"],
                     query.get("audio_emotion", query.get("audio")),
                     style_residual=query_style_residual,
+                )
+                # The neutral paired view removes the labelled emotion signal;
+                # the raw emotional view preserves the deployment input contract.
+                # Matching their style codes is the single cross-view disentangling
+                # objective, rather than another unconstrained style subspace.
+                neutral_style_factors = model.encode_factors(
+                    neutral_style_residual, query["residual_mask"],
+                    query.get("audio_emotion", query.get("audio")),
+                    style_residual=neutral_style_residual,
                 )
                 flow_prediction, flow_target = model.flow_prediction(query_residual, h0, factors, query["residual_mask"])
                 losses = stage2_loss(
@@ -226,6 +238,13 @@ def _stage2(config: dict[str, Any], device: torch.device) -> None:
                     classification_weight=float(loss_cfg.get("stage2_classification", 0.5)),
                     intensity_weight=float(loss_cfg.get("stage2_intensity", 0.25)),
                 )
+                view_consistency = style_view_consistency_loss(
+                    factors["style"], neutral_style_factors["style"], neutral_valid
+                )
+                losses["style_view_consistency"] = view_consistency
+                losses["total"] = losses["total"] + float(
+                    loss_cfg.get("stage2_style_view_consistency", 0.0)
+                ) * view_consistency
                 if supcon_weight > 0:
                     speakers = batch["query"].get("speaker", [])
                     if len(speakers) == factors["style"].shape[0] and len(speakers) > 1:
@@ -425,7 +444,7 @@ def _stage4(config: dict[str, Any], device: torch.device) -> None:
     loader = _loader(config, "generator")
     loss_cfg = config["loss"]
     scaler = _scaler(config, device)
-    for epoch in range(int(config["optim"].get("epochs", 1))):
+    for epoch in range(int(config["optim"].get("stage4_epochs", config["optim"].get("epochs", 1)))):
         totals = 0.0
         for batch in loader:
             batch = move_to_device(batch, device)
