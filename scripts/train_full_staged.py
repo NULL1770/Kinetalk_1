@@ -1,0 +1,481 @@
+"""Five real-epoch stages with live identity/global paths and restartable state.
+
+An isolated warm-start experiment. Never replaces defaults or reads test.
+The final upper-face stage uses a signed spline state plus projected flow;
+all other output channels are copied from the completed audio-stage model.
+"""
+from __future__ import annotations
+
+import argparse
+import copy
+import hashlib
+import itertools
+import json
+import math
+from pathlib import Path
+import random
+import sys
+import time
+
+import numpy as np
+import torch
+from torch import nn
+from torch.nn import functional as F
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.full_staged_data import load_training_inputs
+from scripts.train_formal_predictable_projection import save_json, save_checkpoint, capture_rng, restore_rng, canonical_hash
+from scripts.train_predictable_renderer import state_hash
+from kinetalk_b0.semantic_losses import style_contrastive
+from kinetalk_b0.models.slow_state_affect import (
+    SlowStateAffect, UPPER_INDICES, readout_slow_state, masked_slow_state,
+    lift_slow_state, compose_upper_face, project_upper_innovation, UpperInnovationFlow,
+)
+from kinetalk_b0.models.dit import ResidualDiT
+
+SCHEMA = 'full_staged_spline_innovation_v1'
+STAGES = ('articulation', 'identity', 'teacher', 'audio', 'dynamics')
+MOUTH = tuple(range(14, 41))
+GROUPS = {'brows': (41,42,43,44,45), 'eyes_expression': (5,6,12,13), 'mouth': MOUTH}
+NOT_UPPER = tuple(i for i in range(52) if i not in UPPER_INDICES)
+
+
+def sha(path):
+    h = hashlib.sha256()
+    with Path(path).open('rb') as f:
+        for b in iter(lambda: f.read(2**20), b''): h.update(b)
+    return h.hexdigest()
+
+
+def subset(q, ids, device):
+    result = {}
+    for key, value in q.items():
+        if torch.is_tensor(value):
+            selected = value[ids]
+            result[key] = selected.to(device=device, dtype=torch.float32 if selected.is_floating_point() and key != 'times' else selected.dtype)
+        elif isinstance(value, list): result[key] = [value[int(i)] for i in ids]
+    return result
+
+
+def obs(q): return q['valid'][...,None] & q['channel_mask'][:,None]
+
+
+def base_forward(system, content, valid, *, gradients=False):
+    """Match true-length B0 evaluation while explicitly allowing Stage1 gradients."""
+    last = (valid * torch.arange(1, valid.shape[1]+1, device=valid.device)).amax(1)
+    output = {}
+    with torch.set_grad_enabled(gradients):
+        for length_tensor in last.unique():
+            length = int(length_tensor)
+            ids = (last == length).nonzero(as_tuple=True)[0]
+            clean = torch.where(valid[ids,:length,None], content[ids,:length], 0.)
+            values = system.stage1(clean, valid[ids,:length])
+            for key in ('b0','h0'):
+                padded = F.pad(values[key], (0,0,0,valid.shape[1]-length))
+                if key not in output: output[key] = padded.new_zeros(len(content), valid.shape[1], padded.shape[-1])
+                output[key] = output[key].index_copy(0, ids, padded)
+    return {k:torch.where(valid[...,None],v,0.) for k,v in output.items()}
+
+
+def unfreeze(module):
+    module.requires_grad_(True)
+    return list(module.parameters())
+
+
+def mse(x,y,mask):
+    if mask.shape != x.shape: mask = mask.expand_as(x)
+    if not mask.any(): return x.sum()*0
+    return (x[mask]-y[mask]).square().mean()
+
+
+def huber(x,y,mask):
+    if mask.shape != x.shape: mask=mask.expand_as(x)
+    return F.smooth_l1_loss(x[mask],y[mask],beta=1.) if mask.any() else x.sum()*0
+
+
+def semantics(a,q):
+    v = F.cross_entropy(a['emotion_logits'],q['emotion_id'])
+    good=q['intensity_valid'] & (q['intensity_id']>=0)
+    if good.any(): v=v+F.cross_entropy(a['intensity_logits'][good],q['intensity_id'][good])
+    return v
+
+
+def optimize(loss,opt,params):
+    if not torch.isfinite(loss): raise FloatingPointError('Nonfinite objective')
+    opt.zero_grad(set_to_none=True); loss.backward()
+    norm=torch.nn.utils.clip_grad_norm_(params,1.,error_if_nonfinite=True)
+    opt.step()
+    return float(norm)
+
+
+def identity_pairs(refs, fit_sids):
+    pairs=[]
+    for sid in fit_sids:
+        n=len(refs[sid]['valid']); half=n//2
+        if half<1: raise ValueError('Two independent references required')
+        for a in itertools.combinations(range(n),half):
+            b=tuple(i for i in range(n) if i not in a)
+            if len(a)==len(b) and a>b: continue
+            pairs.append((sid,a,b))
+    return pairs
+
+
+@torch.no_grad()
+def cache_current_base(system,data,device,batch_size=32):
+    """Recompute after B0 changes. No old h0/b0 cache is used."""
+    for role,q in data['splits'].items():
+        out={'b0':[],'h0':[]}
+        for ids in torch.arange(len(q['valid'])).split(batch_size):
+            b=subset(q,ids,device); base=base_forward(system,b['content'],b['valid'])
+            for k in out:out[k].append(base[k].cpu())
+        q['b0']=torch.cat(out['b0']);q['h0']=torch.cat(out['h0'])
+    for sid,q in data['refs'].items():
+        b=subset(q,torch.arange(len(q['valid'])),device)
+        base=base_forward(system,b['content'],b['valid'])
+        q['residual']=torch.where(obs(b),b['motion']-base['b0'],0.).cpu()
+
+
+def encode_ref(system,data,sid,ids,device):
+    q=data['refs'][sid]
+    result=system.encode_identity(q['residual'][list(ids)][None].to(device),q['valid'][list(ids)][None].to(device))
+    result['observed_channels']=q['channel_mask'][list(ids)].all(0)[None].to(device)
+    return result
+
+
+@torch.no_grad()
+def identity_cache(system,data,device):
+    return {sid:{k:v.detach() for k,v in encode_ref(system,data,sid,range(len(q['valid'])),device).items()
+                 if k in ('code','baseline')} for sid,q in data['refs'].items()}
+
+
+def batch_identity(identities,q):
+    return {k:torch.cat([identities[int(sid)][k] for sid in q['speaker_id']],0) for k in ('code','baseline')}
+
+
+def teacher_affect(system,q,identity):
+    residual=torch.where(obs(q),q['motion']-q['b0']-identity['baseline'][:,None],0.)
+    return system.encode_motion(residual,q['valid'])
+
+
+def targets(q,scales,stride):
+    if not (q['channel_mask'][:,list(UPPER_INDICES)] & q['anchor_valid'][:,list(UPPER_INDICES)]).all():
+        raise ValueError('Projected flow requires all nine upper channels and independent anchors')
+    raw,mask=readout_slow_state(q['motion'],obs(q)&q['anchor_valid'][:,None],q['anchors'],scales)
+    state=masked_slow_state(raw,mask,stride=stride)
+    normalized=torch.where(q['valid'][...,None],(q['motion'][...,list(UPPER_INDICES)]-q['anchors'][:,None,list(UPPER_INDICES)])/scales[list(UPPER_INDICES)],0.)
+    return state,project_upper_innovation(normalized,q['valid'],stride=stride)
+
+
+class UpperFlow(UpperInnovationFlow):
+    """Batch-dictionary adapter around the independently tested flow module."""
+    def flow_loss(self,target,q,identity,affect,local,state,noise,flow_time):
+        return super().flow_loss(target,q['valid'],q['h0'],identity['code'],affect,local,state,noise,flow_time)
+
+    def decode(self,q,identity,affect,local,state,noise,steps):
+        return super().decode(q['valid'],q['h0'],identity['code'],affect,local,state,noise,steps=steps)
+
+
+def upper_motion(q,scales,state,innovation):
+    delta=lift_slow_state(state,scales)[...,list(UPPER_INDICES)]
+    return q['anchors'][:,None,list(UPPER_INDICES)]+delta+scales[list(UPPER_INDICES)]*innovation
+
+
+def region_report(pred,q):
+    answer={}
+    for name,cc in GROUPS.items():
+        mask=obs(q)[...,list(cc)];x=pred[...,list(cc)].double();y=q['motion'][...,list(cc)].double()
+        count=mask.sum(1,keepdim=True).clamp_min(1)
+        xc=torch.where(mask,x-torch.where(mask,x,0.).sum(1,keepdim=True)/count,0.)
+        yc=torch.where(mask,y-torch.where(mask,y,0.).sum(1,keepdim=True)/count,0.)
+        energy=yc.square().sum();sse=(xc-yc).square().sum()
+        pair=mask[:,1:]&mask[:,:-1]
+        vals=x[mask]
+        answer[name]={'raw_mse':float(mse(x,y,mask)), 'centered_mse':float(sse/mask.sum()),
+            'centered_r2':float(1-sse/energy.clamp_min(1e-12)),
+            'centered_correlation':float((xc*yc).sum()/(xc.square().sum()*energy).sqrt().clamp_min(1e-12)),
+            'rms_ratio':float((xc.square().sum()/energy.clamp_min(1e-12)).sqrt()),
+            'frame_displacement_mse':float(mse(x[:,1:]-x[:,:-1],y[:,1:]-y[:,:-1],pair)),
+            'outside_fraction':float(((vals<0)|(vals>1)).double().mean())}
+    return answer
+
+
+@torch.no_grad()
+def identity_report(system,data,device):
+    result={}
+    for role,sids in (('fit',data['fit_sids']),('development',data['dev_sids'])):
+        a=[];b=[];errors=[]
+        for sid in sids:
+            n=len(data['refs'][sid]['valid']);cut=max(1,n//2)
+            x=encode_ref(system,data,sid,range(cut),device)
+            y=encode_ref(system,data,sid,range(cut,n),device)
+            a.append(x['code']);b.append(y['code']);errors.append(mse(x['baseline'],y['neutral_mean'],x['observed_channels']&y['observed_channels']))
+        similarity=F.normalize(torch.cat(a),dim=-1)@F.normalize(torch.cat(b),dim=-1).T
+        result[role]={'speakers':len(sids),'reference_view_retrieval':float((similarity.argmax(-1)==torch.arange(len(sids),device=device)).float().mean()),
+            'cross_reference_baseline_mse':float(torch.stack(errors).mean()),
+            'scope':'fit reference views trained; development reference views not trained. Coefficient identity, not mesh geometry.'}
+    return result
+
+
+@torch.no_grad()
+def evaluate(system,audio,upper,local_audio,data,identities,stage,args,*,full=False):
+    q=data['splits']['validation'];limit=len(q['valid']) if full else min(64,len(q['valid']))
+    # Fixed metadata-independent random subset; no favourable sample selection.
+    ids=torch.randperm(len(q['valid']),generator=torch.Generator().manual_seed(20260917))[:limit].sort().values
+    reference=subset(q,ids,'cpu');all_predictions={};class_correct=0;teacher_correct=0
+    seeds=(42,123,2026) if full else (42,)
+    for seed in seeds:
+        random_noise=torch.randn(len(q['valid']),q['valid'].shape[1],52,generator=torch.Generator().manual_seed(seed))
+        modes=['full']
+        if stage=='dynamics' and full and seed==42:modes+=['base','static_state','oracle_state','reverse_audio']
+        for mode in modes:
+            predictions=[];pred_states=[];targets_state=[];gen_emotions=[]
+            for ix in ids.split(args.batch_size):
+                b=subset(q,ix,args.device);ident=batch_identity(identities,b)
+                n=random_noise[ix].to(args.device);base={'b0':b['b0'],'h0':b['h0']}
+                teacher=teacher_affect(system,b,ident)
+                if stage in ('teacher','articulation','identity'):affect=teacher
+                else:affect=audio(b['audio_features'],b['valid'])
+                if stage=='articulation':pred=base['b0']
+                else:pred=system.generate(b['content'],b['valid'],ident,affect,initial_noise=n,steps=args.decode_steps,base=base)['motion']
+                if stage=='dynamics' and mode!='base':
+                    feat=b['audio_features']
+                    if mode=='reverse_audio':
+                        feat=feat.clone()
+                        for row in range(len(feat)):
+                            good=b['valid'][row].nonzero(as_tuple=True)[0];feat[row,good]=feat[row,good.flip(0)]
+                    dynamic=local_audio(feat,b['valid']);state=dynamic['state'];tgt,_=targets(b,data['target_scales'].to(args.device),args.stride)
+                    if mode=='static_state':state=(state.sum(1,keepdim=True)/b['valid'].sum(1)[:,None,None]).expand_as(state)*b['valid'][...,None]
+                    if mode=='oracle_state':state=tgt['state']
+                    innovation=upper.decode(b,ident,affect,dynamic['local'],state,n[...,list(UPPER_INDICES)],args.decode_steps)
+                    uv=upper_motion(b,data['target_scales'].to(args.device),state,innovation)
+                    composed=compose_upper_face(pred,uv,b['valid'])
+                    if not torch.equal(composed[...,list(NOT_UPPER)],pred[...,list(NOT_UPPER)]):raise RuntimeError('Non-upper protection failed')
+                    pred=composed;pred_states.append(dynamic['state'].cpu());targets_state.append(tgt['state'].cpu())
+                if seed==42 and mode=='full':
+                    class_correct+=int((affect['emotion_logits'].argmax(-1)==b['emotion_id']).sum())
+                    teacher_correct+=int((teacher['emotion_logits'].argmax(-1)==b['emotion_id']).sum())
+                gen_teacher=system.encode_motion(torch.where(obs(b),pred-b['b0']-ident['baseline'][:,None],0.),b['valid'])
+                gen_emotions.extend((gen_teacher['emotion_logits'].argmax(-1)==b['emotion_id']).cpu().tolist())
+                predictions.append(pred.cpu())
+            value=torch.cat(predictions)
+            key=f'{seed}/{mode}'
+            all_predictions[key]={'motion':value,'metrics':region_report(value,reference),
+                'generated_teacher_emotion_accuracy_nonindependent':sum(gen_emotions)/len(gen_emotions)}
+            if pred_states:
+                ps,ts=torch.cat(pred_states),torch.cat(targets_state)
+                sm=reference['valid'][...,None]
+                pc=torch.where(sm,ps-ps.sum(1,keepdim=True)/sm.sum(1,keepdim=True),0.)
+                tc=torch.where(sm,ts-ts.sum(1,keepdim=True)/sm.sum(1,keepdim=True),0.)
+                se=(pc-tc).square().sum();energy=tc.square().sum()
+                all_predictions[key]['state_metrics']={'raw_mse':float(mse(ps,ts,sm)),
+                    'centered_mse':float(mse(pc,tc,sm)),
+                    'centered_correlation':float((pc*tc).sum()/(pc.square().sum()*energy).sqrt().clamp_min(1e-12)),
+                    'centered_r2':float(1-se/energy.clamp_min(1e-12))}
+    report={'stage':stage,'clips':limit,'noise_seeds':list(seeds),
+        'condition_source':'audio_only' if stage in ('audio','dynamics') else 'target_motion_oracle' if stage!='articulation' else 'audio_content_B0',
+        'audio_or_teacher_emotion_accuracy':class_correct/limit,
+        'motion_teacher_emotion_accuracy':teacher_correct/limit,
+        'emotion_readout_scope':'Teacher trained in this run; generated emotion readout is not independent perceptual certification.',
+        'modes':{k:{n:v for n,v in val.items() if n!='motion'} for k,val in all_predictions.items()},
+        'test_loaded':False,'default_replaced':False}
+    curves={'schema':SCHEMA,'stage':stage,'clip_id':reference['clip_id'],'target':reference['motion'],'valid':reference['valid'],
+        'times':reference['times'],'channel_mask':reference['channel_mask'],'b0':reference['b0'],
+        'predictions':{k:v['motion'] for k,v in all_predictions.items()},'noise_seeds':list(seeds)}
+    return report,curves
+
+
+def parser():
+    p=argparse.ArgumentParser(description=__doc__)
+    for name in ('source-run','audio','targets','enrollment','native-root','output'):p.add_argument('--'+name,type=Path,required=True)
+    p.add_argument('--device',default='cuda');p.add_argument('--epochs',type=int,default=12)
+    p.add_argument('--batch-size',type=int,default=16);p.add_argument('--decode-steps',type=int,default=12)
+    p.add_argument('--stride',type=int,default=16);p.add_argument('--seed',type=int,default=47)
+    p.add_argument('--smoke',action='store_true');p.add_argument('--resume',action='store_true')
+    return p
+
+
+def main():
+    args=parser().parse_args()
+    if not args.smoke and not 10<=args.epochs<=15:raise ValueError('User budget is 10–15 epochs/stage')
+    if args.batch_size<1 or args.decode_steps<1 or args.stride<1:raise ValueError('Positive batch/solver/stride required')
+    if args.output.exists() and not args.resume:raise FileExistsError('Fresh run required')
+    torch.set_num_threads(4);torch.backends.cuda.matmul.allow_tf32=True
+    random.seed(args.seed);np.random.seed(args.seed);torch.manual_seed(args.seed)
+    data=load_training_inputs(args.source_run,args.audio,args.targets,args.enrollment,args.native_root)
+    system=data['system'].to(args.device).eval();cfg=data['config']
+    # Statistics are fitted on the authorized fit tensor only, not development.
+    f=data['splits']['train']['audio_features'];valid=data['splits']['train']['valid']
+    mean=data['feature_stats']['mean'];std=data['feature_stats']['std']
+    audio=SlowStateAffect(mean,std,stride=args.stride).to(args.device).eval()
+    upper=UpperFlow(cfg,stride=args.stride).to(args.device).eval();local_audio=copy.deepcopy(audio)
+    input_paths={k:str(getattr(args,k)) for k in ('source_run','audio','targets','enrollment','native_root')}
+    root=Path(__file__).resolve().parents[1]
+    sources=[Path(__file__),root/'scripts/full_staged_data.py',root/'kinetalk_b0/models/slow_state_affect.py',
+        root/'kinetalk_b0/models/neutral_affect.py',root/'kinetalk_b0/models/dit.py',root/'kinetalk_b0/models/model.py',
+        root/'kinetalk_b0/models/encoders.py',root/'kinetalk_b0/models/label_guided_affect.py',root/'kinetalk_b0/neutral_data.py',
+        root/'kinetalk_b0/semantic_losses.py',root/'scripts/train_formal_predictable_projection.py']
+    recipe={'schema':SCHEMA,'args':{k:v for k,v in vars(args).items() if k not in ('resume','output') and not isinstance(v,Path)},
+        'paths':input_paths,'data_provenance':data['provenance'],'source_sha256':{str(p.relative_to(root)):sha(p) for p in sources},
+        'stages':list(STAGES),'epochs_per_stage':args.epochs,'stride_frames':args.stride,
+        'condition':'four signed spline motion proxies + native audio + distilled global; no text/VA/activity/history',
+        'warm_start':True,'new_audio_global':'1540D audio trained against updated motion-global teacher; does not reuse old global normalization',
+        'identity_epoch':'One pass over disjoint complementary reference-view pairs from fit identities only',
+        'articulation_epoch':'One shuffled pass over neutral fit query clips only',
+        'other_epoch':'One shuffled pass over all fit queries',
+        'trainable':'Stage-dependent; pretrained acoustic/content extractors remain frozen feature sources',
+        'stage5_nonupper':'Exact frozen stage4 output copy, not a claim stage4 equals historical model',
+        'test_loaded':False,'default_replaced':False,'checkpoint_selection':'Fixed final epoch; intermediate validation not used for selection'}
+    recipe_hash=canonical_hash(recipe);args.output.mkdir(parents=True,exist_ok=True)
+    gen=torch.Generator().manual_seed(args.seed)
+    start_stage=0;start_epoch=0;total_steps=0;elapsed_before=0.;resume_payload=None
+    if args.resume:
+        resume_payload=torch.load(args.output/'last.pt',map_location='cpu',weights_only=False)
+        if resume_payload['recipe_sha256']!=recipe_hash:raise ValueError('Resume recipe/source/input binding differs')
+        system.load_state_dict(resume_payload['system']);audio.load_state_dict(resume_payload['audio']);upper.load_state_dict(resume_payload['upper']);local_audio.load_state_dict(resume_payload['local_audio'])
+        start_stage=resume_payload['stage_index'];start_epoch=resume_payload['completed_epochs'];total_steps=resume_payload['total_steps'];elapsed_before=resume_payload['elapsed_seconds']
+        restore_rng(resume_payload['rng'],gen)
+    else:
+        save_json(args.output/'provenance.json',{'recipe':recipe,'recipe_sha256':recipe_hash})
+        for source in sources:
+            dest=args.output/'source'/source.relative_to(root);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(source.read_bytes())
+    started=time.monotonic();scales=data['target_scales'].to(args.device)
+    epochs=1 if args.smoke else args.epochs
+    cache_current_base(system,data,args.device)
+    identities=identity_cache(system,data,args.device)
+    pairs=identity_pairs(data['refs'],data['fit_sids'])
+    if not args.resume:
+        save_json(args.output/'identity_initial.json',identity_report(system,data,args.device))
+        initial_report,initial_curves=evaluate(system,audio,upper,local_audio,data,identities,'teacher',args,full=not args.smoke)
+        initial_report['scope']='Original checkpoint motion-teacher oracle only; not historical audio baseline'
+        save_json(args.output/'initial_teacher_oracle.json',initial_report)
+        save_checkpoint(args.output/'initial_teacher_oracle_curves.pt',initial_curves)
+    current_stage='setup'
+    try:
+        for stage_index,stage in enumerate(STAGES):
+            if stage_index<start_stage:continue
+            current_stage=stage;stage_dir=args.output/stage;stage_dir.mkdir(exist_ok=True)
+            for module in (system,audio,upper,local_audio):
+                module.requires_grad_(False);module.eval();module.zero_grad(set_to_none=True)
+            if stage=='articulation':groups=[{'params':unfreeze(system.stage1),'lr':1e-5}]
+            elif stage=='identity':groups=[{'params':unfreeze(system.identity_encoder)+unfreeze(system.identity_bias),'lr':1e-4}]
+            elif stage=='teacher':groups=[{'params':unfreeze(system.motion_teacher)+unfreeze(system.local_projection),'lr':1e-4},{'params':unfreeze(system.renderer),'lr':3e-5}]
+            elif stage=='audio':groups=[{'params':unfreeze(audio),'lr':1e-4},{'params':unfreeze(system.renderer),'lr':1e-5}]
+            else:
+                if not (resume_payload is not None and stage_index==start_stage):local_audio.load_state_dict(audio.state_dict())
+                groups=[{'params':unfreeze(local_audio),'lr':1e-4},{'params':unfreeze(upper),'lr':1e-4}]
+            parameters=[p for g in groups for p in g['params']]
+            optimizer=torch.optim.AdamW(groups,weight_decay=1e-5)
+            initial_epoch=start_epoch if stage_index==start_stage else 0
+            if resume_payload is not None and stage_index==start_stage:
+                optimizer.load_state_dict(resume_payload['optimizer'])
+                for state in optimizer.state.values():
+                    for key,value in state.items():
+                        if torch.is_tensor(value):state[key]=value.to(args.device)
+            if stage=='articulation':items=(data['splits']['train']['emotion_id']==0).nonzero(as_tuple=True)[0]
+            elif stage=='identity':items=torch.arange(len(pairs))
+            else:items=torch.arange(len(data['splits']['train']['valid']))
+            if args.smoke:items=items[:min(len(items),args.batch_size*2)]
+            batches=math.ceil(len(items)/args.batch_size)
+            if not batches:raise ValueError('Empty training stage: '+stage)
+            trainable={name:sum(p.numel() for p in module.parameters() if p.requires_grad) for name,module in [('system',system),('audio',audio),('upper',upper),('local_audio',local_audio)]}
+            print(json.dumps({'event':'stage_start','stage':stage,'epochs':epochs,'samples_per_epoch':len(items),'batches':batches,'trainable':trainable}),flush=True)
+            frozen_before={name:state_hash(module.state_dict()) for name,module in [('system',system),('audio',audio),('upper',upper),('local_audio',local_audio)] if not any(p.requires_grad for p in module.parameters())}
+            frozen_parameters={name:state_hash({k:v for k,v in module.named_parameters() if not v.requires_grad}) for name,module in [('system',system),('audio',audio),('upper',upper),('local_audio',local_audio)]}
+            def checkpoint(epoch):
+                payload={'schema':SCHEMA,'recipe_sha256':recipe_hash,'stage_index':stage_index,'stage':stage,'completed_epochs':epoch,'total_steps':total_steps,
+                    'system':system.state_dict(),'audio':audio.state_dict(),'upper':upper.state_dict(),'local_audio':local_audio.state_dict(),
+                    'optimizer':optimizer.state_dict(),'rng':capture_rng(gen),'elapsed_seconds':elapsed_before+time.monotonic()-started}
+                save_checkpoint(args.output/'last.pt',payload)
+            if initial_epoch==0:checkpoint(0)
+            for epoch in range(initial_epoch,epochs):
+                begin=time.monotonic();sums={};order=items[torch.randperm(len(items),generator=gen)]
+                for bi,ix in enumerate(order.split(args.batch_size)):
+                    if stage=='identity':
+                        av=[];bv=[]
+                        for index in ix:
+                            sid,aa,bb=pairs[int(index)]
+                            av.append(encode_ref(system,data,sid,aa,args.device));bv.append(encode_ref(system,data,sid,bb,args.device))
+                        ac=torch.cat([a['code'] for a in av]);bc=torch.cat([b['code'] for b in bv])
+                        common=torch.cat([a['observed_channels']&b['observed_channels'] for a,b in zip(av,bv)])
+                        base_loss=(mse(torch.cat([a['baseline'] for a in av]),torch.cat([b['neutral_mean'] for b in bv]),common)+
+                            mse(torch.cat([b['baseline'] for b in bv]),torch.cat([a['neutral_mean'] for a in av]),common))/(2*.25**2)
+                        contrast=style_contrastive(ac,bc,torch.tensor([pairs[int(i)][0] for i in ix],device=args.device))
+                        loss=base_loss+.05*contrast;values={'baseline':base_loss,'contrast':contrast}
+                    else:
+                        b=subset(data['splits']['train'],ix,args.device);identity=batch_identity(identities,b)
+                        base={'b0':b['b0'],'h0':b['h0']};mask=obs(b)
+                        noise=torch.randn(b['motion'].shape,generator=gen).to(args.device);ft=torch.rand(len(ix),generator=gen).to(args.device)
+                        if stage=='articulation':
+                            out=base_forward(system,b['content'],b['valid'],gradients=True)['b0']
+                            cc=list(MOUTH);m=mask[...,cc];scale=scales[cc].clamp_min(.05)
+                            raw=huber(out[...,cc]/scale,b['motion'][...,cc]/scale,m)
+                            pair=m[:,1:]&m[:,:-1]
+                            velocity=huber((out[:,1:,cc]-out[:,:-1,cc])/scale,(b['motion'][:,1:,cc]-b['motion'][:,:-1,cc])/scale,pair)
+                            loss=raw+.1*velocity;values={'raw':raw,'velocity':velocity}
+                        elif stage in ('teacher','audio'):
+                            if stage=='teacher':affect=teacher_affect(system,b,identity);distill=affect['global'].sum()*0
+                            else:
+                                with torch.no_grad():teacher=teacher_affect(system,b,identity)
+                                affect=audio(b['audio_features'],b['valid'])
+                                distill=F.mse_loss(affect['global'],teacher['global'])
+                            out=system.flow(b['motion'],b['content'],b['valid'],identity,affect,noise=noise,time=ft,base=base)
+                            flow=mse(out['prediction'],out['velocity_target'],mask);semantic=semantics(affect,b)
+                            loss=flow+.1*semantic+(.5*distill if stage=='audio' else 0)
+                            values={'flow':flow,'semantic':semantic,'global_distill':distill}
+                            if stage=='audio':
+                                truth,_=targets(b,scales,args.stride)
+                                state_loss=huber(affect['state'],truth['state'],truth['state_mask'])
+                                loss=loss+.2*state_loss;values['slow_state']=state_loss
+                            # A genuine noise rollout every fourth batch protects output fit.
+                            if bi%4==0:
+                                generated=system.generate(b['content'],b['valid'],identity,affect,initial_noise=noise,steps=args.decode_steps,base=base)['motion']
+                                reconstruction=torch.stack([huber(generated[...,list(cc)]/scales[list(cc)].clamp_min(.02),b['motion'][...,list(cc)]/scales[list(cc)].clamp_min(.02),mask[...,list(cc)]) for cc in GROUPS.values()]).mean()
+                                domain=(F.relu(-generated[mask])+F.relu(generated[mask]-1)).mean()
+                                loss=loss+.2*reconstruction+.1*domain;values.update(rollout_raw=reconstruction,domain=domain)
+                        else:
+                            with torch.no_grad():affect=audio(b['audio_features'],b['valid'])
+                            dynamic=local_audio(b['audio_features'],b['valid']);truth,innovation=targets(b,scales,args.stride)
+                            state_loss=huber(dynamic['state'],truth['state'],truth['state_mask'])
+                            flow=upper.flow_loss(innovation,b,identity,affect,dynamic['local'],dynamic['state'],noise[...,list(UPPER_INDICES)],ft)
+                            loss=flow+.5*state_loss;values={'flow':flow,'slow_state':state_loss}
+                            if bi%4==0:
+                                residual=upper.decode(b,identity,affect,dynamic['local'],dynamic['state'],noise[...,list(UPPER_INDICES)],args.decode_steps)
+                                uv=upper_motion(b,scales,dynamic['state'],residual)
+                                domain=(F.relu(-uv[b['valid']])+F.relu(uv[b['valid']]-1)).mean()
+                                loss=loss+.1*domain;values['domain']=domain
+                    norm=optimize(loss,optimizer,parameters);total_steps+=1
+                    for k,v in {'total':loss,**values}.items():sums.setdefault(k,[]).append(float(v.detach()))
+                    if bi%25==0:print(json.dumps({'event':'batch','stage':stage,'epoch':epoch+1,'batch':bi+1,'batches':batches,'loss':float(loss.detach()),'grad_norm':norm}),flush=True)
+                elapsed=time.monotonic()-begin
+                record={'stage':stage,'epoch':epoch+1,'batches':batches,'samples':len(items),'seconds':elapsed,'losses':{k:sum(v)/len(v) for k,v in sums.items()},'total_steps':total_steps}
+                checkpoint(epoch+1);save_json(stage_dir/f'epoch{epoch+1:03d}.json',record)
+                save_json(args.output/'status.json',{**record,'status':'running','stage_index':stage_index,'stage_count':len(STAGES),'epochs_per_stage':epochs,'elapsed_seconds':elapsed_before+time.monotonic()-started})
+                print(json.dumps({'event':'epoch_complete',**record}),flush=True)
+                if stage in ('teacher','audio','dynamics') and ((epoch+1)%4==0 or args.smoke):
+                    report,_=evaluate(system,audio,upper,local_audio,data,identities,stage,args)
+                    save_json(stage_dir/f'dev_epoch{epoch+1:03d}.json',report)
+            if stage=='articulation':cache_current_base(system,data,args.device)
+            if stage in ('articulation','identity'):identities=identity_cache(system,data,args.device)
+            for name,want in frozen_before.items():
+                if state_hash(dict(system=system,audio=audio,upper=upper,local_audio=local_audio)[name].state_dict())!=want:raise RuntimeError('Frozen module drift: '+name)
+            for name,module in [('system',system),('audio',audio),('upper',upper),('local_audio',local_audio)]:
+                actual=state_hash({k:v for k,v in module.named_parameters() if not v.requires_grad})
+                if actual!=frozen_parameters[name]:raise RuntimeError('Frozen parameter subset drift: '+name)
+            identity_result=identity_report(system,data,args.device);save_json(stage_dir/'identity.json',identity_result)
+            report,curves=evaluate(system,audio,upper,local_audio,data,identities,stage,args,full=not args.smoke)
+            report['identity']=identity_result;save_json(stage_dir/'evaluation.json',report);save_checkpoint(stage_dir/'curves.pt',curves)
+            save_checkpoint(stage_dir/'final.pt',{'schema':SCHEMA,'recipe_sha256':recipe_hash,'stage':stage,'completed_epochs':epochs,
+                'system':system.state_dict(),'audio':audio.state_dict(),'upper':upper.state_dict(),'local_audio':local_audio.state_dict(),
+                'config':cfg,'scales':data['target_scales'],'inference_only':True})
+            save_json(stage_dir/'complete.json',{'stage':stage,'completed_epochs':epochs,'final_sha256':sha(stage_dir/'final.pt'),'curves_sha256':sha(stage_dir/'curves.pt')})
+            resume_payload=None;start_epoch=0
+        save_json(args.output/'summary.json',{'schema':SCHEMA,'status':'complete','stages':list(STAGES),'epochs_per_stage':epochs,'smoke':args.smoke,
+            'total_steps':total_steps,'elapsed_seconds':elapsed_before+time.monotonic()-started,'default_replaced':False,'test_loaded':False})
+        save_json(args.output/'status.json',{'status':'complete','elapsed_seconds':elapsed_before+time.monotonic()-started,'summary':'summary.json'})
+        print('FULL_STAGED_TRAINING_COMPLETE',flush=True)
+    except BaseException as exc:
+        save_json(args.output/'failure.json',{'stage':current_stage,'exception':repr(exc),'recover_from':'last.pt','elapsed_seconds':elapsed_before+time.monotonic()-started})
+        raise
+
+
+if __name__=='__main__':main()

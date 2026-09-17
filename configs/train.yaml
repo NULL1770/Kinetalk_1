@@ -1,41 +1,52 @@
+# Semantic v9 pilot. This configuration has no legacy Stage2/3/4 path.
+# The only legacy checkpoint is the frozen, unchanged Stage1 articulation B0.
 seed: 42
 device: cuda
-amp: true
-amp_dtype: bfloat16
 data:
-  records_manifest: data/processed/mead_media_v1/manifest_mead.jsonl
-  # Replace data/ with the root of the prepared KineTalk data tree.
-  train_manifest: data/processed/protocol_speaker_disjoint_v1/stage2_4_train.jsonl
-  val_manifest: data/processed/protocol_speaker_disjoint_v1/stage2_4_val.jsonl
-  test_manifest: data/processed/protocol_speaker_disjoint_v1/stage2_4_test.jsonl
-  stage1_manifest: data/processed/protocol_speaker_disjoint_v1/stage1_train.jsonl
-  stage1_val_manifest: data/processed/protocol_speaker_disjoint_v1/stage1_val.jsonl
-  stage1_test_manifest: data/processed/protocol_speaker_disjoint_v1/stage1_test.jsonl
-  stage1_target_root: data/processed/stage1_canonical_neutral_v1
-  aligned_dtw_root: data/processed/aligned_dtw_v3_hubert_strict
-  legacy_aligned_root: data/processed/aligned_dtw_v2
-  aligned_dtw_quality: data/processed/aligned_dtw_v3_hubert_strict/quality.jsonl
-  aligned_dtw_status: [accepted, ok, cached]
-  supervision_root: data/processed/safe_supervision_v1
-  supervision_dim: 5
-  window: 96
+  # Native artifact: motion[T,52], content[T,768], audio[T,83], times[T],
+  # mask[T], channel_mask[52]; audio = 80 mel + 3 prosody channels.
   motion_dim: 52
-  normalize_motion: false
   content_dim: 768
-  audio_dim: 2
-  audio_teacher_dim: 64
-  affect_dim: 3
-  audio_emotion_dim: 69
-  neutral_output_indices: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 51]
+  audio_dim: 83
   emotion_classes: [neutral, angry, contempt, disgust, fear, happy, sad, surprise]
   num_intensity_levels: 4
-  require_neutral_partner: true
-  num_workers: 6
-  batch_size: 16
-  speaker_balanced: true
-  cross_speaker_style: true
+  # These Stage1 decoder/architecture indices preserve its checkpoint contract.
+  # They are not the channels used by the new timing loss.
+  neutral_output_indices: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 51]
+  stage1_native_context: 9
+semantic_data:
+  train_manifest: pilot_data/train.jsonl
+  val_manifest: pilot_data/val.jsonl
+  dataset_classes: [mead, cremad]
+  intensity_levels: {mead: 4, cremad: 4}
+  # Native arrays already share times. source_audio_offset_s=0 in the pilot;
+  # no second offset or length resampling is applied.
+  motion_key: motion
+  motion_times_key: times
+  motion_valid_key: mask
+  channel_mask_key: channel_mask
+  content_key: content
+  content_times_key: times
+  audio_keys: [audio]
+  audio_times_key: times
+  audio_dim: 83
+  window: 96
+  # Use content[T,768] from the audited artifact. Stage1's optional 9-token
+  # input remains supported but is not synthesized for this pilot.
+  content_context: 1
+  reference_count: 2
+  cache_size: 256
+  seed: 42
+  # VA sidecar: source_modality=visual, va[T,2] in [-1,1], times, valid,
+  # confidence. Missing VA fails; invalid runs are never interpolated across.
+  max_va_gap_s: 0.12
+  max_feature_gap_s: 0.12
+  min_valid_frames: 24
+  va_confidence_min: 0.1
+  require_intensity_matched_donor: true
 model:
   content_dim: 128
+  # Keep B0 checkpoint structure unchanged; timing_indices below is separate.
   articulatory_indices: [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
   emotion_dim: 64
   style_dim: 128
@@ -46,50 +57,39 @@ model:
   dropout: 0.1
   residual_scale: 0.25
   intensity_condition_dim: 1
-  # Style must not see audio_emotion: those channels contain emotion teacher
-  # and affect features and otherwise create a direct emotion shortcut.
-  style_use_audio_hint: false
-  style_grl_lambda: 0.5
-  global_condition_dropout: 0.1
-  style_condition_dropout: 0.1
-optim:
-  lr: 0.0003
+  # ARKit order: jawOpen, mouthClose, mouthFunnel, mouthPucker,
+  # mouthRollLower/Upper, mouthShrugLower/Upper, mouthLowerDownLeft/Right,
+  # mouthUpperUpLeft/Right. Exclude smile/frown/dimple/stretch/eyes/brows.
+  timing_indices: [17, 18, 19, 20, 31, 32, 33, 34, 37, 38, 39, 40]
+  global_condition_dropout: 0.0
+  style_condition_dropout: 0.0
+training:
+  batch_size: 8
+  num_workers: 0
+  cpu_threads: 4
+  critic_steps: 400
+  generator_steps: 300
+  audio_steps: 300
+  critic_lr: 0.0003
+  generator_lr: 0.0003
+  audio_lr: 0.0003
   weight_decay: 0.00001
-  epochs: 10
-  stage4_epochs: 20
-  stage1_epochs: 40
   grad_clip: 1.0
+  cross_every: 2
+  decode_steps: 4
+  log_every: 20
 loss:
-  stage1_velocity: 0.2
-  stage1_acceleration: 0.1
-  stage2_velocity: 0.05
-  stage2_classification: 0.5
-  stage2_intensity: 0.25
-  stage2_cross: 1.0
-  stage2_cycle: 0.5
-  # Supervised contrastive on z_style prevents cycle-only supervision from
-  # collapsing the style code to a constant.
-  stage2_style_supcon: 0.5
-  stage2_style_supcon_temperature: 0.1
-  stage2_style_invariance: 0.05
-  stage2_style_content_invariance: 0.02
-  stage2_style_probe: 0.1
-  stage2_style_triplet: 0.5
-  stage2_style_triplet_margin: 0.2
-  stage2_style_cross_emotion: 0.5
-  stage2_style_view_consistency: 0.5
-  stage3_global: 1.0
-  stage3_local: 1.0
-  stage3_classification: 1.0
-  stage3_intensity: 0.5
-  stage4_factor_consistency: 0.1
-  # Cross-style intervention has no unique framewise target; keep it
-  # subordinate to self reconstruction while preserving affect/style factors
-  # and lower-face timing.
-  stage4_cross_style: 0.25
+  # Core objectives only: no BS-derived intensity, free-local cycle,
+  # redundant triplet, correlation penalty, or emotion/style GRL.
+  cross: 0.25
+  mouth_timing: 0.1
+validation:
+  min_emotion_accuracy: 0.35
+  min_va_ccc: 0.15
+  min_style_retrieval: 0.75
+  diagnostic_batches: 2
+  visual_generation_approved: false
 paths:
-  output_dir: outputs_protocol_v1
-  stage1_ckpt: outputs_protocol_v1/stage1_neutral.pt
-  stage2_ckpt: outputs_protocol_v1/stage2_factors.pt
-  stage3_ckpt: outputs_protocol_v1/stage3_audio_emotion.pt
-  stage4_ckpt: outputs_protocol_v1/stage4_generator.pt
+  stage1_ckpt: /root/autodl-tmp/kinetalk_b0_residual_train/outputs_protocol_v1/stage1_neutral.pt
+  output_dir: outputs/semantic_pilot
+

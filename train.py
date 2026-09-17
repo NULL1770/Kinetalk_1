@@ -1,553 +1,762 @@
+"""Production v9 trainer for semantic/style experiments."""
+
 from __future__ import annotations
-
 import argparse
-from contextlib import nullcontext
+import hashlib
+import json
+import math
+import os
+import time
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any
-
 import torch
-from torch.utils.data import DataLoader, WeightedRandomSampler
-
-from kinetalk_b0.data import B0ResidualDataset, CanonicalStage1Dataset, collate_b0_residual, collate_stage1
-from kinetalk_b0.losses import (
-    stage2_loss,
-    stage2_swap_loss,
-    stage2_factor_cycle_loss,
-    stage2_style_supcon_loss,
-    style_factor_invariance_loss,
-    style_content_invariance_loss,
-    style_probe_loss,
-    stage2_style_triplet_loss,
-    stage2_style_cross_emotion_loss,
-    style_view_consistency_loss,
-    stage3_loss,
-    stage4_loss,
-    stage4_cross_style_loss,
-    stage1_clean_loss,
+from torch.utils.data import DataLoader
+from kinetalk_b0.models.semantic import (
+    SemanticGenerator,
+    MotionSemanticReadout,
+    MultiReferenceStyleEncoder,
+    SemanticAudioEncoder,
 )
-from kinetalk_b0.models import Stage1Model, Stage2Model, Stage3Model, Stage4Model
-from kinetalk_b0.utils import load_checkpoint, load_yaml, move_to_device, save_checkpoint, seed_everything
-from kinetalk_b0.protocol import audit_config, require_training_protocol
+from kinetalk_b0.semantic_data import SemanticMotionDataset, semantic_collate
+from kinetalk_b0.semantic_losses import (
+    semantic_supervision,
+    style_contrastive,
+    cross_style_objective,
+)
+from kinetalk_b0.utils import load_yaml, move_to_device, freeze_module, seed_everything
 
 
-def _device(config: dict[str, Any]) -> torch.device:
-    requested = str(config.get("device", "cuda"))
-    return torch.device(requested if requested != "cuda" or torch.cuda.is_available() else "cpu")
+def infinite_batches(loader: Iterable):
+    epoch = 0
+    while True:
+        if hasattr(getattr(loader, "dataset", None), "set_epoch"):
+            loader.dataset.set_epoch(epoch)
+        count = 0
+        for batch in loader:
+            count += 1
+            yield epoch, batch
+        if count == 0:
+            raise ValueError("empty training loader")
+        epoch += 1
 
 
-def _configure_torch(config: dict[str, Any], device: torch.device) -> None:
-    """Enable safe CUDA throughput settings without changing the raw-BS contract."""
-    if device.type == "cuda":
-        torch.backends.cuda.matmul.allow_tf32 = True
-        torch.backends.cudnn.allow_tf32 = True
-        torch.set_float32_matmul_precision("high")
+def _content(gen, b):
+    c = b.get("content_context")
+    return (
+        c
+        if c is not None and c.shape[-2] == gen.stage1.native_aggregator.context
+        else b["content"]
+    )
 
 
-def _amp_dtype(config: dict[str, Any], device: torch.device) -> torch.dtype | None:
-    if not bool(config.get("amp", False)) or device.type != "cuda":
-        return None
-    requested = str(config.get("amp_dtype", "bfloat16")).lower()
-    if requested in {"float16", "fp16", "half"}:
-        return torch.float16
-    return torch.bfloat16
+def observed(b):
+    motion = b["motion"]
+    mask = b["valid"].bool()
+    channels = b.get("channel_mask")
+    if channels is None or channels.shape != motion.shape[:-2] + (motion.shape[-1],):
+        raise ValueError("explicit channel_mask required")
+    out = mask.unsqueeze(-1) & channels.bool().unsqueeze(-2)
+    if not out.flatten(1).any(-1).all():
+        raise ValueError("clip has no observed channels")
+    return out
 
 
-def _autocast(config: dict[str, Any], device: torch.device):
-    dtype = _amp_dtype(config, device)
-    if dtype is None:
-        return nullcontext()
-    return torch.autocast(device_type=device.type, dtype=dtype)
+@torch.no_grad()
+def base_residual(gen, b):
+    motion = b["motion"]
+    lead = motion.shape[:-2]
+    c = _content(gen, b)
+    flat_c = c.reshape(-1, *c.shape[len(lead) :])
+    flat_m = b["valid"].reshape(-1, motion.shape[-2])
+    b0 = gen.stage1(flat_c, flat_m)["b0"].reshape_as(motion)
+    r = torch.where(observed(b), motion - b0, torch.zeros_like(motion))
+    if not torch.isfinite(r).all():
+        raise FloatingPointError("nonfinite residual")
+    return b0, r
 
 
-def _scaler(config: dict[str, Any], device: torch.device):
-    dtype = _amp_dtype(config, device)
-    enabled = dtype == torch.float16 and device.type == "cuda"
-    return torch.amp.GradScaler("cuda", enabled=enabled)
+def style(gen, enc, b):
+    _, r = base_residual(gen, b)
+    return enc(r, b["valid"])
 
 
-def _loader(config: dict[str, Any], stage: str) -> DataLoader:
-    if stage == "neutral":
-        random_crop = bool(config["data"].get("stage1_random_crop", True))
-        dataset = CanonicalStage1Dataset(config, split="train", random_crop=random_crop)
-        batch_size = int(config["data"].get("batch_size", 4))
-        return DataLoader(
-            dataset,
-            batch_size=batch_size,
-            shuffle=True,
-            num_workers=int(config["data"].get("num_workers", 0)),
-            pin_memory=torch.cuda.is_available(),
-            persistent_workers=int(config["data"].get("num_workers", 0)) > 0,
-            collate_fn=collate_stage1,
+def semargs(b):
+    return {
+        k: b[k]
+        for k in (
+            "emotion_id",
+            "intensity_id",
+            "va",
+            "va_valid",
+            "va_confidence",
+            "intensity_valid",
         )
-    dataset = B0ResidualDataset(config, split="train", random_crop=True)
-    workers = int(config["data"].get("num_workers", 0))
-    sampler = None
-    if bool(config["data"].get("speaker_balanced", True)) and stage in {"factors", "generator"}:
-        counts = {}
-        for item in dataset.items:
-            sp = str(item.get("speaker", "unknown")); counts[sp] = counts.get(sp, 0) + 1
-        weights = torch.tensor([1.0 / counts[str(x.get("speaker", "unknown"))] for x in dataset.items], dtype=torch.double)
-        sampler = WeightedRandomSampler(weights, len(weights), replacement=True)
+    }
+
+
+def masked_flow(prediction, target, mask):
+    if prediction.shape != target.shape or mask.shape != target.shape or not mask.any():
+        raise ValueError("masked flow needs matching tensors with observations")
+    difference = prediction[mask] - target[mask]
+    if not torch.isfinite(difference).all():
+        raise FloatingPointError("nonfinite observed flow")
+    return difference.square().mean()
+
+
+def step(loss, opt, params, clip):
+    params = list(params)
+    if loss.ndim or not torch.isfinite(loss):
+        raise FloatingPointError("nonfinite loss")
+    opt.zero_grad(set_to_none=True)
+    loss.backward()
+    torch.nn.utils.clip_grad_norm_(params, clip, error_if_nonfinite=True)
+    opt.step()
+    if any(not torch.isfinite(p).all() for p in params):
+        raise FloatingPointError("nonfinite parameters")
+    return float(loss.detach())
+
+
+@torch.no_grad()
+def validate(models, va, d, cfg, audio=False):
+    gen, read, sty = models["generator"], models["readout"], models["style_encoder"]
+    modules = [gen, read, sty, models["audio"]]
+    modes = [m.training for m in modules]
+    for model in modules:
+        model.eval()
+    correct = {"emotion": 0, "intensity": 0}
+    counts = {"emotion": 0, "intensity": 0}
+    confusion = {}
+    moments = torch.zeros(7, 2, dtype=torch.float64)
+    anchors = []
+    gallery = []
+    ids = []
+    limit = int(cfg.get("validation", {}).get("max_batches", 0))
+    try:
+        for index, raw in enumerate(va):
+            if limit and index >= limit:
+                break
+            b = move_to_device(raw, d)
+            q = b["query"]
+            _, r = base_residual(gen, q)
+            outputs = (
+                models["audio"](q["audio"], q["valid"])
+                if audio
+                else read(r, q["valid"])
+            )
+            for key in ("emotion", "intensity"):
+                labels = q[key + "_id"]
+                valid = (labels >= 0) & q["valid"].any(-1)
+                if key == "intensity":
+                    valid &= q["intensity_valid"]
+                guess = outputs[key + "_logits"].argmax(-1)
+                correct[key] += int((guess[valid] == labels[valid]).sum())
+                counts[key] += int(valid.sum())
+                if key == "emotion":
+                    for target, predicted in zip(
+                        labels[valid].tolist(), guess[valid].tolist()
+                    ):
+                        confusion[(target, predicted)] = (
+                            confusion.get((target, predicted), 0) + 1
+                        )
+            mask = q["valid"] & q["va_valid"] & (q["va_confidence"] > 0)
+            x = outputs["va"][mask].double().cpu()
+            y = q["va"][mask].double().cpu()
+            w = q["va_confidence"][mask].double().cpu()[:, None]
+            if not torch.isfinite(x).all():
+                raise FloatingPointError("nonfinite validation prediction")
+            moments += torch.stack(
+                [
+                    w.expand_as(x).sum(0),
+                    (w * x).sum(0),
+                    (w * y).sum(0),
+                    (w * x * x).sum(0),
+                    (w * y * y).sum(0),
+                    (w * x * y).sum(0),
+                    (w * (x - y).abs()).sum(0),
+                ]
+            )
+            if not audio:
+                anchors.append(sty(r, q["valid"]).cpu())
+                gallery.append(style(gen, sty, b["positive_style_references"]).cpu())
+                ids.append(q["speaker_id"].cpu())
+    finally:
+        for model, mode in zip(modules, modes):
+            model.train(mode)
+    if not counts["emotion"]:
+        raise ValueError("empty labelled validation set")
+    weight, sx, sy, sxx, syy, sxy, error = moments
+    denom = weight.clamp_min(1e-12)
+    mx, my = sx / denom, sy / denom
+    vx, vy, cov = sxx / denom - mx * mx, syy / denom - my * my, sxy / denom - mx * my
+    ccc = (
+        2
+        * cov
+        / (vx.clamp_min(0) + vy.clamp_min(0) + (mx - my).square()).clamp_min(1e-12)
+    )
+    meaningful = (weight > 0) & (vy > 1e-8)
+    labels = sorted({pair[0] for pair in confusion})
+    recalls = [
+        confusion.get((label, label), 0)
+        / sum(n for (target, _), n in confusion.items() if target == label)
+        for label in labels
+    ]
+    result = {
+        "emotion_accuracy": correct["emotion"] / counts["emotion"],
+        "emotion_balanced_accuracy": sum(recalls) / len(recalls),
+        "intensity_accuracy": (
+            correct["intensity"] / counts["intensity"] if counts["intensity"] else None
+        ),
+        "known_intensity_examples": counts["intensity"],
+        "examples": counts["emotion"],
+        "va_mae": float((error / denom).mean()) if (weight > 0).all() else None,
+        "va_ccc": [float(ccc[i]) if meaningful[i] else None for i in range(2)],
+        "va_ccc_mean": float(ccc.mean()) if meaningful.all() else None,
+        "va_target_variance": vy.tolist(),
+    }
+    if not audio:
+        x, y, speakers = torch.cat(anchors), torch.cat(gallery), torch.cat(ids)
+        retrieval = []
+        for start in range(0, len(x), 256):
+            scores = x[start : start + 256] @ y.T
+            # Another query's same-speaker gallery may contain this query
+            # itself. Only this query's independently sampled positive set is
+            # an eligible same-speaker candidate; all other-speaker sets remain.
+            allowed = speakers[start : start + len(scores), None] != speakers[None]
+            allowed[torch.arange(len(scores)), torch.arange(start, start + len(scores))] = True
+            nearest = scores.masked_fill(~allowed, -torch.inf).argmax(-1)
+            retrieval.append(
+                (speakers[nearest] == speakers[start : start + 256]).float()
+            )
+        frequencies = torch.unique(speakers, return_counts=True)[1].float() / len(
+            speakers
+        )
+        result.update(
+            style_retrieval=(
+                float(torch.cat(retrieval).mean()) if len(frequencies) > 1 else None
+            ),
+            style_speakers=len(frequencies),
+            style_retrieval_chance=float(frequencies.square().sum()),
+            style_gallery_policy="own independent cross-emotion/cross-sentence positive set plus other-speaker sets; other same-speaker sets excluded",
+        )
+    return result
+
+
+def critic_gate(metrics, cfg):
+    validation = cfg.get("validation", {})
+    failures = []
+    for name, actual, threshold, higher in [
+        (
+            "emotion",
+            metrics.get("emotion_balanced_accuracy"),
+            float(validation.get("min_emotion_accuracy", 0.35)),
+            True,
+        ),
+        (
+            "va_ccc",
+            metrics.get("va_ccc_mean"),
+            float(validation.get("min_va_ccc", 0.15)),
+            True,
+        ),
+        (
+            "va_mae",
+            metrics.get("va_mae"),
+            float(validation.get("max_va_mae", 0.35)),
+            False,
+        ),
+        (
+            "style",
+            metrics.get("style_retrieval"),
+            float(validation.get("min_style_retrieval", 0.75)),
+            True,
+        ),
+    ]:
+        if (
+            actual is None
+            or not math.isfinite(actual)
+            or (actual < threshold if higher else actual > threshold)
+        ):
+            failures.append(f"{name}: {actual!r}; threshold {threshold}")
+    return {
+        "critics_accepted": not failures,
+        "visual_path_accepted": False,
+        "failures": failures,
+        "metrics": metrics,
+    }
+
+
+def _json(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False),
+        encoding="utf8",
+    )
+
+
+def loader(cfg, split, training):
+    ds = SemanticMotionDataset(cfg, split=split, random_crop=training)
+    t = cfg["training"]
     return DataLoader(
-        dataset,
-        batch_size=int(config["data"].get("batch_size", 4)),
-        shuffle=sampler is None,
-        sampler=sampler,
-        num_workers=workers,
-        pin_memory=torch.cuda.is_available(),
-        persistent_workers=workers > 0,
-        collate_fn=collate_b0_residual,
+        ds,
+        batch_size=int(t.get("batch_size", 8)),
+        shuffle=training,
+        num_workers=int(t.get("num_workers", 0)),
+        collate_fn=semantic_collate,
+        drop_last=False,
     )
 
 
-def _optimizer(config: dict[str, Any], model: torch.nn.Module) -> torch.optim.Optimizer:
-    optim_cfg = config["optim"]
-    parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
-    if not parameters:
-        raise ValueError("No trainable parameters remain for this stage")
-    return torch.optim.AdamW(
-        parameters,
-        lr=float(optim_cfg.get("lr", 3e-4)),
-        weight_decay=float(optim_cfg.get("weight_decay", 1e-5)),
-    )
+def provenance(cfg, tr, va):
+    def sha(p):
+        h = hashlib.sha256()
+        with Path(p).open("rb") as f:
+            for x in iter(lambda: f.read(1 << 20), b""):
+                h.update(x)
+        return h.hexdigest()
 
-
-def _step_optimizer(
-    loss: torch.Tensor,
-    optimizer: torch.optim.Optimizer,
-    model: torch.nn.Module,
-    config: dict[str, Any],
-    scaler: torch.amp.GradScaler | None = None,
-) -> None:
-    optimizer.zero_grad(set_to_none=True)
-    if scaler is not None and scaler.is_enabled():
-        scaler.scale(loss).backward()
-        scaler.unscale_(optimizer)
-        torch.nn.utils.clip_grad_norm_(model.parameters(), float(config["optim"].get("grad_clip", 1.0)))
-        scaler.step(optimizer)
-        scaler.update()
-    else:
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), float(config["optim"].get("grad_clip", 1.0)))
-        optimizer.step()
-
-
-def _stage1(config: dict[str, Any], device: torch.device) -> None:
-    model = Stage1Model(config).to(device)
-    optimizer = _optimizer(config, model)
-    loader = _loader(config, "neutral")
-    loss_cfg = config["loss"]
-    scaler = _scaler(config, device)
-    # Stage1 structurally emits only these channels. Counting the remaining
-    # channels creates irreducible loss because their predictions are fixed at
-    # zero, which dilutes the mouth gradients and makes the scalar loss look
-    # better than the actual articulation fidelity.
-    channel_weights = torch.zeros(int(config["data"]["motion_dim"]), device=device)
-    channel_weights[list(config["data"]["neutral_output_indices"])] = float(loss_cfg.get("stage1_active_weight", 1.0))
-    for epoch in range(int(config["optim"].get("stage1_epochs", config["optim"].get("epochs", 1)))):
-        totals = 0.0
-        for batch in loader:
-            batch = move_to_device(batch, device)
-            content, target, mask = batch["content"], batch["target"], batch["mask"]
-            cross_start = int(loss_cfg.get("stage1_cross_emotion_start_epoch", 0))
-            if epoch < cross_start:
-                identity = torch.tensor(
-                    [str(kind) == "identity" for kind in batch.get("pair_type", [])],
-                    device=mask.device, dtype=torch.bool,
-                )
-                if not bool(identity.any()):
+    assets = {}
+    for data_loader in (tr, va):
+        for row in data_loader.dataset.items:
+            for key in ("motion_path", "content_path", "audio_path", "va_path"):
+                if key not in row:
                     continue
-                mask = mask & identity.unsqueeze(1)
-            with _autocast(config, device):
-                output = model(
-                    content, mask,
-                )
-                losses = stage1_clean_loss(output["b0"], target, mask, channel_weights,
-                                           velocity_weight=float(loss_cfg.get("stage1_velocity", 0.5)),
-                                           frame_weight=batch.get("quality"),
-                                           sample_weight=batch.get("pair_weight"),
-                                           acceleration_weight=float(loss_cfg.get("stage1_acceleration", 0.0)))
-            _step_optimizer(losses["total"], optimizer, model, config, scaler)
-            totals += float(losses["total"].detach())
-        print(f"stage1 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage1_ckpt"], model, optimizer, epoch + 1, stage="stage1", data_protocol=config["data_protocol"])
-        epoch_dir = config["paths"].get("stage1_epoch_ckpt_dir")
-        if epoch_dir:
-            save_checkpoint(Path(epoch_dir) / f"stage1_epoch_{epoch + 1:03d}.pt", model, optimizer, epoch + 1, stage="stage1", data_protocol=config["data_protocol"])
+                path = str(Path(row[key]).resolve())
+                if path not in assets:
+                    assets[path] = sha(path)
+                expected = row.get("source_artifact_sha256") if key == "motion_path" else None
+                if expected and assets[path] != expected:
+                    raise RuntimeError(f"native artifact checksum differs from manifest: {row['clip_id']}")
+    return {
+        "config_sha256": sha(cfg["_config_path"]),
+        "train_manifest_sha256": sha(tr.dataset.manifest),
+        "val_manifest_sha256": sha(va.dataset.manifest),
+        "stage1_sha256": sha(cfg["paths"]["stage1_ckpt"]),
+        "assets_sha256": hashlib.sha256(json.dumps(assets, sort_keys=True).encode()).hexdigest(),
+        "verified_asset_files": len(assets),
+        "torch": torch.__version__,
+    }
 
 
-def _load_stage1(config: dict[str, Any], device: torch.device) -> Stage1Model:
-    model = Stage1Model(config).to(device)
-    payload = load_checkpoint(config["paths"]["stage1_ckpt"], model, map_location=device, strict=True, expected_architecture_version=7)
-    require_training_protocol(payload, config["data_protocol"])
-    for parameter in model.parameters():
-        parameter.requires_grad_(False)
-    model.eval()
-    return model
+def save(
+    path, models, cfg, prov, stage, step, validation, optimizer=None, exploratory=False
+):
+    p = path.with_suffix(path.suffix + ".tmp")
+    data = {
+        "architecture_version": 9,
+        "stage": stage,
+        "step": step,
+        "config": cfg,
+        "provenance": prov,
+        "validation": validation,
+        "exploratory": exploratory,
+        **{k: v.state_dict() for k, v in models.items()},
+    }
+    if optimizer is not None:
+        data["optimizer"] = optimizer.state_dict()
+    torch.save(data, p)
+    os.replace(p, path)
 
 
-def _stage2(config: dict[str, Any], device: torch.device) -> None:
-    stage1 = _load_stage1(config, device)
-    model = Stage2Model(config).to(device)
-    optimizer = _optimizer(config, model)
-    loader = _loader(config, "factors")
-    loss_cfg = config["loss"]
-    cross_weight = float(loss_cfg.get("stage2_cross", 1.0))
-    cycle_weight = float(loss_cfg.get("stage2_cycle", 0.5))
-    supcon_weight = float(loss_cfg.get("stage2_style_supcon", 0.5))
-    supcon_temperature = float(loss_cfg.get("stage2_style_supcon_temperature", 0.1))
-    scaler = _scaler(config, device)
-    for epoch in range(int(config["optim"].get("epochs", 1))):
-        totals = 0.0
-        for batch in loader:
-            batch = move_to_device(batch, device)
-            query, emotion = batch["query"], batch["emotion_pair"]
-            with torch.no_grad():
-                query_stage1 = stage1(
-                    query["content"], query["mask"],
-                )
-                neutral = batch["neutral"]
-                neutral_stage1 = stage1(neutral["content"], neutral["mask"])
-                h0 = query_stage1["h0"]
-                query_residual = query["motion"] - query_stage1["b0"]
-                # Use the aligned neutral clip's full-face motion for the
-                # auxiliary Style view.  `b0_gt` is intentionally lower-face
-                # only (upper-face channels are zero), so using it here would
-                # erase eye/brow/cheek execution style from the consistency
-                # target.
-                neutral_style_residual = neutral["motion"] - neutral_stage1["b0"]
-                neutral_valid = batch["relations"]["neutral"]
-                query_style_residual = query_residual
-            with _autocast(config, device):
-                factors = model.encode_factors(
-                    query_residual, query["residual_mask"],
-                    query.get("audio_emotion", query.get("audio")),
-                    style_residual=query_style_residual,
-                )
-                # The neutral paired view removes the labelled emotion signal;
-                # the raw emotional view preserves the deployment input contract.
-                # Matching their style codes is the single cross-view disentangling
-                # objective, rather than another unconstrained style subspace.
-                neutral_style_factors = model.encode_factors(
-                    neutral_style_residual, neutral["mask"],
-                    neutral.get("audio_emotion", neutral.get("audio")),
-                    style_residual=neutral_style_residual,
-                )
-                flow_prediction, flow_target = model.flow_prediction(query_residual, h0, factors, query["residual_mask"])
-                losses = stage2_loss(
-                    flow_prediction,
-                    flow_target,
-                    query_residual,
-                    query["residual_mask"],
-                    factors,
-                    query["emotion_id"],
-                    query["intensity_id"],
-                    velocity_weight=float(loss_cfg.get("stage2_velocity", 0.05)),
-                    classification_weight=float(loss_cfg.get("stage2_classification", 0.5)),
-                    intensity_weight=float(loss_cfg.get("stage2_intensity", 0.25)),
-                )
-                view_consistency = style_view_consistency_loss(
-                    factors["style"], neutral_style_factors["style"], neutral_valid
-                )
-                losses["style_view_consistency"] = view_consistency
-                losses["total"] = losses["total"] + float(
-                    loss_cfg.get("stage2_style_view_consistency", 0.0)
-                ) * view_consistency
-                if supcon_weight > 0:
-                    speakers = batch["query"].get("speaker", [])
-                    if len(speakers) == factors["style"].shape[0] and len(speakers) > 1:
-                        same_speaker = torch.tensor(
-                            [[a == b for b in speakers] for a in speakers],
-                            device=factors["style"].device,
-                            dtype=torch.bool,
-                        )
-                        supcon = stage2_style_supcon_loss(
-                            factors["style"], same_speaker, temperature=supcon_temperature
-                        )
-                        losses["style_supcon"] = supcon
-                        losses["total"] = losses["total"] + supcon_weight * supcon
-                losses["style_invariance"] = style_factor_invariance_loss(
-                    factors["style"], factors["emotion_logits"], query["emotion_id"]
-                )
-                losses["total"] = losses["total"] + float(loss_cfg.get("stage2_style_invariance", 0.05)) * losses["style_invariance"]
-                losses["style_content_invariance"] = style_content_invariance_loss(factors["style"], query["content"])
-                losses["total"] = losses["total"] + float(loss_cfg.get("stage2_style_content_invariance", 0.02)) * losses["style_content_invariance"]
-                probe_weight = float(loss_cfg.get("stage2_style_probe", 0.0))
-                if probe_weight > 0.0:
-                    # These logits pass through GRL: the probe learns to predict
-                    # emotion/content while the style encoder receives reversed
-                    # gradients and is discouraged from carrying those signals.
-                    losses["style_probe"] = style_probe_loss(factors, query["emotion_id"], query["content"])
-                    # Apply the same nuisance-removal pressure to the paired
-                    # neutral view.  The label is the source clip emotion;
-                    # through GRL this discourages either view from encoding
-                    # that nuisance coordinate in Style.
-                    losses["neutral_style_probe"] = style_probe_loss(neutral_style_factors, query["emotion_id"], query["content"])
-                    losses["total"] = losses["total"] + probe_weight * (losses["style_probe"] + losses["neutral_style_probe"]) * 0.5
-                emotion_factors = None
-                if bool(batch["relations"]["emotion"].any()):
-                    with torch.no_grad():
-                        emotion_stage1 = stage1(
-                            emotion["content"], emotion["mask"],
-                        )
-                        emotion_style_residual = emotion["motion"] - emotion_stage1["b0"]
-                    emotion_residual = emotion["motion"] - emotion_stage1["b0"]
-                    emotion_factors = model.encode_factors(
-                        emotion_residual, emotion["residual_mask"],
-                        emotion.get("audio_emotion", emotion.get("audio")),
-                        style_residual=emotion_style_residual,
-                    )
-                    swapped = model.render(
-                        h0,
-                        {"global": emotion_factors["global"], "intensity_value": emotion_factors["intensity_value"], "style": factors["style"]},
-                        query["mask"],
-                        steps=int(config["model"].get("render_steps", 4)),
-                    )
-                    swap_mask = query["mask"] & emotion["mask"] & batch["relations"]["emotion"].unsqueeze(1)
-                    cross = stage2_swap_loss(swapped, emotion["motion"], emotion["b0_gt"], swap_mask)
-                    swapped_factors = model.encode_factors(swapped, query["mask"], query.get("audio_emotion", query.get("audio")))
-                    expected = {
-                        "global": emotion_factors["global"],
-                        "style": factors["style"],
-                    }
-                    emotion_cycle = stage2_factor_cycle_loss(swapped_factors, expected, batch["relations"]["emotion"])
-                    losses["cross"] = cross
-                    losses["emotion_cycle"] = emotion_cycle
-                    losses["total"] = losses["total"] + cross_weight * cross + cycle_weight * emotion_cycle
-                if bool(batch["relations"]["style"].any()):
-                    style_reference = batch["style_reference"]
-                    with torch.no_grad():
-                        style_stage1 = stage1(
-                            style_reference["content"], style_reference["mask"],
-                        )
-                    style_reference_residual = style_reference["motion"] - style_stage1["b0"]
-                    style_factors = model.encode_factors(
-                        style_reference_residual, style_reference["residual_mask"],
-                        style_reference.get("audio_emotion", style_reference.get("audio")),
-                        style_residual=style_reference_residual,
-                    )
-                    style_swapped = model.render(
-                        h0,
-                        {"global": factors["global"], "intensity_value": factors["intensity_value"], "style": style_factors["style"]},
-                        query["mask"],
-                        steps=int(config["model"].get("render_steps", 4)),
-                    )
-                    style_reencoded = model.encode_factors(style_swapped, query["mask"], query.get("audio_emotion", query.get("audio")))
-                    expected = {
-                        "global": factors["global"],
-                        "style": style_factors["style"],
-                    }
-                    style_cycle = stage2_factor_cycle_loss(style_reencoded, expected, batch["relations"]["style"])
-                    losses["style_cycle"] = style_cycle
-                    losses["total"] = losses["total"] + cycle_weight * style_cycle
-                # Triplet uses the dedicated same-speaker `style_positive`
-                # branch (different sentence + different emotion when possible).
-                # `emotion_pair` shares the query sentence and would reward
-                # content leak; `style_reference` follows `cross_speaker_style`
-                # and can become cross-speaker, inverting the pull direction.
-                triplet_weight = float(loss_cfg.get("stage2_style_triplet", 0.0))
-                cross_emotion_weight = float(loss_cfg.get("stage2_style_cross_emotion", 0.0))
-                positive_available = "style_positive" in batch and bool(batch["relations"].get("style_positive", torch.zeros(1, dtype=torch.bool)).any())
-                negative_available = "style_negative" in batch and bool(batch["relations"].get("style_negative", torch.zeros(1, dtype=torch.bool)).any())
-                if (triplet_weight > 0.0 or cross_emotion_weight > 0.0) and positive_available:
-                    positive = batch["style_positive"]
-                    with torch.no_grad():
-                        positive_stage1 = stage1(
-                            positive["content"], positive["mask"],
-                        )
-                        positive_style_residual = positive["motion"] - positive_stage1["b0"]
-                    positive_factors = model.encode_factors(
-                        positive_style_residual,
-                        positive["residual_mask"],
-                        positive.get("audio_emotion", positive.get("audio")),
-                        style_residual=positive_style_residual,
-                    )
-                    if cross_emotion_weight > 0.0:
-                        cross_emotion = stage2_style_cross_emotion_loss(
-                            factors["style"], positive_factors["style"], batch["relations"]["style_positive"]
-                        )
-                        losses["style_cross_emotion"] = cross_emotion
-                        losses["total"] = losses["total"] + cross_emotion_weight * cross_emotion
-                    if triplet_weight > 0.0 and negative_available:
-                        negative = batch["style_negative"]
-                        with torch.no_grad():
-                            negative_stage1 = stage1(
-                                negative["content"], negative["mask"],
-                            )
-                            negative_style_residual = negative["motion"] - negative_stage1["b0"]
-                        negative_factors = model.encode_factors(
-                            negative_style_residual,
-                            negative["residual_mask"],
-                            negative.get("audio_emotion", negative.get("audio")),
-                            style_residual=negative_style_residual,
-                        )
-                        triplet_valid = batch["relations"]["style_positive"] & batch["relations"]["style_negative"]
-                        triplet = stage2_style_triplet_loss(
-                            factors["style"],
-                            positive_factors["style"],
-                            negative_factors["style"],
-                            triplet_valid,
-                            margin=float(loss_cfg.get("stage2_style_triplet_margin", 0.2)),
-                        )
-                        losses["style_triplet"] = triplet
-                        losses["total"] = losses["total"] + triplet_weight * triplet
-            _step_optimizer(losses["total"], optimizer, model, config, scaler)
-            totals += float(losses["total"].detach())
-        print(f"stage2 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage2_ckpt"], model, optimizer, epoch + 1, stage="stage2", data_protocol=config["data_protocol"])
-    
+def train_critics(models, tr, va, d, cfg, out, prov):
+    gen, read, sty = models["generator"], models["readout"], models["style_encoder"]
+    freeze_module(gen.stage1)
+    gen.eval()
+    read.train()
+    sty.train()
+    params = list(read.parameters()) + list(sty.parameters())
+    opt = torch.optim.AdamW(params, lr=float(cfg["training"].get("critic_lr", 3e-4)),
+                            weight_decay=float(cfg["training"].get("weight_decay", 1e-5)))
+    it = infinite_batches(tr)
+    steps = int(cfg["training"].get("critic_steps", 400))
+    for i in range(1, steps + 1):
+        ep, raw = next(it)
+        b = move_to_device(raw, d)
+        q = b["query"]
+        _, r = base_residual(gen, q)
+        sem = semantic_supervision(read(r, q["valid"]), q)
+        anchor = sty(r, q["valid"])
+        neutral_refs = b.get("neutral_style_references", b["same_style_references"])
+        pos = torch.stack(
+            [
+                style(gen, sty, neutral_refs),
+                style(gen, sty, b["positive_style_references"]),
+            ],
+            1,
+        )
+        con = style_contrastive(
+            anchor,
+            pos,
+            q["speaker_id"],
+            temperature=float(cfg["training"].get("style_temperature", 0.1)),
+        )
+        loss = (
+            sem["total"]
+            + float(cfg.get("loss", {}).get("style_contrastive", 1.0)) * con
+        )
+        value = step(loss, opt, params, float(cfg["training"].get("grad_clip", 1.0)))
+        _log(
+            out,
+            "critics",
+            {
+                "step": i,
+                "epoch": ep,
+                "loss": value,
+                "style": float(con.detach()),
+                **{"semantic_" + key: float(value.detach()) for key, value in sem.items()},
+                "speakers": int(q["speaker_id"].unique().numel()),
+            },
+        )
+    metrics = validate(models, va, d, cfg)
+    gate = critic_gate(metrics, cfg)
+    save(out / "critics.pt", models, cfg, prov, "critics", steps, gate, opt)
+    _json(out / "critics_validation.json", gate)
+    return gate
 
 
-def _load_stage2(config: dict[str, Any], device: torch.device) -> Stage2Model:
-    model = Stage2Model(config).to(device)
-    payload = load_checkpoint(config["paths"]["stage2_ckpt"], model, map_location=device, strict=True, expected_architecture_version=8)
-    require_training_protocol(payload, config["data_protocol"])
-    return model
+def generator_step(models, b, cfg, d, with_cross=True):
+    gen, read, sty = models["generator"], models["readout"], models["style_encoder"]
+    q = b["query"]
+    # Identity is anchored by neutral references when the manifest provides
+    # them; the dataset falls back to ordinary same-speaker views otherwise.
+    own_refs = b.get("neutral_style_references", b["same_style_references"])
+    own = style(gen, sty, own_refs).detach()
+    m = observed(q)
+    b0, _ = base_residual(gen, q)
+    target = torch.where(m, q["motion"], b0)
+    o = gen.forward_flow(target, _content(gen, q), q["valid"], style=own, **semargs(q))
+    flow = masked_flow(o["prediction"], o["velocity_target"], m)
+    total = flow
+    if not with_cross:
+        return total, {"flow": flow}
+    with torch.no_grad():
+        donor = style(gen, sty, b["donor_references"])
+        negatives = torch.cat([own, donor])
+        neg_ids = torch.cat([q["speaker_id"], b["donor_anchor"]["speaker_id"]])
+    noise = torch.randn_like(q["motion"])
+    prior_mode = gen.training
+    gen.eval()  # Independent integration has fixed noise, without dropout noise.
+    try:
+        generated = gen.generate(
+            _content(gen, q), q["valid"], style=donor, initial_noise=noise,
+            steps=int(cfg["training"].get("decode_steps", 4)), **semargs(q),
+        )
+    finally:
+        gen.train(prior_mode)
+    rr = torch.where(m, generated["residual"], torch.zeros_like(generated["residual"]))
+    cs = read(rr, q["valid"])
+    gs = sty(rr, q["valid"])
+    timing = [
+        int(i)
+        for i in cfg["model"].get("timing_indices", [])
+        if q["channel_mask"][:, int(i)].all()
+    ]
+    cross = cross_style_objective(
+        generated["motion"],
+        o["b0"],
+        cs,
+        q,
+        gs,
+        donor,
+        negatives,
+        timing,
+        donor_speaker_ids=b["donor_anchor"]["speaker_id"],
+        negative_speaker_ids=neg_ids,
+        mouth_weight=float(cfg.get("loss", {}).get("mouth_timing", 0.1)),
+    )
+    total = total + float(cfg.get("loss", {}).get("cross", 0.25)) * cross["total"]
+    return total, {
+        "flow": flow,
+        "cross": cross["total"],
+        "style": cross["style"],
+        "semantic": cross["semantic"],
+        "mouth_timing": cross["mouth_timing"],
+    }
 
 
-def _stage3(config: dict[str, Any], device: torch.device) -> None:
-    stage1 = _load_stage1(config, device)
-    stage2 = _load_stage2(config, device)
-    model = Stage3Model(config, stage2).to(device)
-    optimizer = _optimizer(config, model)
-    loader = _loader(config, "audio_emotion")
-    loss_cfg = config["loss"]
-    scaler = _scaler(config, device)
-    for epoch in range(int(config["optim"].get("epochs", 1))):
-        totals = 0.0
-        for batch in loader:
-            batch = move_to_device(batch, device)
-            query = batch["query"]
-            # Stage3 distills the frozen Stage2 emotion teacher in the same
-            # predicted-B0 residual coordinate used by Stage2 and Stage4.
-            with torch.no_grad():
-                query_stage1 = stage1(query["content"], query["mask"])
-            with _autocast(config, device):
-                audio_factors = model(query["audio_emotion"], query["mask"])
-                teacher = model.teacher(query["motion"] - query_stage1["b0"], query["residual_mask"])
-                losses = stage3_loss(
-                    audio_factors,
-                    teacher,
-                    query["emotion_id"],
-                    query["intensity_id"],
-                    global_weight=float(loss_cfg.get("stage3_global", 1.0)),
-                    classification_weight=float(loss_cfg.get("stage3_classification", 1.0)),
-                    intensity_weight=float(loss_cfg.get("stage3_intensity", 0.5)),
-                    local_weight=float(loss_cfg.get("stage3_local", 1.0)),
-                )
-            _step_optimizer(losses["total"], optimizer, model, config, scaler)
-            totals += float(losses["total"].detach())
-        print(f"stage3 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage3_ckpt"], model, optimizer, epoch + 1, stage="stage3", data_protocol=config["data_protocol"])
+def train_generator(models, tr, va, d, cfg, out, prov, acceptance, exploratory):
+    if not acceptance.get("critics_accepted", False) and not exploratory:
+        raise RuntimeError(
+            "critic gate failed; use --exploratory only for labelled pilot"
+        )
+    freeze_module(models["readout"])
+    freeze_module(models["style_encoder"])
+    gen = models["generator"]
+    gen.train()
+    params = [p for p in gen.parameters() if p.requires_grad]
+    opt = torch.optim.AdamW(params, lr=float(cfg["training"].get("generator_lr", 3e-4)),
+                            weight_decay=float(cfg["training"].get("weight_decay", 1e-5)))
+    it = infinite_batches(tr)
+    steps = int(cfg["training"].get("generator_steps", 300))
+    before = evaluate(models, va, d, cfg, out / "before_generator", acceptance)
+    _json(out / "generator_diagnostic_before.json", before)
+    every = int(cfg["training"].get("cross_every", 2))
+    if every < 1:
+        raise ValueError("cross_every must be positive")
+    for i in range(1, steps + 1):
+        ep, raw = next(it)
+        loss, parts = generator_step(
+            models,
+            move_to_device(raw, d),
+            cfg,
+            d,
+            with_cross=(i == 1 or i % every == 0),
+        )
+        value = step(loss, opt, params, float(cfg["training"].get("grad_clip", 1.0)))
+        _log(
+            out,
+            "generator",
+            {
+                "step": i,
+                "epoch": ep,
+                "loss": value,
+                "exploratory": exploratory,
+                **{k: float(v.detach()) for k, v in parts.items()},
+            },
+        )
+    validation = {**acceptance, "visual_path_accepted": False}
+    save(
+        out / "generator.pt",
+        models,
+        cfg,
+        prov,
+        "generator",
+        steps,
+        validation,
+        opt,
+        exploratory,
+    )
+    report = evaluate(models, va, d, cfg, out, acceptance)
+    validation["visual_path_accepted"] = bool(
+        report["visual_path_accepted"] and not exploratory
+    )
+    save(
+        out / "generator.pt",
+        models,
+        cfg,
+        prov,
+        "generator",
+        steps,
+        validation,
+        opt,
+        exploratory,
+    )
+    return validation
 
 
-def _load_stage3(config: dict[str, Any], device: torch.device, stage2: Stage2Model) -> Stage3Model:
-    model = Stage3Model(config, stage2).to(device)
-    payload = load_checkpoint(config["paths"]["stage3_ckpt"], model, map_location=device, strict=True, expected_architecture_version=8)
-    require_training_protocol(payload, config["data_protocol"])
-    return model
+def require_audio_gate(state):
+    if (
+        state.get("stage") not in ("generator", "audio")
+        or not state.get("validation", {}).get("visual_path_accepted", False)
+        or state.get("exploratory", False)
+    ):
+        raise RuntimeError("audio requires accepted nonexploratory visual generator")
 
 
-def _stage4(config: dict[str, Any], device: torch.device) -> None:
-    stage1 = _load_stage1(config, device)
-    stage2 = _load_stage2(config, device)
-    stage3 = _load_stage3(config, device, stage2)
-    model = Stage4Model(config, stage1, stage2, stage3).to(device)
-    optimizer = _optimizer(config, model)
-    loader = _loader(config, "generator")
-    loss_cfg = config["loss"]
-    scaler = _scaler(config, device)
-    for epoch in range(int(config["optim"].get("stage4_epochs", config["optim"].get("epochs", 1)))):
-        totals = 0.0
-        for batch in loader:
-            batch = move_to_device(batch, device)
-            with _autocast(config, device):
-                # Self-style reconstruction has a valid framewise target.
-                self_conditions = model.conditions(batch, training_target=True, style_mode="self")
-                flow_pred, flow_target, _ = model.flow_prediction(batch, self_conditions)
-                generated_residual = model.renderer.decode(
-                    self_conditions["h0"], self_conditions["global"], self_conditions["intensity_value"],
-                    self_conditions["style"], batch["query"]["mask"],
-                    residual_scale=model.residual_scale,
-                    steps=int(config["model"].get("render_steps", 4)),
-                    stochastic=False,
-                    local_emotion=self_conditions.get("local"),
-                )
-                with torch.no_grad():
-                    target_emotion = {
-                        "global": self_conditions["global"].detach(),
-                        "local": self_conditions["local"].detach(),
-                    }
-                    target_style = self_conditions["style"].detach()
-                generated_factors = {
-                    **model.factor_emotion(generated_residual, batch["query"]["mask"]),
-                    "style": model.factor_style(generated_residual, batch["query"]["mask"], None),
-                }
-                losses = stage4_loss(
-                    flow_pred,
-                    flow_target,
-                    batch["query"]["mask"],
-                    generated_factors=generated_factors,
-                    target_factors={**target_emotion, "style": target_style},
-                    factor_weight=float(loss_cfg.get("stage4_factor_consistency", 0.1)),
-                )
-                # Cross-style intervention has no unique framewise target.
-                # It is supervised only by factor preservation, style donor
-                # recovery, and target mouth/content timing.
-                cross_conditions = model.conditions(batch, training_target=True, style_mode="cross")
-                cross_residual = model.renderer.decode(
-                    cross_conditions["h0"], cross_conditions["global"], cross_conditions["intensity_value"],
-                    cross_conditions["style"], batch["query"]["mask"],
-                    residual_scale=model.residual_scale,
-                    steps=int(config["model"].get("render_steps", 4)),
-                    stochastic=False,
-                    local_emotion=cross_conditions.get("local"),
-                )
-                cross_final = cross_conditions["b0_pred"] + cross_residual
-                cross_factors = {
-                    **model.factor_emotion(cross_residual, batch["query"]["mask"]),
-                    "style": model.factor_style(cross_residual, batch["query"]["mask"], None),
-                }
-                cross_target = {
-                    "global": self_conditions["global"].detach(),
-                    "local": self_conditions["local"].detach(),
-                    "style": cross_conditions["style"].detach(),
-                }
-                cross = stage4_cross_style_loss(
-                    cross_factors, cross_target, cross_final, batch["query"]["motion"],
-                    batch["query"]["mask"],
-                    mouth_indices=config["data"].get("neutral_output_indices", []),
-                )
-                losses["cross_style"] = cross
-                losses["total"] = losses["total"] + float(loss_cfg.get("stage4_cross_style", 0.25)) * cross
-            _step_optimizer(losses["total"], optimizer, model, config, scaler)
-            totals += float(losses["total"].detach())
-        print(f"stage4 epoch={epoch + 1} loss={totals / max(len(loader), 1):.6f}", flush=True)
-        save_checkpoint(config["paths"]["stage4_ckpt"], model, optimizer, epoch + 1, stage="stage4", data_protocol=config["data_protocol"])
+def train_audio(models, tr, va, d, cfg, out, prov, state):
+    require_audio_gate(state)
+    for k in ("generator", "readout", "style_encoder"):
+        freeze_module(models[k])
+    audio = models["audio"]
+    audio.train()
+    opt = torch.optim.AdamW(
+        audio.parameters(),
+        lr=float(
+            cfg["training"].get("audio_lr", cfg["training"].get("critic_lr", 3e-4))
+        ),
+    )
+    it = infinite_batches(tr)
+    steps = int(cfg["training"].get("audio_steps", 300))
+    for i in range(1, steps + 1):
+        ep, raw = next(it)
+        q = move_to_device(raw["query"], d)
+        loss = semantic_supervision(audio(q["audio"], q["valid"]), q)["total"]
+        _log(
+            out,
+            "audio",
+            {
+                "step": i,
+                "epoch": ep,
+                "loss": step(
+                    loss,
+                    opt,
+                    audio.parameters(),
+                    float(cfg["training"].get("grad_clip", 1.0)),
+                ),
+            },
+        )
+    validation = {
+        **state["validation"],
+        "audio_metrics": validate(models, va, d, cfg, audio=True),
+    }
+    save(out / "audio.pt", models, cfg, prov, "audio", steps, validation, opt)
+    _json(out / "audio_validation.json", validation)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Train the standalone KineTalk b0 + residual DiT stages")
-    parser.add_argument("--config", type=Path, default=Path("configs/train.yaml"))
-    parser.add_argument("--stage", choices=["neutral", "factors", "audio_emotion", "generator"], required=True)
-    parser.add_argument("--pipeline", action="store_true", help="Run stages 1-4 sequentially after contract checks")
-    args = parser.parse_args()
-    config = load_yaml(args.config)
-    config["data_protocol"] = audit_config(config["data"])
-    seed_everything(int(config.get("seed", 42)))
-    device = _device(config)
-    _configure_torch(config, device)
-    print(f"amp_dtype={_amp_dtype(config, device) or 'off'} batch_size={config['data'].get('batch_size', 4)} workers={config['data'].get('num_workers', 0)}")
-    print(f"stage={args.stage} device={device} raw_bs=true aligned_dtw=v3 safe_supervision=true training_requested=true")
-    if args.pipeline:
-        _stage1(config, device)
-        # _loader() fail-fast protects against using canonical neutral-only
-        # artifacts as emotional residual supervision.
-        _stage2(config, device)
-        _stage3(config, device)
-        _stage4(config, device)
-    else:
-        {"neutral": _stage1, "factors": _stage2, "audio_emotion": _stage3, "generator": _stage4}[args.stage](config, device)
+def evaluate(models, va, d, cfg, out, acceptance):
+    from scripts.diagnose_semantic import diagnose
+
+    report = diagnose(
+        models["generator"],
+        models["style_encoder"],
+        models["readout"],
+        va,
+        d,
+        steps=int(cfg["training"].get("decode_steps", 4)),
+        max_batches=int(cfg.get("validation", {}).get("diagnostic_batches", 2)),
+        seed=int(cfg.get("seed", 42)),
+        output_dir=out / "diagnostic_csv",
+    )
+    report["critics_accepted"] = bool(acceptance.get("critics_accepted", False))
+    report["visual_path_accepted"] = bool(
+        report["critics_accepted"]
+        and cfg.get("validation", {}).get("visual_generation_approved", False)
+    )
+    report["acceptance_source"] = (
+        "recorded critic metrics plus explicit visual_generation_approved after reviewing diagnostics"
+    )
+    _json(out / "generator_diagnostic.json", report)
+    return report
+
+
+def _log(out, stage, record):
+    out.mkdir(parents=True, exist_ok=True)
+    value = {"time": time.time(), "stage": stage, **record}
+    line = json.dumps(value, ensure_ascii=False, allow_nan=False)
+    with (out / f"{stage}.jsonl").open("a", encoding="utf8") as f:
+        f.write(line + "\n")
+    if record.get("step", 1) == 1 or record.get("step", 0) % 20 == 0:
+        print(line, flush=True)
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("--config", type=Path, default=Path("configs/train.yaml"))
+    p.add_argument(
+        "--stage",
+        choices=("preflight", "critics", "generator", "audio", "evaluate", "pilot"),
+        default="preflight",
+    )
+    p.add_argument("--checkpoint", type=Path)
+    p.add_argument("--exploratory", action="store_true")
+    a = p.parse_args()
+    cfg = load_yaml(a.config)
+    cfg["_config_path"] = str(a.config.resolve())
+    seed_everything(int(cfg.get("seed", 42)))
+    torch.set_num_threads(int(cfg["training"].get("cpu_threads", 4)))
+    if any(
+        int(cfg["training"].get(k, 1)) < 1
+        for k in (
+            "batch_size",
+            "critic_steps",
+            "generator_steps",
+            "audio_steps",
+            "decode_steps",
+        )
+    ):
+        raise ValueError("batch size and stage/decode steps must be positive")
+    d = torch.device(cfg.get("device", "cpu"))
+    if d.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA requested but unavailable; set device=cpu")
+    out = Path(cfg["paths"]["output_dir"])
+    out.mkdir(parents=True, exist_ok=True)
+    tr, va = loader(cfg, "train", True), loader(cfg, "val", False)
+    training_speakers = {(x["dataset"], x["speaker"]) for x in tr.dataset.items}
+    validation_speakers = {(x["dataset"], x["speaker"]) for x in va.dataset.items}
+    if training_speakers & validation_speakers:
+        raise RuntimeError("speaker leakage between train/val")
+    if len(training_speakers) < 2 or len(validation_speakers) < 2:
+        raise RuntimeError("train and validation each need multiple speakers")
+    loaded = {}
+    for name, data_loader in (("train", tr), ("val", va)):
+        loaded[name] = 0
+        for index, batch in enumerate(data_loader):
+            preflight_limit = int(cfg.get("validation", {}).get("preflight_batches", 0))
+            if preflight_limit and index >= preflight_limit:
+                break
+            for branch in batch.values():
+                if isinstance(branch, dict) and "motion" in branch:
+                    if not torch.isfinite(branch["motion"][observed(branch)]).all():
+                        raise FloatingPointError("nonfinite preflight input")
+            loaded[name] += len(batch["query"]["emotion_id"])
+    prov = provenance(cfg, tr, va)
+    gen = SemanticGenerator(cfg).to(d)
+    ck = torch.load(cfg["paths"]["stage1_ckpt"], map_location="cpu", weights_only=False)
+    st = ck.get("model", ck)
+    if int(st.get("architecture_version", -1)) != 7:
+        raise RuntimeError("stage1 checkpoint must be v7")
+    gen.stage1.load_state_dict(st, strict=True)
+    freeze_module(gen.stage1)
+    audit = {
+        "passed": True,
+        "train_clips": len(tr.dataset),
+        "val_clips": len(va.dataset),
+        "train_speakers": len(training_speakers),
+        "val_speakers": len(validation_speakers),
+        "loaded_examples": loaded,
+        "stage1_strict_load": True,
+        "frame_mask_contract": "valid is intersection of native motion/audio/content coverage and trusted visual VA; B0 and all critic/generator paths use the same mask",
+        "complete_dataset_iteration": not bool(
+            cfg.get("validation", {}).get("preflight_batches", 0)
+        ),
+    }
+    _json(out / "preflight.json", audit)
+    if a.stage == "preflight":
+        print(json.dumps(audit), flush=True)
+        return
+    models = {
+        "generator": gen,
+        "readout": MotionSemanticReadout(cfg).to(d),
+        "style_encoder": MultiReferenceStyleEncoder(cfg).to(d),
+        "audio": SemanticAudioEncoder(cfg).to(d),
+    }
+    if a.stage in ("generator", "audio", "evaluate") and a.checkpoint is None:
+        raise ValueError("--checkpoint required")
+    state = (
+        torch.load(a.checkpoint, map_location=d, weights_only=False)
+        if a.checkpoint
+        else {}
+    )
+    if a.checkpoint:
+        if int(state.get("architecture_version", -1)) != 9:
+            raise RuntimeError("v9 checkpoint required")
+        for key in ("train_manifest_sha256", "val_manifest_sha256", "stage1_sha256", "assets_sha256"):
+            if state.get("provenance", {}).get(key) != prov[key]:
+                raise RuntimeError(f"checkpoint provenance mismatch: {key}")
+        for k, m in models.items():
+            m.load_state_dict(state[k], strict=True)
+    if a.stage in ("critics", "pilot"):
+        state["validation"] = train_critics(models, tr, va, d, cfg, out, prov)
+    if a.stage in ("generator", "pilot"):
+        train_generator(
+            models,
+            tr,
+            va,
+            d,
+            cfg,
+            out,
+            prov,
+            state.get("validation", {}),
+            a.exploratory,
+        )
+    if a.stage == "audio":
+        train_audio(models, tr, va, d, cfg, out, prov, state)
+    if a.stage == "evaluate":
+        report = evaluate(models, va, d, cfg, out, state.get("validation", {}))
+        validation = {
+            **state.get("validation", {}),
+            "visual_path_accepted": bool(
+                report["visual_path_accepted"] and not state.get("exploratory", False)
+            ),
+        }
+        save(
+            out / "generator_evaluated.pt",
+            models,
+            cfg,
+            prov,
+            "generator",
+            state.get("step", 0),
+            validation,
+            exploratory=state.get("exploratory", False),
+        )
 
 
 if __name__ == "__main__":

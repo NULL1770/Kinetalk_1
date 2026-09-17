@@ -11,6 +11,10 @@ __pycache__/
 venv/
 env/
 tmp/
+/.planning/
+.env
+.env.*
+!.env.example
 /.auto_pipeline*.sh
 *.log
 *.tmp

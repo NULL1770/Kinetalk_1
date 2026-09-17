@@ -5,6 +5,6 @@ coefficients.  Internal normalization layers are optimizer aids only; they do
 not change the target coordinate system.
 """
 
-from .data import B0ResidualDataset, collate_b0_residual
+from .semantic_data import SemanticMotionDataset, semantic_collate
 
-__all__ = ["B0ResidualDataset", "collate_b0_residual"]
+__all__ = ["SemanticMotionDataset", "semantic_collate"]

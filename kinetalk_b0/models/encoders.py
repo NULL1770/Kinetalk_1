@@ -194,6 +194,56 @@ class NeutralArticulationDecoder(nn.Module):
         return full
 
 
+class LowRateAffectField(nn.Module):
+    """Generate a temporally coherent affect trajectory from frame features.
+
+    The old local head emitted an unconstrained vector independently at every
+    frame.  This module first compresses the sequence to a small number of
+    control points, applies a lightweight temporal convolution, then
+    interpolates back to the original clock.  The public shape remains
+    ``[batch, time, emotion_dim]`` so existing teachers, losses and DiT
+    conditioning stay compatible.
+    """
+
+    def __init__(self, input_dim: int, output_dim: int, stride: int = 4):
+        super().__init__()
+        self.stride = max(1, int(stride))
+        self.in_projection = nn.Linear(input_dim, output_dim)
+        self.temporal = nn.Sequential(
+            nn.Conv1d(output_dim, output_dim, kernel_size=3, padding=1, groups=1),
+            nn.SiLU(),
+            nn.Conv1d(output_dim, output_dim, kernel_size=3, padding=1, groups=1),
+            nn.LayerNorm(output_dim),
+        )
+        self.out_norm = nn.LayerNorm(output_dim)
+
+    def forward(self, hidden: torch.Tensor, mask: torch.Tensor | None = None) -> torch.Tensor:
+        if hidden.ndim != 3:
+            raise ValueError("hidden must have shape [batch, time, features]")
+        batch, frames, _ = hidden.shape
+        x = self.in_projection(hidden)
+        if mask is None:
+            valid = torch.ones((batch, frames), device=hidden.device, dtype=torch.bool)
+        else:
+            valid = mask.to(device=hidden.device, dtype=torch.bool)
+            if valid.shape != (batch, frames):
+                raise ValueError("mask must match hidden batch/time axes")
+        weights = valid.to(x.dtype).unsqueeze(-1)
+        # Average-pool to low-rate control points.  Padding is excluded from
+        # the average, which keeps variable-length batches well behaved.
+        pooled = F.avg_pool1d((x * weights).transpose(1, 2), kernel_size=self.stride, stride=self.stride, ceil_mode=True)
+        pooled_w = F.avg_pool1d(weights.transpose(1, 2), kernel_size=self.stride, stride=self.stride, ceil_mode=True).clamp_min(1e-6)
+        pooled = pooled / pooled_w
+        controls = self.temporal[0](pooled)
+        controls = self.temporal[1](controls)
+        controls = self.temporal[2](controls).transpose(1, 2)
+        controls = self.temporal[3](controls)
+        # Interpolate controls back to the native frame clock.
+        field = F.interpolate(controls.transpose(1, 2), size=frames, mode="linear", align_corners=True).transpose(1, 2)
+        field = self.out_norm(field)
+        return field * weights
+
+
 class ResidualEmotionEncoder(nn.Module):
     """BS residual teacher with local and global affect coordinates."""
 
@@ -210,7 +260,7 @@ class ResidualEmotionEncoder(nn.Module):
         super().__init__()
         self.backbone = TemporalBackbone(motion_dim * 2, hidden_dim, heads=heads, dropout=dropout)
         self.global_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
-        self.local_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
+        self.local_head = LowRateAffectField(hidden_dim, emotion_dim, stride=4)
         self.emotion_classifier = nn.Linear(emotion_dim, num_emotions)
         self.intensity_classifier = nn.Linear(emotion_dim, num_intensities)
 
@@ -286,7 +336,7 @@ class AudioEmotionDistributionEncoder(nn.Module):
         super().__init__()
         self.backbone = TemporalBackbone(input_dim, hidden_dim, heads=heads, dropout=dropout)
         self.global_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
-        self.local_head = nn.Sequential(nn.Linear(hidden_dim, emotion_dim), nn.LayerNorm(emotion_dim))
+        self.local_head = LowRateAffectField(hidden_dim, emotion_dim, stride=4)
         self.emotion_classifier = nn.Linear(emotion_dim, num_emotions)
         self.intensity_classifier = nn.Linear(emotion_dim, num_intensities)
 
@@ -319,4 +369,3 @@ class IdentityCalibrator(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return x + self.delta(x)
-

@@ -163,14 +163,21 @@ class ResidualDiT(nn.Module):
         steps: int = 4,
         stochastic: bool = False,
         local_emotion: torch.Tensor | None = None,
+        initial_noise: torch.Tensor | None = None,
     ) -> torch.Tensor:
         if steps < 1:
             raise ValueError("DiT decode steps must be at least one")
-        state = torch.randn(
+        if initial_noise is not None:
+            expected = (content.shape[0], content.shape[1], self.output.out_features)
+            if tuple(initial_noise.shape) != expected or not torch.isfinite(initial_noise).all():
+                raise ValueError(f"initial_noise must be finite with shape {expected}")
+            state = initial_noise.to(device=content.device, dtype=content.dtype).clone()
+        else:
+            state = torch.randn(
             content.shape[0], content.shape[1], self.output.out_features, device=content.device, dtype=content.dtype
-        ) if stochastic else torch.zeros(
+            ) if stochastic else torch.zeros(
             content.shape[0], content.shape[1], self.output.out_features, device=content.device, dtype=content.dtype
-        )
+            )
         times = torch.linspace(0.0, 1.0, steps + 1, device=content.device, dtype=content.dtype)
         for index in range(steps):
             current = torch.full((content.shape[0],), times[index], device=content.device, dtype=content.dtype)

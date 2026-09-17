@@ -1,0 +1,15 @@
+# 显式动作前缀续接：先验证接收能力
+
+本轮保持已锁2315fit/405内部开发及参考不变。旧history12两臂已完成且不采用。新实验warmstart history12/no_history的renderer和local，local及完整system/audio全部冻结，仅训练上脸flow及新known-mask embedding。它测试接收机制，不能归因于更优的音频预测。
+
+每窗固定8帧过去+16帧待生成，保留原生25Hz，首窗左padding8帧invalid。其他窗历史取严格过去8帧，断检测mask保持真实时间位置，不压缩。过去动作作为clean motion token直接进入同一DiT self-attention，每个solver步骤强制保持known前缀，只有unknown有效位置有flow matching监督。已存在的sinusoidal frame position使用相同24槽位；no_prefix把前8帧标invalid，current位置不平移。新增known/unknown标记零初始化。没有边界额外loss、输出平滑、gain或时间偏移。
+
+坐标沿history12：(upper9−冻结音频4Dstate均值lift−独立neutral anchor)/完整2315fit统计RMS；不减query GT均值，GT前缀不携带未来目标统计。推理只读明确传入的过去generated动作，GT past仅训练或单独oracle。音频已有离线上下文，不能声称实时因果音频生成。
+
+小集沿先前tracking元数据锁的8条fit（M003/M005四类L1_001）选择，读取目标前已定。它们同一句台词，范围窄。每个epoch遍历所有有有效当前帧的clip×16帧窗口，最多48窗；batch8、15epoch、AdamW1e-4/wd1e-5/gradclip1、seed79、12步Euler。no_prefix与teacher_prefix同初值/噪声/time/窗口序、预算一致，只有是否可见过去动作不同。正式固定最后epoch，初始与最终都在此8条上评，三固定seed无best-of。预测/评分仅上脸，其他43用零占位且不评分，不可展示为完整脸效果。
+
+no_prefix把过去8个token整段屏蔽，因而同时去掉这些位置的motion及声学注意力上下文；当前帧local/h0已有离线全窗音频信息，但该对照仍只能定位“前序token上下文”的总作用，不能独立归因于已知运动数值。若机制通过且要作因果消融，另加保留声学前缀、屏蔽运动值的对照。当前加载器会读取并核验已有train/validation缓存绑定，随后只保留8条fit用于特征计算、优化、评估；不新增开发集推理或选择，不读取封存test。
+
+验证小集teacher receiver时要同时报告真实过去oracle续接与全generated rollout，逐块边界、幅度、raw/centered误差、相关、越界、清空/逆序prefix及局部audio干预。不通过接收验证就不启动全量正式训练；仅微小FM下降或oracle优于no_prefix但边界仍异常，不视为通过。通过判据预先定义：teacher_prefix oracle眉眼边界位移RMS均在参考的2倍以内，且边界位移误差均不高于no_prefix的一半，中心MSE均不劣于no_prefix；这仅是机制筛查，不能称论文成功或泛化。失败保留完整结果，定位后另建协议，不改门槛。
+
+若进入正式阶段，各12epoch配对no_prefix/scheduled_prefix，训练使用完整generated rollout历史并停止梯度，teacher概率沿history12在第8轮归零，最后5轮全generated。冻结原local的完整43非上脸基座只用于正式评估，逐位验证。最终405/3seed正式结果、oracle隔离、原样本视频和chunk边界检验与上一轮一致。正式入口评估器在pilot通过之前不启用，禁止直接绕过小集门槛。
