@@ -1,8 +1,8 @@
 # KineTalk：中性身份与时序情感场实验
 
-> **2026-09-18 当前状态**：固定时钟先验之后，四组活动条件的三种子验证也已完成。将目标简化成活动概率后，353开发集Brier仍轻微恶化约0.09%，三个种子均未胜过静态基线，未接生成器。默认模型未替换；保留既有身份、情感与口型基座不等于完整质量已经验收。
+> **2026-09-18 当前状态**：已转向原视频监督复核与独立表达参考控制。新连续先验完成1053片拟合、32片生成、16段全脸视频与4段命令演示；调幅、保持、释放有效，但中心化ES比旧先验退步1.86%，自然动态尚未通过。32段原视频四臂重提和隔离reset sidecar已完成：存在片头跨视频状态影响，但平均活动标签分歧不足0.6%，不能解释全部失败。默认模型未替换；保留身份、情感和口型基座不等于完整质量已经验收。
 >
-> 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)、[最新活动条件实测](docs/ACTIVITY_CONDITION_RESULTS_20260918.md)和[前序运动先验实测](docs/CLOCKED_PRIOR_RESULTS_20260918.md)开始阅读。最新验证入口为 `scripts/launch_clocked_motion_prior.py --activity`，见[活动条件协议](docs/ACTIVITY_CONDITION_PROTOCOL_20260918.md)；完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已经验收的统一部署入口。
+> 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)、[监督与连续先验实测](docs/SUPERVISION_NATURAL_PRIOR_RESULTS_20260918.md)和[前序活动条件实测](docs/ACTIVITY_CONDITION_RESULTS_20260918.md)开始阅读。新独立参考生成入口为 `scripts/launch_clocked_motion_prior.py --controlled`，见[固定协议](docs/SUPERVISION_NATURAL_PRIOR_PROTOCOL_20260918.md)；完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已验收的统一部署入口。
 >
 > Git 保存源代码、配置、测试与文字实验文档。数据、权重、曲线数组和对比视频留在本地/实验服务器，不随仓库发布；文档中的 `artifacts/` 路径指外部实验产物，单独克隆仓库不会包含它们。复现实验还需按对应协议准备指定数据和源 checkpoint。
 

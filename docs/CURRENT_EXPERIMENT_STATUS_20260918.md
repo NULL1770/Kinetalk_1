@@ -2,12 +2,15 @@
 
 更新于2026-09-18。本文件描述当前代码快照与已核验结果；旧文档中的“下一步”或“正在训练”需结合各文档终点更新阅读。
 
-**主要瓶颈仍是音频对应的眉眼动作时机。** 最新四组活动条件三种子实验已完成：353开发集Brier从静态0.177770变为真实时序0.177926，轻微恶化约0.09%，三个种子均未胜过静态，未接生成器。身份、情感和口型保留既有基座，仍需独立验收。默认模型未替换，没有追加训练在后台排队。详见[活动条件完整结果](ACTIVITY_CONDITION_RESULTS_20260918.md)及[前序先验结果](CLOCKED_PRIOR_RESULTS_20260918.md)。
+**已将监督有效性与可控自然运动分开验证。** 独立表达参考的连续先验已完成1053片拟合、32片生成、16段全脸视频和4段保持/释放演示；数值控制有效，中心化ES仍比旧medoid差1.86%，没有证明自然度或音频时序。32段原视频四臂重提已完成，28片触发重置敏感性阈值，但平均活动标签分歧不足0.6%，不能归为全部失败原因；隔离reset sidecar已生成，未纳入训练。默认模型未替换，没有额外神经网络训练排队。详见[最新实测](SUPERVISION_NATURAL_PRIOR_RESULTS_20260918.md)。
+
+前序四组活动条件三种子实验：353开发集Brier从静态0.177770变为真实时序0.177926，轻微恶化约0.09%，三个种子均未胜过静态，未接生成器。身份、情感和口型保留既有基座，仍需独立验收，见[前序活动结果](ACTIVITY_CONDITION_RESULTS_20260918.md)。
 
 ## 已完成实验
 
 | 实验 | 主要结论 | 协议／结果入口 |
 | --- | --- | --- |
+| 独立表达参考连续先验 | 调幅/保持/释放通过工程检查，centered ES退步1.86%；不接受为自然度突破 | [实测](SUPERVISION_NATURAL_PRIOR_RESULTS_20260918.md)、[协议](SUPERVISION_NATURAL_PRIOR_PROTOCOL_20260918.md) |
 | 四组活动条件，3训练种子各静态30＋时序30 | 拟合改善1.12%，199共同支持改善0.38%但不显著，353轻微恶化，未通过 | [实测结果](ACTIVITY_CONDITION_RESULTS_20260918.md)、[固定协议](ACTIVITY_CONDITION_PROTOCOL_20260918.md) |
 | 固定时钟双臂30、有界静态30＋修正30、韵律修正30 | 有界先验修复九通道范围，韵律有微小开发收益；音频时序仍失败，校准睁大眼幅度也不足 | [实测结果](CLOCKED_PRIOR_RESULTS_20260918.md)、[韵律协议](CLOCKED_PROSODY_PROTOCOL_20260918.md) |
 | native_context30、motion_process30、joint_prior_formal30 | 扩展原生时序、动作过程与迁移后的联合先验；仍未达到时序目标 | [原生上下文](NATIVE_CONTEXT30_HANDOFF_20260918.md)、[动作过程结果](MOTION_PROCESS30_RESULTS_20260918.md)、[迁移记录](JOINT_PRIOR_MIGRATION_20260918.md) |
@@ -28,22 +31,25 @@
 
 原始池为2315 fit／405反复使用的内部开发片段，19 fit身份／3开发身份。最新增量实验沿用1707更新／608留句划分，但共享源模型见过完整2315；608只能叫新增更新的留出，不能称全模型未见句泛化。封存test未读取。
 
-固定时钟先验沿用1053拟合／199校准／353开发回归；199和353均已被多轮设计使用，不能称独立未见测试。本轮没有读取405或封存test，历史曝光并未因此消除。四段新灰模诊断仅替换九个眉眼通道，其余43通道逐值不变；显示仍需裁剪较多基线系数，因此不能从视频推出完整52通道质量合格。
+固定时钟先验沿用1053拟合／199校准／353开发回归；199和353均已被多轮设计使用，不能称独立未见测试。本轮没有读取405或封存test，历史曝光并未因此消除。本轮32片全脸导出仅替换九个眉眼通道，其余43通道与基线逐值一致，其中16片已渲染。另4段控制演示将其余43通道固定在基线首个有效帧，不用于口型同步评价。显示仍需裁剪较多基线系数，因此不能从视频推出完整52通道质量合格。
 
 ## 对应源码
 
 - 五阶段训练：`scripts/train_full_staged.py`、`scripts/full_staged_data.py`。
 - 连续前缀生成：`kinetalk_b0/models/prefix_upper_flow.py`、`scripts/train_context_mechanism.py`、`scripts/evaluate_context_mechanism.py`。
 - 历史rank8模块：`kinetalk_b0/models/temporal_local_adapter.py`，训练与评价为`train_temporal_adapter_transfer.py`、`evaluate_temporal_adapter_transfer.py`。
-- 最新活动条件训练／后台启动：`scripts/train_activity_condition.py`、`scripts/launch_clocked_motion_prior.py --activity`；核心目标与声学模块为`activity_condition_core.py`。
-- 最新评分与独立终点审计：`train_activity_condition.py`中的活动评分、`scripts/audit_activity_condition.py`独立重算保存概率。
-- 最新活动可视化：`scripts/package_activity_condition_review.py`；前序先验曲线使用`package_clocked_prior_review.py`。完整面部诊断由`export_clocked_fullface_examples.py`导出，`render_dynamic_rig_comparison.py`渲染。
+- 独立参考连续先验：`scripts/controlled_motion_process.py`、`scripts/run_controlled_prior.py`，启动入口为`launch_clocked_motion_prior.py --controlled`；独立重算为`audit_controlled_prior.py`。跨平台采样因子修复单列于`portable_motion_process.py`，未替换已保存的v2结果。
+- 本轮全脸导出与可视化：`scripts/export_controlled_fullface_examples.py`、`scripts/package_controlled_prior_review.py`、`scripts/render_controlled_prior_examples.py`；底层渲染沿用`render_dynamic_rig_comparison.py`。
+- 原视频监督复核与隔离副本：`scripts/audit_tracking_reset.py`、`scripts/package_supervision_tracking_review.py`、`scripts/build_reset_supervision_sidecars.py`。
+- 前序活动条件训练／后台启动：`scripts/train_activity_condition.py`、`scripts/launch_clocked_motion_prior.py --activity`；核心目标与声学模块为`activity_condition_core.py`。
+- 前序活动评分与独立终点审计：`train_activity_condition.py`中的活动评分、`scripts/audit_activity_condition.py`独立重算保存概率。
+- 前序活动可视化：`scripts/package_activity_condition_review.py`；固定时钟先验曲线使用`package_clocked_prior_review.py`。其完整面部诊断由`export_clocked_fullface_examples.py`导出。
 
 训练脚本依赖协议指定的历史源模型、独立身份参考、native音频/动作和缓存。`requirements.txt`列出基础依赖；测试需要pytest，绘图/媒体及可选音频提取依赖按使用脚本另行准备。`train.py`和`deploy.py`保留历史入口语义，不能用来代替最新实验入口。
 
-## 下一步：核验活动监督与条件信息
+## 下一步：核验完整动作监督与事件结构
 
-活动条件分离的小验证已完成，第一关未通过，所以没有进入先验控制与完整生成。优先固定原视频样本，核验活动标签与真实眉眼运动、头姿/眨眼/跟踪噪声的关系。若监督可信但音频信息仍弱，可评估明确提供独立表达参考的路线；不能将额外条件伪装为纯音频预测。详见[本轮结果与限制](ACTIVITY_CONDITION_RESULTS_20260918.md)。
+自然先验的验证已与音频活动预测分开推进，不以音频预测先通过为前提。独立参考连续过程已经实际生成，但RUN只有连续波动、无自发HOLD。下一候选是可见完整动作的保持/起势/峰值/回落事件先验；先修跨片提取状态与核验教师，不再添加相似audio head或仅加轮数。该事件方案目前仅为[设计审查](CONTROLLED_EVENT_PRIOR_DESIGN_REVIEW_20260918.md)，尚未实现，不能写成成功。
 
 ## 历史机制诊断建议（adapter阶段记录）
 
