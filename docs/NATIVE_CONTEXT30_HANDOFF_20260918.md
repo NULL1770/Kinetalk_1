@@ -1,6 +1,12 @@
 # 完整原生序列30轮后台训练交付
 
-本轮检验完整动作覆盖与下游连续音频上下文能否改善眉眼动态。沿用原unknown-only flow matching，未新增loss；从同一context12模型开始，对照旧center96与full_native各固定30epoch。两组都更新upper及专用local的input/blocks/local_head，原身份、全局audio/state与口部基座冻结。正式效果尚待训练结束评审，未替换默认模型。
+本轮检验完整动作覆盖与下游连续音频上下文能否改善眉眼动态。沿用原unknown-only flow matching，未新增loss；从同一context12模型开始，对照旧center96与full_native各固定30epoch。两组都更新upper及专用local的input/blocks/local_head，原身份、全局audio/state与口部基座冻结。训练和固定终点评审已完成，完整上下文未形成稳定收益，未替换默认模型。
+
+## 2026-09-18 结果更新
+
+任务已于03:04:51正常结束exit0、两组各30epoch/3210更新，共2057.98秒。11:39回查服务器无GPU训练任务，root余2039MiB。固定终点完整曲线审计、源张量/文件/代码hash、独立随机数重放、两组6份raw/DC报告重算通过，新增9审计测试通过。固定九片曲线与三人六格96帧25fps带音轨视频完成；已检查曲线/中间帧，未做独立连续自然度评价。没有追加训练或替换默认。
+
+608增量留句有时序收益，full_native眉/眼相关从自身source的.180/.135提高到.259/.215；但405开发相关仅.040/.108，低于center96对照.044/.111，动态误差比对照+1.85%/+10.82%。完整上下文未形成稳定开发收益，动态目标仍未达成。原始43输出保护不等于新的身份、情感或唇音同步验收。详见`artifacts/native_context_20260918/native_context30/RESULTS.md`、`metrics_review.md`和`index.html`。后续需先定位跨身份/分布迁移和静态均值校准，不直接追加同一路线轮次。
 
 ## 已完成验证
 
