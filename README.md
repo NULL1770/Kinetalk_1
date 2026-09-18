@@ -1,6 +1,6 @@
 # KineTalk：中性身份与时序情感场实验
 
-> **2026-09-18 当前状态**：稀疏眉部事件生成器已实现，4段工程视频与32组一分钟控制检查完成；手工参数可产生保持、起势和回落，但不是学到的自然动态。32片新教师修正误删门控后有20个候选事件，仍缺可靠等待标签，且多条与眨眼共现；正式先验没有拟合，没有长训练在跑。默认模型未替换，身份、情感和口型仍需独立验收。前序连续先验centered ES退步1.86%的结论保留。
+> **2026-09-18 当前状态**：已完成256片视觉VA/8类软概率提取、六臂30轮及300轮小试（192训练/64留句），两套固定四例视频已生成。300轮将音频分支速度降至参考约1.75倍，但动态相对静态的centered收益仅0.2%–0.6%，自然动态仍未验收。见[新实测](docs/VISUAL_SEMANTIC_PILOT_RESULTS_20260918.md)。默认模型未替换，身份、情感和口型仍需独立验收。
 >
 > 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)、[稀疏事件实测](docs/SPARSE_BROW_EVENT_RESULTS_20260918.md)、[稀疏事件协议](docs/SPARSE_BROW_EVENT_PROTOCOL_20260918.md)开始阅读。工程演示入口为 `scripts/diagnose_sparse_brow_controls.py`，不得当作学习版生成结果；前序连续先验入口为 `scripts/launch_clocked_motion_prior.py --controlled`，完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已验收的统一部署入口。
 >
