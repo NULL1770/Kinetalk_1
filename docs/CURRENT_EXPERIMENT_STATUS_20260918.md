@@ -2,12 +2,13 @@
 
 更新于2026-09-18。本文件描述当前代码快照与已核验结果；旧文档中的“下一步”或“正在训练”需结合各文档终点更新阅读。
 
-**主要瓶颈仍是音频对应的眉眼动作时机。** 固定时钟先验、有界修正和低容量韵律修正已真实训练完成。最新353开发集Centered ES从0.553357降至0.550722，约改善0.48%，区间跨零且未胜过倒序/错配，时序不通过。身份、情感和口型保留既有基座，仍需独立验收。默认模型未替换，没有追加训练在后台排队。详见[本轮完整结果与后续决策](CLOCKED_PRIOR_RESULTS_20260918.md)。
+**主要瓶颈仍是音频对应的眉眼动作时机。** 最新四组活动条件三种子实验已完成：353开发集Brier从静态0.177770变为真实时序0.177926，轻微恶化约0.09%，三个种子均未胜过静态，未接生成器。身份、情感和口型保留既有基座，仍需独立验收。默认模型未替换，没有追加训练在后台排队。详见[活动条件完整结果](ACTIVITY_CONDITION_RESULTS_20260918.md)及[前序先验结果](CLOCKED_PRIOR_RESULTS_20260918.md)。
 
 ## 已完成实验
 
 | 实验 | 主要结论 | 协议／结果入口 |
 | --- | --- | --- |
+| 四组活动条件，3训练种子各静态30＋时序30 | 拟合改善1.12%，199共同支持改善0.38%但不显著，353轻微恶化，未通过 | [实测结果](ACTIVITY_CONDITION_RESULTS_20260918.md)、[固定协议](ACTIVITY_CONDITION_PROTOCOL_20260918.md) |
 | 固定时钟双臂30、有界静态30＋修正30、韵律修正30 | 有界先验修复九通道范围，韵律有微小开发收益；音频时序仍失败，校准睁大眼幅度也不足 | [实测结果](CLOCKED_PRIOR_RESULTS_20260918.md)、[韵律协议](CLOCKED_PROSODY_PROTOCOL_20260918.md) |
 | native_context30、motion_process30、joint_prior_formal30 | 扩展原生时序、动作过程与迁移后的联合先验；仍未达到时序目标 | [原生上下文](NATIVE_CONTEXT30_HANDOFF_20260918.md)、[动作过程结果](MOTION_PROCESS30_RESULTS_20260918.md)、[迁移记录](JOINT_PRIOR_MIGRATION_20260918.md) |
 | 完整五阶段 run12，各12轮 | 身份系数基线和全局情感分类有收益；音频到运动的时序差距仍大 | [完整训练协议](FULL_STAGED_SPLINE_PROTOCOL_20260917.md)、[执行记录](FULL_STAGED_RUN12_HANDOFF_20260917.md) |
@@ -34,15 +35,15 @@
 - 五阶段训练：`scripts/train_full_staged.py`、`scripts/full_staged_data.py`。
 - 连续前缀生成：`kinetalk_b0/models/prefix_upper_flow.py`、`scripts/train_context_mechanism.py`、`scripts/evaluate_context_mechanism.py`。
 - 历史rank8模块：`kinetalk_b0/models/temporal_local_adapter.py`，训练与评价为`train_temporal_adapter_transfer.py`、`evaluate_temporal_adapter_transfer.py`。
-- 最新韵律修正训练／后台启动：`scripts/train_prosody_clocked_residual.py`、`scripts/launch_clocked_motion_prior.py --prosody`。
-- 最新评分与独立终点审计：沿用`train_clocked_residual_prior.py`中的评价函数、`scripts/audit_clocked_motion_results.py`独立重算已存曲线。
-- 最新可视化打包：`scripts/package_clocked_prior_review.py`；完整面部诊断由`export_clocked_fullface_examples.py`导出，`render_dynamic_rig_comparison.py`渲染。
+- 最新活动条件训练／后台启动：`scripts/train_activity_condition.py`、`scripts/launch_clocked_motion_prior.py --activity`；核心目标与声学模块为`activity_condition_core.py`。
+- 最新评分与独立终点审计：`train_activity_condition.py`中的活动评分、`scripts/audit_activity_condition.py`独立重算保存概率。
+- 最新活动可视化：`scripts/package_activity_condition_review.py`；前序先验曲线使用`package_clocked_prior_review.py`。完整面部诊断由`export_clocked_fullface_examples.py`导出，`render_dynamic_rig_comparison.py`渲染。
 
 训练脚本依赖协议指定的历史源模型、独立身份参考、native音频/动作和缓存。`requirements.txt`列出基础依赖；测试需要pytest，绘图/媒体及可选音频提取依赖按使用脚本另行准备。`train.py`和`deploy.py`保留历史入口语义，不能用来代替最新实验入口。
 
-## 下一步：活动条件与动作形状分离
+## 下一步：核验活动监督与条件信息
 
-依据本轮高维修正过拟合、小韵律分支未胜过干预的结果，下一项假设是音频只控制四组眉眼活动的发生概率与强度，运动先验负责具体方向、形状和持续过程。先对照既有事件探针，再固定短验证；较粗活动条件仍不能稳定预测时，不继续接生成器。该新结构尚未实现或验证，详见[最新结果文档](CLOCKED_PRIOR_RESULTS_20260918.md)。
+活动条件分离的小验证已完成，第一关未通过，所以没有进入先验控制与完整生成。优先固定原视频样本，核验活动标签与真实眉眼运动、头姿/眨眼/跟踪噪声的关系。若监督可信但音频信息仍弱，可评估明确提供独立表达参考的路线；不能将额外条件伪装为纯音频预测。详见[本轮结果与限制](ACTIVITY_CONDITION_RESULTS_20260918.md)。
 
 ## 历史机制诊断建议（adapter阶段记录）
 
