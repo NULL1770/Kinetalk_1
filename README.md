@@ -1,8 +1,8 @@
 # KineTalk：中性身份与时序情感场实验
 
-> **2026-09-18 当前状态**：已转向原视频监督复核与独立表达参考控制。新连续先验完成1053片拟合、32片生成、16段全脸视频与4段命令演示；调幅、保持、释放有效，但中心化ES比旧先验退步1.86%，自然动态尚未通过。32段原视频四臂重提和隔离reset sidecar已完成：存在片头跨视频状态影响，但平均活动标签分歧不足0.6%，不能解释全部失败。默认模型未替换；保留身份、情感和口型基座不等于完整质量已经验收。
+> **2026-09-18 当前状态**：稀疏眉部事件生成器已实现，4段工程视频与32组一分钟控制检查完成；手工参数可产生保持、起势和回落，但不是学到的自然动态。32片新教师修正误删门控后有20个候选事件，仍缺可靠等待标签，且多条与眨眼共现；正式先验没有拟合，没有长训练在跑。默认模型未替换，身份、情感和口型仍需独立验收。前序连续先验centered ES退步1.86%的结论保留。
 >
-> 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)、[监督与连续先验实测](docs/SUPERVISION_NATURAL_PRIOR_RESULTS_20260918.md)和[前序活动条件实测](docs/ACTIVITY_CONDITION_RESULTS_20260918.md)开始阅读。新独立参考生成入口为 `scripts/launch_clocked_motion_prior.py --controlled`，见[固定协议](docs/SUPERVISION_NATURAL_PRIOR_PROTOCOL_20260918.md)；完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已验收的统一部署入口。
+> 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)、[稀疏事件实测](docs/SPARSE_BROW_EVENT_RESULTS_20260918.md)、[稀疏事件协议](docs/SPARSE_BROW_EVENT_PROTOCOL_20260918.md)开始阅读。工程演示入口为 `scripts/diagnose_sparse_brow_controls.py`，不得当作学习版生成结果；前序连续先验入口为 `scripts/launch_clocked_motion_prior.py --controlled`，完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已验收的统一部署入口。
 >
 > Git 保存源代码、配置、测试与文字实验文档。数据、权重、曲线数组和对比视频留在本地/实验服务器，不随仓库发布；文档中的 `artifacts/` 路径指外部实验产物，单独克隆仓库不会包含它们。复现实验还需按对应协议准备指定数据和源 checkpoint。
 

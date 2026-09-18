@@ -2,7 +2,9 @@
 
 更新于2026-09-18。本文件描述当前代码快照与已核验结果；旧文档中的“下一步”或“正在训练”需结合各文档终点更新阅读。
 
-**已将监督有效性与可控自然运动分开验证。** 独立表达参考的连续先验已完成1053片拟合、32片生成、16段全脸视频和4段保持/释放演示；数值控制有效，中心化ES仍比旧medoid差1.86%，没有证明自然度或音频时序。32段原视频四臂重提已完成，28片触发重置敏感性阈值，但平均活动标签分歧不足0.6%，不能归为全部失败原因；隔离reset sidecar已生成，未纳入训练。默认模型未替换，没有额外神经网络训练排队。详见[最新实测](SUPERVISION_NATURAL_PRIOR_RESULTS_20260918.md)。
+**稀疏眉部事件机制已实现，自然动态学习尚未通过。** 4段固定手工参数演示与32组一分钟延拓/控制检查完成，其他47通道固定且精确保留。32片教师修正过度否决规则后有20个候选，但可靠的已知结束等待为0，且多条候选与眨眼共现；正式先验未拟合，没有长训练排队。58项新增测试通过。见[本轮实测](SPARSE_BROW_EVENT_RESULTS_20260918.md)、[协议](SPARSE_BROW_EVENT_PROTOCOL_20260918.md)。
+
+前序独立参考连续先验完成1053片拟合、32片生成、16段全脸视频和4段命令演示；centered ES比旧medoid差1.86%，不接受为突破。32段原视频四臂重提发现跨片状态敏感性，但平均活动标签分歧不足0.6%，不能解释全部失败。默认模型未替换；隔离reset sidecar仅用于本轮教师审计，未纳入神经训练。见[前序实测](SUPERVISION_NATURAL_PRIOR_RESULTS_20260918.md)。
 
 前序四组活动条件三种子实验：353开发集Brier从静态0.177770变为真实时序0.177926，轻微恶化约0.09%，三个种子均未胜过静态，未接生成器。身份、情感和口型保留既有基座，仍需独立验收，见[前序活动结果](ACTIVITY_CONDITION_RESULTS_20260918.md)。
 
@@ -10,6 +12,7 @@
 
 | 实验 | 主要结论 | 协议／结果入口 |
 | --- | --- | --- |
+| 稀疏眉部事件机制与32片教师 | 手工参数4段演示完成；20候选仍未认证，可靠已结束等待为0，未拟合学习版 | [实测](SPARSE_BROW_EVENT_RESULTS_20260918.md)、[协议](SPARSE_BROW_EVENT_PROTOCOL_20260918.md) |
 | 独立表达参考连续先验 | 调幅/保持/释放通过工程检查，centered ES退步1.86%；不接受为自然度突破 | [实测](SUPERVISION_NATURAL_PRIOR_RESULTS_20260918.md)、[协议](SUPERVISION_NATURAL_PRIOR_PROTOCOL_20260918.md) |
 | 四组活动条件，3训练种子各静态30＋时序30 | 拟合改善1.12%，199共同支持改善0.38%但不显著，353轻微恶化，未通过 | [实测结果](ACTIVITY_CONDITION_RESULTS_20260918.md)、[固定协议](ACTIVITY_CONDITION_PROTOCOL_20260918.md) |
 | 固定时钟双臂30、有界静态30＋修正30、韵律修正30 | 有界先验修复九通道范围，韵律有微小开发收益；音频时序仍失败，校准睁大眼幅度也不足 | [实测结果](CLOCKED_PRIOR_RESULTS_20260918.md)、[韵律协议](CLOCKED_PROSODY_PROTOCOL_20260918.md) |
@@ -35,6 +38,7 @@
 
 ## 对应源码
 
+- 稀疏事件：`scripts/extract_brow_events.py`保留v1、`extract_brow_events_v2.py`修正冲突门控；`fit_sparse_brow_prior.py`等待不足时拒绝正式拟合；`sparse_brow_event_process.py`为持久生成器。`diagnose_sparse_brow_controls.py`仅工程演示，`package_sparse_brow_controls.py`验证4段完整渲染，`package_sparse_brow_teacher.py`打包原像素与教师。
 - 五阶段训练：`scripts/train_full_staged.py`、`scripts/full_staged_data.py`。
 - 连续前缀生成：`kinetalk_b0/models/prefix_upper_flow.py`、`scripts/train_context_mechanism.py`、`scripts/evaluate_context_mechanism.py`。
 - 历史rank8模块：`kinetalk_b0/models/temporal_local_adapter.py`，训练与评价为`train_temporal_adapter_transfer.py`、`evaluate_temporal_adapter_transfer.py`。
@@ -49,7 +53,7 @@
 
 ## 下一步：核验完整动作监督与事件结构
 
-自然先验的验证已与音频活动预测分开推进，不以音频预测先通过为前提。独立参考连续过程已经实际生成，但RUN只有连续波动、无自发HOLD。下一候选是可见完整动作的保持/起势/峰值/回落事件先验；先修跨片提取状态与核验教师，不再添加相似audio head或仅加轮数。该事件方案目前仅为[设计审查](CONTROLLED_EVENT_PRIOR_DESIGN_REVIEW_20260918.md)，尚未实现，不能写成成功。
+自然先验的验证已与音频活动预测分开推进。事件生成器现已实现自动HOLD及完整起落，但学习所需的形状与等待教师尚未通过；不能把手工参数演示当成数据学习成功。下一缺口是区分可见眉动作与眼睑/头姿共变，并补充有真实开始/结束的fit视频和删失状态监督。该数据工作尚未启动。原[设计审查](CONTROLLED_EVENT_PRIOR_DESIGN_REVIEW_20260918.md)保留作proposal历史，执行差异与结果以本轮实测为准。
 
 ## 历史机制诊断建议（adapter阶段记录）
 
