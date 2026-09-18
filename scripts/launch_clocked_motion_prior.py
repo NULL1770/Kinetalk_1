@@ -12,10 +12,14 @@ from scripts import run_joint_prior_background as base
 
 
 def main():
+    residual = '--residual' in sys.argv
+    if residual:
+        sys.argv.remove('--residual')
     args = base.parse_args()
     if args._supervise:
         return base.supervise(args._supervise)
-    name = 'clocked_prior_smoke' if args.smoke else 'clocked_prior_pair30'
+    name = ('clocked_residual_smoke' if args.smoke else 'clocked_residual30') if residual else (
+        'clocked_prior_smoke' if args.smoke else 'clocked_prior_pair30')
     # Respect explicitly supplied output/log/launch choices, adapting old defaults.
     if '--output' not in sys.argv:
         args.output = args.experiment_root/name
@@ -24,9 +28,11 @@ def main():
     if '--launch-dir' not in sys.argv:
         stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S_%fZ')
         args.launch_dir = args.experiment_root/'launches'/(name+'_'+stamp)
-    driver = args.code_root/'scripts/train_clocked_motion_prior.py'
+    driver = args.code_root/('scripts/train_clocked_residual_prior.py' if residual else 'scripts/train_clocked_motion_prior.py')
     base.require_file(driver, 'Fixed-clock training driver')
     base.require_file(args.code_root/'docs/CLOCKED_MOTION_PRIOR_PROTOCOL_20260918.md', 'Fixed-clock protocol')
+    if residual:
+        base.require_file(args.code_root/'docs/CLOCKED_RESIDUAL_PROTOCOL_20260918.md', 'Residual protocol')
     command = [str(args.python), '-u', str(driver)]
     for key in ('audio','targets','native_root','native_manifest','delta_dir','audio_checkpoint','output'):
         command.extend(['--'+key.replace('_','-'), str(getattr(args,key))])

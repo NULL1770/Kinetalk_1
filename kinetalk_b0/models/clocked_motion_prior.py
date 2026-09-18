@@ -6,6 +6,9 @@ the driver. A zero-initialized output starts all tokens at equal probability.
 """
 from __future__ import annotations
 
+import math
+from numbers import Real
+
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -119,6 +122,66 @@ class ClockedMotionPrior(nn.Module):
         logits = self.output(hidden)
         if not torch.isfinite(logits).all():
             raise FloatingPointError('Motion-token logits are nonfinite')
+        return logits
+
+
+class TemporalResidualPrior(nn.Module):
+    """Learn only the effect of changing static audio into temporal audio.
+
+    The frozen base predicts from static audio. A shared trainable correction
+    is evaluated on real and static acoustics with the same mask/global input;
+    their tanh difference is bounded by +/-2 per token. Identical acoustic
+    inputs therefore give an exact zero correction at any training step.
+    The default correction is a fresh zero-output ``ClockedMotionPrior``.
+    """
+
+    def __init__(self, base, correction=None):
+        super().__init__()
+        if not isinstance(base, ClockedMotionPrior):
+            raise ValueError('A trained ClockedMotionPrior base is required')
+        if correction is None:
+            correction = ClockedMotionPrior(base.feature_mean, base.feature_std,
+                base.global_mean, base.global_std, horizon=base.horizon,
+                hidden=base.hidden, k=base.k).to(device=base.feature_mean.device,
+                                              dtype=base.feature_mean.dtype)
+        if not isinstance(correction, ClockedMotionPrior) or correction is base:
+            raise ValueError('Correction must be a distinct ClockedMotionPrior')
+        if any(getattr(base, key) != getattr(correction, key)
+               for key in ('horizon', 'feature_dim', 'global_dim', 'k')):
+            raise ValueError('Base and correction clock/features/token dimensions must match')
+        for key in ('feature_mean', 'feature_std', 'global_mean', 'global_std'):
+            source, other = getattr(base, key), getattr(correction, key)
+            if source.device != other.device or source.dtype != other.dtype or not torch.equal(source, other):
+                raise ValueError('Base and correction must share frozen normalization statistics')
+        base_parameters = {id(p) for p in base.parameters()}
+        if any(id(p) in base_parameters for p in correction.parameters()):
+            raise ValueError('Base and correction parameters must not be shared')
+        self.base = base.eval().requires_grad_(False)
+        self.base.zero_grad(set_to_none=True)
+        self.correction = correction
+
+    def train(self, mode=True):
+        super().train(mode)
+        self.base.eval().requires_grad_(False)
+        return self
+
+    def residual_logits(self, features, valid, global_features, static_features):
+        """Bounded real-minus-static correction without scale or base logits."""
+        real = torch.tanh(self.correction(features, valid, global_features))
+        static = torch.tanh(self.correction(static_features, valid, global_features))
+        return real-static
+
+    def forward(self, features, valid, global_features, static_features, *, scale=1.):
+        if isinstance(scale, bool) or not isinstance(scale, Real) or not math.isfinite(scale) or not 0 <= scale <= 1:
+            raise ValueError('Residual scale must be a finite numeric value in [0,1]')
+        # Reassert the base contract even if the caller toggled that child alone.
+        self.base.eval().requires_grad_(False)
+        with torch.no_grad():
+            base_logits = self.base(static_features, valid, global_features)
+        delta = self.residual_logits(features, valid, global_features, static_features)
+        logits = base_logits+float(scale)*delta
+        if not torch.isfinite(logits).all():
+            raise FloatingPointError('Temporal residual logits are nonfinite')
         return logits
 
 

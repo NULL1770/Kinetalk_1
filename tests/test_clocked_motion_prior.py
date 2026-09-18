@@ -2,7 +2,8 @@
 import pytest
 import torch
 
-from kinetalk_b0.models.clocked_motion_prior import ClockedMotionPrior, categorical_energy_score
+from kinetalk_b0.models.clocked_motion_prior import (ClockedMotionPrior,
+    TemporalResidualPrior, categorical_energy_score)
 
 
 def controller(**kwargs):
@@ -204,3 +205,95 @@ def test_invalid_score_inputs_are_rejected(kind):
         distance = distance.double()
     with pytest.raises(ValueError):
         categorical_energy_score(p, target, distance)
+
+
+def trained_base():
+    model = controller()
+    with torch.no_grad():
+        model.output.weight.normal_(std=.1)
+        model.output.bias.normal_(std=.1)
+    return model
+
+
+def test_zero_initial_temporal_correction_is_exact_frozen_base():
+    torch.manual_seed(423)
+    model = TemporalResidualPrior(trained_base())
+    x, mask, global_ = inputs()
+    static = x.mean(1, keepdim=True).expand_as(x)
+    base = model.base(static, mask, global_)
+    torch.testing.assert_close(model(x, mask, global_, static), base, rtol=0, atol=0)
+    assert model.residual_logits(x, mask, global_, static).count_nonzero() == 0
+    assert not any(p.requires_grad for p in model.base.parameters())
+    assert all(p.requires_grad for p in model.correction.parameters())
+
+
+def test_equal_real_and_static_audio_cancel_exactly_after_arbitrary_training():
+    torch.manual_seed(325)
+    model = TemporalResidualPrior(trained_base())
+    with torch.no_grad():
+        model.correction.output.weight.normal_()
+        model.correction.output.bias.normal_()
+    x, mask, global_ = inputs()
+    assert model.residual_logits(x, mask, global_, x.clone()).count_nonzero() == 0
+    torch.testing.assert_close(model(x, mask, global_, x.clone()), model.base(x, mask, global_), rtol=0, atol=0)
+
+
+def test_frozen_base_stays_bit_exact_and_gradient_free_while_correction_learns():
+    torch.manual_seed(782)
+    model = TemporalResidualPrior(trained_base()).train()
+    model.base.train().requires_grad_(True)  # Child misuse is repaired on forward.
+    before = {k: v.detach().clone() for k, v in model.base.state_dict().items()}
+    optimizer = torch.optim.SGD(model.parameters(), lr=.1)
+    x, mask, global_ = inputs()
+    static = x.mean(1, keepdim=True).expand_as(x)
+    for step in range(2):
+        optimizer.zero_grad()
+        torch.nn.functional.cross_entropy(model(x, mask, global_, static), torch.tensor([0, 4])).backward()
+        assert model.correction.output.weight.grad.abs().sum() > 0
+        if step == 1:
+            assert model.correction.input.weight.grad.abs().sum() > 0
+        assert not model.base.training
+        assert all(p.grad is None and not p.requires_grad for p in model.base.parameters())
+        optimizer.step()
+    for key, value in model.base.state_dict().items():
+        torch.testing.assert_close(value, before[key], rtol=0, atol=0)
+    model.eval()
+    assert not model.base.training and not model.correction.training
+    model.train()
+    assert not model.base.training and model.correction.training
+
+
+def test_residual_difference_is_bounded_and_external_scale_zero_is_exact_base():
+    torch.manual_seed(536)
+    model = TemporalResidualPrior(trained_base())
+    with torch.no_grad():
+        model.correction.output.weight.normal_(std=25)
+    x, mask, global_ = inputs()
+    static = x.mean(1, keepdim=True).expand_as(x)
+    delta = model.residual_logits(x, mask, global_, static)
+    assert torch.isfinite(delta).all() and (delta.abs() <= 2).all()
+    base = model.base(static, mask, global_)
+    torch.testing.assert_close(model(x, mask, global_, static, scale=0), base, rtol=0, atol=0)
+    torch.testing.assert_close(model(x, mask, global_, static, scale=.25), base+.25*delta)
+
+
+@pytest.mark.parametrize('scale', [-1, 1.01, float('nan'), float('inf'), True, '1'])
+def test_bad_residual_scale_rejected(scale):
+    model = TemporalResidualPrior(trained_base())
+    x, mask, global_ = inputs()
+    with pytest.raises(ValueError):
+        model(x, mask, global_, x, scale=scale)
+
+
+def test_residual_rejects_shared_parameters_and_normalization_mismatch():
+    base = trained_base()
+    with pytest.raises(ValueError):
+        TemporalResidualPrior(base, base)
+    correction = controller()
+    correction.input = base.input
+    with pytest.raises(ValueError):
+        TemporalResidualPrior(base, correction)
+    correction = controller()
+    correction.feature_mean.add_(1)
+    with pytest.raises(ValueError):
+        TemporalResidualPrior(base, correction)
