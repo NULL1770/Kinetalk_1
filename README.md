@@ -1,8 +1,8 @@
 # KineTalk：中性身份与时序情感场实验
 
-> **2026-09-18 当前状态**：完整分阶段训练、连续动作前缀、音频局部适配和最新三臂低秩适配实验均已完成。前缀改善了分块连续性，但音频对应的眉眼事件时机仍未达到目标；最新 rank8 适配没有实质收益，默认模型未替换。情感、身份与口型的既有基座保留，独立感知验收仍需补充。
+> **2026-09-18 当前状态**：固定时钟运动先验、有界时序修正和低容量韵律修正三轮已完成。最新韵律修正的开发动态分布误差改善约0.48%，但未稳定胜过静态、倒序与错配音频，时序仍未通过；默认模型未替换。保留既有身份、情感与口型基座不等于完整质量已经验收。
 >
-> 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)开始阅读；最新的[三臂结果](docs/TEMPORAL_ADAPTER_TRANSFER_RESULTS_20260918.md)、[固定实验协议](docs/TEMPORAL_ADAPTER_TRANSFER_PROTOCOL_20260917.md)和[执行记录](docs/TEMPORAL_ADAPTER_TRANSFER_HANDOFF_20260918.md)已纳入本仓库。最新训练入口为 `scripts/train_temporal_adapter_transfer.py`；完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已经验收的统一部署入口。
+> 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)和[最新运动先验实测](docs/CLOCKED_PRIOR_RESULTS_20260918.md)开始阅读。最新分支入口为 `scripts/launch_clocked_motion_prior.py --prosody`，见[韵律协议](docs/CLOCKED_PROSODY_PROTOCOL_20260918.md)；完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已经验收的统一部署入口。
 >
 > Git 保存源代码、配置、测试与文字实验文档。数据、权重、曲线数组和对比视频留在本地/实验服务器，不随仓库发布；文档中的 `artifacts/` 路径指外部实验产物，单独克隆仓库不会包含它们。复现实验还需按对应协议准备指定数据和源 checkpoint。
 

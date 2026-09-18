@@ -270,9 +270,10 @@ def audit(root):
     checks = Checks()
     checks.equal('completed_run', status.get('status'), 'complete')
     source_schema = protocol.get('schema')
-    if source_schema not in ('clocked_motion_shape_development_v1', 'clocked_bounded_static_residual_v1'):
+    if source_schema not in ('clocked_motion_shape_development_v1', 'clocked_bounded_static_residual_v1',
+                             'clocked_prosody_static_residual_v1'):
         raise ValueError('Unsupported fixed-clock result schema: '+str(source_schema))
-    residual = source_schema == 'clocked_bounded_static_residual_v1'
+    residual = source_schema in ('clocked_bounded_static_residual_v1', 'clocked_prosody_static_residual_v1')
     arms = PAIRED_ARMS if residual else ARMS
     level_key = 'logit_level' if residual else 'level'
     selection = read_json('selection.json') if residual else None

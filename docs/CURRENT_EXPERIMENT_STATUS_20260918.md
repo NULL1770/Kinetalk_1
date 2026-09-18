@@ -2,12 +2,14 @@
 
 更新于2026-09-18。本文件描述当前代码快照与已核验结果；旧文档中的“下一步”或“正在训练”需结合各文档终点更新阅读。
 
-**主要瓶颈仍是音频对应的眉眼动作时机。** 目前已有动作幅度、局部音频顺序响应和更好的分块连续性，但没有同时通过动态、整体表情与口型质量验收。默认模型未被后续候选替换；最新三臂实验已结束，没有因本次代码上传启动新训练。
+**主要瓶颈仍是音频对应的眉眼动作时机。** 固定时钟先验、有界修正和低容量韵律修正已真实训练完成。最新353开发集Centered ES从0.553357降至0.550722，约改善0.48%，区间跨零且未胜过倒序/错配，时序不通过。身份、情感和口型保留既有基座，仍需独立验收。默认模型未替换，没有追加训练在后台排队。详见[本轮完整结果与后续决策](CLOCKED_PRIOR_RESULTS_20260918.md)。
 
 ## 已完成实验
 
 | 实验 | 主要结论 | 协议／结果入口 |
 | --- | --- | --- |
+| 固定时钟双臂30、有界静态30＋修正30、韵律修正30 | 有界先验修复九通道范围，韵律有微小开发收益；音频时序仍失败，校准睁大眼幅度也不足 | [实测结果](CLOCKED_PRIOR_RESULTS_20260918.md)、[韵律协议](CLOCKED_PROSODY_PROTOCOL_20260918.md) |
+| native_context30、motion_process30、joint_prior_formal30 | 扩展原生时序、动作过程与迁移后的联合先验；仍未达到时序目标 | [原生上下文](NATIVE_CONTEXT30_HANDOFF_20260918.md)、[动作过程结果](MOTION_PROCESS30_RESULTS_20260918.md)、[迁移记录](JOINT_PRIOR_MIGRATION_20260918.md) |
 | 完整五阶段 run12，各12轮 | 身份系数基线和全局情感分类有收益；音频到运动的时序差距仍大 | [完整训练协议](FULL_STAGED_SPLINE_PROTOCOL_20260917.md)、[执行记录](FULL_STAGED_RUN12_HANDOFF_20260917.md) |
 | local 对齐、direct/soft、残差修复 | local 对齐有部分收益；soft-state未显示独立优势；恢复Stage3原local口部输出改善口部误差 | [修复协议](TEMPORAL_REPAIR_PROTOCOL_20260917.md) |
 | centered white/AR1 | white有连贯性收益，AR1未胜出；更准均值不等于更准动作时机 | [中心动态协议](CENTERED_TEMPORAL_PRIOR_PROTOCOL_20260917.md) |
@@ -25,18 +27,24 @@
 
 原始池为2315 fit／405反复使用的内部开发片段，19 fit身份／3开发身份。最新增量实验沿用1707更新／608留句划分，但共享源模型见过完整2315；608只能叫新增更新的留出，不能称全模型未见句泛化。封存test未读取。
 
+固定时钟先验沿用1053拟合／199校准／353开发回归；199和353均已被多轮设计使用，不能称独立未见测试。本轮没有读取405或封存test，历史曝光并未因此消除。四段新灰模诊断仅替换九个眉眼通道，其余43通道逐值不变；显示仍需裁剪较多基线系数，因此不能从视频推出完整52通道质量合格。
+
 ## 对应源码
 
 - 五阶段训练：`scripts/train_full_staged.py`、`scripts/full_staged_data.py`。
 - 连续前缀生成：`kinetalk_b0/models/prefix_upper_flow.py`、`scripts/train_context_mechanism.py`、`scripts/evaluate_context_mechanism.py`。
-- 最新rank8模块：`kinetalk_b0/models/temporal_local_adapter.py`。
-- 最新训练／后台启动：`scripts/train_temporal_adapter_transfer.py`、`scripts/run_temporal_adapter_transfer_background.py`。
-- 最新留出评价／终点审计：`scripts/evaluate_temporal_adapter_transfer.py`、`scripts/audit_temporal_adapter_results.py`。
-- 可视化打包：`scripts/package_temporal_adapter_review.py`、`scripts/render_dynamic_rig_comparison.py`。
+- 历史rank8模块：`kinetalk_b0/models/temporal_local_adapter.py`，训练与评价为`train_temporal_adapter_transfer.py`、`evaluate_temporal_adapter_transfer.py`。
+- 最新韵律修正训练／后台启动：`scripts/train_prosody_clocked_residual.py`、`scripts/launch_clocked_motion_prior.py --prosody`。
+- 最新评分与独立终点审计：沿用`train_clocked_residual_prior.py`中的评价函数、`scripts/audit_clocked_motion_results.py`独立重算已存曲线。
+- 最新可视化打包：`scripts/package_clocked_prior_review.py`；完整面部诊断由`export_clocked_fullface_examples.py`导出，`render_dynamic_rig_comparison.py`渲染。
 
 训练脚本依赖协议指定的历史源模型、独立身份参考、native音频/动作和缓存。`requirements.txt`列出基础依赖；测试需要pytest，绘图/媒体及可选音频提取依赖按使用脚本另行准备。`train.py`和`deploy.py`保留历史入口语义，不能用来代替最新实验入口。
 
-## 下一步：尚未实施的机制诊断
+## 下一步：活动条件与动作形状分离
+
+依据本轮高维修正过拟合、小韵律分支未胜过干预的结果，下一项假设是音频只控制四组眉眼活动的发生概率与强度，运动先验负责具体方向、形状和持续过程。先对照既有事件探针，再固定短验证；较粗活动条件仍不能稳定预测时，不继续接生成器。该新结构尚未实现或验证，详见[最新结果文档](CLOCKED_PRIOR_RESULTS_20260918.md)。
+
+## 历史机制诊断建议（adapter阶段记录）
 
 先在同权重、同噪声下比较正常生成、仅一次真实起始历史、同末状态的静态起始历史；随后全程自己生成，只评价共同后缀。必要时固定起始历史、静态化局部音频，区分位置、运动惯性和音频贡献。GT仅为机制诊断，不得作为部署输入或主效果证据。
 
