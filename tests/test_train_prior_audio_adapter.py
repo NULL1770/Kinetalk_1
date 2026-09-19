@@ -80,3 +80,15 @@ def test_earliest_passing_not_best_and_gate_override_restricted(tmp_path):
     assert r.select_candidate([{'step':1000,'accepted':False}]) is None
     args=r.parser().parse_args(['--dataset','missing','--output',str(tmp_path),'--skip-quality-gates'])
     with pytest.raises(ValueError,match='smoke'):r.run(args)
+
+
+@pytest.mark.parametrize('recovered', [False, True])
+def test_evaluation_resume_recovers_missing_directory_metadata(tmp_path, monkeypatch, recovered):
+    canonical=tmp_path/'inner_validation'
+    actual=tmp_path/'inner_validation_recovery1' if recovered else canonical
+    actual.mkdir();torch.save({},actual/'curves.pt')
+    if recovered:
+        (tmp_path/'inner_validation_artifact.json').write_text(json.dumps({'directory':str(actual)}))
+    monkeypatch.setattr(r.common,'_evaluate',lambda *args,**kwargs:{'status':'needs_visual_review'})
+    result=r.evaluate_cached(None,None,[],{},canonical,'cpu',resume=True)
+    assert result['artifact_directory']==str(actual)

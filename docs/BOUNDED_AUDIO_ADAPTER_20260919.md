@@ -26,4 +26,16 @@
 
 每250步保存last，各固定节点保存可复核checkpoint。source/data/stat/AE/prior/protocol绑定哈希；原先验state逐值哈希验未变，matched臂初始化/采样链/步数核对。后台进程独立于SSH会话；断电后显式resume。训练终止、质量门控停止、全部执行结束分别记录，不把complete写作实验成功。
 
-运行结果待真实GPU短流程和正式训练补入。
+服务器73项测试通过；真实GPU每阶段100步的两节点完整短流程跑完，配对校验通过，短流程不作效果结论。正式已启动：`/root/kinetalk_joint_20260918/bounded_audio_formal24000`，supervisor PID2083、训练PID2084。613片训练/206片内层验证/64片外层诊断；新AE4000完成、train动态重构R²=0.975247并通过继续检查。先验14000阶段已核到12250步，后续自动衔接；最终结果待补入。
+
+恢复命令（必须确认没有该输出活动进程；保持代码及预算不变）：
+
+```bash
+cd /root/kinetalk_joint_20260918/code
+/root/miniconda3/bin/python3.12 -m scripts.launch_prior_audio_adapter \
+  --dataset /root/kinetalk_joint_20260918/continuous_latent_dataset.pt \
+  --output /root/kinetalk_joint_20260918/bounded_audio_formal24000 \
+  --code-root /root/kinetalk_joint_20260918/code --device cuda \
+  --ae-steps 4000 --prior-steps 14000 --adapter-steps 3000 \
+  --milestones 1000 3000 --batch-size 24 --valid-sentences 5 --max-delta .35 --resume
+```
