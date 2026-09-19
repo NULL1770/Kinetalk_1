@@ -21,6 +21,7 @@ SEED = 20260919
 SCHEMA = 'continuous_motion_training_v2'
 SOURCE_FILES = ('scripts/train_continuous_motion_latent.py', 'scripts/prepare_continuous_motion_dataset.py',
                 'scripts/evaluate_continuous_motion_latent.py', 'scripts/joint_motion_metrics.py',
+                'scripts/arkit_benchmark_report.py', 'scripts/evaluate_arkit_literature_metrics.py',
                 'kinetalk_b0/models/continuous_upper_motion.py')
 
 

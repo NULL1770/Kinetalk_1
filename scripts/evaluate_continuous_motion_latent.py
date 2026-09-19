@@ -18,6 +18,7 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.joint_motion_metrics import score_clip, summarize
 from scripts.render_dynamic_rig_comparison import ARKIT_NAMES
+from scripts.arkit_benchmark_report import build_report, score_fullface, write_report
 
 SCHEMA = 'continuous_motion_latent_evaluation_v1'
 UPPER = [41, 42, 43, 44, 45, 5, 6, 12, 13]
@@ -245,7 +246,7 @@ def _svg(target, baseline, samples, valid, score_mask, destination):
 def _write_artifacts(clips, curves, output, result, mode):
     output = Path(output); output.mkdir(parents=True, exist_ok=True)
     (output/'npz').mkdir(exist_ok=True); (output/'svg').mkdir(exist_ok=True)
-    jobs = []; sections = []; selected = {c['clip_id'] for c in _selected(clips)}
+    jobs = []; sections = []; literature_rows = []; selected = {c['clip_id'] for c in _selected(clips)}
     for clip in clips:
         cid = clip['clip_id']
         if Path(cid).name != cid or any(x in cid for x in ('/', '\\', ':')):raise ValueError('unsafe clip_id')
@@ -253,11 +254,14 @@ def _write_artifacts(clips, curves, output, result, mode):
         target52 = _array(clip['target52']); valid = row['native_valid']; score_mask = row['score_mask']
         if target52.shape != baseline.shape:raise ValueError('target52/baseline shape differs')
         full = compose_full(samples, baseline)
+        literature_rows.append(score_fullface(full, clip))
         # Preserve the full native output clock in the renderer input. Missing
         # target rows are explicitly marked and baseline-filled for display
         # only; generation and scoring always use their separate raw arrays.
         ref = target52.copy()
         missing_reference = (~score_mask[:, None]) | ~np.isfinite(ref)
+        if 'channel_mask' in clip:
+            missing_reference |= ~_array(clip['channel_mask'])
         ref = np.where(missing_reference, baseline, ref)
         times = _array(clip['times']) if 'times' in clip else np.arange(len(valid))/25
         names = ['target reference (missing values baseline-filled; not inference)', 'frozen baseline']+[mode+' '+str(s) for s in row['seeds']]
@@ -288,9 +292,14 @@ def _write_artifacts(clips, curves, output, result, mode):
             _svg(row['target'], baseline[:, UPPER], samples, valid, score_mask, svg)
             sections.append('<section><h2>'+html.escape(cid)+'</h2><p>'+html.escape(json.dumps(_metadata(clip), ensure_ascii=False))+'</p><img src="svg/'+html.escape(cid)+'.svg"></section>')
     torch.save({'schema': SCHEMA, 'mode': mode, 'clips': curves, 'result': result}, output/'curves.pt')
+    # Separate report: historical model-selection gates and their metrics stay
+    # unchanged. No dependency is fabricated when render/encoder inputs lack.
+    write_report(output/'arkit_benchmark.json', build_report(
+        literature_rows, scope=mode+'; same clips as native evaluation; split status inherited'))
     (output/'result.json').write_text(json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False)+'\n', encoding='utf8')
     (output/'render_jobs.json').write_text(json.dumps({'driver': 'scripts/render_dynamic_rig_comparison.py', 'jobs': jobs, 'rendered': False}, indent=2)+'\n', encoding='utf8')
     intro = '<h1>Continuous latent · '+html.escape(mode)+'</h1><p>Status: needs_visual_review. Full native curves, fixed metadata examples, no best seed. Numerical checks do not certify naturalness.</p>'
+    intro += '<p><a href="arkit_benchmark.json">ARKit literature metrics and pending evaluator dependencies</a></p>'
     if mode == 'ae_reconstruction':intro += '<p>Oracle motion reconstruction only; not audio prediction or free generation.</p>'
     page = '<!doctype html><html><meta charset="utf-8"><title>Continuous latent diagnostics</title><style>body{max-width:1200px;margin:24px auto;font:16px/1.5 sans-serif;background:#edf1f5}section{background:white;padding:20px;margin:20px 0}img{width:100%}</style>'+intro+''.join(sections)+'</html>'
     (output/'index.html').write_text(page, encoding='utf8')
