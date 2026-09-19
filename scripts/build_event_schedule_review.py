@@ -239,9 +239,52 @@ def build(root):
     audit_candidates = [root/'receiver_bottleneck_audit/summary.json', root/run/'receiver_bottleneck_audit/summary.json']
     audit_path = next((path for path in audit_candidates if path.is_file()), None)
     if audit_path:
-        sections.append('<p>已取得瓶颈诊断；以下原样展示，不替代正式验证。</p><pre>' + html.escape(json.dumps(read(audit_path), ensure_ascii=False, indent=2)) + '</pre>' + link(root, audit_path.relative_to(root), '瓶颈审计 JSON'))
+        sections.append('<p>已取得同24例的瓶颈诊断。它们偏向少数身份和情感，不能用24例的RMS比值概括全部206例。</p>' + link(root, audit_path.relative_to(root), '24例瓶颈审计 JSON'))
     else:
         sections.append('<p class="pending">pending：SSH 中断，接收端瓶颈诊断尚未完成或尚未取回。当前没有诊断结果，不能据此宣称已定位或已修复。</p>')
+    scope_path = Path('audits/event_validation_scope_20260919/summary.json')
+    scope = read(root/scope_path)
+    if scope:
+        scope_rows = [dict(arm=row['arm'], up=row['rms_ratio'][0], down=row['rms_ratio'][1],
+                     squint=row['rms_ratio'][2], wide=row['rms_ratio'][3],
+                     es=get(row,'joint_fair_es','centered'), mbe=get(row,'arkit','arkit_mbe','value'))
+                     for row in scope['table']]
+        csv_file(root/'receiver_all206.csv', scope_rows)
+        sections += ['<h3>全部206例：AE、原始先验与事件微调</h3>',
+                     table(scope_rows,[('arm','模型/条件'),('up','抬眉 RMS 比'),('down','压眉 RMS 比'),
+                       ('squint','眯眼 RMS 比'),('wide','睁眼 RMS 比'),('es','Centered ES ↓'),('mbe','ARKit-MBE ↓')]),
+                     '<p>AE能保留约98%的抬眉动态RMS；源先验约79%，事件oracle约63%。事件微调在全验证集也降低动态幅度。AE是读取真实动作的重建上限，不是音频生成成绩。</p>',
+                     link(root,scope_path,'全206原始审计')+' · '+link(root,'receiver_all206.csv','全206 CSV')]
+    support_path = Path('audits/event_training_support_v2_final_20260919/report.json')
+    support = read(root/support_path)
+    if support:
+        fit = support['populations']['fit']['all']
+        sections += ['<h3>监督裁断问题</h3><p>源先验训练保留 '+str(fit['source_clips_retained'])+' 条、'+str(fit['frames']['source_kept'])+
+            ' 帧；事件known4共同有效区间与最短段筛选后，只有 '+str(fit['receiver_clips_retained'])+' 条、'+str(fit['frames']['receiver_kept'])+
+            ' 帧。保留片段本身的动态也更弱。这是明确的训练分布变化，因果影响仍需恢复完整监督的配对训练确认。</p>',
+            link(root,support_path,'监督覆盖原始审计')]
+    sampling_path = Path('audits/prior_sampling_resolution_20260919/summary.json')
+    sampling = read(root/sampling_path)
+    if sampling:
+        rows=[dict(arm=r['arm'],nfe=r['nfe'],up=r['rms_ratio'][0],mbe=get(r,'arkit','arkit_mbe','value')) for r in sampling['table']]
+        sections += ['<h3>采样精度对照（同24例）</h3>',table(rows,[('arm','积分器'),('nfe','向量场计算次数'),('up','抬眉 RMS 比'),('mbe','MBE ↓')]),
+                     '<p>增加步数与Heun积分只小幅改变幅度，不能解释或修复主要损失。没有据此挑选最佳采样器或替换默认模型。</p>',link(root,sampling_path,'采样对照 JSON')]
+    repair_path=Path('audits/receiver_support_repair_20260919/summary.json')
+    repair=read(root/repair_path)
+    if repair:
+        rows=[dict(arm=r['arm'],up=r['rms_ratio'][0],down=r['rms_ratio'][1],squint=r['rms_ratio'][2],
+                   wide=r['rms_ratio'][3],es=get(r,'joint_fair_es','centered'),
+                   mbe=get(r,'arkit','arkit_mbe','value'),lbe=get(r,'arkit','arkit_lbe','value')) for r in repair['table']]
+        csv_file(root/'support_repair_all206.csv',rows)
+        sections+=['<h3>已完成：恢复完整监督的2000步修复对照</h3>',
+                   table(rows,[('arm','模型'),('up','抬眉 RMS 比'),('down','压眉 RMS 比'),('squint','眯眼 RMS 比'),
+                     ('wide','睁眼 RMS 比'),('es','Centered ES ↓'),('mbe','MBE ↓'),('lbe','LBE ↓')]),
+                   '<p>从相同源prior初始化，完整监督恢复了旧null的部分动态退化，MBE改善。但抬眉幅度和ES仍未胜源prior，局部音频条件始终为零，不能当作音频时序成功。固定单训练种子，无默认模型替换。</p>',
+                   link(root,repair_path,'修复原始结果')+' · '+link(root,'support_repair_all206.csv','修复CSV')]
+        movie=Path('support_review/render/comparison.mp4')
+        if (root/movie).is_file():
+            sections+=['<p>固定原先第二个样例，seed42、全长、无声；六面板包含GT、基线、AE重建、源prior、旧null与完整监督null。</p>',
+                       '<video controls preload="metadata" src="'+movie.as_posix()+'"></video>']
     sections += ['</section><section><h2>仍待完成的论文主表项目</h2><p>AV offset / confidence、正式 Multimodality、FD / WInD 仍为 pending：缺少完成并验证的公共音画或运动特征评价流程。FDD 是时序能量标准差差异，对帧顺序不敏感，不能替代动作时机评价。</p><p>FaceFormer、CodeTalker、FaceDiffuser 尚未按本项目统一 ARKit52 协议重训，因此当前不能排名或宣称超越论文方法。身份和情感支路冻结只说明此次没有更新其参数，并不构成生成身份/情感质量通过的证据。</p></section>',
         '<section><h2>来源与已有报告</h2><p>' + ' · '.join([link(root, summary_path, '完整 posthoc JSON'), link(root, run/'posthoc_full/report.md', '已有 posthoc 报告'), link(root, run/'protocol.json', '顺序训练协议'), link(root, prosody_run/'protocol.json', '韵律协议'), link(root, run/'event/receiver_gate.json', '接收器工程门槛')]) + '</p></section>']
     stylesheet = 'body{font-family:system-ui,"Microsoft YaHei",sans-serif;background:#f5f7fa;color:#17223b;margin:0;line-height:1.65}main{max-width:1420px;margin:auto;padding:36px 24px}header{padding:18px 0}h1{font-size:32px;line-height:1.3}h2{font-size:23px;margin-top:0}.eyebrow{font-size:13px;color:#476078;letter-spacing:.08em}section{background:white;border:1px solid #dce4ec;border-radius:14px;padding:24px;margin:22px 0}.notice{background:#fff0df;border-left:5px solid #bf6b21;padding:20px;border-radius:5px}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}th,td{text-align:right;padding:11px;border-bottom:1px solid #e3e9ef}th{background:#f0f4f8;color:#34506d}th:first-child,td:first-child{text-align:left}a{color:#165f9e}.warning{color:#9c4916}.pending{color:#805b1f}video{width:100%;max-height:600px;background:#131820}figure{margin:22px 0}figcaption{font-weight:600;margin-bottom:10px}pre{white-space:pre-wrap;max-height:500px;overflow:auto;font-size:12px}p{max-width:1200px}'
