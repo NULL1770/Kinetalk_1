@@ -30,6 +30,12 @@ Every full-face evaluation exports shared ARKit-MBE, official-mask LBE, signed/a
 
 The mouth candidate and eyebrow receiver are evaluated separately first. Combining them requires an explicitly named combined arm and a new full-face evaluation. Global emotion and identity conditions remain inputs; this round does not establish or promise unchanged perceptual quality merely from architecture.
 
+## Formal-run interpretation and next audio ablation
+
+The formal run passed the receiver control gate but failed the audio-predictor gate on all three seeds. Audio minus matched-static onset Brier was +0.00546/+0.00492/+0.00610 and joint-process NLL was +0.09881/+0.08862/+0.09315. The receiver therefore can use an event schedule, while the current 1540-dimensional direct TCN does not establish that audio predicts the schedule better than global/static conditions. This is a useful localization of the failure, not evidence that the event factorization itself is invalid.
+
+The next ablation should keep the receiver, teacher, split, duration bins, and budgets fixed, and change only the predictor input factorization: a frozen static event prior from the 202-dimensional global/context vector plus a zero-initialized residual driven by centered local prosody (the four cached channels at indices 1536:1540, using short native windows and first differences). Compare this residual arm with the same static prior and the existing direct-1540 arm. The intervention must preserve native clocks and never read motion-derived support at inference. Accept only if the prosody residual beats the paired static prior on onset and joint/duration NLL with sentence-level uncertainty; otherwise the available audio representation does not carry enough evidence for this event target.
+
 ## Execution
 
 The sequential supervisor runs the event pipeline then the mouth candidate with separate logs and exit codes. A failed event stage is recorded and does not suppress the independent mouth experiment. Fresh output paths are required. GPU smoke must pass before the full fixed-budget run is launched.
