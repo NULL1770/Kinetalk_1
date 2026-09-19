@@ -1,6 +1,6 @@
 # Event schedule / mouth residual experiment
 
-Status: implementation and validation; success requires measured results. This is an inner-development experiment with inherited upstream exposure, not a sealed test or an external-method ranking.
+Status: both fixed-budget formal experiments completed; neither audio timing gate passed. No model was promoted. This is an inner-development experiment with inherited upstream exposure, not a sealed test or an external-method ranking. Results: `EVENT_SCHEDULE_RESULTS_20260919.md`.
 
 ## Motivation and architecture
 
@@ -30,11 +30,15 @@ Every full-face evaluation exports shared ARKit-MBE, official-mask LBE, signed/a
 
 The mouth candidate and eyebrow receiver are evaluated separately first. Combining them requires an explicitly named combined arm and a new full-face evaluation. Global emotion and identity conditions remain inputs; this round does not establish or promise unchanged perceptual quality merely from architecture.
 
-## Formal-run interpretation and next audio ablation
+## Formal-run interpretation and completed prosody ablation
 
-The formal run passed the receiver control gate but failed the audio-predictor gate on all three seeds. Audio minus matched-static onset Brier was +0.00546/+0.00492/+0.00610 and joint-process NLL was +0.09881/+0.08862/+0.09315. The receiver therefore can use an event schedule, while the current 1540-dimensional direct TCN does not establish that audio predicts the schedule better than global/static conditions. This is a useful localization of the failure, not evidence that the event factorization itself is invalid.
+The formal run passed the receiver engineering control gate but failed the audio-predictor gate on all three seeds. Audio minus matched-static onset Brier was +0.00546/+0.00492/+0.00610 and joint-process NLL was +0.09881/+0.08862/+0.09315. The receiver responds to an event schedule, while the current 1540-dimensional direct TCN does not establish that audio predicts the schedule better than global/static conditions. The oracle-versus-empty activity Brier confidence interval crosses zero. Moreover, even the oracle schedule has a pooled, within-run centered, training-scale-normalized brow-up RMS ratio of only 0.2413, with 40.25% raw brow-up values outside [0,1]. Therefore the evidence does not localize failure solely to audio prediction, or certify the receiver's motion quality.
 
-The next ablation should keep the receiver, teacher, split, duration bins, and budgets fixed, and change only the predictor input factorization: a frozen static event prior from the 202-dimensional global/context vector plus a zero-initialized residual driven by centered local prosody (the four cached channels at indices 1536:1540, using short native windows and first differences). Compare this residual arm with the same static prior and the existing direct-1540 arm. The intervention must preserve native clocks and never read motion-derived support at inference. Accept only if the prosody residual beats the paired static prior on onset and joint/duration NLL with sentence-level uncertainty; otherwise the available audio representation does not carry enough evidence for this event target.
+The completed v2 ablation kept the event teacher, split and duration bins fixed. A static event prior receives normalized context202 and four training-normalized clip-mean prosody features. A frozen copy is augmented by a zero-initialized TCN residual driven by ten derived local prosody channels, centered over each native audio run before cropping. The residual is bounded as tanh(f(condition))-tanh(f(zeros)), so a null local condition reproduces the frozen static model exactly even after training. Reversed conditions are recomputed from reversed raw prosody. Uniform clip/run/crop sampling is retained; there is no event oversampling or target-derived inference clock.
+
+Each of three seeds trained static and residual stages for 1500 updates. All three failed: sentence-paired residual-minus-static joint NLL was +0.00381/+0.00388/+0.00388, with positive confidence intervals. On seed42, training joint NLL improved from 0.08829 to 0.06866, while validation worsened from 0.08562 to 0.08938. This is evidence of overfitting in this model/target/data setup, not proof that audio contains no useful information or that all audio-to-brow timing is impossible. Failed predictor weights were not used for a new generation candidate or promoted.
+
+Next diagnostic: `audit_event_receiver_bottleneck.py` compares the frozen baseline, deterministic AE reconstruction, original source prior and saved event variants on the exact same24 validation clips. It checks source hashes, masks and four declared generation seeds, and reports raw mean/bias, out-of-range values, centered RMS and shared ARKit metrics. It does not retrain or modify original results. The remote SSH port stopped accepting connections before this audit could run; no bottleneck outcome is claimed yet. The older source AE gate is a training-capacity check and cannot substitute for this validation comparison.
 
 ## Execution
 

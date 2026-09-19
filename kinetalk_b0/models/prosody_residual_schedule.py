@@ -49,6 +49,7 @@ class ProsodyResidualSchedule(nn.Module):
 
     def freeze_base(self):
         self.base.eval().requires_grad_(False)
+        self.base.zero_grad(set_to_none=True)
         return self
 
     def train(self, mode: bool = True):
@@ -56,7 +57,7 @@ class ProsodyResidualSchedule(nn.Module):
         # every mode switch so a caller cannot accidentally update its
         # running state or enable gradients while fitting the residual.
         super().train(mode)
-        self.base.eval().requires_grad_(False)
+        self.freeze_base()
         return self
 
     def residual_logits(self, condition: torch.Tensor, valid: torch.Tensor):
@@ -88,7 +89,7 @@ class ProsodyResidualSchedule(nn.Module):
 
         onset, duration = encode(condition)
         null_onset, null_duration = encode(torch.zeros_like(condition))
-        return onset-null_onset, duration-null_duration
+        return onset.tanh()-null_onset.tanh(), duration.tanh()-null_duration.tanh()
 
     def forward(self, condition: torch.Tensor, context: torch.Tensor, valid: torch.Tensor):
         if (condition.ndim != 3 or condition.shape[-1] != self.condition_dim or
