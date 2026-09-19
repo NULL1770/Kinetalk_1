@@ -16,17 +16,30 @@ SCHEMA = 'prosody_residual_event_v1'; SEEDS = (42, 123, 2026)
 def arr(x): return x.detach().cpu().numpy() if torch.is_tensor(x) else np.asarray(x)
 
 def prepare(clip, labels, stats):
+    prosody=(clip['features'][:,1536:1540]-stats['audio_mean'][1536:1540])/stats['audio_scale'][1536:1540]
+    prosody=prosody[clip['valid']].mean(0)
     return {'clip_id':clip['clip_id'],'sentence':clip['sentence'],
       'condition':derive_event_condition(clip['features'].float(), clip['valid']).float(),
-      'context':((clip['context']-stats['context_mean'])/stats['context_scale']).float(),
+      'context':torch.cat((((clip['context']-stats['context_mean'])/stats['context_scale']).float(),prosody.float())),
       'valid':clip['valid'].bool(), **dict(zip(('onset','risk','duration'),map(torch.from_numpy,target_arrays(labels[clip['clip_id']]))))}
 
 def batch(rows, rng, device, frames=180, size=12):
     x=torch.zeros(size,frames,10,device=device); c=[]; v=torch.zeros(size,frames,dtype=torch.bool,device=device)
     y=torch.zeros(size,frames,4,device=device); r=torch.zeros_like(y,dtype=torch.bool); d=torch.zeros_like(y,dtype=torch.long)
     for i in range(size):
-        row=rows[int(rng.integers(len(rows)))]; runs=valid_runs(arr(row['valid'])); left,right=runs[int(rng.integers(len(runs)))]
-        a=int(rng.integers(left,right-frames+1)) if right-left>frames else left; n=min(frames,right-a)
+        row=rows[int(rng.integers(len(rows)))]; runs=valid_runs(arr(row['valid']))
+        event_frames=np.flatnonzero(arr(row['onset']).any(1))
+        if len(event_frames) and rng.random()<.5:
+            center=int(event_frames[int(rng.integers(len(event_frames)))])
+            candidates=[(l,r) for l,r in runs if l<=center<r]
+            left,right=candidates[0]
+            lo=max(left,center-60); hi=min(right-1,center+60)
+            center=int(rng.integers(lo,hi+1))
+            a=max(left,min(center-frames//2,right-frames)) if right-left>=frames else left
+        else:
+            left,right=runs[int(rng.integers(len(runs)))]
+            a=int(rng.integers(left,right-frames+1)) if right-left>frames else left
+        n=min(frames,right-a)
         x[i,:n]=row['condition'][a:a+n].to(device); c.append(row['context']); v[i,:n]=True; y[i,:n]=row['onset'][a:a+n].to(device); r[i,:n]=row['risk'][a:a+n].to(device); d[i,:n]=row['duration'][a:a+n].to(device)
         if a>left:r[i,:min(15,n)]=False
         if a+n<right:r[i,max(0,n-15):n]=False
@@ -64,6 +77,7 @@ def main(a):
     if sha(a.dataset)!=ref['dataset_sha256']: raise ValueError('dataset mismatch')
     data=torch.load(a.dataset,weights_only=False,map_location='cpu',mmap=True); fit,valid=split_train_pool(data['clips'],ref); del data
     stats=common._load(a.source_run/'fit_stats.pt'); teacher=fit_teacher(fit); labels={c['clip_id']:extract_schedule(c['motion9'],c['valid'],teacher,motion_mask=c['motion_mask']) for c in fit+valid}; train=[prepare(c,labels,stats) for c in fit]; val=[prepare(c,labels,stats) for c in valid]
+    if train[0]['context'].numel()!=206: raise ValueError('Expected 202 context plus 4 normalized prosody mean dimensions')
     a.output.mkdir(parents=True); common._write(a.output/'protocol.json',{'schema':SCHEMA,'dataset_sha256':ref['dataset_sha256'],'source_protocol_sha256':sha(a.source_run/'protocol.json'),'steps':a.steps,'seeds':list(SEEDS),'condition':'run-safe local prosody residual over frozen static context prior','default_replaced':False})
     reports={}
     for seed in (SEEDS[:1] if a.smoke else SEEDS):
