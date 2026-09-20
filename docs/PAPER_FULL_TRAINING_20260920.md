@@ -45,3 +45,7 @@ FaceFormer/CodeTalker/FaceDiffuser尚未同协议重训。AV offset/confidence�
 ## 资源与恢复
 
 远端独立目录`/root/kinetalk_paper_20260920`。完整特征及大曲线使用`/dev/shm/kinetalk_paper_full_v1`与单独artifact目录；shm重启会丢失，必须本地备份校验。compact checkpoint和日志在root持久目录，不能依赖shm作为唯一恢复来源。原始数据、默认权重和历史实验均保留。
+
+2026-09-20 12:23:53北京时间，完整队列已启动：队列PID2648、训练PID2712，run目录`/root/kinetalk_paper_20260920/full_v1`，日志`full_v1/audio.log`、`full_v1/static.log`，状态`full_v1/queue_status.json`。实际加载4098/446、454566train有效帧；口型和identity阶段已完成并写出checkpoint，teacher阶段每epoch约27秒。整体预算估计30–50分钟，包含独立static和三采样完整验证，结果尚未据此宣告成功。
+
+修改后实现提交`85fb20a`已上传同一分支，已核对远端五个执行源码文件哈希。首个完成阶段checkpoint已下载并核SHA。新增封存冲突、全帧读取和配对bootstrap合同测试后，共67项相关测试通过（其中新pipeline8项），上述数字不代表质量验收。

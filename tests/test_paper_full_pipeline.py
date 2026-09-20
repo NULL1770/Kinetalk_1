@@ -85,3 +85,25 @@ def test_new_flow_does_not_project_away_slow_random_variation():
     result=model.decode(q,{'code':torch.zeros(1,8)},affect,local,state,noise,2)
     torch.testing.assert_close(result,noise)
     torch.testing.assert_close(project_upper_innovation(result,valid,stride=4),torch.zeros_like(result),atol=1e-6,rtol=0)
+
+
+def test_queue_pairing_rejects_different_clips_and_keeps_direction(tmp_path):
+    from scripts.run_paper_full_queue import compare
+    root=tmp_path/'run';art=tmp_path/'artifacts'
+    names=('arkit_mbe','arkit_lbe','arkit_fdd_signed','arkit_fdd_absolute','supp_upper9_fdd_absolute')
+    for label,score in [('audio',.2),('static',.4)]:
+        folder=root/label/'dynamics';folder.mkdir(parents=True)
+        report={mode:{'coefficient':{n:{'value':score} for n in names},'temporal':{}}
+                for mode in ('full','static_state','oracle_state','reverse_audio')}
+        (folder/'benchmark_summary.json').write_text(json.dumps(report),encoding='utf8')
+        folder=art/label/'dynamics';folder.mkdir(parents=True)
+        records=[{'clip_id':str(i),'sentence':'sentence'+str(i),'scales':[1]*9,
+                  'joint_fair_es':{'raw':score,'centered':score}} for i in range(3)]
+        (folder/'temporal_full.json').write_text(json.dumps(records),encoding='utf8')
+    compare(root,art)
+    result=json.loads((root/'paired_intervals.json').read_text())
+    assert result['centered']['audio_minus_static']==pytest.approx(-.2)
+    assert result['centered']['sentence_cluster_95ci']==pytest.approx([-.2,-.2])
+    path=art/'static/dynamics/temporal_full.json';records=json.loads(path.read_text());records[0]['clip_id']='foreign'
+    path.write_text(json.dumps(records))
+    with pytest.raises(ValueError,match='memberships'):compare(root,art)
