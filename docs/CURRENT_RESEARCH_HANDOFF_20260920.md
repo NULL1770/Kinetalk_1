@@ -2,6 +2,10 @@
 
 更新时间：2026-09-20
 
+## 当日后续覆盖说明（13:03更新）
+
+以下V2历史结论保留。最新已执行完整MEAD4098train/446validation、完整native帧、全新KineTalk五阶段与独立static动态对照，总38.6分钟，全部结束；不是仍待全量训练。详细协议见`PAPER_FULL_TRAINING_20260920.md`，结果见`PAPER_FULL_RESULTS_20260920.md`。修复历史test15封存冲突后重新锁manifest，不能使用旧4118候选。最新audio raw ES优于static，但centered ES差+0.005276，句簇95%区间[+0.003063,+0.007669]，动态目标仍失败。独立全部曲线复算最大差2.22e−16；sealed test未读、默认未替换、无进一步训练排队。先定位train/val和solver/条件差异，不能重复声称扩大数据即能解决。
+
 ## 1. 当前结论
 
 目前还不能声称已经实现了可靠的“音频到眉眼动态时序”。AE 可以重建 upper9，source prior 可以产生一定运动，但最新多尺度音频残差 V2 没有通过严格的真实音频优于静态对照验收。
@@ -82,4 +86,3 @@ V2 的结果不能判断是哪一种，因为真实音频没有胜过 independen
 > 第二项工作是做一次固定结构的 train-vs-validation 因果定位：同时记录 flow matching loss、最终多步自由生成轨迹、real/static/reverse/mismatch 和 motion-oracle 上限。若 train 也不胜 static，查生成器控制能力或训练目标；若 train 胜而 validation 败，查跨句/跨人泛化；若 flow 下降而 rollout 不下降，修改训练目标与最终 solver 的对应关系。不要在没有定位证据时继续换模块或堆 loss。
 >
 > 后续任何方案必须同时满足：真实 audio 相对 independent static、same-model static、reverse 和合法 mismatch 的 paired centered ES 改善；variogram/速度/眉眼分组动态改善；口型、身份和全局情感不退化；并在完整论文 train split 上重训。最终只读取一次 sealed test，输出 ARKit52 主表、消融、基线复现、固定 seed 视频和失败项。若真实 audio 仍不能胜过 static，应明确报告当前设计未解决音频眉眼时序，停止继续堆模块。
-

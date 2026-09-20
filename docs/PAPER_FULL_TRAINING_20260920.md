@@ -2,6 +2,8 @@
 
 用户要求先上传现有源码，再修改和训练。修改前快照为 GitHub 分支 `codex/experiment-snapshot-20260918` 的 `66712ea`。
 
+终点更新：audio五阶段、独立static臂和配对报告已全部完成，耗时38.6分钟。Centered ES未通过static对照，不能声称音频动态成功。以下启动说明保留为执行记录；最终结果见`PAPER_FULL_RESULTS_20260920.md`。
+
 ## 数据版本
 
 此前的 4118 条 identity_disjoint 候选存在历史封存冲突：test15 的 14 条进入 query，1 条进入 enrollment。本轮按历史封存的三个句子排除全部 20 条 train 录制，并重新选择中性参考。不能使用原候选直接训练。
@@ -49,3 +51,5 @@ FaceFormer/CodeTalker/FaceDiffuser尚未同协议重训。AV offset/confidence�
 2026-09-20 12:23:53北京时间，完整队列已启动：队列PID2648、训练PID2712，run目录`/root/kinetalk_paper_20260920/full_v1`，日志`full_v1/audio.log`、`full_v1/static.log`，状态`full_v1/queue_status.json`。实际加载4098/446、454566train有效帧；口型和identity阶段已完成并写出checkpoint，teacher阶段每epoch约27秒。整体预算估计30–50分钟，包含独立static和三采样完整验证，结果尚未据此宣告成功。
 
 修改后实现提交`85fb20a`已上传同一分支，已核对远端五个执行源码文件哈希。首个完成阶段checkpoint已下载并核SHA。新增封存冲突、全帧读取和配对bootstrap合同测试后，共67项相关测试通过（其中新pipeline8项），上述数字不代表质量验收。
+
+完整prepared特征已备份至本地`artifacts/paper_training_20260920/data_backup.tar`，2694072320字节，SHA256 `608d9f1c1c8f11d9c01fc2347dc5645cf39f0c61d9fa65fa1ef932d975d3aaa3`，下载后验证一致。`index.json` SHA256 `0777b7296984a5c38a5685cf23f5c5ce5e4dfdf7fbe19fa586ab59a87430a8b1`。第二次仅元数据coverage audit核对4594个prepared分片与锁定manifest逐项一致，没有test记录；结果保存为`coverage_audit.json`。全部六个final及三份大曲线现已本地备份；另有275660800字节恢复tar保存两臂last/optimizer/RNG、源码、日志、时序诊断和固定视频输入，SHA256 `31c26ac2ab12e20b064688c0b1fb36b7b519c09686df854812a7cf51cea2c3e0`已验证。对应本地`run_backup`与`recovery`目录；不能只恢复特征tar而遗漏checkpoint。
