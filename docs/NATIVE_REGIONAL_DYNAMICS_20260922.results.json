@@ -1,0 +1,1185 @@
+{
+  "schema": "native_regional_activity_delivery_summary_v1",
+  "date": "2026-09-22",
+  "status": {
+    "status": "complete",
+    "diagnostic_gate_passed": false,
+    "paper_success_established": false,
+    "test_loaded": false,
+    "default_replaced": false,
+    "elapsed_seconds": 279.218453168869
+  },
+  "evidence_sha256": {
+    "evaluation.json": "1f3ddd76e5946b3788fcbcbd90e31d51bd7796b2b9f87f9002bc14f9efbcde5a",
+    "protocol.json": "fe125d18fa544c2cab28dd4d99de81de0f7ceff6ff2d064f25177e628ca8bd32",
+    "final.pt": "28094c851a3d4d8e9f2ce5b195459347cb6d3879a9a9132644de74d3e8189715"
+  },
+  "source_sha256": "be975208b978309e7eff328fb07418e413e49a8fe7f76b9bac67c341083e0fbb",
+  "selection": {
+    "chosen_epochs": 3,
+    "best_calibration_mse": 0.09042360352205353,
+    "development_used_for_selection": false,
+    "budget_epochs": 40
+  },
+  "fold": {
+    "held_speakers": [
+      "mead_M003",
+      "mead_M012",
+      "mead_M027",
+      "mead_M040",
+      "mead_W036"
+    ],
+    "held_sentences": [
+      "text_01519ba16790eb473d740bba",
+      "text_0f867836f5b6b0765c285139",
+      "text_1c803571d26d784b32fbf99a",
+      "text_2682127bfa31d122ee7688c1",
+      "text_2bed0dd7c34d0f1d675c6d30",
+      "text_381cdeeafe01f76604cd1d5c",
+      "text_4108ae6d13ad06fc1659bfc5",
+      "text_4cc002b3c25d1963da977f46",
+      "text_5341d1439131ab61d495d9b6",
+      "text_60a7689f8ff137749f9c210d",
+      "text_71f33277dd5630d94734a2fe",
+      "text_7ae1e7572d33a1ccb9958513",
+      "text_867881dc6340015a75b29aab",
+      "text_8bef044a97283499413aa11c",
+      "text_90219b541c2e10477ecef5d8",
+      "text_9cbbf20810b5aef2588fe06f",
+      "text_a9dd2be8f694e8fa05ee89e4",
+      "text_af5c9c2da28e2b2241fd1de4",
+      "text_b5573dd0ae97236c83979d3b",
+      "text_bffe687a968b9f32bb11af0f",
+      "text_cf2275c655842eed1eb90667",
+      "text_d6c39f6079e1edbd3282334e",
+      "text_e0e25d8b5ef8b9819e8fd288",
+      "text_f739d26f33cd48377f3b6dd3"
+    ],
+    "fit_clips": 2287,
+    "calibration_clips": 255,
+    "mixed_cells_unused_for_selection": 1556
+  },
+  "scope": "single fixed prior noise seed; activity-envelope diagnostics, not emotional fidelity or naturalness",
+  "prior_noise_seed": 48,
+  "predicted_envelope_metrics": {
+    "full": {
+      "mse": 0.07220503028469519,
+      "centered_mse": 0.043258731547340494,
+      "correlation": 0.12353743573639972,
+      "temporal_std": 0.0602339709464217,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.0035946849856383343,
+      "cross_correlation_peak_abs_lag_frames": 8.504484304932735,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "reverse": {
+      "mse": 0.0734631893313664,
+      "centered_mse": 0.04443179263314787,
+      "correlation": 0.07572210637328257,
+      "temporal_std": 0.06024884789962284,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.003686252284014872,
+      "cross_correlation_peak_abs_lag_frames": 9.160313901345292,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "shuffle": {
+      "mse": 0.0692484958245187,
+      "centered_mse": 0.041838892946712815,
+      "correlation": 0.034003637001364356,
+      "temporal_std": 0.03296543520694746,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.004044716498705439,
+      "cross_correlation_peak_abs_lag_frames": 9.10762331838565,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "mismatch": {
+      "mse": 0.07814007152078957,
+      "centered_mse": 0.044461867631565524,
+      "correlation": 0.0827924625868407,
+      "temporal_std": 0.05914375245810206,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.0036223762357740544,
+      "cross_correlation_peak_abs_lag_frames": 8.900224215246636,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "static_envelope": {
+      "mse": 0.06919030914359393,
+      "centered_mse": 0.0402440108219132,
+      "correlation": null,
+      "temporal_std": 0.0,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.003129683496951693,
+      "cross_correlation_peak_abs_lag_frames": null,
+      "clips": 446,
+      "defined_correlation_clips": 0,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    }
+  },
+  "composed_envelope_metrics": {
+    "full": {
+      "mse": 0.0675126502313837,
+      "centered_mse": 0.04308168929487686,
+      "correlation": 0.08368988807790295,
+      "temporal_std": 0.06375773738510615,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.003918403941073867,
+      "cross_correlation_peak_abs_lag_frames": 8.594170403587444,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "reverse": {
+      "mse": 0.06823578624318864,
+      "centered_mse": 0.04380504052270407,
+      "correlation": 0.06111553183652514,
+      "temporal_std": 0.06401679831411264,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.003968904536190757,
+      "cross_correlation_peak_abs_lag_frames": 9.219730941704036,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "shuffle": {
+      "mse": 0.0668028378017495,
+      "centered_mse": 0.04279724247762547,
+      "correlation": 0.03790721154692811,
+      "temporal_std": 0.05164383146254178,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.003897343195629731,
+      "cross_correlation_peak_abs_lag_frames": 8.946188340807176,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "mismatch": {
+      "mse": 0.07192349423630653,
+      "centered_mse": 0.04403352931387886,
+      "correlation": 0.0623369101074532,
+      "temporal_std": 0.0634469645752323,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.003951682147574619,
+      "cross_correlation_peak_abs_lag_frames": 8.8195067264574,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "static_envelope": {
+      "mse": 0.06750717961782697,
+      "centered_mse": 0.0427480221934119,
+      "correlation": 0.027620777804438723,
+      "temporal_std": 0.04964114005156201,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.003903191371762549,
+      "cross_correlation_peak_abs_lag_frames": 8.928251121076233,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "static_gain": {
+      "mse": 0.08592947199859638,
+      "centered_mse": 0.059071266381831515,
+      "correlation": 0.037698603236632613,
+      "temporal_std": 0.13444086482771908,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.005772464339955578,
+      "cross_correlation_peak_abs_lag_frames": 8.748878923766815,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "prior": {
+      "mse": 0.08404292276298812,
+      "centered_mse": 0.04612895645740188,
+      "correlation": 0.03769860481067468,
+      "temporal_std": 0.0760350261627712,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.004016211139904306,
+      "cross_correlation_peak_abs_lag_frames": 8.748878923766815,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    },
+    "original_prior": {
+      "mse": 0.08346272808341816,
+      "centered_mse": 0.05018801226970162,
+      "correlation": 0.026063295377680727,
+      "temporal_std": 0.0941187186113017,
+      "target_temporal_std": 0.1642263950876547,
+      "temporal_difference_mse": 0.006983923385938607,
+      "cross_correlation_peak_abs_lag_frames": 9.032511210762332,
+      "clips": 446,
+      "defined_correlation_clips": 446,
+      "lag_evaluated": true,
+      "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+    }
+  },
+  "composed_paired_cluster_comparisons": {
+    "reverse": {
+      "mse": {
+        "delta_full_minus_control": -0.0007231360118049301,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.002113615979692029,
+            0.00018483853964915674
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0012884002350445755,
+            -8.713748303360979e-05
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": -0.0007233512278272143,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.001961825749121801,
+            -3.1354695103970895e-06
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0012273199849048835,
+            -0.00015517553971789805
+          ],
+          "improvement_supported": true
+        }
+      }
+    },
+    "shuffle": {
+      "mse": {
+        "delta_full_minus_control": 0.0007098124296341917,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            0.00020950094336949043,
+            0.001698255754173144
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.0002756637774492483,
+            0.0011472450144238092
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": 0.00028444681725138017,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -4.239478193457123e-06,
+            0.0004458687133868939
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -8.352027978798702e-05,
+            0.0006757465354337263
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "mismatch": {
+      "mse": {
+        "delta_full_minus_control": -0.004410844004922841,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.008267808213430506,
+            0.000676259942408333
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.006312825100539678,
+            -0.0021827886503018048
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": -0.0009518400190019963,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0017595607796190953,
+            -0.0001877428955030069
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.001677900630127551,
+            -0.00019167370042510432
+          ],
+          "improvement_supported": true
+        }
+      }
+    },
+    "static_envelope": {
+      "mse": {
+        "delta_full_minus_control": 5.47061355671634e-06,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.000501324529883518,
+            0.00044032955796152366
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.000344964526556362,
+            0.0004324807117772709
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": 0.00033366710146496415,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -4.0338348893718114e-05,
+            0.0005809543486010349
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            4.888819652003174e-06,
+            0.0007501073148720596
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "static_gain": {
+      "mse": {
+        "delta_full_minus_control": -0.01841682176721268,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.02092588983439199,
+            -0.0163951345044986
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.020335220615334527,
+            -0.01636861612809363
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": -0.015989577086954657,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.020257112599757685,
+            -0.013442699408625814
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.017196433879390138,
+            -0.01475880620281439
+          ],
+          "improvement_supported": true
+        }
+      }
+    },
+    "prior": {
+      "mse": {
+        "delta_full_minus_control": -0.016530272531604433,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.02902179217198806,
+            0.0010788461942806487
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.019416561781693455,
+            -0.013793302609381122
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": -0.0030472671625250162,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.004295132824526733,
+            -0.0021017379751727895
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.003833448563014862,
+            -0.00221339498742726
+          ],
+          "improvement_supported": true
+        }
+      }
+    },
+    "original_prior": {
+      "mse": {
+        "delta_full_minus_control": -0.015950077852034467,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.02314843781675402,
+            -0.012742942761348176
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.020374788059929747,
+            -0.011947912835347945
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": -0.007106322974824766,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.008905024757563735,
+            -0.005213219499287206
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.00837459136524377,
+            -0.0057402226877088115
+          ],
+          "improvement_supported": true
+        }
+      }
+    }
+  },
+  "predicted_paired_cluster_comparisons": {
+    "reverse": {
+      "mse": {
+        "delta_full_minus_control": -0.0012581590466711951,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.002956159116200401,
+            -0.0003547838808978289
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0021907428128436083,
+            -0.0002628974367540031
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": -0.0011730610858073757,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0029246763843784425,
+            -0.00020250220632708762
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.002080465797394283,
+            -0.00017860783603442824
+          ],
+          "improvement_supported": true
+        }
+      }
+    },
+    "shuffle": {
+      "mse": {
+        "delta_full_minus_control": 0.002956534460176505,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            0.0017296042753691054,
+            0.00595899433856208
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.0018498593495052365,
+            0.0041259285094390205
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": 0.0014198386006276772,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            0.0007505821404360577,
+            0.0024118604584771556
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.0006682892836192011,
+            0.0022094322661544387
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "mismatch": {
+      "mse": {
+        "delta_full_minus_control": -0.005935041236094377,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.011340982825147795,
+            0.003376683545787159
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.009986828832608197,
+            -0.0014279886201305897
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": -0.0012031360842250276,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0031581370352078823,
+            0.0005613634390193103
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0027874893379243133,
+            0.00045238665997114223
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "static_envelope": {
+      "mse": {
+        "delta_full_minus_control": 0.003014721141101257,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            0.0027551756483314206,
+            0.003578812862700931
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.0020494559680350305,
+            0.004141137706957938
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_mse": {
+        "delta_full_minus_control": 0.0030147207254272927,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            0.0027551752051345607,
+            0.0035788121422573433
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.0020494552630611978,
+            0.00414113740328522
+          ],
+          "improvement_supported": false
+        }
+      }
+    }
+  },
+  "gain_diagnostics": {
+    "full": {
+      "min": 0.253878653049469,
+      "max": 2.5,
+      "lower_saturated_fraction": 0.0,
+      "upper_saturated_fraction": 0.31882405281066895
+    },
+    "reverse": {
+      "min": 0.25,
+      "max": 2.5,
+      "lower_saturated_fraction": 1.0559884685790166e-05,
+      "upper_saturated_fraction": 0.32011234760284424
+    },
+    "shuffle": {
+      "min": 0.25,
+      "max": 2.5,
+      "lower_saturated_fraction": 2.1119769371580333e-05,
+      "upper_saturated_fraction": 0.3072187304496765
+    },
+    "mismatch": {
+      "min": 0.25,
+      "max": 2.5,
+      "lower_saturated_fraction": 5.279942706692964e-05,
+      "upper_saturated_fraction": 0.3237871825695038
+    },
+    "static_envelope": {
+      "min": 0.25,
+      "max": 2.5,
+      "lower_saturated_fraction": 1.0559884685790166e-05,
+      "upper_saturated_fraction": 0.33076727390289307
+    },
+    "static_gain": {
+      "min": 0.8293725252151489,
+      "max": 2.490342617034912,
+      "lower_saturated_fraction": 0.0,
+      "upper_saturated_fraction": 0.0
+    },
+    "prior": {
+      "min": 1.0,
+      "max": 1.0,
+      "lower_saturated_fraction": 0.0,
+      "upper_saturated_fraction": 0.0
+    },
+    "original_prior": {
+      "min": 1.0,
+      "max": 1.0,
+      "lower_saturated_fraction": 0.0,
+      "upper_saturated_fraction": 0.0
+    }
+  },
+  "upper_motion_diagnostics": {
+    "full": {
+      "raw": {
+        "brow_temporal_std_equal_clip_mean": 0.02091100249991162,
+        "eye_temporal_std_equal_clip_mean": 0.018486592135982555,
+        "per_channel_temporal_std": [
+          0.02762009507867312,
+          0.026293211767921394,
+          0.025130540858240912,
+          0.014073951577857709,
+          0.011437213216865054,
+          0.028990466052004216,
+          0.00664461120541145,
+          0.03172790996232993,
+          0.006583381324184626
+        ],
+        "centered_energy_quantiles": {
+          "p05": 0.00011919111997347987,
+          "p25": 0.00026207564816013474,
+          "p50": 0.00042866410942059085,
+          "p75": 0.0006891211666254812,
+          "p95": 0.001423558875791821
+        },
+        "frame_displacement_energy_mean": 0.00015055111928170806,
+        "frame_acceleration_energy_mean": 0.00016586819558031494,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "clamped_0_1": {
+        "brow_temporal_std_equal_clip_mean": 0.019196505443152868,
+        "eye_temporal_std_equal_clip_mean": 0.017931365524857207,
+        "per_channel_temporal_std": [
+          0.026550233142316554,
+          0.024422162255714003,
+          0.023877396181265286,
+          0.012141564330565065,
+          0.008991171305903456,
+          0.028990466052004216,
+          0.0060231836756824714,
+          0.03172790996232993,
+          0.004983902409412271
+        ],
+        "centered_energy_quantiles": {
+          "p05": 0.00010827516442668058,
+          "p25": 0.0002469641260157283,
+          "p50": 0.00040996676722348537,
+          "p75": 0.0006660331795560534,
+          "p95": 0.0013755062660048875
+        },
+        "frame_displacement_energy_mean": 0.00014651678244895084,
+        "frame_acceleration_energy_mean": 0.00016259505327883327,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "bounds": {
+        "observed_outside_0_1_fraction": 0.12669750153118334,
+        "clip_channel_mean_within_005_of_boundary_fraction": 0.5047334329845541,
+        "clip_channel_mean_min": -0.07987625904773411,
+        "clip_channel_mean_max": 0.8038699777071713,
+        "per_channel_mean": [
+          0.2032793754286142,
+          0.16960330149169128,
+          0.10570473993855246,
+          0.035829611282714495,
+          0.017317024033851686,
+          0.3830974492839251,
+          0.009824788995637844,
+          0.34386754298510525,
+          0.0043174307432506465
+        ],
+        "clamp_is_diagnostic_only": true
+      }
+    },
+    "prior": {
+      "raw": {
+        "brow_temporal_std_equal_clip_mean": 0.013653157938770925,
+        "eye_temporal_std_equal_clip_mean": 0.012694805048733345,
+        "per_channel_temporal_std": [
+          0.018722372023883646,
+          0.01772907450621385,
+          0.01613118202284625,
+          0.008763615497628134,
+          0.006919545643282745,
+          0.020638696133213747,
+          0.003854931303080102,
+          0.02245327792606685,
+          0.0038323148325726634
+        ],
+        "centered_energy_quantiles": {
+          "p05": 2.4929062109972386e-05,
+          "p25": 7.000135562908329e-05,
+          "p50": 0.0001452177222821041,
+          "p75": 0.0003092636157216994,
+          "p95": 0.0009029196724488407
+        },
+        "frame_displacement_energy_mean": 5.8206055898332246e-05,
+        "frame_acceleration_energy_mean": 5.522236329301065e-05,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "clamped_0_1": {
+        "brow_temporal_std_equal_clip_mean": 0.012696322834818632,
+        "eye_temporal_std_equal_clip_mean": 0.012464986820984836,
+        "per_channel_temporal_std": [
+          0.018076619000313078,
+          0.016645582382627488,
+          0.015489102503759296,
+          0.0076820077341501645,
+          0.005588302553243128,
+          0.020638696133213747,
+          0.00368027245723672,
+          0.02245327792606685,
+          0.003087700767422047
+        ],
+        "centered_energy_quantiles": {
+          "p05": 2.3559721656443844e-05,
+          "p25": 6.682856164690819e-05,
+          "p50": 0.00014043927719863938,
+          "p75": 0.0003023015514168277,
+          "p95": 0.0008923902564313527
+        },
+        "frame_displacement_energy_mean": 5.7212942730192976e-05,
+        "frame_acceleration_energy_mean": 5.445284497305726e-05,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "bounds": {
+        "observed_outside_0_1_fraction": 0.10463907486019886,
+        "clip_channel_mean_within_005_of_boundary_fraction": 0.5047334329845541,
+        "clip_channel_mean_min": -0.0798762584203168,
+        "clip_channel_mean_max": 0.8038699799821577,
+        "per_channel_mean": [
+          0.2032793754217788,
+          0.16960330155330175,
+          0.10570473993503085,
+          0.035829611297462996,
+          0.01731702402668821,
+          0.38309744922092126,
+          0.00982478899541262,
+          0.3438675429710683,
+          0.0043174307435554955
+        ],
+        "clamp_is_diagnostic_only": true
+      }
+    },
+    "original_prior": {
+      "raw": {
+        "brow_temporal_std_equal_clip_mean": 0.023981192037101584,
+        "eye_temporal_std_equal_clip_mean": 0.022961984243617437,
+        "per_channel_temporal_std": [
+          0.032943241436426324,
+          0.03095458133362191,
+          0.028308151479254758,
+          0.015316423460206726,
+          0.012383562475998217,
+          0.03692652455254631,
+          0.007362045884750857,
+          0.040286160915478916,
+          0.007273205621693638
+        ],
+        "centered_energy_quantiles": {
+          "p05": 6.941453092942503e-05,
+          "p25": 0.00018707176059479672,
+          "p50": 0.00038842265283127,
+          "p75": 0.0008503895759605651,
+          "p95": 0.0029187081545040943
+        },
+        "frame_displacement_energy_mean": 0.0014958410444411677,
+        "frame_acceleration_energy_mean": 0.004460306738105204,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "clamped_0_1": {
+        "brow_temporal_std_equal_clip_mean": 0.022291043201263225,
+        "eye_temporal_std_equal_clip_mean": 0.022280820241623485,
+        "per_channel_temporal_std": [
+          0.03169435743754241,
+          0.029080289142100115,
+          0.027126313107983784,
+          0.013526960708904955,
+          0.010027295609784876,
+          0.03692652455254631,
+          0.006481945738800802,
+          0.04028506653135927,
+          0.0054297441437875385
+        ],
+        "centered_energy_quantiles": {
+          "p05": 6.456665788553577e-05,
+          "p25": 0.00017621324551018015,
+          "p50": 0.00037263581897030803,
+          "p75": 0.0008275637962910071,
+          "p95": 0.00287647332123439
+        },
+        "frame_displacement_energy_mean": 0.0014567989393803778,
+        "frame_acceleration_energy_mean": 0.004344770701028032,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "bounds": {
+        "observed_outside_0_1_fraction": 0.12707296411281713,
+        "clip_channel_mean_within_005_of_boundary_fraction": 0.5047334329845541,
+        "clip_channel_mean_min": -0.07987625740076366,
+        "clip_channel_mean_max": 0.8038699968170574,
+        "per_channel_mean": [
+          0.20327937573691224,
+          0.16960330157324582,
+          0.10570474015235173,
+          0.03582961133501661,
+          0.017317024020649913,
+          0.3830974487546935,
+          0.009824789001691306,
+          0.34386754272681413,
+          0.004317430740119035
+        ],
+        "clamp_is_diagnostic_only": true
+      }
+    }
+  },
+  "target_upper_motion_diagnostics": {
+    "raw": {
+      "brow_temporal_std_equal_clip_mean": 0.01899777952482106,
+      "eye_temporal_std_equal_clip_mean": 0.019970723253819142,
+      "per_channel_temporal_std": [
+        0.03644209078922675,
+        0.03627219757005707,
+        0.012902111413044001,
+        0.006255708172443429,
+        0.003116789679333971,
+        0.03456230037167611,
+        0.0015809088028949966,
+        0.04127800232482482,
+        0.0024616815158806367
+      ],
+      "centered_energy_quantiles": {
+        "p05": 4.3941015903786167e-05,
+        "p25": 0.00016481445265630217,
+        "p50": 0.00041921596258643836,
+        "p75": 0.0010616915007154804,
+        "p95": 0.003766844594067785
+      },
+      "frame_displacement_energy_mean": 0.00010526673750478981,
+      "frame_acceleration_energy_mean": 6.6856739465285e-05,
+      "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+    },
+    "clamped_0_1": {
+      "brow_temporal_std_equal_clip_mean": 0.01899777952482106,
+      "eye_temporal_std_equal_clip_mean": 0.019970723253819142,
+      "per_channel_temporal_std": [
+        0.03644209078922675,
+        0.03627219757005707,
+        0.012902111413044001,
+        0.006255708172443429,
+        0.003116789679333971,
+        0.03456230037167611,
+        0.0015809088028949966,
+        0.04127800232482482,
+        0.0024616815158806367
+      ],
+      "centered_energy_quantiles": {
+        "p05": 4.3941015903786167e-05,
+        "p25": 0.00016481445265630217,
+        "p50": 0.00041921596258643836,
+        "p75": 0.0010616915007154804,
+        "p95": 0.003766844594067785
+      },
+      "frame_displacement_energy_mean": 0.00010526673750478981,
+      "frame_acceleration_energy_mean": 6.6856739465285e-05,
+      "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+    },
+    "bounds": {
+      "observed_outside_0_1_fraction": 0.0,
+      "clip_channel_mean_within_005_of_boundary_fraction": 0.554559043348281,
+      "clip_channel_mean_min": 4.811144276089258e-06,
+      "clip_channel_mean_max": 0.9068131459520218,
+      "per_channel_mean": [
+        0.3265601922040637,
+        0.2801651373355343,
+        0.031172872476187025,
+        0.019903030613671106,
+        0.011871338123025255,
+        0.46815427868102777,
+        0.007113012517821051,
+        0.4430558637214709,
+        0.00818635128454895
+      ],
+      "clamp_is_diagnostic_only": true
+    }
+  },
+  "protection": {
+    "full": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 1.1920928955078125e-07,
+      "mouth_passed": true
+    },
+    "reverse": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 1.1920928955078125e-07,
+      "mouth_passed": true
+    },
+    "shuffle": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 1.1920928955078125e-07,
+      "mouth_passed": true
+    },
+    "mismatch": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 1.1920928955078125e-07,
+      "mouth_passed": true
+    },
+    "static_envelope": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 1.7881393432617188e-07,
+      "mouth_passed": true
+    },
+    "static_gain": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 1.1920928955078125e-07,
+      "mouth_passed": true
+    },
+    "prior": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 0.0,
+      "mouth_passed": true
+    },
+    "original_prior": {
+      "nonupper43_bit_exact": true,
+      "max_upper_mean_drift": 1.1920928955078125e-07,
+      "mouth_passed": true
+    }
+  },
+  "diagnostic_gate": {
+    "checks": {
+      "fullface_structurally_protected": true,
+      "actual_envelope_correlation_positive": true,
+      "mse_beats_original_prior_both_cluster_ci": true,
+      "centered_mse_beats_original_prior_both_cluster_ci": true,
+      "mse_beats_prior_both_cluster_ci": false,
+      "centered_mse_beats_prior_both_cluster_ci": true,
+      "mse_beats_static_gain_both_cluster_ci": true,
+      "centered_mse_beats_static_gain_both_cluster_ci": true,
+      "mse_beats_reverse_both_cluster_ci": false,
+      "centered_mse_beats_reverse_both_cluster_ci": true,
+      "mse_beats_shuffle_both_cluster_ci": false,
+      "centered_mse_beats_shuffle_both_cluster_ci": false,
+      "mse_beats_mismatch_both_cluster_ci": false,
+      "centered_mse_beats_mismatch_both_cluster_ci": true
+    },
+    "passed": false
+  },
+  "real_inference_replay": {
+    "original_prior": {
+      "maxabs": 0.0
+    },
+    "prior": {
+      "maxabs": 0.0
+    },
+    "full": {
+      "maxabs": 4.0531158447265625e-06
+    },
+    "static_gain": {
+      "maxabs": 6.556510925292969e-07
+    }
+  },
+  "limits": [
+    "Activity RMS is not absolute emotional intensity",
+    "Single prior seed",
+    "Three development speaker clusters",
+    "Adapter-only fit/calibration holdout; frozen Stage4 saw all TRAIN",
+    "Display clamps coefficients; numerical primary metrics use raw coefficients",
+    "Naturalness not established",
+    "Training completion is not research success"
+  ]
+}

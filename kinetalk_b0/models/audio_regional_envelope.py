@@ -64,16 +64,12 @@ def _upper_mean(mean: torch.Tensor, *, batch: int, frames: int,
         raise ValueError("mean must be floating on prior device")
     if mean.shape == (batch, 9):
         out = mean[:, None].expand(batch, frames, 9)
-    elif mean.shape == (batch, frames, 9):
-        out = mean
     elif mean.shape == (batch, 52):
         out = mean[:, None, list(UPPER_INDICES)].expand(batch, frames, 9)
-    elif mean.shape == (batch, frames, 52):
-        out = mean[..., list(UPPER_INDICES)]
     elif mean.shape == (9,):
         out = mean[None, None].expand(batch, frames, 9)
     else:
-        raise ValueError("mean must have shape [9], [B,9], [B,T,9], [B,52], or [B,T,52]")
+        raise ValueError("mean must be static with shape [9], [B,9], or [B,52]")
     if out.dtype != dtype:
         out = out.to(dtype=dtype)
     if not torch.isfinite(out).all():
@@ -92,10 +88,14 @@ def compose_prior_with_envelope(
     ``prior_upper`` may be a nine-channel upper trajectory in ``UPPER_INDICES``
     order or a complete 52-channel face trajectory.  ``gain[...,0]`` scales
     the five brow channels and ``gain[...,1]`` scales the four eye channels.
-    The source trajectory mean is removed before scaling, then ``mean`` is
-    restored.  Consequently each observed channel has exactly the requested
-    mean for either a static, zero, reversed, or audio-predicted gain.  For a
-    52-channel input, all 43 non-upper channels are copied bit-for-bit.
+    The second argument is a dimensionless gain, not the envelope predicted
+    by AudioRegionalEnvelope. The caller must convert the desired envelope
+    to a gain and choose any deployment gain floor. ``mean`` is a static
+    per-clip mean ([B,9], [B,52], or [9]); temporal means are rejected.
+    Scaling updates are centered before restoring the requested mean. Gain
+    one and the original prior mean preserve the prior exactly, with useful
+    gain gradients. Gain zero intentionally removes motion for an ablation.
+    For a 52-channel input, all 43 non-upper channels are copied bit-for-bit.
     """
     if (not torch.is_tensor(prior_upper) or prior_upper.ndim != 3
             or prior_upper.shape[-1] not in (9, 52)
@@ -118,16 +118,18 @@ def compose_prior_with_envelope(
     selected = prior_upper[..., indices] if prior_upper.shape[-1] == 52 else prior_upper
     mask = valid[..., None]
     source_mean = _valid_mean(selected, valid)
-    centered = torch.where(mask, selected - source_mean, 0.)
+    clean_selected = torch.where(mask, selected, 0.)
+    centered = torch.where(mask, clean_selected - source_mean, 0.)
     region_gain = torch.cat((
         gains[..., 0:1].expand(-1, -1, _REGION_WIDTHS[0]),
         gains[..., 1:2].expand(-1, -1, _REGION_WIDTHS[1]),
     ), dim=-1)
-    scaled = torch.where(mask, centered * region_gain, 0.)
-    # A time-varying gain has a nonzero weighted mean in general.  Recenter
-    # the scaled deviation so every observed channel keeps exactly target_mean.
-    scaled_mean = _valid_mean(scaled, valid)
-    generated = target_mean + scaled - scaled_mean
+    # Work in delta form: at unit gain the update is exactly zero, while its
+    # derivative is the source motion. No equality branch or detached gradient
+    # is needed. Centering the update protects the mean for time-varying gains.
+    delta = centered * (region_gain - 1.)
+    delta = delta - _valid_mean(delta, valid)
+    generated = clean_selected + (target_mean - source_mean) + delta
     generated = torch.where(mask, generated, selected)
 
     if prior_upper.shape[-1] == 9:
@@ -136,8 +138,6 @@ def compose_prior_with_envelope(
     result[..., indices] = generated
     return result
 
-
-@torch.jit.ignore
 
 def intervene_envelope(envelope: torch.Tensor, valid: torch.Tensor,
                        mode: Literal["audio", "zero", "static", "reverse"] = "audio") -> torch.Tensor:
@@ -207,57 +207,45 @@ class AudioRegionalEnvelope(nn.Module):
         nn.init.constant_(self.head.bias, -2.0)
 
     def _temporal_runs(self, hidden: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
-        """Apply temporal convolutions independently inside each valid run."""
-        result = hidden.new_zeros(hidden.shape)
-        for row in range(hidden.shape[0]):
-            ids = torch.nonzero(valid[row], as_tuple=False).flatten().tolist()
-            if not ids:
-                continue
-            left = previous = ids[0]
-            runs = []
-            for position in ids[1:]:
-                if position != previous + 1:
-                    runs.append((left, previous + 1))
+        """Batch equal-length valid runs without crossing gaps or padding.
+
+        The usual equally cropped/prefix-valid batch uses one convolution
+        call. Internal-gap sequences share the same length grouping. All runs
+        retain their own boundary conditions, including pooling remainder
+        bins, so appending padding cannot change observed predictions.
+        """
+        groups: dict[int, list[tuple[int, int, int]]] = {}
+        # Transfer only the small Boolean mask once, rather than one GPU
+        # synchronization per clip or per run.
+        for row, flags in enumerate(valid.detach().cpu().tolist()):
+            left = None
+            for position, observed in enumerate(flags + [False]):
+                if observed and left is None:
                     left = position
-                previous = position
-            runs.append((left, previous + 1))
-            for left, right in runs:
-                segment = hidden[row, left:right].transpose(0, 1).unsqueeze(0)
-                segment = self.temporal(segment).squeeze(0).transpose(0, 1)
-                result[row, left:right] = segment
+                elif not observed and left is not None:
+                    groups.setdefault(position - left, []).append((row, left, position))
+                    left = None
+        result = hidden.new_zeros(hidden.shape)
+        for length, runs in groups.items():
+            segment = torch.stack([hidden[row, left:right] for row, left, right in runs]).transpose(1, 2)
+            if self.stride == 4:
+                pooled = F.avg_pool1d(segment, kernel_size=4, stride=4, ceil_mode=True)
+                segment = F.interpolate(pooled, size=length, mode="linear", align_corners=False)
+            segment = self.temporal(segment).transpose(1, 2)
+            for item, (row, left, right) in enumerate(runs):
+                result[row, left:right] = segment[item]
         return result
 
     def forward(self, features: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
         _check_valid(features, valid)
         if features.shape[-1] != self.feature_mean.numel():
             raise ValueError("feature width differs from fitted statistics")
-        x = torch.where(valid[..., None],
-                        (features - self.feature_mean) / self.feature_std, 0.)
+        # Clear unobserved NaN/Inf before any differentiable arithmetic. A
+        # where applied after normalization can leave NaNs in its backward
+        # graph, even when its forward output appears correctly masked.
+        clean_features = torch.where(valid[..., None], features, self.feature_mean)
+        x = (clean_features - self.feature_mean) / self.feature_std
         h = F.silu(self.input(x))
-        if self.stride == 4 and h.shape[1] >= 4:
-            # Pool independently inside each valid run, then interpolate each
-            # run back to its native frame clock. This avoids crossing mask
-            # gaps while retaining a short (4-frame) receptive field.
-            pooled_h = h.new_zeros(h.shape)
-            for row in range(h.shape[0]):
-                ids = torch.nonzero(valid[row], as_tuple=False).flatten().tolist()
-                if not ids:
-                    continue
-                left = previous = ids[0]
-                runs = []
-                for position in ids[1:]:
-                    if position != previous + 1:
-                        runs.append((left, previous + 1))
-                        left = position
-                    previous = position
-                runs.append((left, previous + 1))
-                for left, right in runs:
-                    segment = h[row, left:right].transpose(0, 1).unsqueeze(0)
-                    pooled = F.avg_pool1d(segment, kernel_size=4, stride=4, ceil_mode=True)
-                    restored = F.interpolate(pooled, size=right - left,
-                                             mode="linear", align_corners=False)
-                    pooled_h[row, left:right] = restored.squeeze(0).transpose(0, 1)
-            h = pooled_h
         h = self._temporal_runs(h, valid)
         h = self.norm(h)
         raw = self.head(F.silu(h))
