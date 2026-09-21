@@ -1,0 +1,51 @@
+{
+  "repository": "uuembodiedsocialai/FaceDiffuser",
+  "commit": "e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+  "files": [
+    {
+      "file": "LICENSE",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/LICENSE?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "2b275bb77aa698dcc5f2d05e2c02d5669da12f55459f26dc68995e5adcf22f9d"
+    },
+    {
+      "file": "models.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/models.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "981c2f94e1677eb6e451d0e09e2cf437bcadfc0d13c6ff50b6ee28e7067fc4c7"
+    },
+    {
+      "file": "main.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/main.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "61b856fa829486d83c0a0b241c5c44d4e87afc48c772ed8dca7e2608cc20dd9e"
+    },
+    {
+      "file": "utils.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/utils.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "fb3a5ef0e2279d294b81bc3ad10a9705d588406d024ecd3382304240bb9a44d7"
+    },
+    {
+      "file": "data_loader.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/data_loader.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "e01837bf44a899f8d069a459785c86509991b58643f0c0135280a25769d231b1"
+    },
+    {
+      "file": "diffusion/gaussian_diffusion.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/diffusion/gaussian_diffusion.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "6a22e1cff7eaa8d0744f3fa746a5dfddff426cb58634fdc40babee590ed7c056"
+    },
+    {
+      "file": "diffusion/respace.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/diffusion/respace.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "31729b78770c722c0b7fecaf884702462119ff09a1669c18807f92348bcfce48"
+    },
+    {
+      "file": "diffusion/nn.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/diffusion/nn.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "0b742e6fa65c1bbd752467951b4f026ff1e8210f558601e653d3c65b5f83b517"
+    },
+    {
+      "file": "diffusion/losses.py",
+      "url": "https://api.github.com/repos/uuembodiedsocialai/FaceDiffuser/contents/diffusion/losses.py?ref=e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+      "sha256": "86a33188b9419c248e6f338fcb49ef45f2d59a1b9fb108966035f35d8c81b874"
+    }
+  ]
+}

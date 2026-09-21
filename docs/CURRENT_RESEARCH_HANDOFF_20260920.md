@@ -1,6 +1,35 @@
+> **2026-09-21 清理与架构指针**：本仓库按“v9 历史 → v10 基础 → 冻结 v10 Stage4 的 upper9 动态实验族”理解；不同分支结果不能拼成统一已验收系统。当前主边界、推理条件和指标限制见 [CURRENT_SYSTEM_20260921.md](CURRENT_SYSTEM_20260921.md)。本地脚本清理为可恢复迁移（74 scripts、84 tests 保留，1571 个历史/散落文件进入 `archive/cleanup_20260921/`）；SSH 代码副本清理不在本页宣称完成。最新 relative 路径直接组合冻结 Stage4 上脸均值、中心化状态和 zero-DC 残差，`mean_preserving_upper.py` 主要属于较早 centered/prefix 实验。训练可使用动作/标签/教师监督，部署目标仍是音频加独立 neutral reference；upper9 不含 blink/gaze。动态读出有弱 state 信号，但完整时序门控仍未通过，不能写成“已成功”。
 # KineTalk 当前研究交接：音频到 ARKit52 眉眼动态
 
-更新时间：2026-09-20
+更新时间：2026-09-21
+
+## 最新启动：独立状态100轮，条件残差40轮，FaceDiffuser适配100轮
+
+2026-09-21 00:31:56 CST正式启动，实例11473，suite PID9880，路径 `/root/autodl-tmp/kinetalk_isolated_20260920/suite100`。当前先训audio state100，再独立static100；只有完整验证通过才继续两臂冻结状态残差各40轮。状态质量门槛失败时保存结果并跳过残差，随后仍跑FaceDiffuser同数据适配100轮；进程异常则停止全套。
+
+数据为四情感协议全部4098train/446validation，25fps原生帧。继承并冻结已修复Stage4的口型、身份、全局情感及teacher→audio权重；本轮不是从零重新训练这些模块。新mean/state分离参数和优化器，residual不能回传状态且生成过程保持片内零均值。没有硬幅值限制，必须检查越界/速度/自然度。
+
+实现与断点续训/来源验证已测试；state、residual、FaceDiffuser真实GPU smoke均完成，后者完整1000步×3种子。启动不代表动态成功。FaceDiffuser是缓存全部音频信息与冻结参考/全局条件匹配的适配版，非官方BEAT复现；全预算也尚非最终主表等总计算量协议。详细设计与实际运行记录见 `ISOLATED_STATE_RUN_20260921.md`。sealed test未读、默认未替换，正式结果待产生。以下均为历史进展。
+
+## 最新终点：校准时序队列完成，口型保住，音频动态仍未通过
+
+run12全部exit0、总41.43分钟，GPU空闲。完整4098训练query，teacher/audio/两臂dynamic各12轮；完整446validation×3噪声，口型保护30组合全部通过。Audio MBE0.740825、LBE0.314745、centered ES0.115918；独立static ES0.116007，两者差区间跨零，audio variogram0.033334较static0.031794更差。时间先验降低本轮Stage4过快运动，但不能声称已学会有用音频时序。慢状态训练64探针相关−0.285、validation−0.025；生成情感teacher诊断Stage4 65.25%→最终50.67%，独立情感/AV仍待验收。详细完整表、CI和备份见`CALIBRATED_TEMPORAL_RUN_20260920.md`终点部分。下面启动描述已是历史；没有新训练排队。
+
+## 最新：参考口型校准通过，时序眉眼自动队列启动
+
+恢复B0后加入TRAIN拟合、独立enrollment驱动的固定口部偏移，完整446 validation overall raw MSE 0.01499158→0.01078375、neutral 0.01470305→0.00652539，时序轨迹保持，原保护门槛通过。尚有越界与视觉/AV验收限制。已实现native时钟+相邻状态+相关噪声的upper9时序分支、完整条件static/reverse干预、独立静态训练及全446三采样验收。2026-09-20 16:35启动`/root/autodl-tmp/kinetalk_calibrated_20260920/run12`，队列PID3559；当前先进行真实CUDA smoke，再自动identity200参考对轮次→teacher12→audio12→两臂dynamics各12。实际状态必须查看queue_status.json，不能把启动当成成功。详见`CALIBRATED_TEMPORAL_RUN_20260920.md`。下文是历史阶段记录。
+
+## 最新终点：口型30轮完成，neutral均值误差门控未过
+
+完整4098训练query的30轮已完成，耗时24.68分钟。446 validation口型相关0.304501→0.445307、raw MSE−37.32%、centered MSE−14.87%、邻帧位移MSE−5.91%，真实输入优于static/reverse的句簇区间全负。唯一失败是80条neutral raw MSE+5.96%超3%上限；独立曲线分解确认neutral时序改善但均值项+14.24%。因此identity/teacher/audio/Stage5均未继续，GPU空闲，默认未换。详细结果见 `MOUTH_REPAIR_RUN_20260920.md`。这不是眉眼动态验收通过。
+
+## 最新进度：口型修复训练已启动
+
+本轮已修 fixed train-only motion/residual support，隔离未监督通道和嘴部随机残差，加入identity/audio阶段口型保护。来源已知的full_v1 B0正在全部4098训练query上继续30轮，完整446 validation固定终点验收，通过才自动训练identity/teacher/audio；未启动Stage5眉眼长训。实际路径、PID、边界和测试见 `MOUTH_REPAIR_RUN_20260920.md`。下文“未启动新训练”只描述前一轮排查当时状态。
+
+## 口型异常排查补充（本轮）
+
+用户反馈最新六格口型不对后，已确认三条固定视频的 native/prepared 输入、音轨 SHA 和 25 fps 时钟一致。最新 full_v1 的 B0 是重新随机初始化、715 条 neutral×12 epoch，而非旧已训练基座；全446 validation 的嘴部相关仅0.3045。Stage4 进一步把嘴部速度误差增到 B0 的2.91倍；Stage5与Stage4嘴部逐值相同。修复了 renderer 忽略 channel_mask 而显示未监督 tongueOut 的错误，以及 identity 阶段评估误用未训练renderer的错误。三条显示修正版已经重渲染，模型权重未修改，口型尚未修好。详见 `MOUTH_REGRESSION_AUDIT_20260920.md`；不能继续假设身份/情感/口型已合格而只优化眉眼。
 
 ## 当日后续覆盖说明（13:03更新）
 
@@ -86,3 +115,4 @@ V2 的结果不能判断是哪一种，因为真实音频没有胜过 independen
 > 第二项工作是做一次固定结构的 train-vs-validation 因果定位：同时记录 flow matching loss、最终多步自由生成轨迹、real/static/reverse/mismatch 和 motion-oracle 上限。若 train 也不胜 static，查生成器控制能力或训练目标；若 train 胜而 validation 败，查跨句/跨人泛化；若 flow 下降而 rollout 不下降，修改训练目标与最终 solver 的对应关系。不要在没有定位证据时继续换模块或堆 loss。
 >
 > 后续任何方案必须同时满足：真实 audio 相对 independent static、same-model static、reverse 和合法 mismatch 的 paired centered ES 改善；variogram/速度/眉眼分组动态改善；口型、身份和全局情感不退化；并在完整论文 train split 上重训。最终只读取一次 sealed test，输出 ARKit52 主表、消融、基线复现、固定 seed 视频和失败项。若真实 audio 仍不能胜过 static，应明确报告当前设计未解决音频眉眼时序，停止继续堆模块。
+

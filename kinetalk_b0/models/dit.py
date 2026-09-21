@@ -164,13 +164,22 @@ class ResidualDiT(nn.Module):
         stochastic: bool = False,
         local_emotion: torch.Tensor | None = None,
         initial_noise: torch.Tensor | None = None,
+        motion_support: torch.Tensor | None = None,
     ) -> torch.Tensor:
         if steps < 1:
             raise ValueError("DiT decode steps must be at least one")
+        expected = (content.shape[0], content.shape[1], self.output.out_features)
+        support = torch.ones(expected, dtype=torch.bool, device=content.device)
+        if motion_support is not None:
+            if (motion_support.dtype != torch.bool or motion_support.shape != (self.output.out_features,)
+                    or motion_support.device != content.device or not motion_support.any()):
+                raise ValueError("motion_support must be fixed nonempty Boolean [motion_dim] on the content device")
+            support = support & motion_support[None, None]
+        if mask is not None:
+            support = support & mask[..., None]
         if initial_noise is not None:
-            expected = (content.shape[0], content.shape[1], self.output.out_features)
-            if tuple(initial_noise.shape) != expected or not torch.isfinite(initial_noise).all():
-                raise ValueError(f"initial_noise must be finite with shape {expected}")
+            if tuple(initial_noise.shape) != expected:
+                raise ValueError(f"initial_noise must have shape {expected}")
             state = initial_noise.to(device=content.device, dtype=content.dtype).clone()
         else:
             state = torch.randn(
@@ -178,11 +187,13 @@ class ResidualDiT(nn.Module):
             ) if stochastic else torch.zeros(
             content.shape[0], content.shape[1], self.output.out_features, device=content.device, dtype=content.dtype
             )
+        if not torch.isfinite(state[support]).all():
+            raise ValueError(f"initial_noise must be finite on fixed support with shape {expected}")
+        state = torch.where(support, state, 0.)
         times = torch.linspace(0.0, 1.0, steps + 1, device=content.device, dtype=content.dtype)
         for index in range(steps):
             current = torch.full((content.shape[0],), times[index], device=content.device, dtype=content.dtype)
             velocity = self(state, current, content, global_emotion, intensity, style, mask, local_emotion=local_emotion, condition_dropout=False)
-            state = state + (times[index + 1] - times[index]) * velocity
-            if mask is not None:
-                state = state * mask.unsqueeze(-1).to(state.dtype)
+            velocity = torch.where(support, velocity, 0.)
+            state = torch.where(support, state + (times[index + 1] - times[index]) * velocity, 0.)
         return state * residual_scale

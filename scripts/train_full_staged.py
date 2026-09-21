@@ -77,7 +77,10 @@ def base_forward(system, content, valid, *, gradients=False):
                 padded = F.pad(values[key], (0,0,0,valid.shape[1]-length))
                 if key not in output: output[key] = padded.new_zeros(len(content), valid.shape[1], padded.shape[-1])
                 output[key] = output[key].index_copy(0, ids, padded)
-    return {k:torch.where(valid[...,None],v,0.) for k,v in output.items()}
+    output = {k:torch.where(valid[...,None],v,0.) for k,v in output.items()}
+    if hasattr(system, 'motion_support'):
+        output['b0'] = torch.where(system.motion_support, output['b0'], 0.)
+    return output
 
 
 def unfreeze(module):
@@ -140,7 +143,8 @@ def cache_current_base(system,data,device,batch_size=32):
 
 def encode_ref(system,data,sid,ids,device):
     q=data['refs'][sid]
-    result=system.encode_identity(q['residual'][list(ids)][None].to(device),q['valid'][list(ids)][None].to(device))
+    result=system.encode_identity(q['residual'][list(ids)][None].to(device),q['valid'][list(ids)][None].to(device),
+        reference_channel_mask=q['channel_mask'][list(ids)][None].to(device))
     result['observed_channels']=q['channel_mask'][list(ids)].all(0)[None].to(device)
     return result
 
@@ -152,6 +156,35 @@ def paper_condition(q, mode):
     # lose temporal information in the independently trained static control.
     return {**q, 'audio_features':static_audio(q['audio_features'],q['valid']),
             'h0':static_audio(q['h0'],q['valid'])}
+
+
+def reverse_valid(value,valid):
+    output=torch.where(valid[...,None],value,0.).clone()
+    for i in range(len(value)):
+        ids=valid[i].nonzero(as_tuple=True)[0]
+        output[i,ids]=value[i,ids.flip(0)]
+    return output
+
+
+def complete_dynamic_conditions(q,local_audio,mode='audio'):
+    """Counterfactuals remove/reverse ALL frame-varying dynamic conditions.
+
+    Global affect/identity and generation noise are held by the caller.
+    Static pooling is after the encoder, so padding/TCN edge effects cannot
+    recreate a frame-varying local condition. Native clock remains unchanged.
+    """
+    if mode not in ('audio','static','reverse'):raise ValueError('Unknown dynamic intervention')
+    dynamic=local_audio(q['audio_features'],q['valid'])
+    b=dict(q)
+    if mode=='static':
+        b['h0']=static_audio(q['h0'],q['valid'])
+        dynamic={**dynamic,'state':static_audio(dynamic['state'],q['valid']),
+                 'local':static_audio(dynamic['local'],q['valid'])}
+    elif mode=='reverse':
+        b['h0']=reverse_valid(q['h0'],q['valid'])
+        dynamic={**dynamic,'state':reverse_valid(dynamic['state'],q['valid']),
+                 'local':reverse_valid(dynamic['local'],q['valid'])}
+    return b,dynamic
 
 
 @torch.no_grad()
@@ -244,36 +277,45 @@ def evaluate(system,audio,upper,local_audio,data,identities,stage,args,*,full=Fa
             for ix in ids.split(args.batch_size):
                 b=subset(q,ix,args.device);ident=batch_identity(identities,b)
                 n=random_noise[ix].to(args.device);base={'b0':b['b0'],'h0':b['h0']}
-                teacher=teacher_affect(system,b,ident)
-                if stage in ('teacher','articulation','identity'):affect=teacher
-                else:affect=audio(b['audio_features'],b['valid'])
+                # Before the teacher stage, neither motion teacher nor renderer
+                # has been fitted in a fresh run. Evaluating their random
+                # residual confounds the identity stage with untrained modules.
+                teacher=None;affect=None
                 if stage=='articulation':pred=base['b0']
-                else:pred=system.generate(b['content'],b['valid'],ident,affect,initial_noise=n,steps=args.decode_steps,base=base)['motion']
+                elif stage=='identity':
+                    pred=torch.where(b['valid'][...,None],base['b0']+ident['baseline'][:,None],0.)
+                else:
+                    teacher=teacher_affect(system,b,ident)
+                    affect=teacher if stage=='teacher' else audio(b['audio_features'],b['valid'])
+                    pred=system.generate(b['content'],b['valid'],ident,affect,initial_noise=n,steps=args.decode_steps,base=base)['motion']
                 if stage=='dynamics' and mode!='base':
-                    dynamic_b=paper_condition(b,getattr(args,'condition_mode','audio')) if getattr(args,'paper_data',None) else b
-                    feat=dynamic_b['audio_features']
-                    if mode=='reverse_audio':
-                        feat=feat.clone()
-                        for row in range(len(feat)):
-                            good=b['valid'][row].nonzero(as_tuple=True)[0];feat[row,good]=feat[row,good.flip(0)]
-                    dynamic=local_audio(feat,b['valid']);state=dynamic['state'];tgt,_=targets(b,data['target_scales'].to(args.device),args.stride)
-                    if mode=='static_state':state=(state.sum(1,keepdim=True)/b['valid'].sum(1)[:,None,None]).expand_as(state)*b['valid'][...,None]
+                    if getattr(args,'temporal_upper',False):
+                        intervention='static' if mode=='static_state' else 'reverse' if mode=='reverse_audio' else getattr(args,'condition_mode','audio')
+                        dynamic_b,dynamic=complete_dynamic_conditions(b,local_audio,intervention)
+                    else:
+                        dynamic_b=paper_condition(b,getattr(args,'condition_mode','audio')) if getattr(args,'paper_data',None) else b
+                        feat=dynamic_b['audio_features']
+                        if mode=='reverse_audio':feat=reverse_valid(feat,b['valid'])
+                        dynamic=local_audio(feat,b['valid'])
+                    state=dynamic['state'];tgt,_=targets(b,data['target_scales'].to(args.device),args.stride)
+                    if mode=='static_state' and not getattr(args,'temporal_upper',False):state=static_audio(state,b['valid'])
                     if mode=='oracle_state':state=tgt['state']
                     innovation=upper.decode(dynamic_b,ident,affect,dynamic['local'],state,n[...,list(UPPER_INDICES)],args.decode_steps)
                     uv=upper_motion(b,data['target_scales'].to(args.device),state,innovation)
                     composed=compose_upper_face(pred,uv,b['valid'])
                     if not torch.equal(composed[...,list(NOT_UPPER)],pred[...,list(NOT_UPPER)]):raise RuntimeError('Non-upper protection failed')
                     pred=composed;pred_states.append(dynamic['state'].cpu());targets_state.append(tgt['state'].cpu())
-                if seed==42 and mode=='full':
+                if teacher is not None and seed==42 and mode=='full':
                     class_correct+=int((affect['emotion_logits'].argmax(-1)==b['emotion_id']).sum())
                     teacher_correct+=int((teacher['emotion_logits'].argmax(-1)==b['emotion_id']).sum())
-                gen_teacher=system.encode_motion(torch.where(obs(b),pred-b['b0']-ident['baseline'][:,None],0.),b['valid'])
-                gen_emotions.extend((gen_teacher['emotion_logits'].argmax(-1)==b['emotion_id']).cpu().tolist())
+                if teacher is not None:
+                    gen_teacher=system.encode_motion(torch.where(obs(b),pred-b['b0']-ident['baseline'][:,None],0.),b['valid'])
+                    gen_emotions.extend((gen_teacher['emotion_logits'].argmax(-1)==b['emotion_id']).cpu().tolist())
                 predictions.append(pred.cpu())
             value=torch.cat(predictions)
             key=f'{seed}/{mode}'
             all_predictions[key]={'motion':value,'metrics':region_report(value,reference),
-                'generated_teacher_emotion_accuracy_nonindependent':sum(gen_emotions)/len(gen_emotions)}
+                'generated_teacher_emotion_accuracy_nonindependent':sum(gen_emotions)/len(gen_emotions) if gen_emotions else None}
             if pred_states:
                 ps,ts=torch.cat(pred_states),torch.cat(targets_state)
                 sm=reference['valid'][...,None]
@@ -285,14 +327,16 @@ def evaluate(system,audio,upper,local_audio,data,identities,stage,args,*,full=Fa
                     'centered_correlation':float((pc*tc).sum()/(pc.square().sum()*energy).sqrt().clamp_min(1e-12)),
                     'centered_r2':float(1-se/energy.clamp_min(1e-12))}
     report={'stage':stage,'clips':limit,'noise_seeds':list(seeds),
-        'condition_source':'audio_only' if stage in ('audio','dynamics') else 'target_motion_oracle' if stage!='articulation' else 'audio_content_B0',
-        'audio_or_teacher_emotion_accuracy':class_correct/limit,
-        'motion_teacher_emotion_accuracy':teacher_correct/limit,
-        'emotion_readout_scope':'Teacher trained in this run; generated emotion readout is not independent perceptual certification.',
+        'condition_source':{'articulation':'audio_content_B0','identity':'audio_content_B0_plus_neutral_identity',
+                            'teacher':'target_motion_oracle','audio':'audio_only','dynamics':'audio_only'}[stage],
+        'audio_or_teacher_emotion_accuracy':class_correct/limit if stage not in ('articulation','identity') else None,
+        'motion_teacher_emotion_accuracy':teacher_correct/limit if stage not in ('articulation','identity') else None,
+        'emotion_readout_scope':'Teacher not yet trained; emotion readout unavailable.' if stage in ('articulation','identity') else 'Teacher trained in this run; generated emotion readout is not independent perceptual certification.',
         'modes':{k:{n:v for n,v in val.items() if n!='motion'} for k,val in all_predictions.items()},
         'test_loaded':False,'default_replaced':False,
         'scope':'paper development; complete native sequences' if getattr(args,'paper_data',None) else 'historical internal development',
         'condition_mode':getattr(args,'condition_mode','audio')}
+    report['dynamic_intervention_contract']='all encoded local/state/h0; global/id/noise fixed' if getattr(args,'temporal_upper',False) else 'legacy partial-state/raw-local control'
     curves={'schema':SCHEMA,'stage':stage,'clip_id':reference['clip_id'],'target':reference['motion'],'valid':reference['valid'],
         'times':reference['times'],'channel_mask':reference['channel_mask'],'b0':reference['b0'],
         'predictions':{k:v['motion'] for k,v in all_predictions.items()},'noise_seeds':list(seeds)}
@@ -308,6 +352,9 @@ def parser():
     p.add_argument('--stage-checkpoint',type=Path)
     p.add_argument('--condition-mode',choices=('audio','static'),default='audio')
     p.add_argument('--identity-epochs',type=int,default=None)
+    p.add_argument('--end-stage',choices=STAGES,default='dynamics')
+    p.add_argument('--protect-mouth',action='store_true',help='Fixed residual support excludes mouth; require validation protection at audio/dynamics endpoints')
+    p.add_argument('--temporal-upper',action='store_true',help='Temporally coupled state/noise upper9 flow with complete counterfactuals')
     p.add_argument('--compact',action='store_true')
     p.add_argument('--artifact-dir',type=Path)
     p.add_argument('--device',default='cuda');p.add_argument('--epochs',type=int,default=12)
@@ -319,6 +366,7 @@ def parser():
 
 def main():
     args=parser().parse_args()
+    if STAGES.index(args.end_stage)<STAGES.index(args.start_stage):raise ValueError('end-stage precedes start-stage')
     if not args.smoke and not 1<=args.epochs<=60:raise ValueError('Epoch budget must be 1–60')
     if args.batch_size<1 or args.decode_steps<1 or args.stride<1:raise ValueError('Positive batch/solver/stride required')
     if args.output.exists() and not args.resume:raise FileExistsError('Fresh run required')
@@ -341,16 +389,38 @@ def main():
                 if key not in seen:seen.add(key);chosen.append(i)
             data['splits'][role]=subset(q,torch.tensor(chosen),'cpu')
     system=data['system'].to(args.device).eval();cfg=data['config']
+    # Fixed deployment support is learned from TRAIN metadata only. Query
+    # observation masks are used only to censor training targets and scores.
+    train_support=data['splits']['train']['channel_mask'].any(0).bool()
+    cfg['model']['motion_support']=train_support.tolist()
+    system.set_motion_support(train_support.to(args.device))
+    residual_support=train_support.clone()
+    if args.protect_mouth:residual_support[list(MOUTH)]=False
+    cfg['model']['residual_support']=residual_support.tolist()
+    system.set_residual_support(residual_support.to(args.device))
     # Statistics are fitted on the authorized fit tensor only, not development.
     f=data['splits']['train']['audio_features'];valid=data['splits']['train']['valid']
     mean=data['feature_stats']['mean'];std=data['feature_stats']['std']
     audio=SlowStateAffect(mean,std,stride=args.stride).to(args.device).eval()
-    upper=(AudioResidualFlow if args.paper_data else UpperFlow)(cfg,stride=args.stride).to(args.device).eval();local_audio=copy.deepcopy(audio)
+    if args.temporal_upper:
+        if not args.paper_data:raise ValueError('Temporal upper experiment requires fixed paper data')
+        from kinetalk_b0.models.temporal_audio_residual_flow import TemporalAudioResidualFlow
+        upper=TemporalAudioResidualFlow(cfg,stride=args.stride).to(args.device).eval()
+    else:upper=(AudioResidualFlow if args.paper_data else UpperFlow)(cfg,stride=args.stride).to(args.device).eval()
+    local_audio=copy.deepcopy(audio)
     if args.stage_checkpoint:
         saved=torch.load(args.stage_checkpoint,map_location='cpu',weights_only=False)
         if saved.get('data_manifest_sha256')!=data['provenance'].get('manifest_sha256'):
             raise ValueError('Stage checkpoint belongs to another data protocol')
         for module,key in [(system,'system'),(audio,'audio')]:module.load_state_dict(saved[key],strict=True)
+        calibration=saved.get('config',{}).get('model',{}).get('mouth_reference_calibration')
+        if calibration is not None:
+            cfg['model']['mouth_reference_calibration']=calibration
+            system.set_mouth_reference_calibration(calibration)
+        saved_support=saved.get('config',{}).get('model',{}).get('motion_support')
+        if saved_support is not None and saved_support!=train_support.tolist():raise ValueError('Stage checkpoint train support differs')
+        saved_residual=saved.get('config',{}).get('model',{}).get('residual_support')
+        if saved_residual is not None and saved_residual!=residual_support.tolist():raise ValueError('Stage checkpoint residual support differs; use matching protection mode')
         local_audio.load_state_dict(audio.state_dict())
         del saved
     elif args.start_stage!='articulation':raise ValueError('Starting later requires matching stage checkpoint')
@@ -361,25 +431,30 @@ def main():
         root/'kinetalk_b0/models/encoders.py',root/'kinetalk_b0/models/label_guided_affect.py',root/'kinetalk_b0/neutral_data.py',
         root/'kinetalk_b0/semantic_losses.py',root/'scripts/train_formal_predictable_projection.py']
     if args.paper_data:sources += [root/'scripts/prepare_paper_full_data.py',root/'kinetalk_b0/models/audio_residual_flow.py',root/'scripts/paper_generation_report.py']
+    if args.protect_mouth:sources += [root/'scripts/mouth_protection.py',root/'kinetalk_b0/reference_mouth_calibration.py']
+    if args.temporal_upper:sources += [root/'kinetalk_b0/models/temporal_audio_residual_flow.py']
     if args.paper_data:input_paths['paper_data']=str(args.paper_data.resolve())
     if args.artifact_dir:input_paths['artifact_dir']=str(args.artifact_dir.resolve())
     recipe={'schema':SCHEMA,'args':{k:v for k,v in vars(args).items() if k not in ('resume','output') and not isinstance(v,Path)},
         'paths':input_paths,'data_provenance':data['provenance'],'source_sha256':{str(p.relative_to(root)):sha(p) for p in sources},
-        'stages':list(STAGES),'epochs_per_stage':args.epochs,'stride_frames':args.stride,
+        'stages':list(STAGES[STAGES.index(args.start_stage):STAGES.index(args.end_stage)+1]),'epochs_per_stage':args.epochs,'stride_frames':args.stride,
         'condition':'four signed spline motion proxies + native audio + distilled global; no text/VA/activity/history',
-        'warm_start':not bool(args.paper_data),'stage_checkpoint_sha256':sha(args.stage_checkpoint) if args.stage_checkpoint else None,
+        'warm_start':bool(args.stage_checkpoint) or not bool(args.paper_data),'stage_checkpoint_sha256':sha(args.stage_checkpoint) if args.stage_checkpoint else None,
         'new_audio_global':'1540D audio trained against updated motion-global teacher; does not reuse old global normalization',
         'identity_epoch':'One pass over disjoint complementary reference-view pairs from fit identities only',
         'articulation_epoch':'One shuffled pass over neutral fit query clips only',
         'other_epoch':'One shuffled pass over all fit queries',
         'trainable':'Stage-dependent; pretrained acoustic/content extractors remain frozen feature sources',
         'stage5_nonupper':'Exact frozen stage4 output copy, not a claim stage4 equals historical model',
+        'motion_support':train_support.tolist(),'residual_support':residual_support.tolist(),
+        'mouth_reference_calibration':cfg['model'].get('mouth_reference_calibration'),
+        'temporal_upper_config':getattr(upper,'temporal_config',None),
         'test_loaded':False,'default_replaced':False,'checkpoint_selection':'Fixed final epoch; intermediate validation not used for selection'}
     if args.paper_data:
         recipe.update(schema='paper_full_audio_residual_flow_v1',
           condition='native full audio + independent neutral identity + global affect + audio slow mean + unrestricted stochastic residual',
           dynamic_objective='FM + deterministic mean state Huber; every fourth batch two-draw raw+centered fair ES and domain penalty',
-          starting_stage=args.start_stage,acoustic_extractors='frozen pretrained; all KineTalk modules initialized afresh')
+          starting_stage=args.start_stage,acoustic_extractors='frozen pretrained; system/audio inherited from bound stage checkpoint; upper initialized afresh' if args.stage_checkpoint else 'frozen pretrained; all KineTalk modules initialized afresh')
     recipe_hash=canonical_hash(recipe);args.output.mkdir(parents=True,exist_ok=True)
     gen=torch.Generator().manual_seed(args.seed)
     start_stage=STAGES.index(args.start_stage);start_epoch=0;total_steps=0;elapsed_before=0.;resume_payload=None
@@ -408,6 +483,7 @@ def main():
     try:
         for stage_index,stage in enumerate(STAGES):
             if stage_index<start_stage:continue
+            if stage_index>STAGES.index(args.end_stage):break
             current_stage=stage;stage_dir=args.output/stage;stage_dir.mkdir(exist_ok=True)
             epochs=1 if args.smoke else (args.identity_epochs if stage=='identity' and args.identity_epochs is not None else args.epochs)
             if epochs<1:raise ValueError('Stage epochs must be positive')
@@ -479,8 +555,8 @@ def main():
                                 with torch.no_grad():teacher=teacher_affect(system,b,identity)
                                 affect=audio(b['audio_features'],b['valid'])
                                 distill=F.mse_loss(affect['global'],teacher['global'])
-                            out=system.flow(b['motion'],b['content'],b['valid'],identity,affect,noise=noise,time=ft,base=base)
-                            flow=mse(out['prediction'],out['velocity_target'],mask);semantic=semantics(affect,b)
+                            out=system.flow(b['motion'],b['content'],b['valid'],identity,affect,noise=noise,time=ft,base=base,observation_mask=b['channel_mask'])
+                            flow=mse(out['prediction'],out['velocity_target'],out['observation_mask']);semantic=semantics(affect,b)
                             loss=flow+.1*semantic+(.5*distill if stage=='audio' else 0)
                             values={'flow':flow,'semantic':semantic,'global_distill':distill}
                             if stage=='audio':
@@ -495,8 +571,11 @@ def main():
                                 loss=loss+.2*reconstruction+.1*domain;values.update(rollout_raw=reconstruction,domain=domain)
                         else:
                             with torch.no_grad():affect=audio(b['audio_features'],b['valid'])
-                            dynamic_b=paper_condition(b,args.condition_mode) if args.paper_data else b
-                            dynamic=local_audio(dynamic_b['audio_features'],b['valid']);truth,innovation=targets(b,scales,args.stride)
+                            if args.temporal_upper:dynamic_b,dynamic=complete_dynamic_conditions(b,local_audio,args.condition_mode)
+                            else:
+                                dynamic_b=paper_condition(b,args.condition_mode) if args.paper_data else b
+                                dynamic=local_audio(dynamic_b['audio_features'],b['valid'])
+                            truth,innovation=targets(b,scales,args.stride)
                             state_loss=huber(dynamic['state'],truth['state'],truth['state_mask'])
                             if args.paper_data:
                                 cc=list(UPPER_INDICES)
@@ -540,7 +619,28 @@ def main():
                 if actual!=frozen_parameters[name]:raise RuntimeError('Frozen parameter subset drift: '+name)
             identity_result=identity_report(system,data,args.device);save_json(stage_dir/'identity.json',identity_result)
             report,curves=evaluate(system,audio,upper,local_audio,data,identities,stage,args,full=not args.smoke)
+            if args.protect_mouth and stage in ('identity','audio','dynamics'):
+                from scripts.mouth_protection import protection_report
+                vq=data['splits']['validation'];lookup={cid:i for i,cid in enumerate(vq['clip_id'])}
+                vb=subset(vq,torch.tensor([lookup[cid] for cid in curves['clip_id']]),args.device)
+                vi=batch_identity(identities,vb)
+                protected=torch.where(vb['valid'][...,None],vb['b0'] if stage=='identity' else vb['b0']+vi['baseline'][:,None],0.).cpu()
+                gates={key:protection_report(pred,protected,curves['target'],curves['valid'],curves['channel_mask'],vb['emotion_id'].cpu()) for key,pred in curves['predictions'].items()}
+                save_json(stage_dir/'mouth_protection.json',gates)
+                if not all(g['passed'] for g in gates.values()):
+                    save_json(stage_dir/'evaluation.json',report)
+                    raise RuntimeError('Mouth protection failed; downstream stages not started')
             report['identity']=identity_result;save_json(stage_dir/'evaluation.json',report)
+            if args.temporal_upper and stage=='dynamics':
+                # Fixed training probe distinguishes failure to fit from
+                # cross-identity validation degradation. This is not test.
+                train_q=data['splits']['train']
+                probe_ids=torch.randperm(len(train_q['valid']),generator=torch.Generator().manual_seed(20260921))[:64].sort().values
+                probe_data={**data,'splits':{**data['splits'],'validation':subset(train_q,probe_ids,'cpu')}}
+                probe_report,_=evaluate(system,audio,upper,local_audio,probe_data,identities,stage,args,full=True)
+                probe_report['scope']='fixed 64 training queries diagnostic; no holdout claim'
+                probe_report['clip_ids']=probe_data['splits']['validation']['clip_id']
+                save_json(stage_dir/'training_probe.json',probe_report)
             if args.paper_data:
                 from scripts.paper_generation_report import report_generation
                 report_generation(curves,data,stage_dir,stage,args)
@@ -552,12 +652,13 @@ def main():
                 'system':system.state_dict(),'audio':audio.state_dict(),'upper':upper.state_dict(),'local_audio':local_audio.state_dict(),
                 'config':cfg,'scales':data['target_scales'],'inference_only':True,
                 'feature_stats':data['feature_stats'],'data_manifest_sha256':data['provenance'].get('manifest_sha256'),
-                'upper_architecture':'unrestricted_audio_residual' if args.paper_data else 'Q_projected',
+                'upper_architecture':'temporal_audio_residual' if args.temporal_upper else 'unrestricted_audio_residual' if args.paper_data else 'Q_projected',
+                'temporal_upper_config':getattr(upper,'temporal_config',None),
                 'test_loaded':False})
             save_json(stage_dir/'complete.json',{'stage':stage,'completed_epochs':epochs,'final_sha256':sha(stage_dir/'final.pt'),
                 'curves':str(curve_dir/'curves.pt') if curve_dir else None,'curves_sha256':sha(curve_dir/'curves.pt') if curve_dir else None})
             resume_payload=None;start_epoch=0
-        save_json(args.output/'summary.json',{'schema':SCHEMA,'status':'complete','stages':list(STAGES),'epochs_per_stage':epochs,'smoke':args.smoke,
+        save_json(args.output/'summary.json',{'schema':SCHEMA,'status':'complete','stages':recipe['stages'],'epochs_per_stage':epochs,'smoke':args.smoke,
             'total_steps':total_steps,'elapsed_seconds':elapsed_before+time.monotonic()-started,'default_replaced':False,'test_loaded':False})
         save_json(args.output/'status.json',{'status':'complete','elapsed_seconds':elapsed_before+time.monotonic()-started,'summary':'summary.json'})
         print('FULL_STAGED_TRAINING_COMPLETE',flush=True)

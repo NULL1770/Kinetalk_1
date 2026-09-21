@@ -42,11 +42,31 @@ def fair_trajectory_es(samples, target, valid, *, centered=False):
 class AudioResidualFlow(UpperInnovationFlow):
     """No Q projection: slow and fast conditional variation are both learned."""
     def flow_loss(self,target,q,identity,affect,local,state,noise,time):
+        self._check_motion(target,q['valid'],'target')
+        self._check_motion(noise,q['valid'],'noise')
+        if (time.shape != (len(target),) or not time.is_floating_point() or time.device != target.device
+                or not torch.isfinite(time).all() or ((time<0)|(time>1)).any()):
+            raise ValueError('Flow time must be finite [B] in [0,1]')
+        # This model's support is fixed to all nine coefficients. Partially
+        # observed training targets are not silently reinterpreted as zero.
+        if 'channel_mask' in q:
+            channels=q['channel_mask']
+            if (channels.dtype != torch.bool or channels.shape != (len(target),52)
+                    or not channels[:,list(UPPER_INDICES)].all()):
+                raise ValueError('Upper flow training requires all nine observed upper channels')
         conditions=self._conditions(q['valid'],q['h0'],identity['code'],affect,local,state)
         mask=q['valid'][...,None];a=time[:,None,None]
-        x=torch.where(mask,(1-a)*noise+a*target,0.)
+        target=torch.where(mask,target,0.);noise=torch.where(mask,noise,0.)
+        x=(1-a)*noise+a*target
         velocity=self._velocity_unrestricted(x,time,q['valid'],conditions)
         return torch.where(mask,velocity-(target-noise),0.).square().sum()/(mask.sum()*9)
+
+    @staticmethod
+    def _check_motion(value,valid,name):
+        if (not torch.is_tensor(value) or value.shape != (*valid.shape,9)
+                or not value.is_floating_point() or value.device != valid.device
+                or not torch.isfinite(value[valid]).all()):
+            raise ValueError(f'Upper {name} must be finite observed [B,T,9]')
 
     def _velocity_unrestricted(self,x,time,valid,conditions):
         content,identity,global_code,intensity,local=conditions
@@ -55,7 +75,8 @@ class AudioResidualFlow(UpperInnovationFlow):
         return torch.where(valid[...,None],velocity,0.)
 
     def decode(self,q,identity,affect,local,state,noise,steps):
-        if steps<1:raise ValueError('Positive decode budget required')
+        if type(steps) is not int or steps<1:raise ValueError('Positive integer decode budget required')
+        self._check_motion(noise,q['valid'],'noise')
         conditions=self._conditions(q['valid'],q['h0'],identity['code'],affect,local,state)
         x=torch.where(q['valid'][...,None],noise,0.)
         for i in range(steps):

@@ -50,3 +50,6 @@ Thumbs.db
 /tmp_launch*.py
 /ct.html
 /fd.html
+
+# Private recovery snapshots may contain historical connection settings
+/archive/cleanup_*/

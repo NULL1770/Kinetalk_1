@@ -3,6 +3,8 @@
 Input NPZ (allow_pickle=False): channels [52] strings, times [T] seconds,
 valid [T] bool, mode_names [M] strings, motions [M,T,52]. Alternatively each
 mode_names entry may name a [T,52] array. Optional clip_id/noise_seed metadata.
+Optional channel_mask [52] or [T,52] bool marks observed coefficients. Missing
+channels are disabled in the display only, never filled by model predictions.
 This is display only: no model loading, inference, scoring, gain or lag fitting.
 """
 from __future__ import annotations
@@ -49,6 +51,7 @@ def inspect_input(path, fps):
         channels = data['channels'].tolist()
         times = np.asarray(data['times'], dtype=np.float64)
         valid = np.asarray(data['valid'])
+        channel_mask = np.asarray(data['channel_mask']) if 'channel_mask' in data else None
         modes = data['mode_names'].tolist()
         if not isinstance(channels, list) or len(channels) != 52 or set(channels) != set(ARKIT_NAMES):
             raise ValueError('channels must contain each standard ARKit52 name exactly once')
@@ -62,23 +65,41 @@ def inspect_input(path, fps):
         raise ValueError('Native times must be uniformly spaced at fps; no clock rescaling is performed')
     if valid.dtype != np.bool_ or valid.shape != times.shape or not valid.any():
         raise ValueError('valid must be a bool vector with at least one valid frame')
-    if values.shape != (len(modes), len(times), 52) or not np.isfinite(values[:, valid]).all():
+    if channel_mask is not None and (channel_mask.dtype != np.bool_ or channel_mask.shape not in ((52,), (len(times), 52))):
+        raise ValueError('channel_mask must be a bool [52] or [T,52] array in channels order')
+    support = np.ones((len(times), 52), dtype=bool) if channel_mask is None else np.broadcast_to(channel_mask, (len(times), 52))
+    observed_mask = valid[:, None] & support
+    if values.shape != (len(modes), len(times), 52) or not np.isfinite(values[:, observed_mask]).all():
         raise ValueError('motions must be finite [M,T,52] at observed frames')
     # Nearest observed native index; ties go to the earlier observed frame.
     good = np.flatnonzero(valid)
     nearest = good[np.abs(np.arange(len(times))[:, None] - good[None, :]).argmin(axis=1)]
-    filled = values[:, nearest, :]
+    # An unobserved coefficient is not a prediction with validated semantics.
+    # Clear it before display arithmetic so arbitrary values or NaNs from an
+    # unsupervised output head cannot animate the rig or pollute the audit.
+    filled = np.where(support[nearest][None], values[:, nearest, :], 0.)
     display = np.clip(filled, 0, 1)
     counts = {}
     for i, mode in enumerate(modes):
-        observed = values[i, valid]
+        observed = values[i][observed_mask]
+        unsupported_mask = valid[:, None] & ~support
+        unsupported = values[i][unsupported_mask]
+        unsupported_finite = np.isfinite(unsupported)
         outside = (observed < 0) | (observed > 1)
+        per_channel_count = observed_mask.sum(0)
+        per_channel_outside = (((values[i] < 0) | (values[i] > 1)) & observed_mask).sum(0)
         counts[mode] = {
             'observed_value_count': int(observed.size),
             'observed_clamped_count': int(outside.sum()),
-            'observed_clamped_fraction': float(outside.mean()),
-            'raw_observed_min': float(observed.min()), 'raw_observed_max': float(observed.max()),
-            'clamped_fraction_by_channel': dict(zip(channels, outside.mean(0).tolist())),
+            'observed_clamped_fraction': float(outside.mean()) if observed.size else None,
+            'raw_observed_min': float(observed.min()) if observed.size else None,
+            'raw_observed_max': float(observed.max()) if observed.size else None,
+            'clamped_fraction_by_channel': {name: float(per_channel_outside[c] / per_channel_count[c]) if per_channel_count[c] else None
+                                            for c, name in enumerate(channels)},
+            'unsupported_raw_value_count': int(unsupported.size),
+            'unsupported_raw_finite_nonzero_count': int((unsupported[unsupported_finite] != 0).sum()),
+            'unsupported_raw_nonfinite_count': int((~unsupported_finite).sum()),
+            'unsupported_raw_finite_abs_max': float(np.abs(unsupported[unsupported_finite]).max()) if unsupported_finite.any() else None,
             'brow_display_std': {name: float(display[i, valid, channels.index(name)].std()) for name in BROWS},
         }
     return channels, times, valid, modes, display, {
@@ -87,6 +108,11 @@ def inspect_input(path, fps):
         'valid_frames': int(valid.sum()), 'display_filled_frames': int((~valid).sum()),
         'filled_native_indices': np.flatnonzero(~valid).tolist(),
         'display_source_index': nearest.tolist(), 'display_clamp': '[0,1], display only',
+        'channel_mask_provided': channel_mask is not None,
+        'channel_mask_shape': list(channel_mask.shape) if channel_mask is not None else None,
+        'unsupported_channels': [name for c, name in enumerate(channels) if not support[valid, c].any()],
+        'partially_supported_channels': [name for c, name in enumerate(channels) if support[valid, c].any() and not support[valid, c].all()],
+        'display_channel_policy': 'Zero unobserved channels using channel_mask; legacy inputs without channel_mask assume all channels observed. Raw source arrays and scores are unchanged.',
         'invalid_policy': 'nearest valid native frame; tie earlier; retained timeline; exclude from scoring',
         'mode_statistics': counts,
     }

@@ -1,94 +1,32 @@
-# KineTalk：中性身份与时序情感场实验
+# KineTalk 当前研究入口
 
-> **2026-09-19 当前状态**：已完成两版局部语义音频学生（各120轮、三句OOF）及冻结接收器各10臂对照。修复了恒定声学产生伪动态的问题，但新条件仍未稳定胜过静态，动态未验收。见[本轮实测](docs/TEMPORAL_SEMANTIC_STUDENT_20260919.md)、[前序30/300轮](docs/VISUAL_SEMANTIC_PILOT_RESULTS_20260918.md)。默认模型未替换，身份、情感和口型仍需独立验收。
->
-> 从[当前实验总览](docs/CURRENT_EXPERIMENT_STATUS_20260918.md)、[稀疏事件实测](docs/SPARSE_BROW_EVENT_RESULTS_20260918.md)、[稀疏事件协议](docs/SPARSE_BROW_EVENT_PROTOCOL_20260918.md)开始阅读。工程演示入口为 `scripts/diagnose_sparse_brow_controls.py`，不得当作学习版生成结果；前序连续先验入口为 `scripts/launch_clocked_motion_prior.py --controlled`，完整五阶段入口为 `scripts/train_full_staged.py`。这些是不同阶段的研究实验，不是已验收的统一部署入口。
->
-> Git 保存源代码、配置、测试与文字实验文档。数据、权重、曲线数组和对比视频留在本地/实验服务器，不随仓库发布；文档中的 `artifacts/` 路径指外部实验产物，单独克隆仓库不会包含它们。复现实验还需按对应协议准备指定数据和源 checkpoint。
+更新时间：2026-09-21
 
-## 历史实验记录（下文“当前／最新”均为各次记录时的状态）
+本仓库是一个连续研究工作区，包含历史 v9、v10 基础系统，以及从冻结 v10 Stage4 继承的 upper9 动态实验。它们是演进关系，不是三个都已验收的成品；论文和主表只能引用同一协议、同一代码路径、同一训练预算下得到的结果。
 
-> **2026-09-17 最新核验**：完整renderer容量三臂、直接声学flow/L1两臂，以及本轮新增最终位移+std的audio/zero两臂均已完成；后者各8epoch/1160步、72组曲线独立重建一致。眉幅度恢复但时序/分布与口型保护仍失败，默认不替换。参见[本轮综合结论与后续路线](docs/BROW_DYNAMICS_RESEARCH_AND_ACTION_20260917.md)、[新实验实测](docs/OUTPUT_MOTION_DYNAMICS_RESULTS_20260917.md)、[论文原文复核](docs/LITERATURE_DYNAMICS_RECHECK_20260917.md)。当前实际训练覆盖为2.205小时/19人/四类固定crop，不应等同完整native库存。
+## 当前应先读什么
 
-> **当前状态：正式2720段/22人训练与3训练seed＋PCA对照已完成（各18epoch），开发集保留弱动态收益；新身份眼部改善、眉部未通过，默认权重不替换。详见[正式结果](docs/FORMAL_TRAINING_RESULTS.md)。**
-> 后续19人训练／3人内部验证的三种教师日程及闭环目标对照均已完成，仍未通过。误差分解证实平均表情纠正掩盖动态退化；本轮停止追加相同路线长训，见[教师日程与目标诊断](docs/TEACHER_SCHEDULE_PROBE.md)。
-> 当前唯一主方案见 [中性身份基线与时序情感场架构](docs/ARCHITECTURE_NEUTRAL_AFFECT.md)：neutral 锚定身份执行基线、低率时序情感场、冻结 B0 与残差 Flow Matching。
-> 初始化小试验入口 `scripts/train_neutral_affect_pilot.py`；当前正式接口训练入口 `scripts/train_formal_predictable_projection.py`，结果位于远程 `/root/kinetalk_runs/formal_predictable_v1`。原 B0 未改动。
-> 下文仅描述已有 **v9 VA 历史代码**。`train.py` 仍是 v9，不能作为新架构训练入口；新试验不使用 VA/q。
+1. [当前系统与边界](docs/CURRENT_SYSTEM_20260921.md)：模型层次、推理条件、通道范围和当前验收结论。
+2. [研究交接记录](docs/CURRENT_RESEARCH_HANDOFF_20260920.md)：完整实验时间线、失败门控和待办事项。
+3. [脚本入口索引](scripts/README.md)：保留脚本的入口和用途。
+4. [清理归档说明](archive/README.md)：本地可恢复清理归档的范围和恢复规则。
 
-初始小样本结果见 [小规模训练报告](docs/NEUTRAL_AFFECT_PILOT_RESULTS.md)；当前准入与正式结果见下方最新记录。
+## 当前主线
 
-最新完成1200训练/280开发/12人的无文本音频与共享动态基对照，以及5组各600步生成适配。冻结audio预测器和renderer、只训练原共享接口；共享audio概率门控使run35两seed通过工程准入。正式入口为 `scripts/train_formal_predictable_projection.py`，协议见[正式训练准入](docs/FORMAL_TRAINING_READINESS.md)。默认模型不替换。见[实测记录第12–15节](docs/DYNAMIC_TRAINING_ADJUSTMENT_RESULTS.md)；此前上下文和音频对照在[音频特征优化结果](docs/AUDIO_DYNAMIC_CONTEXT_FEATURE_RESULTS.md)。
+- **v9（历史）**：已归档的根入口 `train.py` 及其 VA/语义条件路径，仅作历史对照，不能代表当前主方案。
+- **v10 基础系统**：`kinetalk_b0.models.neutral_affect` 注册 `architecture_version=10`；冻结 B0 内容/口型基座，使用中性参考统计个人执行特征，并由情感与音频条件驱动残差生成。
+- **upper9 动态实验**：继承冻结的 v10 Stage4 上脸状态，仅覆盖眉毛、squint/wide 等 9 个上脸通道；不包含 blink 或 gaze。`train_relative_audio_timing.py` 和 `train_relative_motion_prior.py` 直接读取 Stage4 上脸均值，组合中心化状态与 zero-DC 时变残差，不依赖 `mean_preserving_upper.py` 作为最新主路径。
 
-最新短对照：[去均值动态实测](docs/CENTERED_DYNAMIC_PROBE.md)，同预算8epoch上脸/眼部改善、眉毛仍未通过；默认未替换。后续小对照预算8epoch。论文指标核对见[原文比较](docs/DYNAMIC_PAPER_METRICS_COMPARISON.md)。
+训练时可以使用动作、类别或教师状态作为监督；部署目标是语音加独立中性参考，不把目标动作或情感标签作为必需输入。这里的 identity 表示个人运动/表达执行特征，不能直接写成静态几何身份。
 
-后续两个8epoch的[损失尺度对照](docs/SCALED_DYNAMIC_PROBE.md)已结束：上脸略增益，但嘴部退化且眉毛仍失败，未采用。[训练内动态基量纲诊断](docs/SCALED_MOTION_BASIS_PROBE.md)也已完成：眉motion投影变强但音频预测未改善，嘴部下降，未接入生成器。270tests通过；下一优先级是固定目标改善音频时序预测，无默认权重变更。
+## 当前证据边界
 
-最新[音频时序修正](docs/TEMPORAL_AUDIO_REFINER_RESULTS.md)三折两臂各8epoch已完成：训练拟合改善但跨句眉/眼/嘴预测变差，未采用。固定8条源视频检查未发现整批对齐错误；284tests通过。保留原预测器及生成权重，不继续同路线长训。
+完整开发协议为 4098 个 train clips、446 个 validation clips、25 fps；这是四类 MEAD 协议，不等同于全部 MEAD。最新独立读出探针在 validation 上 state MSE=0.0223675、corr=0.1169、R²=0.0136，并优于 static/reverse；但完整时序门控（包括 variogram/动态一致性）仍未通过，不能声称音频已经可靠预测眉眼动态。口型、均值、非上脸通道保护通过的局部检查，也不能替代身份、情感、口型、动态的统一验收。
 
-## 现有 v9 VA 对照
+论文主表必须固定 ARKit52 数据划分、帧率、mask、随机种子和训练预算，并在同一协议下报告 ARKit-MBE、ARKit-LBE、ARKit-FDD、AV offset/confidence、Multimodality、FD/WInD；未具备经过验证的输入和协议的指标应标为 pending。
 
-原生音频内容驱动冻结 B0，**类别＋真实片段强度等级＋逐帧视觉 VA** 控制情感，同人跨句跨情感参考控制个人表达风格。生成器只接收明确语义的投影，不接收可自由复制动作的情感隐变量。BS 幅度不再充当情感强度标签。
+## 代码与数据
 
-```text
-BS = frozen B0(target content)
-   + ResidualDiT(semantic conditions, multi-reference style, noise)
-reference residual = reference BS - frozen B0(reference content)
-```
+保留的训练、审计、评估入口在 `scripts/`，核心模型在 `kinetalk_b0/`。数据、checkpoint、视频和大体积实验产物不随源代码发布；文档中的远程路径仅用于实验交接。清理产生的本地归档在 `archive/cleanup_20260921/`，已做快照和清单，可恢复但默认不参与测试或 Git 提交。
 
-现有配置为 `configs/train.yaml`。第一轮实验使用 MEAD，先验证 neutral identity 与时序情感场，再加入 CREMA-D 跨库验证。
-
-## 数据与环境
-
-安装 `requirements.txt`。数据与 checkpoint 不进入 Git。
-
-远程实验隔离在 `/root/autodl-tmp/kinetalk_semantic_v9_20260915`，原项目不覆盖。主配置使用：
-
-| 输入／输出 | 路径 |
-| --- | --- |
-| Train / val 清单 | `pilot_data/train.jsonl`、`pilot_data/val.jsonl` |
-| Native motion/content/audio | `/root/autodl-tmp/kinetalk_data/processed/native_affect_style_v4_refmask/clips/*.npz` |
-| Visual VA | `pilot_data/va/*.npz` |
-| Frozen B0 | `/root/autodl-tmp/kinetalk_b0_residual_train/outputs_protocol_v1/stage1_neutral.pt` |
-| v9 训练产物 | `outputs/semantic_pilot/` |
-
-原生资产包含 `motion[T,52]`、`content[T,768]`、`audio[T,83]`、`times[T]`、`mask[T]` 和 `channel_mask[52]`；音频为 mel80＋prosody3。视觉 sidecar 保存真实时间戳、VA、有效性、置信度和视觉来源。缺失标签、时钟错误、未知身份关系直接报错，不按长度重采样或补造情感。
-
-## v9 历史运行方式（暂停）
-
-以下仅记录旧 VA 接口，当前不执行。只有后续明确恢复 VA 对照实验，并核验源码一致性、完整 VA 标签与质量后，才可从隔离目录使用：
-
-```bash
-python train.py --config configs/train.yaml --stage preflight
-python train.py --config configs/train.yaml --stage critics
-python train.py --config configs/train.yaml --stage generator --checkpoint outputs/semantic_pilot/critics.pt
-python train.py --config configs/train.yaml --stage evaluate --checkpoint outputs/semantic_pilot/generator.pt
-python train.py --config configs/train.yaml --stage audio --checkpoint outputs/semantic_pilot/generator.pt
-```
-
-`pilot` 串行执行小规模流程；各阶段质量门槛仍需满足，不能把探索性运行当作正式验收：
-
-```bash
-python train.py --config configs/train.yaml --stage pilot
-```
-
-默认预算为 critics 400／generator 300／audio 300 steps，batch 8，cross_every 2，decode 4。这是小规模验证预算，不是完整收敛训练。
-
-单独保存固定目标音频、完整情感和噪声的风格干预报告：
-
-```bash
-python -m scripts.diagnose_semantic --config configs/train.yaml --checkpoint outputs/semantic_pilot/generator.pt --split val --max-batches 2 --output outputs/semantic_pilot/fixed_condition.json
-python -m pytest tests -q
-```
-
-诊断区分风格码变化、原始 BS、clamp、51 通道按名称导出及 CSV 回读，并记录同人参考变化与跨人变化。还须检查情感保持、donor 风格、发音时序和自然度。
-
-## 文件分工
-
-- `kinetalk_b0/models/semantic.py`：语义投影、动作／音频语义读出器、多参考风格与残差生成器。
-- `kinetalk_b0/semantic_data.py`：原生时钟、身份、标签和独立参考契约。
-- `kinetalk_b0/semantic_losses.py`：语义、风格对比与跨人输出约束。
-- 训练入口只使用 `train.py`；视觉教师提取脚本已移出主方案。
-- `scripts/diagnose_semantic.py`：v9 条件干预；`diagnose_legacy.py`：通过 `--legacy-root` 隔离审计旧 checkpoint。
-
-旧 Stage2–4 的模型、导出和训练脚本只用于历史审计，不是 v9 主入口。请勿用旧 CSV 导出命令加载 v9 checkpoint。
+不要直接把旧 README 中的历史“当前/最新”措辞当作现状；以本页、`docs/CURRENT_SYSTEM_20260921.md` 和交接记录顶部指针为准。
