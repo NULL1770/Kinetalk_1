@@ -2,7 +2,40 @@
 
 更新时间：2026-09-22。此目录只保留当前可追溯的训练、审计、评估和渲染入口；历史一次性脚本已移入 `archive/cleanup_20260921/relocated/`，原路径和哈希见归档清单。
 
-## 当前候选：native regional envelope
+## 当前生成候选：empirical upper motion
+
+真实TRAIN动作库与参考强度解码器组合，恢复眉眼幅度并改善分布评分；条件检索尚无综合优势，局部音频时序与MEDTalk性能对等未建立。详见[实测报告](../docs/EMPIRICAL_UPPER_MOTION_20260922.md)。
+
+```powershell
+python scripts/evaluate_empirical_upper_motion.py --data <prepared-dir> --source <frozen-stage4.pt> --reference-run <reference-run-dir> --output <fresh-dir> --device cuda
+python scripts/infer_empirical_upper_motion.py --bank <empirical-dir/bank.pt> --checkpoint <reference-run/final.pt> --input <deployment-input.npz> --output <fresh-animation.npz> --speaker mead_M025 --sentence text_a6ba33f343d77c4eab734e7e --seed 42 --device cpu
+```
+
+前者只用TRAIN校准温度，随后固定development评分；`--selection-only`可止于TRAIN。后者校验bank/参考checkpoint绑定，不读query目标，输出original_prior/smooth_prior/deterministic/empirical/unconditional及供体/seed/保护报告。speaker、sentence必须为精确元数据；省略时无法执行该项排除。长度不足CLI明确报错。输入仍是下述预计算NPZ，不是raw WAV完整系统。bank保存真实TRAIN动作片段，不随Git发布。
+
+## 确定性中心：reference intensity decoder
+
+**2026-09-22 正式训练已完成；真实强度 receiver 通过，音频输出仍低幅，未替换默认模型。** 选择预算为 20/30/10，实际选轮及全 TRAIN refit 为 13/28/0。Full 中心化 upper MSE 0.037227 高于 static 0.035894，不能据均值拟合改善宣布动态成功。详情见 [REFERENCE_INTENSITY_DECODER_20260922.md](../docs/REFERENCE_INTENSITY_DECODER_20260922.md)。
+
+- `reference_decoder_data.py`：按 TRAIN 或 validation 角色读取和校验 shard；构造冻结音频 global、独立 neutral identity/anchor，不从 query motion/label 构造部署条件。
+- `train_reference_intensity_decoder.py`：原生音频→两维非负强度→学习式 upper9 decoder。目标为中性参考相对 MAD，经 TRAIN 通道尺度和五帧平滑；主动释放旧 upper 均值，逐 bit 保护其他 43 通道。TRAIN 内选轮后重新估计全 TRAIN 统计并从头 refit，再评分 development。
+- `infer_reference_intensity_decoder.py`：使用可信的本仓库 `final.pt` 和预计算部署 NPZ，输出 original_prior/smooth_prior/full/static 及保护报告。无 query motion、emotion 或 target 输入；upper 由学习式 sigmoid 限界，学习输出不做事后 clamp/平滑。
+- `diagnose_regional_targets.py`：TRAIN-only 固定 ridge/目标裁剪诊断；它不训练正式解码器，不把替代目标的裁剪稳定性称为可预测性。
+
+从仓库根目录运行，下列路径为占位符，输出必须为新路径：
+
+```powershell
+python scripts/train_reference_intensity_decoder.py --data <prepared-data-dir> --source <frozen-stage4.pt> --output <fresh-run-dir> --device cuda --oracle-epochs 20 --student-epochs 30 --joint-epochs 10 --batch-size 32 --seed 53
+python scripts/infer_reference_intensity_decoder.py --checkpoint <run-dir/final.pt> --input <deployment-input.npz> --output <fresh-animation.npz> --device cpu
+```
+
+训练可用 `--smoke` 检查短流程（2/2/1 轮），或 `--selection-only` 只完成 TRAIN 内选择。正式产物含 `protocol.json`、`selection.json`、各阶段 history、`oracle_evaluation.json`、`selection_evaluation.json`、`final.pt`、development `evaluation.json`、`curves.pt` 和固定元数据四例 NPZ。Oracle 用真实强度，仅检验接收器；不能作为音频预测成绩。
+
+部署 NPZ 必需字段：`prior [T,52]` float32、`audio_features [T,1540]`、冻结音频 `global_code [64]`、独立参考 `identity_code [128]`、原始中性 `anchor [52]`、`valid [T]` bool、25 fps `times [T]`；可附 `channels/channel_mask/clip_id/noise_seed`。**这不是 raw WAV 或完整参考编码入口**，推理不会重新生成、认证调用方提供的 prior/global/reference。输出采用 renderer 的 `channels/times/valid/mode_names/motions` 格式，并保存 `.report.json`。
+
+所有模式保留 non-upper43 和无效帧；旧 upper 均值按设计可以变化。Static 是同一 student 的时序隐藏状态取片内均值，是推理干预而非独立训练消融。CPU与正式CUDA曲线约5e−5差异保留在复放报告，未称为严格逐值一致。四类视频已生成，自然度仍未完成主观验收。
+
+## 前一轮候选：native regional envelope
 
 **2026-09-22 真实训练已结束；可靠音频时序诊断未通过，未替换默认模型。** 载体平滑主要减少抖动，不代表音频表达时机已学成。实验来源、实际结果和限制见 [NATIVE_REGIONAL_DYNAMICS_20260922.md](../docs/NATIVE_REGIONAL_DYNAMICS_20260922.md)。
 

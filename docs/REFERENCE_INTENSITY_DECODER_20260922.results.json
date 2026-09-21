@@ -1,0 +1,1351 @@
+{
+  "paired_comparisons": {
+    "static": {
+      "upper_mse": {
+        "delta_full_minus_control": -0.0009690506212546954,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0030452719729510136,
+            4.739084997069296e-05
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.001920522923528231,
+            -0.00018273781994362882
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_upper_mse": {
+        "delta_full_minus_control": 0.0013334160436241315,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            2.365603268117411e-05,
+            0.0019791189526372098
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.0007544516694703062,
+            0.0021276453260936066
+          ],
+          "improvement_supported": false
+        }
+      },
+      "mean_upper_mse": {
+        "delta_full_minus_control": -0.0023024709584116266,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.003068937839998398,
+            -0.0017423619651914242
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0035484306283288056,
+            -0.0013029451668088758
+          ],
+          "improvement_supported": true
+        }
+      },
+      "intensity_mse": {
+        "delta_full_minus_control": -0.0011034604063473311,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0011928974240455208,
+            -0.0009458556284009548
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0014990920695540592,
+            -0.0007840131964136143
+          ],
+          "improvement_supported": true
+        }
+      }
+    },
+    "static_intensity": {
+      "upper_mse": {
+        "delta_full_minus_control": 0.0007269731889825498,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0001254463495570235,
+            0.001502117611655668
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.0002759661015073113,
+            0.0012062692500895238
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_upper_mse": {
+        "delta_full_minus_control": 0.0013334164056601212,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            2.365610453125555e-05,
+            0.0019791202244012294
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.000754451823144747,
+            0.0021276456484385325
+          ],
+          "improvement_supported": false
+        }
+      },
+      "mean_upper_mse": {
+        "delta_full_minus_control": -0.0006064455695199726,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.000978023541539009,
+            -0.00014909990568412468
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0012638864974788093,
+            -0.00022471701332776124
+          ],
+          "improvement_supported": true
+        }
+      },
+      "intensity_mse": {
+        "delta_full_minus_control": 6.03752825806971e-05,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0001368153692306023,
+            0.00024159606358317798
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.00018712483664024354,
+            0.000316593319794995
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "reverse": {
+      "upper_mse": {
+        "delta_full_minus_control": 0.0002789479354605279,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0010418128691801504,
+            0.0014667197285060907
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.000815734664175126,
+            0.0014013427158916078
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_upper_mse": {
+        "delta_full_minus_control": -0.0004963915731920756,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.000659462396785542,
+            -0.00018860690670408076
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0011479826172562915,
+            8.098584678343196e-05
+          ],
+          "improvement_supported": false
+        }
+      },
+      "mean_upper_mse": {
+        "delta_full_minus_control": 0.0007753387540411789,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0004870643127052223,
+            0.002126176488216049
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            8.135908309976923e-05,
+            0.0015220870486856472
+          ],
+          "improvement_supported": false
+        }
+      },
+      "intensity_mse": {
+        "delta_full_minus_control": -0.00011151562629648079,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0011572125585341134,
+            0.000708142011034778
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0007294898324952233,
+            0.0005073058956741293
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "shuffle": {
+      "upper_mse": {
+        "delta_full_minus_control": -5.518437275504317e-05,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0005233460410156442,
+            0.0004923752203467302
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0011767305252034295,
+            0.0008532918733494273
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_upper_mse": {
+        "delta_full_minus_control": 0.0007629361619124599,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            2.7624212634691503e-05,
+            0.0012342326828286428
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.00021147161329649022,
+            0.0015246330137919223
+          ],
+          "improvement_supported": false
+        }
+      },
+      "mean_upper_mse": {
+        "delta_full_minus_control": -0.000818120737480743,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.001477424389958831,
+            0.00046476966235786676
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.002168518334311434,
+            0.00020880202033293668
+          ],
+          "improvement_supported": false
+        }
+      },
+      "intensity_mse": {
+        "delta_full_minus_control": -0.0004413198205492963,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.00088497747763152,
+            0.00013769845579117334
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.0009324900185310993,
+            -1.9864552820968627e-05
+          ],
+          "improvement_supported": true
+        }
+      }
+    },
+    "mismatch": {
+      "upper_mse": {
+        "delta_full_minus_control": -0.004280972467827289,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.011626054149340181,
+            0.0008197190836654045
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.01468049129265231,
+            0.004043245635506223
+          ],
+          "improvement_supported": false
+        }
+      },
+      "centered_upper_mse": {
+        "delta_full_minus_control": -0.0008818831463394512,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.0013285155838645582,
+            -0.00024582607784395805
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.001437187860679824,
+            -0.00025035015316561077
+          ],
+          "improvement_supported": true
+        }
+      },
+      "mean_upper_mse": {
+        "delta_full_minus_control": -0.003399085347444621,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.010806896586847655,
+            0.0010655500809662044
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.014137223384008699,
+            0.0052025691824412685
+          ],
+          "improvement_supported": false
+        }
+      },
+      "intensity_mse": {
+        "delta_full_minus_control": 0.001736766072273262,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.00144313566007722,
+            0.004144789366791293
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.003224099271067684,
+            0.0056418219733194545
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "original_prior": {
+      "upper_mse": {
+        "delta_full_minus_control": -0.10413750804827085,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.30613638917566277,
+            0.0656787705181831
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.14953753303023126,
+            -0.05815870406605084
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_upper_mse": {
+        "delta_full_minus_control": -0.05685577467433699,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.062131872286954604,
+            -0.05436247708182314
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.06134123535373315,
+            -0.052735357586908775
+          ],
+          "improvement_supported": true
+        }
+      },
+      "mean_upper_mse": {
+        "delta_full_minus_control": -0.04728173475290728,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.24400451601832174,
+            0.12004124467499816
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.09198938017385354,
+            -0.0022357962058773295
+          ],
+          "improvement_supported": true
+        }
+      },
+      "intensity_mse": {
+        "delta_full_minus_control": 0.08544170432694896,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            0.024898813307278327,
+            0.112527317253527
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.06524428473330145,
+            0.10527010409072333
+          ],
+          "improvement_supported": false
+        }
+      }
+    },
+    "smooth_prior": {
+      "upper_mse": {
+        "delta_full_minus_control": -0.061832146844388126,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.2618481168465223,
+            0.10776003968700691
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.10684507229363856,
+            -0.016532859969548615
+          ],
+          "improvement_supported": true
+        }
+      },
+      "centered_upper_mse": {
+        "delta_full_minus_control": -0.014550412257229115,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.017843603784967854,
+            -0.012281206186074558
+          ],
+          "improvement_supported": true
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.016475183498531075,
+            -0.012644002938239335
+          ],
+          "improvement_supported": true
+        }
+      },
+      "mean_upper_mse": {
+        "delta_full_minus_control": -0.047281737463348315,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            -0.24400452100962866,
+            0.12004124409467656
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            -0.09198938703896695,
+            -0.0022358007311116057
+          ],
+          "improvement_supported": true
+        }
+      },
+      "intensity_mse": {
+        "delta_full_minus_control": 0.0851900142166995,
+        "clips": 446,
+        "negative_favors_full": true,
+        "method": "paired cluster bootstrap, equal clip estimand",
+        "draws": 2000,
+        "speaker_cluster": {
+          "clusters": 3,
+          "ci95": [
+            0.027738260398889162,
+            0.10945108577680561
+          ],
+          "improvement_supported": false
+        },
+        "sentence_cluster": {
+          "clusters": 85,
+          "ci95": [
+            0.06636668514899409,
+            0.10431910043679216
+          ],
+          "improvement_supported": false
+        }
+      }
+    }
+  },
+  "nonupper43_bit_exact": {
+    "original_prior": true,
+    "smooth_prior": true,
+    "full": true,
+    "static": true,
+    "static_intensity": true,
+    "reverse": true,
+    "shuffle": true,
+    "mismatch": true
+  },
+  "motion_diagnostics": {
+    "original_prior": {
+      "raw": {
+        "brow_temporal_std_equal_clip_mean": 0.023981191683599846,
+        "eye_temporal_std_equal_clip_mean": 0.02296198414187417,
+        "per_channel_temporal_std": [
+          0.032943240176045406,
+          0.030954580470347187,
+          0.02830815100792703,
+          0.0153164238947027,
+          0.012383562868976945,
+          0.03692652417329408,
+          0.007362046417422032,
+          0.040286159916481094,
+          0.007273206060299547
+        ],
+        "centered_energy_quantiles": {
+          "p05": 6.941452530851828e-05,
+          "p25": 0.00018707225389835618,
+          "p50": 0.00038842235185295126,
+          "p75": 0.0008503889697861717,
+          "p95": 0.002918711398648602
+        },
+        "frame_displacement_energy_mean": 0.0014958409653184662,
+        "frame_acceleration_energy_mean": 0.004460306496158999,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "clamped_0_1": {
+        "brow_temporal_std_equal_clip_mean": 0.022291042813388354,
+        "eye_temporal_std_equal_clip_mean": 0.022280820067429374,
+        "per_channel_temporal_std": [
+          0.03169435622786772,
+          0.02908028816885258,
+          0.027126312465172178,
+          0.01352696136023841,
+          0.01002729584481085,
+          0.03692652417329408,
+          0.006481946204618329,
+          0.040285065536148135,
+          0.005429744355656993
+        ],
+        "centered_energy_quantiles": {
+          "p05": 6.45668542061026e-05,
+          "p25": 0.000176213592524907,
+          "p50": 0.0003726359190791712,
+          "p75": 0.000827563092007959,
+          "p95": 0.0028764723432415365
+        },
+        "frame_displacement_energy_mean": 0.0014567988574839955,
+        "frame_acceleration_energy_mean": 0.004344770450387285,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "bounds": {
+        "observed_outside_0_1_fraction": 0.12707296411281713,
+        "clip_channel_mean_within_005_of_boundary_fraction": 0.5047334329845541,
+        "clip_channel_mean_min": -0.07987626296909232,
+        "clip_channel_mean_max": 0.8038699663322391,
+        "per_channel_mean": [
+          0.20327937097997895,
+          0.16960329857686543,
+          0.10570473808561161,
+          0.03582961600370402,
+          0.01731702471111119,
+          0.38309745957044805,
+          0.009824789504275979,
+          0.3438675496907887,
+          0.0043174303356912375
+        ],
+        "clamp_is_diagnostic_only": true
+      }
+    },
+    "smooth_prior": {
+      "raw": {
+        "brow_temporal_std_equal_clip_mean": 0.013653157801611035,
+        "eye_temporal_std_equal_clip_mean": 0.012694805018290569,
+        "per_channel_temporal_std": [
+          0.0187223715142037,
+          0.01772907395595607,
+          0.01613118190622054,
+          0.008763615737102819,
+          0.006919545894572056,
+          0.020638696069992486,
+          0.0038549315711292496,
+          0.022453277437504502,
+          0.0038323149945360038
+        ],
+        "centered_energy_quantiles": {
+          "p05": 2.4929058611922293e-05,
+          "p25": 7.000134331010097e-05,
+          "p50": 0.00014521769188471914,
+          "p75": 0.0003092637241683452,
+          "p95": 0.0009029182358677968
+        },
+        "frame_displacement_energy_mean": 5.8206053870020544e-05,
+        "frame_acceleration_energy_mean": 5.522236202550136e-05,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "clamped_0_1": {
+        "brow_temporal_std_equal_clip_mean": 0.012696322687228267,
+        "eye_temporal_std_equal_clip_mean": 0.012464986758252597,
+        "per_channel_temporal_std": [
+          0.01807661850271068,
+          0.016645581812624086,
+          0.015489102229630434,
+          0.007682008179277819,
+          0.005588302711898258,
+          0.020638696069992486,
+          0.00368027270384107,
+          0.022453277437504502,
+          0.003087700821672405
+        ],
+        "centered_energy_quantiles": {
+          "p05": 2.355970405123364e-05,
+          "p25": 6.682872949526822e-05,
+          "p50": 0.00014043939439390468,
+          "p75": 0.0003023015133440264,
+          "p95": 0.0008923909656558171
+        },
+        "frame_displacement_energy_mean": 5.72129406071048e-05,
+        "frame_acceleration_energy_mean": 5.445284364270424e-05,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "bounds": {
+        "observed_outside_0_1_fraction": 0.10463907486019886,
+        "clip_channel_mean_within_005_of_boundary_fraction": 0.5047334329845541,
+        "clip_channel_mean_min": -0.07987626438078127,
+        "clip_channel_mean_max": 0.8038699522273232,
+        "per_channel_mean": [
+          0.20327937087913242,
+          0.16960329865551602,
+          0.10570473807066427,
+          0.03582961597482851,
+          0.017317024708234534,
+          0.38309746056615346,
+          0.00982478948800615,
+          0.34386754979389605,
+          0.004317430338389347
+        ],
+        "clamp_is_diagnostic_only": true
+      }
+    },
+    "full": {
+      "raw": {
+        "brow_temporal_std_equal_clip_mean": 0.004673582059731537,
+        "eye_temporal_std_equal_clip_mean": 0.002310100885843709,
+        "per_channel_temporal_std": [
+          0.009471791063271232,
+          0.008536698724745384,
+          0.002468987520058981,
+          0.0021768154597413105,
+          0.0007136175308407736,
+          0.0049271671895204225,
+          7.845847816548845e-05,
+          0.004102213767042741,
+          0.00013256410864618395
+        ],
+        "centered_energy_quantiles": {
+          "p05": 1.0165118067284257e-07,
+          "p25": 1.6210973359595738e-06,
+          "p50": 1.0029907923513586e-05,
+          "p75": 4.592782334293549e-05,
+          "p95": 0.00025176937032061423
+        },
+        "frame_displacement_energy_mean": 3.167440039027047e-06,
+        "frame_acceleration_energy_mean": 9.959369658077459e-07,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "clamped_0_1": {
+        "brow_temporal_std_equal_clip_mean": 0.004673582059731537,
+        "eye_temporal_std_equal_clip_mean": 0.002310100885843709,
+        "per_channel_temporal_std": [
+          0.009471791063271232,
+          0.008536698724745384,
+          0.002468987520058981,
+          0.0021768154597413105,
+          0.0007136175308407736,
+          0.0049271671895204225,
+          7.845847816548845e-05,
+          0.004102213767042741,
+          0.00013256410864618395
+        ],
+        "centered_energy_quantiles": {
+          "p05": 1.0165118067284257e-07,
+          "p25": 1.6210973359595738e-06,
+          "p50": 1.0029907923513586e-05,
+          "p75": 4.592782334293549e-05,
+          "p95": 0.00025176937032061423
+        },
+        "frame_displacement_energy_mean": 3.167440039027047e-06,
+        "frame_acceleration_energy_mean": 9.959369658077459e-07,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "bounds": {
+        "observed_outside_0_1_fraction": 0.0,
+        "clip_channel_mean_within_005_of_boundary_fraction": 0.533383158943697,
+        "clip_channel_mean_min": 0.0013225169304539176,
+        "clip_channel_mean_max": 0.8732933896780014,
+        "per_channel_mean": [
+          0.229611405840003,
+          0.20876625559758633,
+          0.02950103445294354,
+          0.029820365884860603,
+          0.013256938705855197,
+          0.3604457155750379,
+          0.007233610668892113,
+          0.3542446244763503,
+          0.006596176842150164
+        ],
+        "clamp_is_diagnostic_only": true
+      }
+    },
+    "static": {
+      "raw": {
+        "brow_temporal_std_equal_clip_mean": 0.0,
+        "eye_temporal_std_equal_clip_mean": 0.0,
+        "per_channel_temporal_std": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "centered_energy_quantiles": {
+          "p05": 0.0,
+          "p25": 0.0,
+          "p50": 0.0,
+          "p75": 0.0,
+          "p95": 0.0
+        },
+        "frame_displacement_energy_mean": 0.0,
+        "frame_acceleration_energy_mean": 0.0,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "clamped_0_1": {
+        "brow_temporal_std_equal_clip_mean": 0.0,
+        "eye_temporal_std_equal_clip_mean": 0.0,
+        "per_channel_temporal_std": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "centered_energy_quantiles": {
+          "p05": 0.0,
+          "p25": 0.0,
+          "p50": 0.0,
+          "p75": 0.0,
+          "p95": 0.0
+        },
+        "frame_displacement_energy_mean": 0.0,
+        "frame_acceleration_energy_mean": 0.0,
+        "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+      },
+      "bounds": {
+        "observed_outside_0_1_fraction": 0.0,
+        "clip_channel_mean_within_005_of_boundary_fraction": 0.5351270553064275,
+        "clip_channel_mean_min": 0.0013109433930367231,
+        "clip_channel_mean_max": 0.8714194893836975,
+        "per_channel_mean": [
+          0.2279146395387721,
+          0.20715887956175066,
+          0.029494780675673047,
+          0.02979400459752155,
+          0.013242378929053588,
+          0.35933300672357926,
+          0.007249913699904065,
+          0.35308477122152865,
+          0.006616425201413744
+        ],
+        "clamp_is_diagnostic_only": true
+      }
+    }
+  },
+  "target_motion_diagnostics": {
+    "raw": {
+      "brow_temporal_std_equal_clip_mean": 0.01899777952482106,
+      "eye_temporal_std_equal_clip_mean": 0.019970723253819142,
+      "per_channel_temporal_std": [
+        0.03644209078922675,
+        0.03627219757005707,
+        0.012902111413044001,
+        0.006255708172443429,
+        0.003116789679333971,
+        0.03456230037167611,
+        0.0015809088028949966,
+        0.04127800232482482,
+        0.0024616815158806367
+      ],
+      "centered_energy_quantiles": {
+        "p05": 4.3941015903786167e-05,
+        "p25": 0.00016481445265630217,
+        "p50": 0.00041921596258643836,
+        "p75": 0.0010616915007154804,
+        "p95": 0.003766844594067785
+      },
+      "frame_displacement_energy_mean": 0.00010526673750478981,
+      "frame_acceleration_energy_mean": 6.6856739465285e-05,
+      "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+    },
+    "clamped_0_1": {
+      "brow_temporal_std_equal_clip_mean": 0.01899777952482106,
+      "eye_temporal_std_equal_clip_mean": 0.019970723253819142,
+      "per_channel_temporal_std": [
+        0.03644209078922675,
+        0.03627219757005707,
+        0.012902111413044001,
+        0.006255708172443429,
+        0.003116789679333971,
+        0.03456230037167611,
+        0.0015809088028949966,
+        0.04127800232482482,
+        0.0024616815158806367
+      ],
+      "centered_energy_quantiles": {
+        "p05": 4.3941015903786167e-05,
+        "p25": 0.00016481445265630217,
+        "p50": 0.00041921596258643836,
+        "p75": 0.0010616915007154804,
+        "p95": 0.003766844594067785
+      },
+      "frame_displacement_energy_mean": 0.00010526673750478981,
+      "frame_acceleration_energy_mean": 6.6856739465285e-05,
+      "scope": "native-frame differences; acceleration is a jitter diagnostic, not a naturalness score"
+    },
+    "bounds": {
+      "observed_outside_0_1_fraction": 0.0,
+      "clip_channel_mean_within_005_of_boundary_fraction": 0.554559043348281,
+      "clip_channel_mean_min": 4.811144276089258e-06,
+      "clip_channel_mean_max": 0.9068131459520218,
+      "per_channel_mean": [
+        0.3265601922040637,
+        0.2801651373355343,
+        0.031172872476187025,
+        0.019903030613671106,
+        0.011871338123025255,
+        0.46815427868102777,
+        0.007113012517821051,
+        0.4430558637214709,
+        0.00818635128454895
+      ],
+      "clamp_is_diagnostic_only": true
+    }
+  },
+  "scope": "development once after TRAIN selection and full TRAIN refit",
+  "test_loaded": false,
+  "default_replaced": false,
+  "medtalk_parity_established": false,
+  "modes": {
+    "full": {
+      "selection_score": 0.6085873246192932,
+      "normalized_upper_mse": 0.5475189089775085,
+      "normalized_centered_upper_mse": 0.037226997315883636,
+      "normalized_mean_upper_mse": 0.5102918744087219,
+      "raw_upper_mse": 0.02282566949725151,
+      "parts": {
+        "reconstruction": 0.5475189089775085,
+        "output_intensity": 0.24292966723442078,
+        "velocity": 0.003359736641868949
+      },
+      "output_intensity": {
+        "mse": 0.24292966764778465,
+        "centered_mse": 0.01463250123620098,
+        "correlation": 0.0634276583731567,
+        "temporal_std": 0.01573406948585921,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0005912475483498263,
+        "cross_correlation_peak_abs_lag_frames": 8.97982062780269,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.22079056573001624,
+        "centered_mse": 0.015358987956860802,
+        "correlation": 0.04717322824491599,
+        "temporal_std": 0.03084944259036674,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.001115637590042795,
+        "cross_correlation_peak_abs_lag_frames": 8.924887892376681,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    },
+    "static": {
+      "selection_score": 0.6098266243934631,
+      "normalized_upper_mse": 0.5484879016876221,
+      "normalized_centered_upper_mse": 0.035893578082323074,
+      "normalized_mean_upper_mse": 0.5125943422317505,
+      "raw_upper_mse": 0.02285088412463665,
+      "parts": {
+        "reconstruction": 0.5484879016876221,
+        "output_intensity": 0.2440331131219864,
+        "velocity": 0.003304621670395136
+      },
+      "output_intensity": {
+        "mse": 0.24403312805413196,
+        "centered_mse": 0.014208061772465337,
+        "correlation": null,
+        "temporal_std": 0.0,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0005774298379791667,
+        "cross_correlation_peak_abs_lag_frames": null,
+        "clips": 446,
+        "defined_correlation_clips": 0,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.22221758607429065,
+        "centered_mse": 0.014208061772465337,
+        "correlation": null,
+        "temporal_std": 0.0,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0005774298379791667,
+        "cross_correlation_peak_abs_lag_frames": null,
+        "clips": 446,
+        "defined_correlation_clips": 0,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    },
+    "static_intensity": {
+      "selection_score": 0.6078397035598755,
+      "normalized_upper_mse": 0.5467919111251831,
+      "normalized_centered_upper_mse": 0.035893578082323074,
+      "normalized_mean_upper_mse": 0.5108983516693115,
+      "raw_upper_mse": 0.02281113713979721,
+      "parts": {
+        "reconstruction": 0.5467919111251831,
+        "output_intensity": 0.2428693026304245,
+        "velocity": 0.0033046212047338486
+      },
+      "output_intensity": {
+        "mse": 0.24286929236520396,
+        "centered_mse": 0.014208061772465337,
+        "correlation": null,
+        "temporal_std": 0.0,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0005774298379791667,
+        "cross_correlation_peak_abs_lag_frames": null,
+        "clips": 446,
+        "defined_correlation_clips": 0,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.21963963877503515,
+        "centered_mse": 0.014208061772465337,
+        "correlation": null,
+        "temporal_std": 0.0,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0005774298379791667,
+        "cross_correlation_peak_abs_lag_frames": null,
+        "clips": 446,
+        "defined_correlation_clips": 0,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    },
+    "reverse": {
+      "selection_score": 0.6083393692970276,
+      "normalized_upper_mse": 0.5472398996353149,
+      "normalized_centered_upper_mse": 0.03772338852286339,
+      "normalized_mean_upper_mse": 0.5095165371894836,
+      "raw_upper_mse": 0.022826451808214188,
+      "parts": {
+        "reconstruction": 0.5472398996353149,
+        "output_intensity": 0.24304118752479553,
+        "velocity": 0.0033912670332938433
+      },
+      "output_intensity": {
+        "mse": 0.2430411832740811,
+        "centered_mse": 0.014982895747636766,
+        "correlation": -0.015145482611828857,
+        "temporal_std": 0.016226256221631995,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0005998840103341799,
+        "cross_correlation_peak_abs_lag_frames": 9.746636771300448,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.22081015738512144,
+        "centered_mse": 0.015952677191476482,
+        "correlation": -0.017495743968864472,
+        "temporal_std": 0.03281299640080864,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.001224431409304766,
+        "cross_correlation_peak_abs_lag_frames": 9.47421524663677,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    },
+    "shuffle": {
+      "selection_score": 0.6087535619735718,
+      "normalized_upper_mse": 0.5475740432739258,
+      "normalized_centered_upper_mse": 0.036464061588048935,
+      "normalized_mean_upper_mse": 0.5111099481582642,
+      "raw_upper_mse": 0.022796858102083206,
+      "parts": {
+        "reconstruction": 0.5475740432739258,
+        "output_intensity": 0.24337099492549896,
+        "velocity": 0.0033679029438644648
+      },
+      "output_intensity": {
+        "mse": 0.24337098746833394,
+        "centered_mse": 0.014437133554973272,
+        "correlation": -0.0029643028332048908,
+        "temporal_std": 0.009324062240705845,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0005892952560561514,
+        "cross_correlation_peak_abs_lag_frames": 9.596412556053812,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.2213292148336266,
+        "centered_mse": 0.015464444650721543,
+        "correlation": 0.003424547448288748,
+        "temporal_std": 0.029999005709508607,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0031379610509749364,
+        "cross_correlation_peak_abs_lag_frames": 9.339686098654708,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    },
+    "mismatch": {
+      "selection_score": 0.6124385595321655,
+      "normalized_upper_mse": 0.5517998337745667,
+      "normalized_centered_upper_mse": 0.03810887783765793,
+      "normalized_mean_upper_mse": 0.5136908888816833,
+      "raw_upper_mse": 0.022897567600011826,
+      "parts": {
+        "reconstruction": 0.5517998337745667,
+        "output_intensity": 0.24119290709495544,
+        "velocity": 0.0034054769203066826
+      },
+      "output_intensity": {
+        "mse": 0.24119290157551135,
+        "centered_mse": 0.01497516505371685,
+        "correlation": 0.007252478854977968,
+        "temporal_std": 0.018952661168793163,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0006032083580017636,
+        "cross_correlation_peak_abs_lag_frames": 9.639013452914797,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.22574683960589945,
+        "centered_mse": 0.01611655042632861,
+        "correlation": 0.002785549804076012,
+        "temporal_std": 0.035250891439598635,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0011955282827549726,
+        "cross_correlation_peak_abs_lag_frames": 9.659192825112108,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    },
+    "original_prior": {
+      "selection_score": 0.7024197578430176,
+      "normalized_upper_mse": 0.6516563296318054,
+      "normalized_centered_upper_mse": 0.09408276528120041,
+      "normalized_mean_upper_mse": 0.5575736165046692,
+      "raw_upper_mse": 0.024252310395240784,
+      "parts": {
+        "reconstruction": 0.6516563296318054,
+        "output_intensity": 0.15748795866966248,
+        "velocity": 0.11391477286815643
+      },
+      "output_intensity": {
+        "mse": 0.15748796332083564,
+        "centered_mse": 0.01744143709663951,
+        "correlation": 0.03622484844794419,
+        "temporal_std": 0.05389463902403777,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0015907424373985516,
+        "cross_correlation_peak_abs_lag_frames": 9.081838565022421,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.15748796332083564,
+        "centered_mse": 0.01744143709663951,
+        "correlation": 0.03622484844794419,
+        "temporal_std": 0.05389463902403777,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0015907424373985516,
+        "cross_correlation_peak_abs_lag_frames": 9.081838565022421,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    },
+    "smooth_prior": {
+      "selection_score": 0.6495354175567627,
+      "normalized_upper_mse": 0.6093509793281555,
+      "normalized_centered_upper_mse": 0.05177740752696991,
+      "normalized_mean_upper_mse": 0.5575736165046692,
+      "raw_upper_mse": 0.023651916533708572,
+      "parts": {
+        "reconstruction": 0.6093509793281555,
+        "output_intensity": 0.15773965418338776,
+        "velocity": 0.0074950940907001495
+      },
+      "output_intensity": {
+        "mse": 0.15773965343108512,
+        "centered_mse": 0.016993311783835553,
+        "correlation": 0.04989767476055954,
+        "temporal_std": 0.05035995838007409,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0008599437076334241,
+        "cross_correlation_peak_abs_lag_frames": 9.11322869955157,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      },
+      "predicted_intensity": {
+        "mse": 0.15773965343108512,
+        "centered_mse": 0.016993311783835553,
+        "correlation": 0.04989767476055954,
+        "temporal_std": 0.05035995838007409,
+        "target_temporal_std": 0.08393726090313415,
+        "temporal_difference_mse": 0.0008599437076334241,
+        "cross_correlation_peak_abs_lag_frames": 9.11322869955157,
+        "clips": 446,
+        "defined_correlation_clips": 446,
+        "lag_evaluated": true,
+        "reduction": "equal clip weighting; undefined constant correlations omitted, never set to zero"
+      }
+    }
+  },
+  "selection": {
+    "oracle": {
+      "epochs": 13,
+      "score": 0.16395138204097748,
+      "budget": 20
+    },
+    "student": {
+      "epochs": 28,
+      "score": 0.24697241187095642,
+      "budget": 30
+    },
+    "joint": {
+      "epochs": 0,
+      "score": 0.24697241187095642,
+      "budget": 10
+    }
+  }
+}
