@@ -403,7 +403,7 @@ def main():
     random.seed(args.seed);np.random.seed(args.seed);torch.manual_seed(args.seed)
     if args.paper_data:
         from scripts.prepare_paper_full_data import load_paper_data
-        data=load_paper_data(args.paper_data,seed=args.seed)
+        data=load_paper_data(args.paper_data,seed=args.seed,smoke=args.smoke)
     else:
         if any(getattr(args,k) is None for k in ('source_run','audio','targets','enrollment','native_root')):
             raise ValueError('Historical data requires all source paths')

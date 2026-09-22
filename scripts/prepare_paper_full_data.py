@@ -151,7 +151,7 @@ def pad_clip(saved, length, sid):
     return out
 
 
-def load_paper_data(directory, *, seed=47):
+def load_paper_data(directory, *, seed=47, smoke=False):
     root=Path(directory); index=json.loads((root/'index.json').read_text(encoding='utf8'))
     m=json.loads((root/'manifest.json').read_text(encoding='utf8'));validate_manifest(m)
     if m['manifest_sha256'] != index['recipe']['manifest_sha256'] or index.get('test_loaded') is not False:
@@ -160,10 +160,32 @@ def load_paper_data(directory, *, seed=47):
     expected={(r['clip_id'],role,kind) for role in ('train','val') for kind in ('query','enrollment') for r in m['roles'][role][kind]}
     expected_rows={r['clip_id']:r for role in ('train','val') for kind in ('query','enrollment') for r in m['roles'][role][kind]}
     actual={(r['clip_id'],r['role'],r['kind']) for r in index['records']}
-    if expected!=actual or len(actual)!=len(index['records']):raise ValueError('Data coverage differs')
+    if not smoke and (expected!=actual or len(actual)!=len(index['records'])):
+        raise ValueError('Data coverage differs')
+    # Smoke runs must select records before opening shard files.  The previous
+    # implementation loaded every TRAIN/VAL shard and only then reduced the
+    # tensors, making an interface check needlessly take many minutes.  Keep
+    # every neutral enrollment and one query for each (role, speaker, emotion);
+    # the default/full path above remains an exact coverage check.
+    selected = expected
+    if smoke:
+        selected=set()
+        for role in ('train','val'):
+            selected.update((r['clip_id'],role,'enrollment') for r in m['roles'][role]['enrollment'])
+            seen=set()
+            for row in m['roles'][role]['query']:
+                key=(role,row['speaker'],row['emotion'])
+                if key in seen:
+                    continue
+                seen.add(key)
+                selected.add((row['clip_id'],role,'query'))
+        if not selected.issubset(actual):
+            raise ValueError('Smoke data selection missing from index')
     people=sorted({r['speaker'] for role in ('train','val') for r in m['roles'][role]['query']});sids={s:i for i,s in enumerate(people)}
     length=max(r['frames'] for r in index['records']);by_key={(r['role'],r['kind']):[] for r in index['records']}
     for rec in index['records']:
+        if (rec['clip_id'],rec['role'],rec['kind']) not in selected:
+            continue
         path=(root/rec['path']).resolve()
         if not path.is_relative_to(root.resolve()) or sha(path)!=rec['sha256']:raise ValueError('Shard hash/path differs')
         saved=torch.load(path,map_location='cpu',weights_only=False)
