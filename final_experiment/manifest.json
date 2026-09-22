@@ -1,6 +1,6 @@
 {
   "schema": "kinetalk_final_experiment_manifest_v1",
-  "scope": "cleaned source and diagnostic workspace; final paper tables require sealed test and unified baselines",
+  "scope": "cleaned artifact workspace; canonical source and evaluation entry points remain at repository root; final paper tables require sealed test and unified baselines",
   "dataset": "MEAD ARKit52, all eight emotions in canonical local cache; remote prepared manifest is authoritative for formal rerun",
   "test_loaded": false,
   "dynamic_role": "auxiliary upper-face motion carrier only; no claim of audio-to-eyebrow temporal alignment",
