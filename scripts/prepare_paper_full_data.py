@@ -183,9 +183,14 @@ def load_paper_data(directory, *, seed=47, smoke=False):
             raise ValueError('Smoke data selection missing from index')
     people=sorted({r['speaker'] for role in ('train','val') for r in m['roles'][role]['query']});sids={s:i for i,s in enumerate(people)}
     length=max(r['frames'] for r in index['records']);by_key={(r['role'],r['kind']):[] for r in index['records']}
+    selected_count = 0
     for rec in index['records']:
         if (rec['clip_id'],rec['role'],rec['kind']) not in selected:
             continue
+        selected_count += 1
+        if selected_count == 1 or selected_count % 250 == 0:
+            print(json.dumps({'event':'data_shard_load','loaded':selected_count,
+                              'selected':len(selected),'smoke':bool(smoke)}), flush=True)
         path=(root/rec['path']).resolve()
         if not path.is_relative_to(root.resolve()) or sha(path)!=rec['sha256']:raise ValueError('Shard hash/path differs')
         saved=torch.load(path,map_location='cpu',weights_only=False)
@@ -193,6 +198,8 @@ def load_paper_data(directory, *, seed=47, smoke=False):
         if len(saved['valid']) != rec['frames'] or int(saved['valid'].sum()) != rec['valid_frames']:
             raise ValueError('Shard frame coverage differs')
         by_key[(rec['role'],rec['kind'])].append(pad_clip(saved,length,sids[saved['row']['speaker']]))
+    print(json.dumps({'event':'data_shard_load_complete','loaded':selected_count,
+                      'smoke':bool(smoke)}), flush=True)
     refs={};anchors={};fit=[];dev=[]
     for role,arr in [('train',fit),('val',dev)]:
         part=by_key[(role,'enrollment')]

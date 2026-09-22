@@ -403,7 +403,12 @@ def main():
     random.seed(args.seed);np.random.seed(args.seed);torch.manual_seed(args.seed)
     if args.paper_data:
         from scripts.prepare_paper_full_data import load_paper_data
+        print(json.dumps({'event':'data_load_start','paper_data':str(args.paper_data.resolve()),
+                          'smoke':bool(args.smoke)}), flush=True)
         data=load_paper_data(args.paper_data,seed=args.seed,smoke=args.smoke)
+        print(json.dumps({'event':'data_load_complete','fit_clips':len(data['splits']['train']['valid']),
+                          'development_clips':len(data['splits']['validation']['valid']),
+                          'smoke':bool(args.smoke)}), flush=True)
     else:
         if any(getattr(args,k) is None for k in ('source_run','audio','targets','enrollment','native_root')):
             raise ValueError('Historical data requires all source paths')
