@@ -233,26 +233,55 @@ def _write_csv(path: Path, rows: list[dict[str, Any]], columns: tuple[str, ...])
         writer.writerows({key: row.get(key) for key in writer.fieldnames} for row in rows)
 
 
+def _route_inputs(inputs: Mapping[str, Path]) -> dict[str, list[tuple[str, Path]]]:
+    """Route ``main=...``/``dynamic=...`` inputs to their requested table.
+
+    For backwards compatibility, labels that do not name a table are shared
+    with all tables.  Once at least one explicit table label is present, an
+    unlabelled source is still shared, while an explicitly requested table
+    receives only its own sources.
+    """
+    routed = {name: [] for name in TABLE_COLUMNS}
+    explicit = False
+    shared = []
+    for label, path in inputs.items():
+        base = label.split(":", 1)[0].split("/", 1)[0]
+        if base in routed:
+            explicit = True
+            routed[base].append((label, path))
+        else:
+            shared.append((label, path))
+    if not explicit:
+        return {name: list(inputs.items()) for name in TABLE_COLUMNS}
+    for name in routed:
+        routed[name].extend(shared)
+    return routed
+
+
 def build(inputs: Mapping[str, Path], output: Path, *, require_test: bool = False) -> dict[str, Any]:
     """Read reports and write JSON/CSV files for all four paper tables."""
-    loaded: list[tuple[str, Mapping[str, Any]]] = []
+    loaded: dict[str, list[tuple[str, Mapping[str, Any]]]] = {name: [] for name in TABLE_COLUMNS}
     provenance = []
-    for label, path in inputs.items():
-        path = Path(path)
-        report = json.loads(path.read_text(encoding="utf8"))
-        if not isinstance(report, Mapping):
-            raise ValueError(f"Report must be a JSON object: {path}")
-        test_loaded = report.get("test_loaded")
-        if require_test and test_loaded is not True:
-            raise ValueError(f"Final table requires test_loaded=true: {path}")
-        loaded.append((label, report))
-        provenance.append({"label": label, "path": str(path.resolve()),
-                           "schema": report.get("schema"), "test_loaded": test_loaded})
+    for table, sources in _route_inputs(inputs).items():
+        for label, path in sources:
+            path = Path(path)
+            report = json.loads(path.read_text(encoding="utf8"))
+            if not isinstance(report, Mapping):
+                raise ValueError(f"Report must be a JSON object: {path}")
+            test_loaded = report.get("test_loaded")
+            if require_test and test_loaded is not True:
+                raise ValueError(f"Final table requires test_loaded=true: {path}")
+            loaded[table].append((label, report))
+            # Record each source once even when an unlabelled source is shared.
+            item = {"label": label, "path": str(path.resolve()),
+                    "schema": report.get("schema"), "test_loaded": test_loaded}
+            if item not in provenance:
+                provenance.append(item)
 
     output.mkdir(parents=True, exist_ok=True)
     tables = {}
     for table, columns in TABLE_COLUMNS.items():
-        rows = _rows_for_table(table, loaded)
+        rows = _rows_for_table(table, loaded[table])
         tables[table] = {"columns": list(columns), "rows": rows,
                          "scope": "final_test" if require_test else "source_report_scope"}
         _write_csv(output / f"table_{table}.csv", rows, columns)

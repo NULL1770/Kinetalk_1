@@ -81,3 +81,17 @@ def test_require_test_rejects_development_report(tmp_path: Path):
     source.write_text(json.dumps({"schema": "dev", "test_loaded": False}), encoding="utf8")
     with pytest.raises(ValueError, match="test_loaded=true"):
         build({"dev": source}, tmp_path / "out", require_test=True)
+
+
+def test_explicit_table_labels_route_sources_without_cross_table_duplication(tmp_path: Path):
+    main = tmp_path / "main.json"
+    dynamic = tmp_path / "dynamic.json"
+    main.write_text(json.dumps({"schema": "main", "test_loaded": True,
+                                "rows": [{"mode": "ours", "arkit_mbe": 1.}]}), encoding="utf8")
+    dynamic.write_text(json.dumps({"schema": "dynamic", "test_loaded": True,
+                                   "rows": [{"mode": "full", "pearson": .5}]}), encoding="utf8")
+    result = build({"main": main, "dynamic": dynamic}, tmp_path / "out", require_test=True)
+    assert len(result["tables"]["main"]["rows"]) == 1
+    assert len(result["tables"]["dynamic"]["rows"]) == 1
+    assert not result["tables"]["emotion"]["rows"]
+    assert not result["tables"]["ablation"]["rows"]
