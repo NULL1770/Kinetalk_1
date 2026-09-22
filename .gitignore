@@ -53,3 +53,12 @@ Thumbs.db
 
 # Private recovery snapshots may contain historical connection settings
 /archive/cleanup_*/
+
+# Canonical experiment package: source and manifests are trackable; local data,
+# checkpoints, logs and development diagnostics stay outside Git.
+/final_experiment/data/
+/final_experiment/checkpoints/
+/final_experiment/evaluation/
+/final_experiment/logs/
+/final_experiment/paper_tables/internal/
+/final_experiment/code/

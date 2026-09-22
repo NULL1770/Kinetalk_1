@@ -47,7 +47,7 @@ def trim(q,ids,device):
     return b
 
 
-def load_context(data_path,source_path,device,seed=47):
+def load_context(data_path,source_path,device,seed=47,*,require_calibration=True):
     data=load_paper_data(data_path,seed=seed)
     saved=torch.load(source_path,map_location='cpu',weights_only=False)
     if saved.get('data_manifest_sha256')!=data['provenance']['manifest_sha256']:
@@ -59,8 +59,16 @@ def load_context(data_path,source_path,device,seed=47):
     cfg=copy.deepcopy(saved['config']);system.set_motion_support(torch.tensor(cfg['model']['motion_support']))
     system.set_residual_support(torch.tensor(cfg['model']['residual_support']))
     calibration=cfg['model'].get('mouth_reference_calibration')
-    if calibration is None:raise ValueError('Verified mouth calibration required')
-    system.set_mouth_reference_calibration(calibration)
+    if calibration is None:
+        # The isolated KineTalk/audio branches must never silently operate
+        # without the train-only mouth calibration.  A matched baseline may
+        # reuse this loader only to obtain frozen clip conditions and the
+        # identity cache; it never calls system.generate, so requiring the
+        # calibration there would reject otherwise valid legacy checkpoints.
+        if require_calibration:
+            raise ValueError('Verified mouth calibration required')
+    else:
+        system.set_mouth_reference_calibration(calibration)
     system.to(device).requires_grad_(False).eval()
     stats=data['feature_stats'];audio=SlowStateAffect(stats['mean'],stats['std']).to(device)
     audio.load_state_dict(saved['audio'],strict=True);audio.requires_grad_(False).eval()

@@ -76,6 +76,30 @@ def test_regional_report_populates_dynamic_correlation_and_delay(tmp_path: Path)
     assert row["peak_delay_frames"] == pytest.approx(3.0)
 
 
+def test_modes_report_expands_conditions_and_reads_nested_metrics(tmp_path: Path):
+    report = {
+        "schema": "dynamics",
+        "test_loaded": True,
+        "modes": {
+            "42/full": {"metrics": {
+                "brows": {"centered_correlation": 0.2},
+                "eyes_expression": {"centered_correlation": 0.4},
+            }},
+            "42/reverse_audio": {"metrics": {
+                "brows": {"centered_correlation": -0.1},
+                "eyes_expression": {"centered_correlation": 0.1},
+            }},
+        },
+    }
+    source = tmp_path / "modes.json"
+    source.write_text(json.dumps(report), encoding="utf8")
+    result = build({"dynamic": source}, tmp_path / "out", require_test=True)
+    rows = result["tables"]["dynamic"]["rows"]
+    assert [row["condition"] for row in rows] == ["42/full", "42/reverse_audio"]
+    assert rows[0]["temporal_correlation"] == pytest.approx(0.3)
+    assert rows[1]["temporal_correlation"] == pytest.approx(0.0)
+
+
 def test_require_test_rejects_development_report(tmp_path: Path):
     source = tmp_path / "dev.json"
     source.write_text(json.dumps({"schema": "dev", "test_loaded": False}), encoding="utf8")

@@ -163,6 +163,10 @@ def parser():
     p.add_argument('--seed', type=int, default=47)
     p.add_argument('--device', default='cuda')
     p.add_argument('--smoke', action='store_true')
+    p.add_argument('--expected-train-clips', type=int, default=None,
+                   help='Optional protocol count for the selected prepared dataset.')
+    p.add_argument('--expected-validation-clips', type=int, default=None,
+                   help='Optional protocol count for the selected prepared dataset.')
     p.add_argument('--resume', action='store_true')
     return p
 
@@ -182,7 +186,8 @@ def main():
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
-    data, system, audio, identities, _ = load_context(args.data, args.source, args.device, args.seed)
+    data, system, audio, identities, _ = load_context(
+        args.data, args.source, args.device, args.seed, require_calibration=False)
     if set(data['splits']) != {'train', 'validation'} or data['provenance'].get('test_loaded', False):
         raise ValueError('Only approved TRAIN and development data allowed')
     if args.smoke:
@@ -191,8 +196,14 @@ def main():
             if len(q['valid']) < size:
                 raise ValueError('Insufficient smoke coverage')
             data['splits'][role] = subset(q, torch.arange(size), 'cpu')
-    elif [len(data['splits'][role]['valid']) for role in ('train', 'validation')] != [4098, 446]:
-        raise ValueError('Formal FaceDiffuser run requires all 4098 TRAIN and 446 development clips')
+    else:
+        observed_counts = [len(data['splits'][role]['valid']) for role in ('train', 'validation')]
+        expected_counts = [args.expected_train_clips, args.expected_validation_clips]
+        if any(value is not None and value < 1 for value in expected_counts):
+            raise ValueError('Expected protocol clip counts must be positive')
+        if any(value is not None for value in expected_counts) and observed_counts != [
+                value if value is not None else observed for value, observed in zip(expected_counts, observed_counts)]:
+            raise ValueError(f'Prepared data clip counts {observed_counts} do not match expected protocol {expected_counts}')
     frozen = {'system': state_hash(system.state_dict()), 'audio': state_hash(audio.state_dict())}
     torch.manual_seed(args.seed)
     feature_stats = {key: data['feature_stats'][key].detach().cpu().clone() for key in ('mean', 'std')}
@@ -212,6 +223,7 @@ def main():
                 'epochs': 1 if args.smoke else args.epochs, 'requested_epochs': args.epochs,
                 'batch_size': args.batch_size, 'smoke': args.smoke, 'device_type': torch.device(args.device).type,
                 'train_clips': len(data['splits']['train']['valid']), 'validation_clips': len(data['splits']['validation']['valid']),
+                'expected_train_clips': args.expected_train_clips, 'expected_validation_clips': args.expected_validation_clips,
                 'optimizer': {'class': 'Adam', 'lr': .0001, 'weight_decay': 0, 'gradient_clipping': False},
                 'diffusion': {'schedule': 'cosine', 'mean_type': 'START_X', 'variance': 'FIXED_SMALL',
                               'clip_denoised': False, 'steps': 1000, 'sample_timestep_skipping': False},

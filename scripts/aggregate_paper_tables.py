@@ -98,7 +98,11 @@ def _records(report: Mapping[str, Any], label: str) -> list[dict[str, Any]]:
     """Normalize known evaluator report layouts into one row per method/arm."""
     rows = report.get("rows")
     if isinstance(rows, list):
-        return [{"method": label, **row} for row in rows if isinstance(row, Mapping)]
+        # Preserve the row's own method/mode label.  Injecting the input
+        # source label here used to collapse a whole benchmark report to
+        # repeated ``method=main`` rows, which made development tables
+        # impossible to read and silently discarded the condition name.
+        return [dict(row) for row in rows if isinstance(row, Mapping)]
 
     summaries = report.get("summaries")
     if isinstance(summaries, Mapping):
@@ -106,6 +110,19 @@ def _records(report: Mapping[str, Any], label: str) -> list[dict[str, Any]]:
         for name, row in summaries.items():
             if isinstance(row, Mapping):
                 result.append({"method": str(name), **row})
+        if result:
+            return result
+
+    # Dynamics evaluators store one record per intervention under ``modes``
+    # rather than in a top-level rows list.  Expand that mapping so the
+    # condition is retained in the dynamic table and its nested metrics can
+    # be scored independently.
+    modes = report.get("modes")
+    if isinstance(modes, Mapping):
+        result = []
+        for name, row in modes.items():
+            if isinstance(row, Mapping):
+                result.append({"mode": str(name), "condition": str(name), **row})
         if result:
             return result
 
@@ -118,39 +135,46 @@ def _regional_correlation(row: Mapping[str, Any]) -> float | None:
     direct = _first(row, "dynamic_correlation", "pooled_centered_correlation")
     if isinstance(direct, (float, int)):
         return float(direct)
-    aggregate = row.get("aggregate")
-    if isinstance(aggregate, Mapping):
-        values = []
-        for region in ("brow", "eye"):
-            value = aggregate.get(region)
-            if isinstance(value, Mapping):
-                value = _scalar(value.get("pearson", value.get("xcorr_best_corr")))
-                if isinstance(value, (float, int)):
-                    values.append(float(value))
-        if values:
-            return sum(values) / len(values)
+    for container_name in ("aggregate", "metrics"):
+        aggregate = row.get(container_name)
+        if isinstance(aggregate, Mapping):
+            values = []
+            for region in ("brow", "brows", "eye", "eyes", "eyes_expression"):
+                value = aggregate.get(region)
+                if isinstance(value, Mapping):
+                    value = _scalar(value.get(
+                        "pearson",
+                        value.get("centered_correlation", value.get("xcorr_best_corr")),
+                    ))
+                    if isinstance(value, (float, int)):
+                        values.append(float(value))
+            if values:
+                return sum(values) / len(values)
     return None
 
 
 def _regional_mean(row: Mapping[str, Any], *keys: str) -> float | None:
     """Average a scalar over brow/eye aggregate regions when available."""
-    aggregate = row.get("aggregate")
-    if not isinstance(aggregate, Mapping):
-        return None
-    values = []
-    for region in ("brow", "eye"):
-        value = aggregate.get(region)
-        if not isinstance(value, Mapping):
+    for container_name in ("aggregate", "metrics"):
+        aggregate = row.get(container_name)
+        if not isinstance(aggregate, Mapping):
             continue
-        value = _first(value, *keys)
-        if isinstance(value, (float, int)):
-            values.append(float(value))
-    return sum(values) / len(values) if values else None
+        values = []
+        for region in ("brow", "brows", "eye", "eyes", "eyes_expression"):
+            value = aggregate.get(region)
+            if not isinstance(value, Mapping):
+                continue
+            value = _first(value, *keys)
+            if isinstance(value, (float, int)):
+                values.append(float(value))
+        if values:
+            return sum(values) / len(values)
+    return None
 
 
 def _main_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
-        "method": str(row.get("method") or row.get("arm") or row.get("mode") or "unknown"),
+        "method": str(row.get("method") or row.get("mode") or row.get("arm") or "unknown"),
         "MBE": _first(row, "MBE", "arkit_mbe"),
         "LBE": _first(row, "LBE", "arkit_lbe", "supp_lip23_lbe"),
         "FDD_abs": _first(row, "FDD_abs", "arkit_fdd_absolute", "supp_upper9_fdd_absolute"),
@@ -193,7 +217,7 @@ def _dynamic_row(row: Mapping[str, Any]) -> dict[str, Any]:
     correlation = _regional_correlation(row)
     delay = _regional_mean(row, "dominant_peak_abs_delay_frames", "xcorr_best_lag_frames")
     return {
-        "condition": str(row.get("condition", row.get("method", row.get("arm", row.get("mode", "unknown"))))),
+        "condition": str(row.get("condition") or row.get("method") or row.get("arm") or row.get("mode") or "unknown"),
         "Upper9_intensity_error": _first(
             row, "Upper9_intensity_error", "upper_intensity_mae", "upper_face_intensity_error",
             "envelope_mse",
