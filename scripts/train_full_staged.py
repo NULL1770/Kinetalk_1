@@ -442,6 +442,7 @@ def main():
         upper=TemporalAudioResidualFlow(cfg,stride=args.stride).to(args.device).eval()
     else:upper=(AudioResidualFlow if args.paper_data else UpperFlow)(cfg,stride=args.stride).to(args.device).eval()
     local_audio=copy.deepcopy(audio)
+    inherited_upper=False
     if args.stage_checkpoint:
         saved=torch.load(args.stage_checkpoint,map_location='cpu',weights_only=False)
         if saved.get('data_manifest_sha256')!=data['provenance'].get('manifest_sha256'):
@@ -455,6 +456,12 @@ def main():
         if saved_support is not None and saved_support!=train_support.tolist():raise ValueError('Stage checkpoint train support differs')
         saved_residual=saved.get('config',{}).get('model',{}).get('residual_support')
         if saved_residual is not None and saved_residual!=residual_support.tolist():raise ValueError('Stage checkpoint residual support differs; use matching protection mode')
+        architecture='temporal_audio_residual' if args.temporal_upper else 'unrestricted_audio_residual' if args.paper_data else 'Q_projected'
+        if args.start_stage=='dynamics' and saved.get('stage')=='audio' and saved.get('upper_architecture')==architecture:
+            # Preserve the pre-dynamics receiver exactly when continuing the
+            # same architecture after a runtime-only memory fix.
+            upper.load_state_dict(saved['upper'],strict=True)
+            inherited_upper=True
         local_audio.load_state_dict(audio.state_dict())
         del saved
     elif args.start_stage!='articulation':raise ValueError('Starting later requires matching stage checkpoint')
@@ -483,6 +490,8 @@ def main():
         'trainable':'Stage-dependent; pretrained acoustic/content extractors remain frozen feature sources',
         'stage5_nonupper':'Exact frozen stage4 output copy, not a claim stage4 equals historical model',
         'motion_support':train_support.tolist(),'residual_support':residual_support.tolist(),
+        'upper_rollout_activation_checkpointing':bool(args.paper_data and not args.temporal_upper),
+        'upper_inherited_from_audio_checkpoint':inherited_upper,
         'mouth_reference_calibration':cfg['model'].get('mouth_reference_calibration'),
         'temporal_upper_config':getattr(upper,'temporal_config',None),
         'test_loaded':False,'default_replaced':False,'checkpoint_selection':'Fixed final epoch; intermediate validation not used for selection'}
@@ -490,7 +499,7 @@ def main():
         recipe.update(schema='paper_full_audio_residual_flow_v1',
           condition='native full audio + independent neutral identity + global affect + audio slow mean + unrestricted stochastic residual',
           dynamic_objective='FM + deterministic mean state Huber; every fourth batch two-draw raw+centered fair ES and domain penalty',
-          starting_stage=args.start_stage,acoustic_extractors='frozen pretrained; system/audio inherited from bound stage checkpoint; upper initialized afresh' if args.stage_checkpoint else 'frozen pretrained; all KineTalk modules initialized afresh')
+          starting_stage=args.start_stage,acoustic_extractors=('frozen pretrained; system/audio inherited from bound stage checkpoint; upper inherited' if inherited_upper else 'frozen pretrained; system/audio inherited from bound stage checkpoint; upper initialized afresh') if args.stage_checkpoint else 'frozen pretrained; all KineTalk modules initialized afresh')
     recipe_hash=canonical_hash(recipe);args.output.mkdir(parents=True,exist_ok=True)
     gen=torch.Generator().manual_seed(args.seed)
     start_stage=STAGES.index(args.start_stage);start_epoch=0;total_steps=0;elapsed_before=0.;resume_payload=None
@@ -551,6 +560,7 @@ def main():
             batches=math.ceil(len(items)/args.batch_size)
             if not batches:raise ValueError('Empty training stage: '+stage)
             trainable={name:sum(p.numel() for p in module.parameters() if p.requires_grad) for name,module in [('system',system),('audio',audio),('upper',upper),('local_audio',local_audio)]}
+            if torch.device(args.device).type=='cuda':torch.cuda.reset_peak_memory_stats(args.device)
             print(json.dumps({'event':'stage_start','stage':stage,'epochs':epochs,'samples_per_epoch':len(items),'batches':batches,'trainable':trainable}),flush=True)
             frozen_before={name:state_hash(module.state_dict()) for name,module in [('system',system),('audio',audio),('upper',upper),('local_audio',local_audio)] if not any(p.requires_grad for p in module.parameters())}
             frozen_parameters={name:state_hash({k:v for k,v in module.named_parameters() if not v.requires_grad}) for name,module in [('system',system),('audio',audio),('upper',upper),('local_audio',local_audio)]}
@@ -637,7 +647,14 @@ def main():
                                     values.update(rollout_fair_es=raw_es,rollout_centered_fair_es=centered_es)
                     norm=optimize(loss,optimizer,parameters);total_steps+=1
                     for k,v in {'total':loss,**values}.items():sums.setdefault(k,[]).append(float(v.detach()))
-                    if bi%25==0:print(json.dumps({'event':'batch','stage':stage,'epoch':epoch+1,'batch':bi+1,'batches':batches,'loss':float(loss.detach()),'grad_norm':norm}),flush=True)
+                    if bi%25==0:
+                        progress={'event':'batch','stage':stage,'epoch':epoch+1,'batch':bi+1,'batches':batches,'loss':float(loss.detach()),'grad_norm':norm}
+                        if torch.device(args.device).type=='cuda':
+                            progress.update(cuda_peak_allocated_gib=torch.cuda.max_memory_allocated(args.device)/2**30,
+                                            cuda_peak_reserved_gib=torch.cuda.max_memory_reserved(args.device)/2**30)
+                        save_json(args.output/'status.json',{**progress,'status':'running','completed_epochs':epoch,
+                                  'total_steps':total_steps,'elapsed_seconds':elapsed_before+time.monotonic()-started})
+                        print(json.dumps(progress),flush=True)
                 elapsed=time.monotonic()-begin
                 record={'stage':stage,'epoch':epoch+1,'batches':batches,'samples':len(items),'seconds':elapsed,'losses':{k:sum(v)/len(v) for k,v in sums.items()},'total_steps':total_steps}
                 checkpoint(epoch+1);save_json(stage_dir/f'epoch{epoch+1:03d}.json',record)
@@ -699,7 +716,9 @@ def main():
         save_json(args.output/'status.json',{'status':'complete','elapsed_seconds':elapsed_before+time.monotonic()-started,'summary':'summary.json'})
         print('FULL_STAGED_TRAINING_COMPLETE',flush=True)
     except BaseException as exc:
-        save_json(args.output/'failure.json',{'stage':current_stage,'exception':repr(exc),'recover_from':'last.pt','elapsed_seconds':elapsed_before+time.monotonic()-started})
+        failure={'status':'failed','stage':current_stage,'exception':repr(exc),'recover_from':'last.pt','elapsed_seconds':elapsed_before+time.monotonic()-started}
+        save_json(args.output/'failure.json',failure)
+        save_json(args.output/'status.json',failure)
         raise
 
 

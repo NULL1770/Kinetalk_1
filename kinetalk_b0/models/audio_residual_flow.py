@@ -7,6 +7,7 @@ trained with a two-draw fair energy score, not independent endpoint MSE.
 from __future__ import annotations
 import torch
 from torch import nn
+from torch.utils.checkpoint import checkpoint
 from .slow_state_affect import UpperInnovationFlow, UPPER_INDICES, lift_slow_state
 
 
@@ -74,14 +75,29 @@ class AudioResidualFlow(UpperInnovationFlow):
                                 local_emotion=local,condition_dropout=False)
         return torch.where(valid[...,None],velocity,0.)
 
-    def decode(self,q,identity,affect,local,state,noise,steps):
+    def decode(self,q,identity,affect,local,state,noise,steps,*,checkpoint_steps=True):
+        """Euler rollout with recomputed activations during gradient training.
+
+        The two-draw energy score retains two complete solver trajectories.
+        Checkpoint each velocity evaluation so its transformer activations
+        are recomputed in backward instead of retained for all solver steps.
+        Non-reentrant checkpointing also propagates condition/parameter
+        gradients when the first noise tensor itself requires no gradient.
+        Inference uses the original direct path; ``checkpoint_steps=False``
+        is available for numerical and gradient equivalence checks.
+        """
         if type(steps) is not int or steps<1:raise ValueError('Positive integer decode budget required')
         self._check_motion(noise,q['valid'],'noise')
         conditions=self._conditions(q['valid'],q['h0'],identity['code'],affect,local,state)
         x=torch.where(q['valid'][...,None],noise,0.)
         for i in range(steps):
             t=x.new_full((len(x),),i/steps)
-            x=x+self._velocity_unrestricted(x,t,q['valid'],conditions)/steps
+            if checkpoint_steps and torch.is_grad_enabled():
+                velocity=checkpoint(self._velocity_unrestricted,x,t,q['valid'],conditions,
+                                    use_reentrant=False,preserve_rng_state=True)
+            else:
+                velocity=self._velocity_unrestricted(x,t,q['valid'],conditions)
+            x=x+velocity/steps
             x=torch.where(q['valid'][...,None],x,0.)
         return x
 
