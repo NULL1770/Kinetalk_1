@@ -38,6 +38,8 @@ def main():
     parser.add_argument('--tile-size', type=int, required=True)
     parser.add_argument('--columns', type=int, required=True)
     parser.add_argument('--samples', type=int, required=True)
+    parser.add_argument('--export-vertices', action='store_true',
+                        help='Export evaluated local-space vertices for vertex metrics')
     args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:])
     with np.load(args.input, allow_pickle=False) as data:
         channels, modes = data['channels'].tolist(), data['mode_names'].tolist()
@@ -140,6 +142,11 @@ def main():
         point_at(light, (0, 0, 0))
     frames_dir = args.output / 'frames'
     frames_dir.mkdir(exist_ok=False)
+    vertex_frames = None
+    depsgraph = None
+    if args.export_vertices:
+        vertex_frames = np.empty((len(clones), len(times), len(prototype.data.vertices), 3), dtype=np.float32)
+        depsgraph = bpy.context.evaluated_depsgraph_get()
     audit = {'schema': 'blender_dynamic_rig_v1', 'blender': bpy.app.version_string,
              'source_object': args.object, 'source_vertices': len(prototype.data.vertices),
              'brow_geometry': geometry, 'mapping': {name: name for name in channels},
@@ -159,8 +166,50 @@ def main():
             audit['frame_value_max_error'] = max(audit['frame_value_max_error'], error)
             if error > 1e-6:
                 raise ValueError('Rendered keys differ from prepared coefficients')
+            if vertex_frames is not None:
+                evaluated = obj.evaluated_get(depsgraph)
+                mesh = evaluated.to_mesh()
+                try:
+                    if len(mesh.vertices) != vertex_frames.shape[2]:
+                        raise ValueError('Evaluated mesh topology changed during rendering')
+                    vertex_frames[i, frame] = np.asarray([v.co[:] for v in mesh.vertices], dtype=np.float32)
+                finally:
+                    evaluated.to_mesh_clear()
         scene.render.filepath = str(frames_dir / f'{frame + 1:06d}.png')
         bpy.ops.render.render(write_still=True)
+    if vertex_frames is not None:
+        np.save(args.output / 'vertices.npy', vertex_frames)
+        neutral = np.asarray([v.co[:] for v in keys[0].data], dtype=np.float32)
+        # Export the native ARKit blendshape basis alongside the rendered
+        # vertices.  The vertex evaluator consumes this exact object-local
+        # neutral/delta representation; deriving deltas from the animated
+        # samples would be underdetermined and would make LVE/MVE invalid.
+        deltas = np.asarray([
+            [co - basis for co, basis in zip(key.data, keys[0].data)]
+            for key in (keys[name] for name in channels)
+        ], dtype=np.float32)
+        if deltas.shape != (len(channels), len(neutral), 3):
+            raise ValueError('Exported blendshape deltas have unexpected shape')
+        np.save(args.output / 'blendshape_deltas.npy', deltas)
+        np.save(args.output / 'neutral_vertices.npy', neutral)
+        (args.output / 'vertex_metadata.json').write_text(json.dumps({
+            'schema': 'blender_rig_vertices_v1',
+            'modes': modes,
+            'shape': list(vertex_frames.shape),
+            'coordinate_space': 'object-local evaluated mesh coordinates',
+            'coordinate_unit': 'blend-file units; declare mm or m before reporting',
+            'vertex_order': 'source mesh order; identical across modes',
+            'source_object': args.object,
+            'topology_vertices': int(vertex_frames.shape[2]),
+            'channels': channels,
+            'neutral_path': 'neutral_vertices.npy',
+            'blendshape_deltas_path': 'blendshape_deltas.npy',
+            'blendshape_delta_shape': list(deltas.shape),
+        }, indent=2), encoding='utf8')
+        audit['vertex_export'] = {'path': 'vertices.npy', 'shape': list(vertex_frames.shape),
+                                  'neutral_path': 'neutral_vertices.npy',
+                                  'blendshape_deltas_path': 'blendshape_deltas.npy',
+                                  'blendshape_delta_shape': list(deltas.shape)}
     (args.output / 'rig_audit.json').write_text(json.dumps(audit, indent=2), encoding='utf8')
     print('MATCHED_RIG_RENDER_COMPLETE', len(times), 'frames', len(modes), 'modes')
 

@@ -106,6 +106,33 @@ def semantics(a,q):
     return v
 
 
+def articulation_selection(q, scope='neutral'):
+    """Return articulation clips and an auditable emotion-count summary.
+
+    The legacy neutral-only stage remains the default.  ``all-emotions``
+    changes only this stage's membership; it does not alter the later teacher
+    or audio objectives, their emotion cross-entropy masks, or any checkpoint
+    loading behavior.  Splits and masks are supplied by the caller's approved
+    train manifest, so no validation/test rows can enter here.
+    """
+    if scope not in ('neutral', 'all-emotions'):
+        raise ValueError("articulation scope must be 'neutral' or 'all-emotions'")
+    if not isinstance(q, dict) or not torch.is_tensor(q.get('emotion_id')):
+        raise ValueError('training split must contain tensor emotion_id')
+    labels = q['emotion_id']
+    if labels.ndim != 1 or labels.dtype not in (torch.int8, torch.int16, torch.int32, torch.int64):
+        raise ValueError('emotion_id must be a one-dimensional integer tensor')
+    ids = torch.arange(len(labels), dtype=torch.long) if scope == 'all-emotions' else (labels == 0).nonzero(as_tuple=True)[0].long()
+    counts = {str(int(label)): int((labels[ids] == label).sum())
+              for label in torch.unique(labels[ids], sorted=True)}
+    if not len(ids):
+        raise ValueError('Articulation scope selected no training clips')
+    return ids, {'requested_scope': scope, 'actual_scope': scope,
+                 'clip_count': len(ids), 'emotion_counts': counts,
+                 'all_train_clips_included': bool(len(ids) == len(labels)),
+                 'train_emotion_ids': sorted(int(value) for value in torch.unique(labels, sorted=True))}
+
+
 def optimize(loss,opt,params):
     if not torch.isfinite(loss): raise FloatingPointError('Nonfinite objective')
     opt.zero_grad(set_to_none=True); loss.backward()
@@ -349,6 +376,8 @@ def parser():
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--paper-data',type=Path)
     p.add_argument('--start-stage',choices=STAGES,default='articulation')
+    p.add_argument('--articulation-scope', choices=('neutral', 'all-emotions'), default='neutral',
+                   help='Stage-1 B0 mouth/articulation membership; legacy neutral-only by default')
     p.add_argument('--stage-checkpoint',type=Path)
     p.add_argument('--condition-mode',choices=('audio','static'),default='audio')
     p.add_argument('--identity-epochs',type=int,default=None)
@@ -435,6 +464,7 @@ def main():
     if args.temporal_upper:sources += [root/'kinetalk_b0/models/temporal_audio_residual_flow.py']
     if args.paper_data:input_paths['paper_data']=str(args.paper_data.resolve())
     if args.artifact_dir:input_paths['artifact_dir']=str(args.artifact_dir.resolve())
+    articulation_ids, articulation_scope_info = articulation_selection(data['splits']['train'], args.articulation_scope)
     recipe={'schema':SCHEMA,'args':{k:v for k,v in vars(args).items() if k not in ('resume','output') and not isinstance(v,Path)},
         'paths':input_paths,'data_provenance':data['provenance'],'source_sha256':{str(p.relative_to(root)):sha(p) for p in sources},
         'stages':list(STAGES[STAGES.index(args.start_stage):STAGES.index(args.end_stage)+1]),'epochs_per_stage':args.epochs,'stride_frames':args.stride,
@@ -442,7 +472,8 @@ def main():
         'warm_start':bool(args.stage_checkpoint) or not bool(args.paper_data),'stage_checkpoint_sha256':sha(args.stage_checkpoint) if args.stage_checkpoint else None,
         'new_audio_global':'1540D audio trained against updated motion-global teacher; does not reuse old global normalization',
         'identity_epoch':'One pass over disjoint complementary reference-view pairs from fit identities only',
-        'articulation_epoch':'One shuffled pass over neutral fit query clips only',
+        'articulation_epoch':'One shuffled pass over the selected articulation scope',
+        'articulation_scope':articulation_scope_info,
         'other_epoch':'One shuffled pass over all fit queries',
         'trainable':'Stage-dependent; pretrained acoustic/content extractors remain frozen feature sources',
         'stage5_nonupper':'Exact frozen stage4 output copy, not a claim stage4 equals historical model',
@@ -508,7 +539,7 @@ def main():
                 for state in optimizer.state.values():
                     for key,value in state.items():
                         if torch.is_tensor(value):state[key]=value.to(args.device)
-            if stage=='articulation':items=(data['splits']['train']['emotion_id']==0).nonzero(as_tuple=True)[0]
+            if stage=='articulation':items=articulation_ids
             elif stage=='identity':items=torch.arange(len(pairs))
             else:items=torch.arange(len(data['splits']['train']['valid']))
             if args.smoke:items=items[:min(len(items),args.batch_size*2)]

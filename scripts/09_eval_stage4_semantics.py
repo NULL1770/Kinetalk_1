@@ -198,6 +198,7 @@ def main() -> None:
     result = {
         "schema_version": 1,
         "evaluation_mode": "deployment_semantic_consistency",
+        "test_loaded": bool(args.split == "test"),
         "independent_motion_recognizer": False,
         "generator_heldout_generalization_established": False,
         "split": args.split,

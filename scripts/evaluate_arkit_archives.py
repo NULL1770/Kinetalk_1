@@ -12,11 +12,21 @@ from scripts.evaluate_paper_coefficients import ARMS, cluster_interval, sha, wri
 from scripts.render_dynamic_rig_comparison import ARKIT_NAMES
 
 
-def run(root, reference, output):
+def run(root, reference, output, *, scope=None):
     if output.exists() and any(output.iterdir()):
         raise FileExistsError('Use a fresh output directory')
     output.mkdir(parents=True, exist_ok=True)
-    refs = torch.load(reference, map_location='cpu', weights_only=False)['clips']
+    raw_reference = torch.load(reference, map_location='cpu', weights_only=False)
+    if not isinstance(raw_reference, dict) or 'clips' not in raw_reference:
+        raise ValueError('Reference archive must contain a clips mapping')
+    refs = raw_reference['clips']
+    # Older development references have no scope metadata.  Keep their
+    # historical label, but never relabel a newer final reference as a
+    # development cohort merely because this script is reused.
+    reference_scope = scope or raw_reference.get('scope')
+    if reference_scope is None:
+        reference_scope = f'{len(refs)} reference clips; scope not declared by archive'
+    test_loaded = bool(raw_reference.get('test_loaded', False))
     ids = sorted(refs)
     anchor = root / 'outer/audio_generation/holdout'
     reports, summary_rows, per_clip_rows = {}, [], []
@@ -42,9 +52,10 @@ def run(root, reference, output):
             provenance[cid] = sha(path)
             per_clip_rows.append({'arm': arm, 'clip_id': cid, 'sentence': row['sentence'],
                                   **{k: v['value'] for k, v in row['metrics'].items()}})
-        report = build_report(rows, scope='64 historically exposed development clips; not sealed test',
+        report = build_report(rows, scope=reference_scope,
                               sources={'reference_sha256': sha(reference), 'npz_sha256': provenance,
                                        'historical_result_sha256': sha(directory / 'result.json')})
+        report['test_loaded'] = test_loaded
         for name, value in report['summary'].items():
             if value['status'] in ('computed', 'partial'):
                 value['sentence_cluster_interval'] = cluster_interval(
@@ -56,8 +67,9 @@ def run(root, reference, output):
     write_csv(output / 'per_clip.csv', per_clip_rows)
     write_report(output / 'all_arms.json', reports)
     headers = ['arm', 'arkit_mbe', 'arkit_lbe', 'arkit_fdd_signed', 'arkit_fdd_absolute', 'supp_upper9_fdd_absolute']
-    lines = ['# ARKit coefficient literature metrics — development evaluation', '',
-             'Same 64 exposed development clips; four fixed draws (base deterministic). No external baseline scores.', '',
+    lines = ['# ARKit coefficient literature metrics', '',
+             str(reference_scope),
+             f'test_loaded={test_loaded}; four fixed draws where archived (base deterministic). No external baseline scores.', '',
              '| ' + ' | '.join(headers) + ' |', '| ' + ' | '.join(['---'] * len(headers)) + ' |']
     for row in summary_rows:
         lines.append('| ' + ' | '.join(str(row[k]) if k == 'arm' else f'{row[k]:.6f}' for k in headers) + ' |')
@@ -75,5 +87,7 @@ if __name__ == '__main__':
     p.add_argument('--root', type=Path, required=True)
     p.add_argument('--reference', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--scope', default=None,
+                   help='Optional scope label; otherwise read reference archive metadata')
     a = p.parse_args()
-    run(a.root, a.reference, a.output)
+    run(a.root, a.reference, a.output, scope=a.scope)

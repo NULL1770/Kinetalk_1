@@ -83,9 +83,15 @@ def write_csv(path, rows):
     with Path(path).open('w',encoding='utf-8-sig',newline='') as f:
         w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
 
-def run(root, output, reference):
+def run(root, output, reference, *, scope=None):
     raw=torch.load(reference,weights_only=False,map_location="cpu")
+    if not isinstance(raw, dict) or "clips" not in raw:
+        raise ValueError("Reference archive must contain a clips mapping")
     refs=raw["clips"]
+    reference_scope = scope or raw.get("scope")
+    if reference_scope is None:
+        reference_scope = "reference archive scope not declared"
+    test_loaded = bool(raw.get("test_loaded", False))
     output.mkdir(parents=True,exist_ok=True)
     anchor=root/'outer/audio_generation/holdout'
     main=json.loads((anchor/'result.json').read_text(encoding='utf8'))
@@ -151,7 +157,8 @@ def run(root, output, reference):
             v=cluster_interval(values,[metadata[cid]['sentence'] for cid in ids])
             paired.append({'candidate':candidate,'control':control,'metric':metric,'mean_delta':v['mean'],
                            'ci95_low':v['ci95'][0] if v['ci95'] else None,'ci95_high':v['ci95'][1] if v['ci95'] else None})
-    result={'schema':'arkit_paper_development_metrics_v2_raw_reference','reference_sha256':sha(reference),'dataset_sha256':raw['dataset_sha256'],'scope':'historically exposed development diagnostics; not final test',
+    result={'schema':'arkit_paper_development_metrics_v2_raw_reference','reference_sha256':sha(reference),'dataset_sha256':raw['dataset_sha256'],'scope':reference_scope,
+        'test_loaded':test_loaded,
         'clips':len(ids),'sentence_count':len({m['sentence'] for m in metadata.values()}),'summaries':summaries,
         'protocol':'docs/PAPER_EVALUATION_PROTOCOL_20260919.md','official_benchmark_reproduced':False,
         'aggregation':'equal clip weight; average per-draw metrics; 4096-resample sentence-cluster CI',
@@ -160,7 +167,7 @@ def run(root, output, reference):
     write_csv(output/'distribution_per_clip.csv',distribution_per_clip);write_csv(output/'per_clip_metrics.csv',rows);write_csv(output/'coefficient_summary.csv',flat)
     write_csv(output/'subgroup_metrics.csv',groups);write_csv(output/'paired_ablations.csv',paired);write_csv(output/'distribution_summary.csv',distribution)
     columns=['lip_mae','mouth_mae','upper_mae','upper_std_absolute_gap','upper_intensity_mae','upper_velocity_mae_per_second','upper_pairwise_rms_diversity']
-    lines=['# Current model: development coefficient results','',result['scope'], '',
+    lines=['# Current model: coefficient results','',result['scope'],f"test_loaded={test_loaded}", '',
            '| Arm | '+' | '.join(columns)+' |','|---|'+'---:|'*len(columns)]
     latex=['\\begin{tabular}{l'+'r'*len(columns)+'}','\\toprule','Arm & '+' & '.join(c.replace('_','\\_') for c in columns)+' \\\\','\\midrule']
     for arm in ARMS:
@@ -173,5 +180,5 @@ def run(root, output, reference):
     return result
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);parser.add_argument('--reference',type=Path,required=True)
-    a=parser.parse_args();run(a.root,a.output,a.reference)
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,required=True);parser.add_argument('--output',type=Path,required=True);parser.add_argument('--reference',type=Path,required=True);parser.add_argument('--scope',default=None)
+    a=parser.parse_args();run(a.root,a.output,a.reference,scope=a.scope)

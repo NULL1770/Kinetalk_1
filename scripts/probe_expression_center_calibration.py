@@ -3,9 +3,11 @@
 This probe does not retrain the audio student or empirical motion bank. It fits a
 small static correction from frozen global audio, neutral identity and anchor to
 the clip-level upper9 mean error. The correction is applied in bounded coefficient
-space to every frame, so temporal residuals, mouth and non-upper channels remain
-unchanged. TRAIN fit/calibration are used for selection; validation is loaded once.
-The probe is diagnostic and does not replace the reference decoder checkpoint.
+space to every frame. Mouth and non-upper channels remain unchanged, but the
+frame-dependent headroom transform changes centered temporal residuals. The
+reference model/statistics already saw full TRAIN, and this historical probe has
+no unchanged fallback or all-TRAIN refit. Its fit/calibration comparison is not
+an out-of-fold test. Use train_bounded_expression_center.py for nested head OOF.
 """
 from __future__ import annotations
 

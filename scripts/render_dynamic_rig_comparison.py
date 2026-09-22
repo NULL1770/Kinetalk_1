@@ -144,6 +144,8 @@ def main():
     parser.add_argument('--tile-size', type=int, default=480)
     parser.add_argument('--columns', type=int, default=3)
     parser.add_argument('--samples', type=int, default=32)
+    parser.add_argument('--export-vertices', action='store_true',
+                        help='Export evaluated rig vertices for mesh-space LVE/MVE')
     parser.add_argument('--max-frames', type=int, default=0, help='Prefix-only smoke render; 0 renders every frame')
     parser.add_argument('--audio', type=Path)
     parser.add_argument('--audio-offset-seconds', type=float, default=0)
@@ -178,11 +180,14 @@ def main():
                '--output', str(args.output.resolve()), '--object', args.object,
                '--fps', str(args.fps), '--tile-size', str(args.tile_size), '--columns', str(args.columns),
                '--samples', str(args.samples)]
+    if args.export_vertices:
+        command += ['--export-vertices']
     report.update(schema='dynamic_rig_display_v1', scope='Display only; not coefficient scoring or perceptual validation',
                   synthetic_capacity_control=args.smoke, input_sha256=sha(args.input), blend_sha256=before,
                   worker_sha256=sha(worker), driver_sha256=sha(__file__), command=command,
                   rendered_frames=frames, rendered_modes=modes, shared_clock=True,
                   shared_noise='not generated here; see source metadata', native_coefficients_modified=False)
+    report['vertex_export_requested'] = bool(args.export_vertices)
     try:
         with (args.output / 'blender.log').open('w', encoding='utf8') as log:
             subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT)
@@ -191,6 +196,29 @@ def main():
         expected = [args.output / 'frames' / f'{i:06d}.png' for i in range(1, frames + 1)]
         if not all(p.is_file() for p in expected):
             raise RuntimeError('Blender exited without complete frame output; inspect blender.log')
+        if args.export_vertices:
+            vertex_artifacts = [args.output / name for name in (
+                'vertices.npy', 'neutral_vertices.npy', 'blendshape_deltas.npy',
+                'vertex_metadata.json')]
+            if not all(p.is_file() for p in vertex_artifacts):
+                missing = [str(p.name) for p in vertex_artifacts if not p.is_file()]
+                raise RuntimeError('Blender vertex export is incomplete: ' + ', '.join(missing))
+            with (args.output / 'vertex_metadata.json').open('r', encoding='utf8') as handle:
+                vertex_meta = json.load(handle)
+            expected_shape = [len(modes), frames]
+            if vertex_meta.get('shape', [])[:2] != expected_shape:
+                raise RuntimeError(
+                    f'Vertex export shape mismatch: metadata={vertex_meta.get("shape")} '
+                    f'expected prefix={expected_shape}')
+            report['vertex_export'] = {
+                'vertices': 'vertices.npy',
+                'neutral': 'neutral_vertices.npy',
+                'blendshape_deltas': 'blendshape_deltas.npy',
+                'metadata': 'vertex_metadata.json',
+                'shape': vertex_meta.get('shape'),
+                'coordinate_space': vertex_meta.get('coordinate_space'),
+                'coordinate_unit': vertex_meta.get('coordinate_unit'),
+            }
         shutil.copy2(expected[0], args.output / 'preview.png')
         ff = [args.ffmpeg, '-hide_banner', '-loglevel', 'error', '-y', '-framerate', str(args.fps),
               '-start_number', '1', '-i', str(args.output / 'frames' / '%06d.png')]
