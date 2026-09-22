@@ -150,7 +150,7 @@ def _regional_mean(row: Mapping[str, Any], *keys: str) -> float | None:
 
 def _main_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
-        "method": str(row.get("method", row.get("arm", "unknown"))),
+        "method": str(row.get("method") or row.get("arm") or row.get("mode") or "unknown"),
         "MBE": _first(row, "MBE", "arkit_mbe"),
         "LBE": _first(row, "LBE", "arkit_lbe", "supp_lip23_lbe"),
         "FDD_abs": _first(row, "FDD_abs", "arkit_fdd_absolute", "supp_upper9_fdd_absolute"),
@@ -163,7 +163,7 @@ def _main_row(row: Mapping[str, Any]) -> dict[str, Any]:
 
 def _ablation_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
-        "variant": str(row.get("variant", row.get("method", row.get("arm", "unknown")))),
+        "variant": str(row.get("variant") or row.get("method") or row.get("arm") or row.get("mode") or "unknown"),
         "residual": row.get("residual", row.get("residual_branch")),
         "mouth_calibration": row.get("mouth_calibration", row.get("static_mouth_calibration")),
         "emotion_teacher_student": row.get("emotion_teacher_student", row.get("emotion_teacher")),
@@ -178,7 +178,7 @@ def _ablation_row(row: Mapping[str, Any]) -> dict[str, Any]:
 
 def _emotion_row(row: Mapping[str, Any]) -> dict[str, Any]:
     return {
-        "method": str(row.get("method", row.get("arm", "unknown"))),
+        "method": str(row.get("method") or row.get("arm") or row.get("mode") or "unknown"),
         "emotion_input": row.get("emotion_input", row.get("input", row.get("condition"))),
         "accuracy": _first(row, "accuracy", "emotion_accuracy", "emotion_readout_accuracy"),
         "macro_f1": _first(row, "macro_f1", "f1", "emotion_macro_f1"),
