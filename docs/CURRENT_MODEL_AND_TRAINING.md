@@ -8,7 +8,7 @@
 
 - 默认发布权重仍为 `phase2_fullmouth_timing000_20261004/audio/final.pt`，尚未被候选替换。
 - 最新完整候选为 Phase26 stable `train-standardized` 的固定12轮：native-GT B0 + 重新适配身份/teacher/audio + TRAIN 通道坐标的 DiT 输出头重新拟合。三训练 seed47/48/49 完整审计及下载均完成。
-- Phase26 原失败保留；统一后端后的六臂前1568更新全state及真实流严格闭合，全部固定12轮9408updates完成。最新clip原generated128/64 F1=.796875/.721358（各seed两probe都>.7），raw=.619331/.591701；MBE=.870982/LBE=.421170，中性jaw及联合gate未通过。Phase27/28定位连续global的未见speaker泛化问题。Phase29正在用相同起点与预算测试 pooled-global dropout p=.1，未产生最终成绩；不增加层或loss。恢复入口见 CURRENT_OPTIMIZATION_STATE.md。
+- Phase26 原失败保留；统一后端后的六臂前1568更新全state及真实流严格闭合，全部固定12轮9408updates完成。最新clip原generated128/64 F1=.796875/.721358（各seed两probe都>.7），raw=.619331/.591701；MBE=.870982/LBE=.421170，中性jaw及联合gate未通过。Phase27/28定位连续global的未见speaker泛化问题。Phase29 p=.1 dropout已完成：clip F1=.797647/.715031，MBE=.864415/LBE=.420868，嘴部位移误差反升3.47%，三联合gate均失败，不接纳，不继续扫描。恢复入口见 CURRENT_OPTIMIZATION_STATE.md；后续待批准方案见 NEXT_DISENTANGLEMENT_AND_IDENTITY_PLAN.md。
 
 Phase25 完整 validation、三 seed、三 draw、clip_all 均值：
 
@@ -64,7 +64,7 @@ emotion2vec实际checkpoint为 `iic/emotion2vec_plus_base` 的本地master snaps
 | 4：audio student（Phase21） | 全TRAIN音频；训练时冻结teacher提供残差全局蒸馏目标 | 音频预测global、u_a和强度，训练audio与renderer；teacher/B0/identity冻结 | 2轮，batch16，1568更新 |
 | 4的坐标重新拟合（Phase25） | 相同TRAIN、相同warm输入/统计；不改变支持或条件 | 两臂共同清零renderer输出头一次；候选用通道坐标与对应flow误差单位；其余损失相同 | 2轮，batch16，1568更新 |
 | 4的固定预算验证（Phase26 stable） | 与Phase25相同起点，统一固定GPU后端；独立建立每臂两轮基线后重新从第1步训练十二轮 | 前1568更新全部state/样本/GT/mask/noise逐位等于对应新stable两轮基线；随后持续到固定final12，不在第2轮再次清头 | **全部六臂12轮、每臂9408更新完成** |
-| 4的global泛化候选（Phase29） | 同Phase26 standardized12起点、TRAIN、源统计及预算 | 仅训练调用的pooled128读出加p=.1 dropout；私有CPU RNG，部署关闭；teacher/B0/identity冻结，audio/renderer更新 | **三seed固定12轮训练中，尚无最终成绩** |
+| 4的global泛化候选（Phase29） | 同Phase26 standardized12起点、TRAIN、源统计及预算 | 仅训练调用的pooled128读出加p=.1 dropout；私有CPU RNG，部署关闭；teacher/B0/identity冻结，audio/renderer更新 | **三seed固定12轮及全评估完成；未接纳；492文件下载SHA核验完成** |
 
 Phase25的 provenance 中 `articulation_scope=neutral` 是 audio-only 调用的未执行默认参数。其B0实际来自Phase19的 `all-emotions` 训练，不能据这个字段误称候选只训练了715段中性。
 
@@ -94,7 +94,7 @@ Phase26完成模型dropout=0。Phase29仅pooled-global读出训练时p=.1，不�
 
 **身份**：中性参考动作减B0，统计稳定偏置与变化，学128维code及52维静态bias。两段参考互相预测对方残差mean，并通过对比学习区分说话人。bias同时参与最终加法，code参与renderer调制。身份表示是系数/运动风格，不是从照片恢复脸形、纹理或真实3D几何身份。
 
-**情感**：teacher看真实动作残差，学64维全局情感；audio学生从音频学同坐标global、强度及逐帧u_a。u_a是音频时序/上下文条件，不是有逐帧情感标签监督的眉毛轨迹。强度通过4类CE及概率期望标量 `sum(p(level)*level)` 调制DiT；它不是已学习好的三级口型单调控制器。当前ordinal mouth权重=0，未加VA标注或单调强制。
+**情感**：teacher看真实动作残差，学64维全局情感；audio学生从音频学同坐标global、强度及逐帧u_a。用户要求u_a只表达情感/韵律动态；历史实现是全残差间接监督的时序条件，没有逐帧情感教师目标，不能称已完成这种解耦。新772D路径去掉直接HuBERT入口，但尚未重训或改监督。强度通过4类CE及概率期望标量 `sum(p(level)*level)` 调制DiT；它不是已学习好的三级口型单调控制器。当前ordinal mouth权重=0，未加VA标注或单调强制。
 
 真实audio阶段loss：
 
@@ -131,4 +131,4 @@ query GT只用于训练/评估及明确标识的oracle诊断，部署不输入qu
 - 源码：`models/model.py::Stage1Model`、`models/encoders.py`、`models/neutral_affect.py`、`models/slow_state_affect.py::SlowStateAffect`、`models/dit.py`（均在kinetalk_b0内）；`scripts/train_full_staged.py`及特征准备脚本。
 - 当前Phase26 stable prereg：`final_experiment/evaluation/diagnostics/phase26_channel_coordinates_stable_budget_20261006/preregistration.json`；旧失败登记和诊断完整保留。observer7项本地核验通过，固定后端两次真实1568更新重放已逐位一致。
 - 独立source/inputs/probes/stats已绑定，完整Phase25归档已验证回收，新stable两轮/十二轮对照及全1367validation×3draw完整审计已完成，不选seed或epoch。十二轮standardized最终clip生成原F1=.796875/.721358，三seed各自两probe均>.7；raw=.619331/.591701。MBE=.870982/LBE=.421170，中性jaw时序及联合gate仍不通过，未推广默认；结果见PHASE26_FINAL12_RESULTS.md。
-- Phase27/28已完成：GT-global定位MBE=.632573，不能当部署成绩；TRAIN→validation连续global误差增15–16倍。Phase29单变量正则化已通过CPU/GPU/default/privateRNG及真实2update smoke，固定三seed12已启动。下一步完整指标比较和独立中性jaw定位，不挑epoch/seed或推广未经验证的模型。论文SOTA还需同协议、同split/身份参考/数据预算的对比方法、sealed最终评估和视觉结果。
+- Phase27/28已完成：GT-global定位MBE=.632573，不能当部署成绩；TRAIN→validation连续global误差增15–16倍。Phase29完整结果及中性jaw分解已完成，dropout拒绝，默认未推广。当前成果已推GitHub，下一步先按NEXT_DISENTANGLEMENT_AND_IDENTITY_PLAN.md讨论，得到用户同意后再实施冻结身份/u_a诊断及772D匹配迁移；本輪无新训练。论文SOTA还需同协议、同split/身份参考/数据预算的对比方法、sealed最终评估和视觉结果。

@@ -1,4 +1,12 @@
-# Latest: Phase29 full report COMPLETE, candidate not accepted; full SHA download active
+# 当前恢复入口（2026-10-06）：成果已上传，等待后续方案批准
+
+先读 `NEXT_DISENTANGLEMENT_AND_IDENTITY_PLAN.md` 与 `EMOTION_STUDENT_INPUT_CORRECTION.md`。最新用户要求：先上传已有成果，再写身份/内容/情感动态优化方案，明确同意之后再新增代码。当前GitHub指定分支已推送7a24423和8e154cd；全本地测试363通过/1跳过。仅记录现有实现和新方案；没有新训练、新默认模型或772D新成绩。
+
+Phase29完整492文件下载SHA核验已完成，原exec88017结束，不再等待或重下载；三联合gate均false，dropout拒绝。最新保留候选Phase26 standardized12原clip生成F1 .796875/.721358，raw .619331/.591701，MBE .870982/LBE .421170；默认发布权重仍旧timing000。旧Phase30未执行，已暂停其混合输入设计，不启动旧helper。当前无活动远端任务。
+
+下一批拟批准D0冻结身份/code/bias/u_a干预及优质配对审计，D1匹配772D迁移pilot。D2显式逐帧表达监督、D3质量配对交换、D4嘴部幅度/时序接收结构是条件待办，不能自动一起实现。正文计划有数据/冻结/预算/指标/接纳门槛和论文来源边界。压缩后必须恢复此停止点，不能把历史ACTIVE状态误认为进行中。
+
+# Historical: Phase29 full report COMPLETE, candidate not accepted; full SHA download active
 
 Three candidate trainings, six mesh and three full native/raw+clip/probe/global/precision/CI audits COMPLETE. Repaired state postprocess_repaired_v2_state.json complete; report_repair_v3.log closed. Original failed launch/postprocess and all repair failures preserved. Three joint gates false; no default promotion or sealed read. Generated clip originalF1 .797647/.715031 vs control .796875/.721358; raw .610685/.583535 vs .619331/.591701. MBE .864415 vs .870982, LBE .420868 vs .421170, lipmean3.558562 vs3.562193mm, max6.696472 vs6.699290mm. Mouth displacement MSE +3.47%; continuousglobal valMSE2.309306 vs2.327279 (<1%gain), meanbias worse. Do not promote dropout or scan p. Geometry not SOTA; see PHASE29_RESULTS_AND_NEXT_STEPS.md.
 

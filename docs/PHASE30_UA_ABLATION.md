@@ -1,5 +1,7 @@
 # Phase30：冻结最新保留候选的逐帧u_a因果消融
 
+**2026-10-06状态：原方案仅准备，未远端执行。** 用户纠正student只能读取情感＋韵律后，本文混合输入前提不再作为继续方案；不得直接启动旧helper。后续诊断范围、身份干预、772D迁移和配对边界统一见 `NEXT_DISENTANGLEMENT_AND_IDENTITY_PLAN.md`，等待用户明确批准。以下保留原设计历史。
+
 2026-10-06，用户明确要求先做u_a作用核查。主模型为Phase26 standardized12三seed47/48/49（读取Phase29中已核SHA的同一control权重/曲线），Phase29 dropout已拒绝。不修改训练代码、模型、输出支持或loss，不拟合/读取sealed test。
 
 全1367 validation，native-padded噪声draw42/123/2026，batch16、12Euler，原128/64及辅助四冻结TRAIN probes，raw/clip分别报。每个模型先全部三draw正常audio输出与原完整曲线逐位重放、GT/mask/time/B0精确相同，通过之后才启动任何干预。
