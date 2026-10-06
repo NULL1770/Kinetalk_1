@@ -1,0 +1,11 @@
+{
+  "status": "complete",
+  "updated_at": 1791301409.8442583,
+  "model": "native",
+  "training_performed": false,
+  "test_loaded": false,
+  "report_sha256": "86272ca093698d77c3aa7bb49b3ebdfc250630b9804525867e1e1896e75d17e4",
+  "exports_sha256": "9fa1d405a7ec99eb5a56d221337fd734e5655f87dca097ac8ac26b94a69bafaf",
+  "replay_sha256": "718377c4d0f2a234eb436f8d87d34c1face682a81ba54a3edc3b12f2696c49fd",
+  "cells": 66
+}

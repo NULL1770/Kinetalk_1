@@ -1,4 +1,18 @@
-# 当前恢复入口（2026-10-06）：成果已上传，等待后续方案批准
+# 当前恢复入口（2026-10-06）：用户已批准继续，B0必须保持中性
+
+**最新：Phase31冻结诊断COMPLETE**。远端driver13040结束，`factor_launch_v2.json`两模型exit0；35文件约20MB已下载逐SHA核验，`download_verified.json.passed=true`。先读`PHASE31_NEUTRAL_ROLE_DIAGNOSIS.md`，不要再等13040或重跑。三draw精确重放、66cell身份/u_a干预完成；全1367已有曲线jaw核查完成。80中性clip：中性B0范围.104261/GT.111884，final.135220；相关.441482→.279330。static/zero u_a改善jaw却压掉眉部/smile动态；身份code确实调制动态而bias为静态，未证明身份正确或无内容泄露。两模型眉部meanbias约97%仍主导。无新训练/772成绩/新F1/默认推广；D1修订完整中性起点，未启动，D2/D3/D4待审批。下方running描述是历史。
+
+Phase31新入口：`PHASE31_NEUTRAL_ROLE_DIAGNOSIS.md`。input_audit_v2已完成：715中性anchor+2583情感→中性配对，297完整mouth gate/2286局部mask；默认B0=原safe源，native有101个B0tensor差异。v1标签计数错误保留，覆盖只看v2。完整本地测试371通过/1跳过。
+
+当前冻结driver13040，远端`/root/kinetalk_phase31_neutral_role_20261006/factor_launch_v2.json`，输出`factors_neutral_v2`/`factors_native_v2`；binding_v3 SHA55327089d9dbfb3150b26b3147f8eb6d5fd6b6e08059dba457d6b8f8408bd01d。首版driver12840两worker在B0重放失败（用错缓存批次2/16而原为32），未做干预；v1源码/失败记录保留，新版只修缓存批次，不降严格零容差。固定66个validation说话人×情感×强度cell，3draw先重放，干预仅draw42，小诊断不作全量指标。
+
+D1表已改为旧默认完整中性坐标起点的772/1540单变量比较；不需重训已经匹配同一B0的identity/teacher，不混入native权重/统计。D1尚未启动；D2/D3/D4仍未批准。
+
+最新消息优先于下方旧停止点：用户“继续”并确认“按原设计保持B0中性”。已经回答：旧默认neutral-teacher B0以中性口型为目标；Phase26 native-GT B0含情感GT，不是严格中性。现在继续D0冻结诊断与高质量监督审计；不按原D1直接在native B0上迁移训练。需要先锁中性基座，再匹配身份/teacher/残差坐标；保持772D情感输入与全嘴可调。新架构模块D2/D3/D4未授权。
+
+SSH已实际连接，GPU4090空闲；/root约0.542GiB、data约0.526GiB可用，仅允许小型诊断输出，不能盲目启动GB级训练/恢复归档。远端PATH无python/python3，使用/root/miniconda3/bin/python；现有remote_ops从私有旧helper读取连接信息，不将其提交Github或输出凭据。Phase26、旧默认timing000和TRAIN/validation packed缓存可用，native B0独立run只剩ARCHIVED.json，其权重在Phase26 system内，不能重训或大解压。
+
+# 上一停止点：成果已上传，等待后续方案批准
 
 先读 `NEXT_DISENTANGLEMENT_AND_IDENTITY_PLAN.md` 与 `EMOTION_STUDENT_INPUT_CORRECTION.md`。最新用户要求：先上传已有成果，再写身份/内容/情感动态优化方案，明确同意之后再新增代码。当前GitHub指定分支已推送7a24423和8e154cd；全本地测试363通过/1跳过。仅记录现有实现和新方案；没有新训练、新默认模型或772D新成绩。
 

@@ -1,0 +1,15 @@
+{
+  "status": "complete",
+  "results": {
+    "neutral": {
+      "exit_code": 0
+    },
+    "native": {
+      "exit_code": 0
+    }
+  },
+  "pid": 13040,
+  "updated_at": 1791301410.550939,
+  "test_loaded": false,
+  "training_performed": false
+}

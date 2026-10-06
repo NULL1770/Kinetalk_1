@@ -1,0 +1,11 @@
+{
+  "status": "complete",
+  "updated_at": 1791301317.9684086,
+  "model": "neutral",
+  "training_performed": false,
+  "test_loaded": false,
+  "report_sha256": "5f9e317c412342746bef4dceb1ca2dbf54e9670d42ebe8bfb2f003b4eedce87f",
+  "exports_sha256": "f4bd21f2beb31199be2829baa9c2c26e2d141e2f3dd770f404775236eff4b0c1",
+  "replay_sha256": "718377c4d0f2a234eb436f8d87d34c1face682a81ba54a3edc3b12f2696c49fd",
+  "cells": 66
+}

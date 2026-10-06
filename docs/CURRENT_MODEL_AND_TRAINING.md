@@ -2,6 +2,8 @@
 
 压缩后先读 `CURRENT_OPTIMIZATION_STATE.md`；本页说明真实运行实现，不把旧类名、默认 CLI 参数或未启用模块当成实验事实。
 
+最新用户决定：保持B0中性；Phase26 native仅为历史对照。Phase31冻结诊断完成，详见`PHASE31_NEUTRAL_ROLE_DIAGNOSIS.md`。后续D1已改为旧默认完整中性坐标起点，不混拼native身份/teacher/flow统计；尚未启动新训练。
+
 最新架构纠偏：下文已训练Phase26/29历史模型的student确实为1540D混合输入，包含HuBERT内容，不符合用户要求的独立情感通路。2026-10-06后续训练入口已默认改为emotion2vec768+prosody4=772；CPU/GPU输入/梯度独立性与旧兼容验证通过，尚未重训，不能将历史指标算作772结果。u_a应表示情感动态而非任意内容上下文；逐帧监督的正确性尚须核对。完整说明EMOTION_STUDENT_INPUT_CORRECTION.md。
 
 ## 1. 哪个模型是“当前模型”

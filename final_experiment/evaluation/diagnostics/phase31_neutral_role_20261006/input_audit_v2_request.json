@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/root/miniconda3/bin/python",
+    "-u",
+    "/root/kinetalk_phase31_neutral_role_20261006/tools/audit_factor_role_inputs_v2.py",
+    "--code-root",
+    "/root/kinetalk_channel_coordinates_stable_budget_20261006/code",
+    "--data",
+    "/root/autodl-tmp/kinetalk_data/packed_trainval_20260923",
+    "--safe-manifest",
+    "/root/autodl-tmp/kinetalk_data/processed/safe_supervision_v1/teacher_manifest_gated.jsonl",
+    "--neutral",
+    "/root/autodl-tmp/kinetalk_final_20260922/checkpoints/phase2_fullmouth_timing000_20261004",
+    "--neutral-source",
+    "/root/autodl-tmp/kinetalk_final_20260922/checkpoints/kinetalk_safe_dtw_20261003_b0full_gate",
+    "--native",
+    "/root/kinetalk_channel_coordinates_stable_budget_20261006/seed47/checkpoints/standardized",
+    "--output",
+    "/root/kinetalk_phase31_neutral_role_20261006/input_audit_v2.json"
+  ],
+  "helper_sha256": "bb4bd0ae5f0b483579c7ad8e28fb51bf173141bb375e17d59c332cf9964ad2c6",
+  "training_performed": false,
+  "test_loaded": false
+}

@@ -8,6 +8,8 @@
 - Version Label: disentanglement_identity_plan_v1
 - 用户停止点：先上传已有成果、写明方案；得到明确同意之后才新增训练/诊断代码或启动实验。
 
+**最新用户决定（方案上传后）：** 用户已要求继续，并明确选择“按原设计保持B0中性”。D0诊断现获授权；D1原表中直接从Phase26 native-GT B0延续的训练起点已作废，不启动该pilot。先审计中性B0的批准监督及与native-GT B0的差异，再在中性基座上重新拟合身份/teacher/renderer坐标，不能将native阶段的bias、残差统计或renderer直接拼接过去。Phase26保留为历史诊断对照，不能称最终符合分工的模型。D2/D3/D4尚未批准。
+
 ## 恢复入口与已上传成果
 
 压缩后先读本文、`EMOTION_STUDENT_INPUT_CORRECTION.md`、`PHASE26_FINAL12_RESULTS.md`、`PHASE29_RESULTS_AND_NEXT_STEPS.md`，再按需读 `CURRENT_MODEL_AND_TRAINING.md`。`CURRENT_OPTIMIZATION_STATE.md` 的旧状态仅为历史，不重启已完成训练/下载，不继续旧 Phase30 混合输入方案。
@@ -95,16 +97,16 @@ prosody天然与重音、停顿和内容时间有关，“情感动态与音频�
 
 | 项目 | 固定方案 |
 |---|---|
-| 起点 | 每seed同一Phase26 standardized12最终权重；历史1540D继续训练对照与772D迁移候选，从该起点重新建立相同optimizer/预算 |
+| 起点（按用户中性决定修订） | 同一旧默认`phase2_fullmouth_timing000_20261004/audio/final.pt`，其B0/identity/teacher/renderer均在中性B0坐标下；每seed对照与候选共享这一完整起点，重新建立optimizer。Phase26 native起点已作废 |
 | 训练输入 | 全12536 TRAIN原生query；候选只emotion2vec768＋prosody4；独立身份enrollment与HuBERT→B0/h0保留 |
 | 迁移 | 显式`--allow-audio-input-migration`；选同一TRAIN mean/std，删除input.weight前768列；其余可匹配权重逐位相同；不能宣称截列后与正常legacy输出等价 |
-| 冻结 | B0、identity、motion teacher、既有TRAIN flow坐标/源统计；仅student/renderer更新 |
+| 冻结 | 中性B0、其配套identity与motion teacher、既有标准flow物理坐标及噪声政策；仅student/renderer更新。不拼入native统计或renderer。另行采用TRAIN标准化必须作为后续独立对照，而非混入输入单变量 |
 | 目标 | 原flow、情感/强度、global蒸馏、生成语义项不变；无新增loss，dropout=0 |
 | smoke | 真实TRAIN两update；检查772输入隔离、正确非零梯度、冻结state、有效时钟/mask、损失finite、私有随机流与对照样本/noise一致；不因不同参数宽度改变RNG轨迹 |
 | pilot | 固定seed47/48/49，2轮/1568更新，batch16，固定final；三seed都跑，不挑最优seed |
 | 扩大预算 | pilot后依联合规则决定；若批准固定12轮/9408更新，必须从共同初始状态训练到预定final12，不择epoch，不能把pilot追加12轮写成同预算12轮 |
 
-这是旧teacher坐标下的输入基线，**不是“干净情感teacher”最终方案**。旧teacher和native B0可能带内容/发音误差，D1不能消除全部污染。若772指标暂时退步，保留这一事实，不回用1540成绩冒充新架构正确；不要以新loss掩盖输入单变量结果。
+这是旧中性teacher坐标下的输入基线，**不是“干净情感teacher”最终方案**。旧teacher残差仍可能带中性B0发音误差，D1不能消除全部污染。固定中性B0不意味着必须重训已经匹配该B0的identity/teacher；只有改变B0权重才须重建这些残差坐标。若772指标暂时退步，保留这一事实，不回用1540成绩冒充新架构正确；不要以新loss掩盖输入单变量结果。D0结果用于决定是否有必要先批准D2监督修正；本表修订尚未启动训练。
 
 ## 5. D2：明确逐帧情感目标，优先于加大网络（条件候选，尚未授权实现）
 
