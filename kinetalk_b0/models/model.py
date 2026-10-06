@@ -8,6 +8,17 @@ from torch import nn
 from .encoders import AudioContentEncoder, NeutralArticulationDecoder
 
 
+# ARKit channels whose motion is primarily required for phonetic articulation.
+# The remaining mouth coefficients are left to the affect residual path.  The
+# lists are kept here (rather than inferred from a query) so B0 has one fixed,
+# auditable output contract across training and inference.
+# jaw/closure/funnel/pucker/lateral and roll/lip-up-down coefficients are
+# retained for phonetic articulation; smile/frown/dimple/stretch/shrug/press
+# remain available to the affect residual branch.
+ARTICULATORY_MOUTH_INDICES = (14, 15, 16, 17, 18, 19, 20, 21, 22, 31, 32, 37, 38, 39, 40)
+AFFECT_MOUTH_INDICES = tuple(i for i in range(14, 41) if i not in ARTICULATORY_MOUTH_INDICES)
+
+
 def _dimensions(cfg: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
     return cfg["data"], cfg["model"]
 
@@ -55,7 +66,13 @@ class Stage1Model(nn.Module):
         self.register_buffer("architecture_version", torch.tensor(7))
         self.motion_dim = int(data["motion_dim"])
         self.neutral_indices = list(dict.fromkeys(int(i) for i in data["neutral_output_indices"]))
-        self.art_indices = list(dict.fromkeys(int(i) for i in model.get("articulatory_indices", self.neutral_indices)))
+        # B0 is the neutral speech articulation base.  It must reconstruct the
+        # complete neutral coefficient vector, including mouth coefficients
+        # that may later receive an affect residual.  The residual support,
+        # rather than the B0 decoder, separates phonetic and affective mouth
+        # ownership.
+        default_articulation = list(self.neutral_indices)
+        self.art_indices = list(dict.fromkeys(int(i) for i in model.get("articulatory_indices", default_articulation)))
         if not set(self.art_indices).issubset(self.neutral_indices):
             raise ValueError("articulatory_indices must be a subset of neutral_output_indices")
         self.decoder_indices = list(self.neutral_indices)
@@ -86,6 +103,9 @@ class Stage1Model(nn.Module):
         content, lag_frames, native_position, attention_weights = self.native_aggregator(content, return_aux=True)
         h0 = self.content(content, mask)
         canonical = self.neutral(h0, mask, content)
+        # B0 owns the full neutral articulation target.  Affective mouth
+        # changes are added later by the residual path; they must not be
+        # represented by deleting the corresponding neutral mouth signal.
         output = {
             "h0": h0, "b0": canonical, "b0_canonical": canonical,
             "lag_frames": lag_frames,

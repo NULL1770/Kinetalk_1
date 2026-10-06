@@ -1,0 +1,823 @@
+{
+  "scope": "All fixed three training seeds and three fixed draws, validation only; no training, fitting, epoch/seed/draw selection or default promotion",
+  "test_loaded": false,
+  "source_manifest_sha256": "75475cdc3618346fb406a7421c21a514df3de5331780f628be2975c50dc8eb99",
+  "generated": {
+    "control": {
+      "raw": {
+        "metrics": {
+          "MBE": 0.884162051667364,
+          "LBE": 0.4334014787512686,
+          "outside_fraction": 0.20397088123393245,
+          "mouth_absolute_rms": 0.1240635060211764,
+          "mouth_centered_rms": 0.06864372406424056,
+          "mouth_displacement_mse": 0.0019658724011068223
+        },
+        "probe_mean_f1": [
+          0.6193307485969824,
+          0.5917005973193351,
+          0.6270642913534318,
+          0.6187527033323814
+        ],
+        "regions": {
+          "eyes": {
+            "mse": 0.01313529095020615,
+            "mean_bias_mse": 0.009979087830317906,
+            "centered_mse": 0.003156203092065381,
+            "pred_centered_rms": 0.03782265158016624,
+            "gt_centered_rms": 0.04021975676847272,
+            "centered_correlation": 0.1297944759188035,
+            "displacement_mse": 0.0006342277176243518,
+            "pred_q90_q10": 0.06937256300269147,
+            "gt_q90_q10": 0.07219184722803157
+          },
+          "mouth_jaw": {
+            "mse": 0.015522241834662373,
+            "mean_bias_mse": 0.008361324267333043,
+            "centered_mse": 0.007160917582895492,
+            "pred_centered_rms": 0.06864372406424056,
+            "gt_centered_rms": 0.07116226476277195,
+            "centered_correlation": 0.3218075474219523,
+            "displacement_mse": 0.0019658724011068223,
+            "pred_q90_q10": 0.10059300806283428,
+            "gt_q90_q10": 0.09199120395495976
+          },
+          "brows": {
+            "mse": 0.055565228783246205,
+            "mean_bias_mse": 0.053659586962206,
+            "centered_mse": 0.0019056421881123518,
+            "pred_centered_rms": 0.0263310695289754,
+            "gt_centered_rms": 0.029228390841530238,
+            "centered_correlation": 0.05205711873307909,
+            "displacement_mse": 0.000251067650230914,
+            "pred_q90_q10": 0.056574927313500216,
+            "gt_q90_q10": 0.05116893228888784
+          },
+          "cheek_nose": {
+            "mse": 7.690220527145722e-09,
+            "mean_bias_mse": 3.7890576661769796e-09,
+            "centered_mse": 3.901162810851111e-09,
+            "pred_centered_rms": 3.6923805560282805e-05,
+            "gt_centered_rms": 4.6514707606054076e-05,
+            "centered_correlation": 0.4099504974036828,
+            "displacement_mse": 8.511517446858029e-10,
+            "pred_q90_q10": 4.138097117067457e-05,
+            "gt_q90_q10": 5.301416447913527e-05
+          },
+          "jawOpen": {
+            "mse": 0.015650973021646485,
+            "mean_bias_mse": 0.0049345891421201105,
+            "centered_mse": 0.0107163838497212,
+            "pred_centered_rms": 0.08204398226602444,
+            "gt_centered_rms": 0.07450095809568917,
+            "centered_correlation": 0.30695713053916907,
+            "displacement_mse": 0.0035770744544510393,
+            "pred_q90_q10": 0.20060371059270632,
+            "gt_q90_q10": 0.17527904357645666
+          }
+        }
+      },
+      "clip_all": {
+        "metrics": {
+          "MBE": 0.8709824261036854,
+          "LBE": 0.42117031768499763,
+          "outside_fraction": 0.0,
+          "mouth_absolute_rms": 0.12248952484791924,
+          "mouth_centered_rms": 0.064860786369995,
+          "mouth_displacement_mse": 0.0018166256027727027
+        },
+        "probe_mean_f1": [
+          0.7968749737639147,
+          0.7213575765800049,
+          0.8004707491079638,
+          0.7832125872598996
+        ],
+        "regions": {
+          "eyes": {
+            "mse": 0.013115717759828643,
+            "mean_bias_mse": 0.00996322296609204,
+            "centered_mse": 0.0031524947764890975,
+            "pred_centered_rms": 0.03775999701353209,
+            "gt_centered_rms": 0.04021975676847272,
+            "centered_correlation": 0.13003899195959778,
+            "displacement_mse": 0.000633356906770104,
+            "pred_q90_q10": 0.06894709975224393,
+            "gt_q90_q10": 0.07219184722803157
+          },
+          "mouth_jaw": {
+            "mse": 0.01478060916783643,
+            "mean_bias_mse": 0.00796425764595399,
+            "centered_mse": 0.006816351540764566,
+            "pred_centered_rms": 0.064860786369995,
+            "gt_centered_rms": 0.07116226476277195,
+            "centered_correlation": 0.3251248108338432,
+            "displacement_mse": 0.0018166256027727027,
+            "pred_q90_q10": 0.09065140491922406,
+            "gt_q90_q10": 0.09199120395495976
+          },
+          "brows": {
+            "mse": 0.05455175746841822,
+            "mean_bias_mse": 0.05269316227853597,
+            "centered_mse": 0.0018585957149001384,
+            "pred_centered_rms": 0.02533039927207364,
+            "gt_centered_rms": 0.029228390841530238,
+            "centered_correlation": 0.05236094479397548,
+            "displacement_mse": 0.0002368766083463056,
+            "pred_q90_q10": 0.04954807214461019,
+            "gt_q90_q10": 0.05116893228888784
+          },
+          "cheek_nose": {
+            "mse": 7.45257452176991e-09,
+            "mean_bias_mse": 3.5637095944136868e-09,
+            "centered_mse": 3.888864915330956e-09,
+            "pred_centered_rms": 3.500443818426593e-05,
+            "gt_centered_rms": 4.6514707606054076e-05,
+            "centered_correlation": 0.39609528301183033,
+            "displacement_mse": 8.447667884072163e-10,
+            "pred_q90_q10": 3.788585973851516e-05,
+            "gt_q90_q10": 5.301416447913527e-05
+          },
+          "jawOpen": {
+            "mse": 0.014814390290986733,
+            "mean_bias_mse": 0.004803476944733868,
+            "centered_mse": 0.01001091330701684,
+            "pred_centered_rms": 0.07513158236562169,
+            "gt_centered_rms": 0.07450095809568917,
+            "centered_correlation": 0.31533928653524484,
+            "displacement_mse": 0.003287081045017539,
+            "pred_q90_q10": 0.1811523913724756,
+            "gt_q90_q10": 0.17527904357645666
+          }
+        }
+      }
+    },
+    "global_dropout": {
+      "raw": {
+        "metrics": {
+          "MBE": 0.8777090427520317,
+          "LBE": 0.4333538517773892,
+          "outside_fraction": 0.20468835725636683,
+          "mouth_absolute_rms": 0.1240656766406135,
+          "mouth_centered_rms": 0.06862005254684168,
+          "mouth_displacement_mse": 0.0020408003778327223
+        },
+        "probe_mean_f1": [
+          0.610684871196657,
+          0.5835348920741267,
+          0.6140741063572163,
+          0.6126074758457895
+        ],
+        "regions": {
+          "eyes": {
+            "mse": 0.012957176795542482,
+            "mean_bias_mse": 0.00978639729463428,
+            "centered_mse": 0.0031707794740037775,
+            "pred_centered_rms": 0.03787537014096282,
+            "gt_centered_rms": 0.04021975676847272,
+            "centered_correlation": 0.12658549971845298,
+            "displacement_mse": 0.0006828192419200478,
+            "pred_q90_q10": 0.06919557107747991,
+            "gt_q90_q10": 0.07219184722803157
+          },
+          "mouth_jaw": {
+            "mse": 0.01553664232914495,
+            "mean_bias_mse": 0.008371135711475972,
+            "centered_mse": 0.007165506611801137,
+            "pred_centered_rms": 0.06862005254684168,
+            "gt_centered_rms": 0.07116226476277195,
+            "centered_correlation": 0.32080533502223435,
+            "displacement_mse": 0.0020408003778327223,
+            "pred_q90_q10": 0.10048302780256363,
+            "gt_q90_q10": 0.09199120395495976
+          },
+          "brows": {
+            "mse": 0.05335308862212496,
+            "mean_bias_mse": 0.05145334492849915,
+            "centered_mse": 0.0018997441647013386,
+            "pred_centered_rms": 0.02615543660544035,
+            "gt_centered_rms": 0.029228390841530238,
+            "centered_correlation": 0.05205034386339113,
+            "displacement_mse": 0.00026370406412512824,
+            "pred_q90_q10": 0.05597389052168358,
+            "gt_q90_q10": 0.05116893228888784
+          },
+          "cheek_nose": {
+            "mse": 7.701256440976246e-09,
+            "mean_bias_mse": 3.771118184059573e-09,
+            "centered_mse": 3.930138224141056e-09,
+            "pred_centered_rms": 3.7266741227715896e-05,
+            "gt_centered_rms": 4.6514707606054076e-05,
+            "centered_correlation": 0.41100016058119854,
+            "displacement_mse": 8.939437274871645e-10,
+            "pred_q90_q10": 4.166021924439019e-05,
+            "gt_q90_q10": 5.301416447913527e-05
+          },
+          "jawOpen": {
+            "mse": 0.015608877511272629,
+            "mean_bias_mse": 0.004854506478124923,
+            "centered_mse": 0.010754370985574128,
+            "pred_centered_rms": 0.08225465789201114,
+            "gt_centered_rms": 0.07450095809568917,
+            "centered_correlation": 0.30525360571834365,
+            "displacement_mse": 0.0037228843742220176,
+            "pred_q90_q10": 0.20102365431415545,
+            "gt_q90_q10": 0.17527904357645666
+          }
+        }
+      },
+      "clip_all": {
+        "metrics": {
+          "MBE": 0.8644146673308143,
+          "LBE": 0.4208683456337456,
+          "outside_fraction": 0.0,
+          "mouth_absolute_rms": 0.12244798836615389,
+          "mouth_centered_rms": 0.06476192924957914,
+          "mouth_displacement_mse": 0.0018795757820633272
+        },
+        "probe_mean_f1": [
+          0.7976465992422551,
+          0.7150306578496782,
+          0.8031478772467043,
+          0.7822691287196054
+        ],
+        "regions": {
+          "eyes": {
+            "mse": 0.012933601543092622,
+            "mean_bias_mse": 0.009767124488827253,
+            "centered_mse": 0.0031664770267482577,
+            "pred_centered_rms": 0.037804319180132155,
+            "gt_centered_rms": 0.04021975676847272,
+            "centered_correlation": 0.12686756298953514,
+            "displacement_mse": 0.0006816838996824815,
+            "pred_q90_q10": 0.06872119899304123,
+            "gt_q90_q10": 0.07219184722803157
+          },
+          "mouth_jaw": {
+            "mse": 0.01477899274895608,
+            "mean_bias_mse": 0.007963486210528324,
+            "centered_mse": 0.00681550657850673,
+            "pred_centered_rms": 0.06476192924957914,
+            "gt_centered_rms": 0.07116226476277195,
+            "centered_correlation": 0.3240909605940863,
+            "displacement_mse": 0.0018795757820633272,
+            "pred_q90_q10": 0.09034474137230301,
+            "gt_q90_q10": 0.09199120395495976
+          },
+          "brows": {
+            "mse": 0.052436792095380685,
+            "mean_bias_mse": 0.05058055811203457,
+            "centered_mse": 0.0018562345438093454,
+            "pred_centered_rms": 0.025225779254058795,
+            "gt_centered_rms": 0.029228390841530238,
+            "centered_correlation": 0.05251769332404562,
+            "displacement_mse": 0.0002495516327274616,
+            "pred_q90_q10": 0.0495192740268634,
+            "gt_q90_q10": 0.05116893228888784
+          },
+          "cheek_nose": {
+            "mse": 7.482633276455692e-09,
+            "mean_bias_mse": 3.5646999073837647e-09,
+            "centered_mse": 3.917933349107362e-09,
+            "pred_centered_rms": 3.547647296880025e-05,
+            "gt_centered_rms": 4.6514707606054076e-05,
+            "centered_correlation": 0.3983673149136693,
+            "displacement_mse": 8.865465253657348e-10,
+            "pred_q90_q10": 3.837778010399137e-05,
+            "gt_q90_q10": 5.301416447913527e-05
+          },
+          "jawOpen": {
+            "mse": 0.01474874509990147,
+            "mean_bias_mse": 0.004721154620788086,
+            "centered_mse": 0.010027590418187217,
+            "pred_centered_rms": 0.0751589426353713,
+            "gt_centered_rms": 0.07450095809568917,
+            "centered_correlation": 0.3135543986964192,
+            "displacement_mse": 0.0034042585437708355,
+            "pred_q90_q10": 0.1810755207686937,
+            "gt_q90_q10": 0.17527904357645666
+          }
+        }
+      }
+    }
+  },
+  "same_protocol_comparison": {
+    "VOCA-core (shared audio/ARKit)": {
+      "raw": {
+        "metrics": {
+          "arkit_mbe": 0.7535805843596651,
+          "arkit_lbe": 0.33799280558442557,
+          "arkit_fdd_signed": 0.0949500663451687,
+          "arkit_fdd_absolute": 0.10265848023018434,
+          "lve_mean_mm_mean": 3.0468733611795873,
+          "eve_mean_mm_mean": 0.7079404525771064,
+          "vertex_lve_sqrt_mean": 5.654591169476395,
+          "eye_forehead_eve_sqrt_mean": 2.411298091487228,
+          "facediffuser_lve_sq_mean": 47.24219041569977,
+          "vertex_fdd_absolute_mm2_mean": 146.20662638954195,
+          "mouth_displacement_mse": 0.0007942504915611899,
+          "jaw_centered_correlation": 0.5545649128804568,
+          "jaw_q90_q10": 0.14066130742730454
+        },
+        "original_generated_f1": [
+          0.6247768171288536,
+          0.4735439381358797
+        ],
+        "auxiliary_f1": [
+          0.5470486587694617,
+          0.5776531557936041
+        ]
+      },
+      "clip_all": {
+        "metrics": {
+          "arkit_mbe": 0.7467034133213916,
+          "arkit_lbe": 0.3323843829089089,
+          "arkit_fdd_signed": 0.09514159003211192,
+          "arkit_fdd_absolute": 0.1028162948199375,
+          "lve_mean_mm_mean": 3.0144156749622115,
+          "eve_mean_mm_mean": 0.7034972043498399,
+          "vertex_lve_sqrt_mean": 5.616678254157934,
+          "eye_forehead_eve_sqrt_mean": 2.4117466066713895,
+          "facediffuser_lve_sq_mean": 47.03977848332747,
+          "vertex_fdd_absolute_mm2_mean": 144.23813388342342,
+          "mouth_displacement_mse": 0.0007957340368973822,
+          "jaw_centered_correlation": 0.5541585709287312,
+          "jaw_q90_q10": 0.13645549146800853
+        },
+        "original_generated_f1": [
+          0.49771609211730283,
+          0.48445837741647835
+        ],
+        "auxiliary_f1": [
+          0.46995398790272025,
+          0.47598076255516975
+        ]
+      }
+    },
+    "FaceFormer (shared audio/ARKit)": {
+      "raw": {
+        "metrics": {
+          "arkit_mbe": 1.3622688459698735,
+          "arkit_lbe": 0.5901185077169446,
+          "arkit_fdd_signed": -0.4293678385631656,
+          "arkit_fdd_absolute": 0.44717062733583307,
+          "lve_mean_mm_mean": 4.674576720996668,
+          "eve_mean_mm_mean": 1.1812561135592867,
+          "vertex_lve_sqrt_mean": 8.457163517133347,
+          "eye_forehead_eve_sqrt_mean": 3.9992020752245088,
+          "facediffuser_lve_sq_mean": 99.53220598064829,
+          "vertex_fdd_absolute_mm2_mean": 549.6259243306301,
+          "mouth_displacement_mse": 0.000851059905081751,
+          "jaw_centered_correlation": 0.433940225505221,
+          "jaw_q90_q10": 0.1567348232009089
+        },
+        "original_generated_f1": [
+          0.19927183481603009,
+          0.20275952953799772
+        ],
+        "auxiliary_f1": [
+          0.188768499399892,
+          0.19341069921247125
+        ]
+      },
+      "clip_all": {
+        "metrics": {
+          "arkit_mbe": 1.2968035426538507,
+          "arkit_lbe": 0.5443342681445511,
+          "arkit_fdd_signed": -0.3316591069972488,
+          "arkit_fdd_absolute": 0.35048393904642317,
+          "lve_mean_mm_mean": 4.537840964462277,
+          "eve_mean_mm_mean": 1.1383042994031183,
+          "vertex_lve_sqrt_mean": 8.284418898660505,
+          "eye_forehead_eve_sqrt_mean": 3.788670202644383,
+          "facediffuser_lve_sq_mean": 96.47082270695277,
+          "vertex_fdd_absolute_mm2_mean": 415.80419402740273,
+          "mouth_displacement_mse": 0.0008587795226743507,
+          "jaw_centered_correlation": 0.4339257738701679,
+          "jaw_q90_q10": 0.15349742300275662
+        },
+        "original_generated_f1": [
+          0.12384621751441807,
+          0.17602972588170365
+        ],
+        "auxiliary_f1": [
+          0.18848255359391786,
+          0.1885493136046201
+        ]
+      }
+    },
+    "EmoTalk-core (shared audio/ARKit)": {
+      "raw": {
+        "metrics": {
+          "arkit_mbe": 0.7480862354970386,
+          "arkit_lbe": 0.334237580182828,
+          "arkit_fdd_signed": 0.06525841957982947,
+          "arkit_fdd_absolute": 0.0945037302085045,
+          "lve_mean_mm_mean": 3.0130889893180703,
+          "eve_mean_mm_mean": 0.6936426741566705,
+          "vertex_lve_sqrt_mean": 5.6096766539178,
+          "eye_forehead_eve_sqrt_mean": 2.4225717573786887,
+          "facediffuser_lve_sq_mean": 45.53933979206852,
+          "vertex_fdd_absolute_mm2_mean": 154.37541448838638,
+          "mouth_displacement_mse": 0.0014516188534402991,
+          "jaw_centered_correlation": 0.5642487937690531,
+          "jaw_q90_q10": 0.1589432139925239
+        },
+        "original_generated_f1": [
+          0.6849171474023342,
+          0.7515749995262389
+        ],
+        "auxiliary_f1": [
+          0.7771137247409041,
+          0.7554039558659786
+        ]
+      },
+      "clip_all": {
+        "metrics": {
+          "arkit_mbe": 0.7450031603176643,
+          "arkit_lbe": 0.33153140291244837,
+          "arkit_fdd_signed": 0.06527645813545502,
+          "arkit_fdd_absolute": 0.0945103171418462,
+          "lve_mean_mm_mean": 2.9732323160339194,
+          "eve_mean_mm_mean": 0.691868271030604,
+          "vertex_lve_sqrt_mean": 5.5633384015344705,
+          "eye_forehead_eve_sqrt_mean": 2.4167460018434785,
+          "facediffuser_lve_sq_mean": 45.13327381138258,
+          "vertex_fdd_absolute_mm2_mean": 152.4951190866715,
+          "mouth_displacement_mse": 0.001429207607792999,
+          "jaw_centered_correlation": 0.5657960649931649,
+          "jaw_q90_q10": 0.1542936269978733
+        },
+        "original_generated_f1": [
+          0.5918840140380307,
+          0.6862286248774316
+        ],
+        "auxiliary_f1": [
+          0.7393977706465842,
+          0.7308053352544078
+        ]
+      }
+    },
+    "FaceDiffuser (frozen KineTalk conditions/ARKit)": {
+      "raw": {
+        "metrics": {
+          "arkit_mbe": 0.7935448138427741,
+          "arkit_lbe": 0.3235292783387099,
+          "arkit_fdd_signed": 0.07511414694724874,
+          "arkit_fdd_absolute": 0.09973787106854201,
+          "lve_mean_mm_mean": 3.094425650280264,
+          "eve_mean_mm_mean": 0.7542258150722632,
+          "vertex_lve_sqrt_mean": 5.894782290014138,
+          "eye_forehead_eve_sqrt_mean": 2.585022496320454,
+          "facediffuser_lve_sq_mean": 53.15883750519983,
+          "vertex_fdd_absolute_mm2_mean": 137.73803535698983,
+          "mouth_displacement_mse": 0.0009357797404926273,
+          "jaw_centered_correlation": 0.45202805597489637,
+          "jaw_q90_q10": 0.13916041322531197
+        },
+        "original_generated_f1": [
+          0.30724218683955457,
+          0.29527553172064436
+        ],
+        "auxiliary_f1": [
+          0.4876835814245815,
+          0.4823280201237221
+        ]
+      },
+      "clip_all": {
+        "metrics": {
+          "arkit_mbe": 0.7927274499292052,
+          "arkit_lbe": 0.32311045251627873,
+          "arkit_fdd_signed": 0.07511609553134532,
+          "arkit_fdd_absolute": 0.09973740220452842,
+          "lve_mean_mm_mean": 3.0716786202746267,
+          "eve_mean_mm_mean": 0.75409571022842,
+          "vertex_lve_sqrt_mean": 5.863981732412788,
+          "eye_forehead_eve_sqrt_mean": 2.5843761538606094,
+          "facediffuser_lve_sq_mean": 52.80916503128586,
+          "vertex_fdd_absolute_mm2_mean": 137.96249281212587,
+          "mouth_displacement_mse": 0.0009354142818484234,
+          "jaw_centered_correlation": 0.45237725219154923,
+          "jaw_q90_q10": 0.13510933227289101
+        },
+        "original_generated_f1": [
+          0.15448192362356752,
+          0.27014067507330264
+        ],
+        "auxiliary_f1": [
+          0.6005283009717829,
+          0.568948101594856
+        ]
+      }
+    },
+    "KineTalk current timing000": {
+      "raw": {
+        "metrics": {
+          "arkit_mbe": 0.9016072393111751,
+          "arkit_lbe": 0.45228823679625463,
+          "arkit_fdd_signed": 0.025595530346054933,
+          "arkit_fdd_absolute": 0.11001591384001122,
+          "lve_mean_mm_mean": 3.87897353898697,
+          "eve_mean_mm_mean": 0.7786845792632406,
+          "vertex_lve_sqrt_mean": 7.223720599469501,
+          "eye_forehead_eve_sqrt_mean": 2.7109168347510124,
+          "facediffuser_lve_sq_mean": 71.72631653864138,
+          "vertex_fdd_absolute_mm2_mean": 141.15541835728104,
+          "mouth_displacement_mse": 0.003055931716891434,
+          "jaw_centered_correlation": 0.2991951931032662,
+          "jaw_q90_q10": 0.22686677648654305
+        },
+        "original_generated_f1": [
+          0.16505670450254123,
+          0.15906114531968693
+        ],
+        "auxiliary_f1": [
+          0.1757269897712379,
+          0.1765717083607116
+        ]
+      },
+      "clip_all": {
+        "metrics": {
+          "arkit_mbe": 0.8847373859540146,
+          "arkit_lbe": 0.4313410059123174,
+          "arkit_fdd_signed": 0.025691146554166416,
+          "arkit_fdd_absolute": 0.10993427777491296,
+          "lve_mean_mm_mean": 3.639696774668448,
+          "eve_mean_mm_mean": 0.7787528159772019,
+          "vertex_lve_sqrt_mean": 6.857175317090214,
+          "eye_forehead_eve_sqrt_mean": 2.7113780894590476,
+          "facediffuser_lve_sq_mean": 66.58668432010393,
+          "vertex_fdd_absolute_mm2_mean": 140.9584782278322,
+          "mouth_displacement_mse": 0.0026123957322328833,
+          "jaw_centered_correlation": 0.30542953146553425,
+          "jaw_q90_q10": 0.19651768892747754
+        },
+        "original_generated_f1": [
+          0.18253597804862431,
+          0.2155194436560397
+        ],
+        "auxiliary_f1": [
+          0.4353721452724639,
+          0.4095274573387979
+        ]
+      }
+    },
+    "control": {
+      "raw": {
+        "metrics": {
+          "arkit_mbe": 0.8841620516673635,
+          "arkit_lbe": 0.4334014787512686,
+          "arkit_fdd_signed": 0.023288690579370806,
+          "arkit_fdd_absolute": 0.1102121976198344,
+          "lve_mean_mm_mean": 3.708399796175643,
+          "eve_mean_mm_mean": 0.7610578590851063,
+          "vertex_lve_sqrt_mean": 6.905749880703315,
+          "eye_forehead_eve_sqrt_mean": 2.6628175116677704,
+          "facediffuser_lve_sq_mean": 67.74516931775707,
+          "vertex_fdd_absolute_mm2_mean": 138.43597948404246
+        },
+        "original_generated_f1": [
+          0.6193307485969824,
+          0.5917005973193351
+        ],
+        "auxiliary_f1": [
+          0.6270642913534318,
+          0.6187527033323814
+        ]
+      },
+      "clip_all": {
+        "metrics": {
+          "arkit_mbe": 0.8709824261036848,
+          "arkit_lbe": 0.42117031768499796,
+          "arkit_fdd_signed": 0.023335635670690368,
+          "arkit_fdd_absolute": 0.11016813538551616,
+          "lve_mean_mm_mean": 3.562192833322484,
+          "eve_mean_mm_mean": 0.762787901150876,
+          "vertex_lve_sqrt_mean": 6.699290145952524,
+          "eye_forehead_eve_sqrt_mean": 2.672601620136314,
+          "facediffuser_lve_sq_mean": 65.03633020424274,
+          "vertex_fdd_absolute_mm2_mean": 138.8799706361421
+        },
+        "original_generated_f1": [
+          0.7968749737639147,
+          0.7213575765800049
+        ],
+        "auxiliary_f1": [
+          0.8004707491079638,
+          0.7832125872598996
+        ]
+      }
+    },
+    "global_dropout": {
+      "raw": {
+        "metrics": {
+          "arkit_mbe": 0.8777090427520307,
+          "arkit_lbe": 0.433353851777389,
+          "arkit_fdd_signed": 0.022970958678746576,
+          "arkit_fdd_absolute": 0.10911876900581365,
+          "lve_mean_mm_mean": 3.708125712581804,
+          "eve_mean_mm_mean": 0.7492953301622753,
+          "vertex_lve_sqrt_mean": 6.906614535098673,
+          "eye_forehead_eve_sqrt_mean": 2.6168925530602993,
+          "facediffuser_lve_sq_mean": 67.71755977196567,
+          "vertex_fdd_absolute_mm2_mean": 138.06774497966697
+        },
+        "original_generated_f1": [
+          0.610684871196657,
+          0.5835348920741267
+        ],
+        "auxiliary_f1": [
+          0.6140741063572163,
+          0.6126074758457895
+        ]
+      },
+      "clip_all": {
+        "metrics": {
+          "arkit_mbe": 0.8644146673308143,
+          "arkit_lbe": 0.42086834563374564,
+          "arkit_fdd_signed": 0.023030818563656897,
+          "arkit_fdd_absolute": 0.10906342787364805,
+          "lve_mean_mm_mean": 3.55856206403584,
+          "eve_mean_mm_mean": 0.7512205479954215,
+          "vertex_lve_sqrt_mean": 6.6964722288949226,
+          "eye_forehead_eve_sqrt_mean": 2.627137099544462,
+          "facediffuser_lve_sq_mean": 64.94994422230877,
+          "vertex_fdd_absolute_mm2_mean": 138.43436803061144
+        },
+        "original_generated_f1": [
+          0.7976465992422551,
+          0.7150306578496782
+        ],
+        "auxiliary_f1": [
+          0.8031478772467043,
+          0.7822691287196054
+        ]
+      }
+    }
+  },
+  "seed_gates": {
+    "47": false,
+    "48": false,
+    "49": false
+  },
+  "checks": {
+    "47": {
+      "actual_streams_exact": true,
+      "b0_identity_teacher_frozen": true,
+      "neutral_jaw_correlation_control": 0.2552994043488676,
+      "neutral_jaw_correlation_global_dropout": 0.253115294342327,
+      "source_statistics_identity": [
+        {
+          "path": "/root/kinetalk_channel_coordinates_stable_budget_20261006/stats_seed47.json",
+          "sha256": "a625201ab363d38ca3190f8207877f9f01ea62a023c0c3a7e189a1a372f6f6c3"
+        },
+        {
+          "path": "/root/kinetalk_phase29_global_dropout_v2_20261006/stats_seed47.json",
+          "sha256": "a625201ab363d38ca3190f8207877f9f01ea62a023c0c3a7e189a1a372f6f6c3"
+        }
+      ]
+    },
+    "48": {
+      "actual_streams_exact": true,
+      "b0_identity_teacher_frozen": true,
+      "neutral_jaw_correlation_control": 0.24718439227969308,
+      "neutral_jaw_correlation_global_dropout": 0.24859462686872574,
+      "source_statistics_identity": [
+        {
+          "path": "/root/kinetalk_channel_coordinates_stable_budget_20261006/stats_seed48.json",
+          "sha256": "b2d46bf06478939dce0eddf76cb8ffc195c9eea781488d56d8c8852e970fbfa3"
+        },
+        {
+          "path": "/root/kinetalk_phase29_global_dropout_v2_20261006/stats_seed48.json",
+          "sha256": "b2d46bf06478939dce0eddf76cb8ffc195c9eea781488d56d8c8852e970fbfa3"
+        }
+      ]
+    },
+    "49": {
+      "actual_streams_exact": true,
+      "b0_identity_teacher_frozen": true,
+      "neutral_jaw_correlation_control": 0.25760231482515034,
+      "neutral_jaw_correlation_global_dropout": 0.25238044442030516,
+      "source_statistics_identity": [
+        {
+          "path": "/root/kinetalk_channel_coordinates_stable_budget_20261006/stats_seed49.json",
+          "sha256": "8afb6d42514a19ba8a5dd8c592867a21c2950add8782b0603045bd0fa80fe396"
+        },
+        {
+          "path": "/root/kinetalk_phase29_global_dropout_v2_20261006/stats_seed49.json",
+          "sha256": "8afb6d42514a19ba8a5dd8c592867a21c2950add8782b0603045bd0fa80fe396"
+        }
+      ]
+    }
+  },
+  "absolute_goals": {
+    "47": {
+      "both_original_f1_above_0_7": true,
+      "mbe_below_0_7": false
+    },
+    "48": {
+      "both_original_f1_above_0_7": true,
+      "mbe_below_0_7": false
+    },
+    "49": {
+      "both_original_f1_above_0_7": true,
+      "mbe_below_0_7": false
+    }
+  },
+  "global_means": {
+    "train": {
+      "candidate": {
+        "mse": 0.16502366981635655,
+        "mean_bias_mse": 0.0007937576159580308,
+        "cosine": 0.9451583822568258
+      },
+      "completed_control": {
+        "mse": 0.14929112546121046,
+        "mean_bias_mse": 0.0019250181302369492,
+        "cosine": 0.9486941496531168
+      }
+    },
+    "validation": {
+      "candidate": {
+        "mse": 2.3093063974698547,
+        "mean_bias_mse": 0.729897763251755,
+        "cosine": 0.6385339498519897
+      },
+      "completed_control": {
+        "mse": 2.3272793460725967,
+        "mean_bias_mse": 0.7224952229465279,
+        "cosine": 0.632909913857778
+      }
+    }
+  },
+  "original_generated_clip_class_f1": {
+    "control": {
+      "neutral": [
+        0.4384649151200175,
+        0.3774654956105
+      ],
+      "angry": [
+        0.849169712145254,
+        0.7981004313692517
+      ],
+      "contempt": [
+        0.8118419020382298,
+        0.7820944928664357
+      ],
+      "disgust": [
+        0.8701402312146795,
+        0.7981542060304154
+      ],
+      "fear": [
+        0.7975597578214786,
+        0.6095176338247107
+      ],
+      "happy": [
+        0.9143706529676544,
+        0.8926893953423237
+      ],
+      "sad": [
+        0.885310849663739,
+        0.8073656675252643
+      ],
+      "surprise": [
+        0.8081417691402655,
+        0.7054732900711371
+      ]
+    },
+    "global_dropout": {
+      "neutral": [
+        0.4476319236188193,
+        0.3915269155671701
+      ],
+      "angry": [
+        0.8434364115305135,
+        0.7748703800623038
+      ],
+      "contempt": [
+        0.810380828345777,
+        0.7701749865556101
+      ],
+      "disgust": [
+        0.8698491049142854,
+        0.7771143417425331
+      ],
+      "fear": [
+        0.7957681971274213,
+        0.6086463628732395
+      ],
+      "happy": [
+        0.9183657902199632,
+        0.895172240481387
+      ],
+      "sad": [
+        0.8909357676585365,
+        0.7917955653121656
+      ],
+      "surprise": [
+        0.8048047705227255,
+        0.7109444702030157
+      ]
+    }
+  },
+  "comparison_limit": "Validation development only; shared-audio ARKit adaptations, FaceDiffuser with frozen KineTalk conditions. Three new training seeds versus existing baseline checkpoints; no official SOTA assertion."
+}

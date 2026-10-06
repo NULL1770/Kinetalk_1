@@ -152,6 +152,26 @@ def pad_clip(saved, length, sid):
 
 
 def load_paper_data(directory, *, seed=47, smoke=False):
+    from scripts.packed_trainval_cache import is_packed, load_packed
+    if is_packed(directory):
+        torch.manual_seed(seed)
+        if smoke:
+            # Preserve the canonical smoke selection without opening or
+            # materializing the full train/validation tensor cache.
+            payload = load_packed(directory, materialize=False, with_refs=True)
+            selected = {}
+            for role, split in payload['splits'].items():
+                # First-in-manifest clip per emotion includes neutral B0
+                # training rather than taking eight adjacent angry clips.
+                ids = torch.tensor([int((split['emotion_id'] == e).nonzero()[0])
+                                    for e in torch.unique(split['emotion_id'])])
+                selected[role] = split.batch(ids)
+            payload['splits'] = selected
+            return payload
+        # The staged runner consumes batches through PackedSplit.batch().
+        # Materializing all clips here recreates the original read stall and
+        # expands the FP16 flat audio cache into a large FP32 padded tensor.
+        return load_packed(directory, materialize=False, with_refs=True)
     root=Path(directory); index=json.loads((root/'index.json').read_text(encoding='utf8'))
     m=json.loads((root/'manifest.json').read_text(encoding='utf8'));validate_manifest(m)
     if m['manifest_sha256'] != index['recipe']['manifest_sha256'] or index.get('test_loaded') is not False:

@@ -50,10 +50,25 @@ class NeutralIdentityEncoder(nn.Module):
             nn.Linear(hidden_dim, style_dim),
         )
 
-    def forward(self, residual: torch.Tensor, mask: torch.Tensor | None = None) -> dict[str, torch.Tensor]:
-        if residual.ndim == 3:
+    def forward(
+        self,
+        residual: torch.Tensor,
+        mask: torch.Tensor | None = None,
+        channel_mask: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor]:
+        """Encode references while excluding unobserved channels from statistics.
+
+        ``mask`` marks valid frames.  ``channel_mask`` optionally marks
+        channels observed by each reference (``[B,R,C]`` or ``[B,C]`` for a
+        single reference axis).  Missing channels must not be treated as
+        zero-valued observations: they are omitted from the per-channel
+        moments and the returned ``neutral_mean``/``observed_channels``.
+        """
+        single_reference = residual.ndim == 3
+        if single_reference:
             residual = residual.unsqueeze(1)
             mask = None if mask is None else mask.unsqueeze(1)
+            channel_mask = None if channel_mask is None else channel_mask.unsqueeze(1)
         if residual.ndim != 4:
             raise ValueError("Identity references require [batch, refs, time, motion]")
         if mask is None:
@@ -61,24 +76,54 @@ class NeutralIdentityEncoder(nn.Module):
         mask = mask.to(device=residual.device, dtype=torch.bool)
         if mask.shape != residual.shape[:3]:
             raise ValueError("Identity mask must match [batch, refs, time]")
-        valid = mask.any(-1)
+        if channel_mask is None:
+            channel_mask = torch.ones(
+                residual.shape[0], residual.shape[1], residual.shape[3],
+                dtype=torch.bool, device=residual.device,
+            )
+        else:
+            channel_mask = channel_mask.to(device=residual.device, dtype=torch.bool)
+            expected = residual.shape[0], residual.shape[1], residual.shape[3]
+            if channel_mask.shape != expected:
+                raise ValueError("Identity channel mask must match [batch, refs, motion]")
+        # A reference with no observed channels contains no identity
+        # evidence, even when its frame mask is nonempty.
+        valid = mask.any(-1) & channel_mask.any(-1)
         if not valid.any(1).all():
             raise ValueError("Every item needs at least one valid neutral reference")
-        if not torch.isfinite(residual[mask]).all():
-            raise ValueError("Valid reference frames must be finite")
-        clean = _clean(residual, mask)
-        weights = mask.to(clean.dtype).unsqueeze(-1)
-        count = weights.sum(2).clamp_min(1)
-        mean = clean.sum(2) / count
-        variance = (_clean(clean - mean.unsqueeze(2), mask).square()).sum(2) / count
+        observed = mask.unsqueeze(-1) & channel_mask.unsqueeze(-2)
+        if observed.any() and not torch.isfinite(residual[observed]).all():
+            raise ValueError("Observed reference values must be finite")
+        clean = torch.where(observed, residual, torch.zeros_like(residual))
+        weights = observed.to(clean.dtype)
+        count = weights.sum(2)
+        seen = count > 0
+        safe_count = count.clamp_min(1)
+        mean = clean.sum(2) / safe_count
+        centered = clean - mean.unsqueeze(2)
+        centered = torch.where(observed, centered, torch.zeros_like(centered))
+        variance = centered.square().sum(2) / safe_count
+
+        # Fill a channel absent from one reference with the pooled observed
+        # value before encoding that reference.  This prevents zero padding
+        # from becoming a spurious identity offset while preserving equal
+        # weighting across valid references.
+        channel_count = seen.to(clean.dtype).sum(1)
+        channel_observed = channel_count > 0
+        channel_safe_count = channel_count.clamp_min(1)
+        pooled_mean = (mean * seen.to(mean.dtype)).sum(1) / channel_safe_count
+        pooled_variance = (variance * seen.to(variance.dtype)).sum(1) / channel_safe_count
+        mean = torch.where(seen, mean, pooled_mean[:, None])
+        variance = torch.where(seen, variance, pooled_variance[:, None])
         # An epsilon gives a finite derivative even for a constant neutral clip.
         stats = torch.cat([mean, (variance + 1e-6).sqrt()], -1)
         per_reference = self.encoder(stats) * valid.unsqueeze(-1).to(clean.dtype)
         reference_weight = valid.to(clean.dtype).unsqueeze(-1)
         code = per_reference.sum(1) / reference_weight.sum(1)
-        neutral_mean = (mean * reference_weight).sum(1) / reference_weight.sum(1)
+        neutral_mean = pooled_mean
         return {"code": code, "per_reference": per_reference,
-                "reference_valid": valid, "neutral_mean": neutral_mean}
+                "reference_valid": valid, "neutral_mean": neutral_mean,
+                "observed_channels": channel_observed}
 
 
 class _MaskedTemporalBlock(nn.Module):
@@ -205,6 +250,19 @@ class NeutralAffectSystem(nn.Module):
         nn.init.zeros_(self.identity_bias.bias)
         self.identity_bound = float(model.get("identity_bound", 0.5))
         self.residual_scale = float(model.get("residual_scale", 0.25))
+        # Optional TRAIN-fitted Gaussian source covariance. Saved in config,
+        # like support, to retain strict historical parameter compatibility.
+        self.register_buffer("flow_source_std", torch.ones(int(data["motion_dim"])), persistent=False)
+        self.flow_source_scaled = False
+        self.set_flow_source_std(model.get("flow_source_std"))
+        self.register_buffer("flow_source_rho", torch.zeros(int(data["motion_dim"])), persistent=False)
+        self.flow_source_correlated = False
+        self.set_flow_source_rho(model.get("flow_source_rho"))
+        # Optional coefficient-domain projection.  It is disabled for legacy
+        # checkpoints and can be enabled explicitly for a matched bounded
+        # output experiment; the raw flow residual remains available.
+        self.output_projection = False
+        self.set_output_projection(model.get("output_projection", False))
         if self.identity_bound <= 0 or self.residual_scale <= 0:
             raise ValueError("identity_bound and residual_scale must be positive")
         self.motion_teacher = LowRateAffectEncoder(cfg, int(data["motion_dim"]), motion=True)
@@ -217,7 +275,9 @@ class NeutralAffectSystem(nn.Module):
             dim=int(model["dit_dim"]), depth=int(model["dit_depth"]), heads=int(model["heads"]),
             dropout=float(model["dropout"]), intensity_dim=1,
             global_dropout=float(model.get("global_condition_dropout", 0.0)),
-            style_dropout=float(model.get("style_condition_dropout", 0.0)))
+            style_dropout=float(model.get("style_condition_dropout", 0.0)),
+            temporal_adapter=model.get("renderer_temporal_adapter", False))
+        self.renderer.set_channel_coordinates(model.get("flow_coordinate_mean"), model.get("flow_coordinate_std"))
         self.register_buffer("architecture_version", torch.tensor(10))
         # Support is a train-protocol property, never inferred from a query's
         # ground-truth channel availability at inference. Keep it in config so
@@ -234,6 +294,67 @@ class NeutralAffectSystem(nn.Module):
         self.mouth_reference_calibration_enabled = False
         if "mouth_reference_calibration" in model:
             self.set_mouth_reference_calibration(model["mouth_reference_calibration"])
+
+    def set_flow_source_std(self, value=None) -> None:
+        """Set positive normalized source std; never scale generated outputs."""
+        if value is None:
+            self.flow_source_std.fill_(1.)
+            self.flow_source_scaled = False
+            return
+        std = torch.as_tensor(value, dtype=self.flow_source_std.dtype, device=self.flow_source_std.device)
+        if std.shape != self.flow_source_std.shape or not torch.isfinite(std).all() or (std <= 0).any():
+            raise ValueError('Flow source std must be finite positive [motion_dim]')
+        self.flow_source_std.copy_(std)
+        self.flow_source_scaled = True
+
+    def set_flow_source_rho(self, value=None) -> None:
+        """Set a nonsingular stationary AR source; historical checkpoints use rho=0."""
+        if value is None:
+            self.flow_source_rho.zero_()
+            self.flow_source_correlated = False
+            return
+        rho = torch.as_tensor(value, dtype=self.flow_source_rho.dtype, device=self.flow_source_rho.device)
+        if rho.shape != self.flow_source_rho.shape or not torch.isfinite(rho).all() or (rho.abs() >= 1).any():
+            raise ValueError('Flow source rho must be finite [motion_dim] with absolute value < 1')
+        self.flow_source_rho.copy_(rho)
+        self.flow_source_correlated = bool((rho != 0).any())
+
+    def source_noise(self, white_noise: torch.Tensor, valid: torch.Tensor | None = None) -> torch.Tensor:
+        """Transform one white draw, resetting stationary AR chains at native gaps.
+
+        Only the whole-frame clock mask determines the prior. Channel observation
+        masks belong to the training target and must be applied after this map.
+        """
+        source = white_noise * self.flow_source_std.to(white_noise) if self.flow_source_scaled else white_noise
+        if not self.flow_source_correlated:
+            return source  # Exact legacy path, including rho=0 and unit std.
+        if white_noise.ndim != 3 or white_noise.shape[-1] != self.flow_source_rho.numel():
+            raise ValueError('AR source requires [batch, time, motion_dim]')
+        valid = _mask(white_noise, valid)
+        source = _clean(source, valid)
+        rho = self.flow_source_rho.to(source)
+        innovation = (1 - rho.square()).sqrt()
+        previous = torch.zeros_like(source[:, 0])
+        previous_valid = torch.zeros_like(valid[:, 0])
+        frames = []
+        for index in range(source.shape[1]):
+            current = torch.where(previous_valid[:, None],
+                                  rho * previous + innovation * source[:, index], source[:, index])
+            previous = torch.where(valid[:, index, None], current, torch.zeros_like(current))
+            previous_valid = valid[:, index]
+            frames.append(previous)
+        return torch.stack(frames, dim=1)
+
+    def set_output_projection(self, enabled: bool = True) -> None:
+        """Enable/disable an explicit coefficient-domain [0,1] projection."""
+        if not isinstance(enabled, bool):
+            raise ValueError('output_projection must be a Boolean')
+        self.output_projection = enabled
+
+    def _project_motion(self, motion: torch.Tensor, active: torch.Tensor) -> torch.Tensor:
+        # Legacy protected channels retain exactly B0+identity.  Missing and
+        # padded values never acquire residuals through this projection.
+        return torch.where(active, motion.clamp(0., 1.), motion) if self.output_projection else motion
 
     def set_mouth_reference_calibration(self, calibration: dict[str, Any]) -> None:
         """Install a fixed train-only map of independent neutral-reference means.
@@ -336,25 +457,40 @@ class NeutralAffectSystem(nn.Module):
 
     def encode_identity(self, reference_residual: torch.Tensor, mask: torch.Tensor | None = None, *,
                         reference_channel_mask: torch.Tensor | None = None) -> dict[str, torch.Tensor]:
+        if reference_residual.ndim not in (3, 4):
+            raise ValueError("Identity references require [B,T,C] or [B,R,T,C]")
+        channels = reference_residual.shape[-1]
+        batch = reference_residual.shape[0]
+        references = 1 if reference_residual.ndim == 3 else reference_residual.shape[1]
+        normalized_channel_mask = reference_channel_mask
+        if normalized_channel_mask is not None:
+            normalized_channel_mask = normalized_channel_mask.to(
+                device=reference_residual.device, dtype=torch.bool)
+            if reference_residual.ndim == 3:
+                if normalized_channel_mask.shape == (batch, 1, channels):
+                    normalized_channel_mask = normalized_channel_mask[:, 0]
+                if normalized_channel_mask.shape != (batch, channels):
+                    raise ValueError("reference_channel_mask must match [B,C] for [B,T,C] references")
+                normalized_channel_mask = normalized_channel_mask & self.motion_support.view(1, -1)
+            else:
+                if normalized_channel_mask.shape == (batch, channels):
+                    normalized_channel_mask = normalized_channel_mask[:, None].expand(
+                        batch, references, channels)
+                elif normalized_channel_mask.shape != (batch, references, channels):
+                    raise ValueError("reference_channel_mask must match [B,C] or [B,R,C]")
+                normalized_channel_mask = normalized_channel_mask & self.motion_support.view(1, 1, -1)
         if self.mouth_reference_calibration_enabled:
-            if reference_residual.ndim not in (3, 4):
-                raise ValueError("Identity references require [B,T,C] or [B,R,T,C]")
             shape = reference_residual.shape[:-2] + (reference_residual.shape[-1],)
-            if (reference_channel_mask is None or reference_channel_mask.dtype != torch.bool
-                    or reference_channel_mask.device != reference_residual.device
-                    or reference_channel_mask.shape != shape):
+            if normalized_channel_mask is None:
                 raise ValueError("Calibrated identity requires explicit Boolean reference_channel_mask [B,R,C] or [B,C]")
             active = torch.ones(shape[:-1], dtype=torch.bool, device=reference_residual.device) if mask is None else mask.any(-1)
-            if (active[..., None] & ~reference_channel_mask[..., list(MOUTH)]).any():
+            if (active[..., None] & ~normalized_channel_mask[..., list(MOUTH)]).any():
                 raise ValueError("Cannot calibrate absent mouth channels in independent enrollment")
-        if reference_channel_mask is not None:
-            shape = reference_residual.shape[:-2] + (reference_residual.shape[-1],)
-            if (reference_channel_mask.dtype != torch.bool or reference_channel_mask.shape != shape
-                    or reference_channel_mask.device != reference_residual.device):
-                raise ValueError("reference_channel_mask must be Boolean [B,R,C] or [B,C]")
-            reference_residual = torch.where(reference_channel_mask.unsqueeze(-2), reference_residual, 0.)
+        if normalized_channel_mask is not None:
+            reference_residual = torch.where(
+                normalized_channel_mask.unsqueeze(-2), reference_residual, 0.)
         reference_residual = torch.where(self.motion_support, reference_residual, 0.)
-        identity = self.identity_encoder(reference_residual, mask)
+        identity = self.identity_encoder(reference_residual, mask, normalized_channel_mask)
         identity["baseline"] = torch.where(self.motion_support, self.identity_bound * torch.tanh(self.identity_bias(identity["code"])), 0.)
         if self.mouth_reference_calibration_enabled:
             calibrated = (identity['neutral_mean'][..., list(MOUTH)] * self.mouth_calibration_gain
@@ -408,7 +544,13 @@ class NeutralAffectSystem(nn.Module):
             noise = torch.randn_like(target)
         if noise.shape != target.shape or not torch.isfinite(noise[observed]).all():
             raise ValueError("Flow noise must be finite on observations and match motion shape")
-        noise = torch.where(observed, noise, 0.)
+        if self.flow_source_correlated:
+            prior_support = mask[..., None] & self.residual_support[None, None]
+            if not torch.isfinite(noise[prior_support]).all():
+                raise ValueError('AR source requires finite white noise on the whole-frame prior support')
+            noise = torch.where(observed, self.source_noise(torch.where(prior_support, noise, 0.), mask), 0.)
+        else:
+            noise = self.source_noise(torch.where(observed, noise, 0.))
         if time is None:
             time = torch.rand(target.shape[0], device=target.device, dtype=target.dtype)
         if time.shape != (target.shape[0],) or not torch.isfinite(time).all() or ((time < 0) | (time > 1)).any():
@@ -416,15 +558,20 @@ class NeutralAffectSystem(nn.Module):
         scaled_target = target / self.residual_scale
         x_t = (1 - time[:, None, None]) * noise + time[:, None, None] * scaled_target
         velocity_target = scaled_target - noise
+        temporal = affect.get("u_a", affect.get("temporal", affect.get("local")))
         prediction = self.renderer(x_t, time, base["h0"], affect["global"], affect["intensity_value"],
-                                   identity["code"], mask, local_emotion=affect["local"])
+                                   identity["code"], mask, temporal_condition=temporal)
         prediction = torch.where(observed, prediction, 0.)
         predicted = torch.where(observed, (x_t + (1 - time[:, None, None]) * prediction) * self.residual_scale, 0.)
+        raw_motion = safe_base + safe_baseline + predicted
+        endpoint = self._project_motion(raw_motion, observed)
+        projected_residual = torch.where(observed, endpoint - safe_base - safe_baseline, 0.) if self.output_projection else predicted
         return {"prediction": prediction, "velocity_target": velocity_target,
                 "target_residual": target, "predicted_residual": predicted,
-                "residual": predicted, "b0": safe_base, "x_t": x_t, "time": time,
+                "residual": projected_residual, "raw_residual": predicted,
+                "raw_motion": raw_motion, "b0": safe_base, "x_t": x_t, "time": time,
                 "observation_mask": observed,
-                "motion": safe_base + safe_baseline + predicted}
+                "motion": endpoint}
 
     def generate(self, content: torch.Tensor, mask: torch.Tensor | None,
                  identity: dict[str, torch.Tensor], affect: dict[str, torch.Tensor],
@@ -432,12 +579,28 @@ class NeutralAffectSystem(nn.Module):
                  base: dict[str, torch.Tensor] | None = None) -> dict[str, torch.Tensor]:
         mask = _mask(content if content.ndim == 3 else content.flatten(2), mask)
         base = self.base(content, mask) if base is None else base
+        temporal = affect.get("u_a", affect.get("temporal", affect.get("local")))
+        # The historical no-noise argument requests deterministic decoding.
+        # Formal stochastic inference supplies an explicit white-noise draw.
+        if initial_noise is not None and (self.flow_source_scaled or self.flow_source_correlated):
+            if self.flow_source_correlated:
+                prior_support = mask[..., None] & self.residual_support[None, None]
+                if initial_noise.shape != prior_support.expand(-1, -1, self.flow_source_rho.numel()).shape:
+                    raise ValueError('Initial white noise must match [batch, time, motion_dim]')
+                initial_noise = initial_noise.to(base['h0'])
+                initial_noise = self.source_noise(torch.where(prior_support, initial_noise, 0.), mask)
+            else:
+                initial_noise = self.source_noise(initial_noise)
         residual = self.renderer.decode(base["h0"], affect["global"], affect["intensity_value"], identity["code"], mask,
                                         residual_scale=self.residual_scale, steps=steps,
-                                        local_emotion=affect["local"], initial_noise=initial_noise,
+                                        temporal_condition=temporal, initial_noise=initial_noise,
                                         motion_support=self.residual_support)
         support = mask[..., None] & self.motion_support[None, None]
         safe_base = torch.where(support, base["b0"], 0.)
         safe_baseline = torch.where(support, identity["baseline"].unsqueeze(1), 0.)
-        return {"b0": safe_base, "residual": residual,
-                "motion": safe_base + safe_baseline + residual}
+        raw_motion = safe_base + safe_baseline + residual
+        active = support & self.residual_support[None, None]
+        endpoint = self._project_motion(raw_motion, active)
+        projected_residual = torch.where(active, endpoint - safe_base - safe_baseline, 0.) if self.output_projection else residual
+        return {"b0": safe_base, "residual": projected_residual,
+                "raw_residual": residual, "raw_motion": raw_motion, "motion": endpoint}

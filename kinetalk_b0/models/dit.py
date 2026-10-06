@@ -88,6 +88,7 @@ class ResidualDiT(nn.Module):
         intensity_dim: int = 1,
         global_dropout: float = 0.1,
         style_dropout: float = 0.1,
+        temporal_adapter: bool = False,
     ):
         super().__init__()
         self.global_dropout = global_dropout
@@ -96,12 +97,69 @@ class ResidualDiT(nn.Module):
         self.context_input = nn.Sequential(nn.Linear(content_dim, dim), nn.SiLU(), nn.Linear(dim, dim))
         self.time = TimeEmbedding(dim)
         self.emotion = nn.Linear(emotion_dim + intensity_dim, dim)
+        # Temporal audio context. The parameter keeps the old local_emotion key
+        # for strict checkpoint compatibility; callers should pass it as u_a.
         self.local_emotion = nn.Linear(emotion_dim, dim)
         self.style = nn.Linear(style_dim, dim)
         self.blocks = nn.ModuleList([DiTBlock(dim, heads, dropout) for _ in range(depth)])
         self.output_norm = nn.LayerNorm(dim, elementwise_affine=False)
         self.output_modulation = nn.Sequential(nn.SiLU(), nn.Linear(dim, dim * 2))
         self.output = nn.Linear(dim, motion_dim)
+        self.register_buffer("coordinate_mean", torch.zeros(motion_dim), persistent=False)
+        self.register_buffer("coordinate_std", torch.ones(motion_dim), persistent=False)
+        self.channel_coordinates = False
+        self.motion_temporal = None
+        self.set_temporal_adapter(temporal_adapter)
+        # Explicit output-side affect route. It reuses the existing emotion
+        # and output projections so historical checkpoints remain loadable;
+        # no new trainable state is introduced. The deployable default now
+        # covers the complete mouth region as well as upper-face expression.
+        # Legacy protected-mouth recipes still mask these channels at the
+        # NeutralAffectSystem residual-support boundary.
+        affect_indices = tuple(range(14, 41)) + (5, 6, 12, 13, 41, 42, 43, 44, 45)
+        affect_mask = torch.zeros(motion_dim, dtype=torch.bool)
+        for index in affect_indices:
+            if index < motion_dim:
+                affect_mask[index] = True
+        self.register_buffer("affect_output_mask", affect_mask, persistent=False)
+
+    def set_channel_coordinates(self, mean=None, std=None) -> None:
+        """Use TRAIN-centered coordinates while returning physical velocities.
+
+        x_t is in the system's existing residual_scale units. Subtracting
+        t*mean preserves a zero-centered source and a centered target. The
+        derivative of that moving center is added back to every velocity.
+        """
+        if mean is None and std is None:
+            self.coordinate_mean.zero_()
+            self.coordinate_std.fill_(1.)
+            self.channel_coordinates = False
+            return
+        if mean is None or std is None:
+            raise ValueError("Channel coordinates require both TRAIN mean and std")
+        mean = torch.as_tensor(mean, device=self.coordinate_mean.device, dtype=self.coordinate_mean.dtype)
+        std = torch.as_tensor(std, device=self.coordinate_std.device, dtype=self.coordinate_std.dtype)
+        if (mean.shape != self.coordinate_mean.shape or std.shape != self.coordinate_std.shape or
+                not torch.isfinite(mean).all() or not torch.isfinite(std).all() or (std <= 0).any()):
+            raise ValueError("Channel coordinates require finite mean and positive std [motion_dim]")
+        self.coordinate_mean.copy_(mean)
+        self.coordinate_std.copy_(std)
+        self.channel_coordinates = True
+
+    def set_temporal_adapter(self, enabled: bool) -> None:
+        """Opt-in local motion-token interaction; zero-start, no output filtering."""
+        if type(enabled) is not bool:
+            raise ValueError("temporal_adapter must be Boolean")
+        if enabled and self.motion_temporal is None:
+            # Preserve RNG state so enabling a zero-start branch cannot shift
+            # matched training noise, data order or dropout draws.
+            with torch.random.fork_rng(devices=[]):
+                adapter = nn.Conv1d(self.motion_input.out_features,
+                                    self.motion_input.out_features, 3, padding=1, bias=False)
+                nn.init.zeros_(adapter.weight)
+            self.motion_temporal = adapter.to(self.motion_input.weight)
+        elif not enabled:
+            self.motion_temporal = None
 
     @staticmethod
     def _drop_condition(value: torch.Tensor, probability: float, training: bool) -> torch.Tensor:
@@ -122,21 +180,42 @@ class ResidualDiT(nn.Module):
         mask: torch.Tensor | None = None,
         *,
         local_emotion: torch.Tensor | None = None,
+        temporal_condition: torch.Tensor | None = None,
         condition_dropout: bool = True,
     ) -> torch.Tensor:
         if condition_dropout:
             global_emotion = self._drop_condition(global_emotion, self.global_dropout, self.training)
             style = self._drop_condition(style, self.style_dropout, self.training)
         context = self.context_input(content)
-        if local_emotion is not None:
-            context = context + self.local_emotion(local_emotion)
-        tokens = self.motion_input(x_t) + context
+        if temporal_condition is not None and local_emotion is not None:
+            raise ValueError("Pass only one temporal condition alias")
+        temporal = temporal_condition if temporal_condition is not None else local_emotion
+        if temporal is not None:
+            context = context + self.local_emotion(temporal)
+        coordinate_input = ((x_t - time[:, None, None] * self.coordinate_mean) / self.coordinate_std
+                            if self.channel_coordinates else x_t)
+        tokens = self.motion_input(coordinate_input) + context
+        if self.motion_temporal is not None:
+            local_input = tokens if mask is None else torch.where(mask[..., None], tokens, 0.)
+            local = self.motion_temporal(local_input.transpose(1, 2)).transpose(1, 2)
+            if mask is not None:
+                local = torch.where(mask[..., None], local, 0.)
+            tokens = tokens + local
         global_condition = self.time(time) + self.emotion(torch.cat([global_emotion, intensity], dim=-1)) + self.style(style)
         for block in self.blocks:
             tokens = block(tokens, context, global_condition, self.style(style), mask)
         shift, scale = self.output_modulation(global_condition).chunk(2, dim=-1)
         tokens = self.output_norm(tokens) * (1.0 + scale.unsqueeze(1)) + shift.unsqueeze(1)
         velocity = self.output(tokens)
+        # The ordinary AdaLN path can learn to ignore a clip-level emotion
+        # code while fitting the flow objective.  This output-side route makes
+        # the requested global affect directly observable at the coefficients
+        # that carry brow/eye and affective mouth expression.
+        affect_tokens = self.emotion(torch.cat([global_emotion, intensity], dim=-1))
+        affect_drive = self.output(affect_tokens).unsqueeze(1)
+        velocity = velocity + 0.1 * affect_drive * self.affect_output_mask.view(1, 1, -1).to(velocity.dtype)
+        if self.channel_coordinates:
+            velocity = self.coordinate_mean + self.coordinate_std * velocity
         if mask is not None:
             velocity = velocity * mask.unsqueeze(-1).to(velocity.dtype)
         return velocity
@@ -163,6 +242,7 @@ class ResidualDiT(nn.Module):
         steps: int = 4,
         stochastic: bool = False,
         local_emotion: torch.Tensor | None = None,
+        temporal_condition: torch.Tensor | None = None,
         initial_noise: torch.Tensor | None = None,
         motion_support: torch.Tensor | None = None,
     ) -> torch.Tensor:
@@ -193,7 +273,7 @@ class ResidualDiT(nn.Module):
         times = torch.linspace(0.0, 1.0, steps + 1, device=content.device, dtype=content.dtype)
         for index in range(steps):
             current = torch.full((content.shape[0],), times[index], device=content.device, dtype=content.dtype)
-            velocity = self(state, current, content, global_emotion, intensity, style, mask, local_emotion=local_emotion, condition_dropout=False)
+            velocity = self(state, current, content, global_emotion, intensity, style, mask, local_emotion=local_emotion, temporal_condition=temporal_condition, condition_dropout=False)
             velocity = torch.where(support, velocity, 0.)
             state = torch.where(support, state + (times[index + 1] - times[index]) * velocity, 0.)
         return state * residual_scale

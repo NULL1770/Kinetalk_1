@@ -188,12 +188,49 @@ def compose_upper_face(baseline, upper_face, valid=None):
     return output
 
 
-class SlowStateAffect(nn.Module):
-    """Audio global affect, native-rate local features, and four slow states.
+def affect_audio_statistics(statistics: dict, layout: str) -> dict:
+    """Select existing TRAIN moments; do not refit on query/validation audio."""
+    if layout not in ('affect-prosody', 'legacy-content-affect-prosody'):
+        raise ValueError('Unknown audio student feature layout')
+    mean, std = statistics['mean'], statistics['std']
+    if mean.ndim != 1 or std.shape != mean.shape:
+        raise ValueError('Audio feature statistics must be matching vectors')
+    if layout == 'affect-prosody':
+        if mean.numel() != 1540:
+            raise ValueError('Affect-only training requires the prepared 768+768+4 feature layout')
+        mean, std = mean[768:].clone(), std[768:].clone()
+    return {**statistics, 'mean': mean, 'std': std,
+            'input_feature_layout': layout, 'source_feature_width': statistics['mean'].numel()}
 
-    Local and state output heads start at zero. Global features and classifiers
-    remain trainable for independent motion-teacher distillation.  The slow
-    state is exposed for direct output lifting, not hidden in a global FiLM.
+
+def migrate_affect_audio_state(saved: dict, expected: dict) -> dict:
+    """Explicitly remove the HuBERT input columns of a legacy warm student."""
+    if set(saved) != set(expected):
+        raise ValueError('Audio state keys differ')
+    if saved['input.weight'].shape[1] != 1540 or expected['input.weight'].shape[1] != 772:
+        raise ValueError('Only the declared 1540-to-772 input migration is allowed')
+    migrated = {k: v.clone() for k, v in saved.items()}
+    for key in ('feature_mean', 'feature_std'):
+        if saved[key].shape != (1540,) or expected[key].shape != (772,):
+            raise ValueError('Audio statistics layout differs')
+        if not torch.equal(saved[key][768:].detach().cpu(), expected[key].detach().cpu()):
+            raise ValueError('Warm student does not share the selected TRAIN normalization')
+        migrated[key] = saved[key][768:].clone()
+    migrated['input.weight'] = saved['input.weight'][:, 768:].clone()
+    if any(migrated[k].shape != expected[k].shape for k in expected):
+        raise ValueError('Migration would change parameters beyond input layout')
+    return migrated
+
+
+class SlowStateAffect(nn.Module):
+    """Global affect and a native-rate expressive condition from emotion audio.
+
+    New 772D students use emotion2vec+prosody, excluding direct HuBERT inputs.
+    ``u_a`` is intended to carry expressive dynamics; it has no direct
+    framewise teacher target, so input selection alone does not prove content
+    independence. The legacy ``local`` and slow-state
+    keys remain in the return dictionary for old checkpoints and diagnostics,
+    but the deployable architecture consumes ``u_a`` only.
     """
 
     def __init__(self, feature_mean, feature_std, *, global_dim=64, hidden=128,
@@ -208,6 +245,10 @@ class SlowStateAffect(nn.Module):
         if any(type(v) is not int or v < 1 for v in (global_dim, hidden, local_dim, num_emotions, num_levels, stride)):
             raise ValueError('All model dimensions and stride must be positive integers')
         self.stride = stride
+        # Serialized 772D moments unambiguously identify emotion2vec+prosody.
+        # Legacy checkpoint statistics retain their original input behavior.
+        self.input_feature_layout = ('affect-prosody' if feature_mean.numel() == 772
+                                     else 'legacy-content-affect-prosody')
         self.register_buffer('feature_mean', feature_mean.detach().float().clone())
         self.register_buffer('feature_std', feature_std.detach().float().clone())
         self.input = nn.Linear(len(feature_mean), hidden)
@@ -221,7 +262,13 @@ class SlowStateAffect(nn.Module):
             nn.init.zeros_(head.weight)
             nn.init.zeros_(head.bias)
 
-    def forward(self, features, valid, *, state_override=None, state_override_mask=None):
+    def forward(self, features, valid, *, state_override=None, state_override_mask=None,
+                include_legacy_state=True, global_dropout=0., dropout_generator=None):
+        if (torch.is_tensor(features) and features.ndim == 3
+                and self.input_feature_layout == 'affect-prosody' and features.shape[-1] == 1540):
+            # The packed tensor remains shared with B0. Neither global nor
+            # u_a can read its HuBERT columns through this student route.
+            features = features[..., 768:]
         if (not torch.is_tensor(features) or features.ndim != 3
                 or features.shape[-1] != len(self.feature_mean)
                 or not torch.is_tensor(valid) or valid.shape != features.shape[:2]
@@ -236,6 +283,17 @@ class SlowStateAffect(nn.Module):
         for block in self.blocks:
             hidden = block(hidden, valid)
         pooled = hidden.sum(1) / valid.sum(1, keepdim=True).clamp_min(1)
+        # Only the pooled global readout is regularized; local_head still
+        # consumes the unmodified hidden sequence. The caller owns this RNG.
+        if not 0. <= global_dropout < 1.:
+            raise ValueError('global_dropout must be finite in [0,1)')
+        if self.training and global_dropout > 0.:
+            if (not isinstance(dropout_generator, torch.Generator)
+                    or dropout_generator.device.type != 'cpu'):
+                raise ValueError('Global dropout requires an independent CPU generator')
+            keep = torch.rand(pooled.shape, generator=dropout_generator,
+                              device='cpu', dtype=torch.float32) >= global_dropout
+            pooled = pooled * keep.to(device=pooled.device, dtype=pooled.dtype) / (1. - global_dropout)
         global_code = self.global_head(pooled)
         emotion_logits = self.emotion_classifier(global_code)
         intensity_logits = self.intensity_classifier(global_code)
@@ -261,13 +319,16 @@ class SlowStateAffect(nn.Module):
             driving = masked_slow_state(state_override, override_mask, stride=self.stride)
         elif state_override_mask is not None:
             raise ValueError('An oracle mask requires an oracle state override')
-        return {'global': global_code, 'emotion_logits': emotion_logits,
-                'intensity_logits': intensity_logits,
-                'intensity_value': (intensity_logits.softmax(-1) * levels).sum(-1, keepdim=True),
-                'local': local, 'predicted_state': prediction['state'],
-                'predicted_state_mask': prediction['state_mask'],
-                'predicted_bin_state': prediction['bin_state'],
-                'predicted_bin_mask': prediction['bin_mask'], **driving}
+        output = {'global': global_code, 'u_a': local, 'temporal': local,
+                  'emotion_logits': emotion_logits,
+                  'intensity_logits': intensity_logits,
+                  'intensity_value': (intensity_logits.softmax(-1) * levels).sum(-1, keepdim=True)}
+        if include_legacy_state:
+            output.update({'local': local, 'predicted_state': prediction['state'],
+                           'predicted_state_mask': prediction['state_mask'],
+                           'predicted_bin_state': prediction['bin_state'],
+                           'predicted_bin_mask': prediction['bin_mask'], **driving})
+        return output
 
 
 class UpperInnovationFlow(nn.Module):
