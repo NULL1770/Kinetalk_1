@@ -1,3 +1,11 @@
+# Phase41最新运行状态（2026-10-07）
+
+新架构已实现，通过408本地测试/1skip、真实GPU梯度与精确恢复、小样本可学习性及16条评估。单seed47/24轮/10903fit正式任务已启动，唯一远端pipeline2694，本地collector13360。详情及恢复流程见 [PHASE41_IMPLEMENTATION_AND_TRAINING.md](PHASE41_IMPLEMENTATION_AND_TRAINING.md)。Git原成果bacdd88已推送；不重启旧Phase39。新的完整指标尚未产生；不可宣称SOTA或已完全解耦。
+
+# 2026-10-07 Phase41 最新授权与恢复入口
+
+用户已批准先Git上传，再实施研究方案、清理冗余、检验和训练，训练启动后给ETA退出。Git bacdd88已推送。当前任务读 docs/PHASE41_IMPLEMENTATION_AND_TRAINING.md；以下旧待批准/Git暂停/Phase39 ACTIVE均为历史。
+
 # 当前恢复入口：Phase39闭合并拒绝；新论文调研与proposal_v2已完成，待用户审阅
 
 上下文压缩后先读本文件、research_20261007/research_state.md、research_20261007/ARCHITECTURE_PROPOSAL.md；需要证据再读research_20261007/LITERATURE_SYNTHESIS.md、PHASE39_RESULTS.md和CURRENT_MODEL_AND_TRAINING.md。PHASE40_ARCHITECTURE_PROPOSAL是被用户否定的旧稿，不继续执行。旧进度已归档到archive/CURRENT_OPTIMIZATION_STATE_phase39_before_closure_20261007.md；不要恢复旧训练/collector。

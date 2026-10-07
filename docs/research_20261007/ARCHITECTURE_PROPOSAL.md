@@ -1,3 +1,5 @@
+> 2026-10-07 最新状态：用户已批准本方案实施；以下为原始研究提案，执行状态见 ../PHASE41_IMPLEMENTATION_AND_TRAINING.md。
+
 # 新架构研究方案：中性发音、条件表达响应、跨参考风格
 
 2026-10-07，proposal_v2，**仅供审阅，未实施**。取代旧PHASE40_ARCHITECTURE_PROPOSAL作为讨论稿；旧方案和失败实验保留，不覆盖证据。文献依据见LITERATURE_SYNTHESIS.md。本文中的效果均为待检验假设，不能预称最优或SOTA。

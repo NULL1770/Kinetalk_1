@@ -1,3 +1,5 @@
+> 最新：Phase41内容条件表达响应已实施并开始首轮训练；实际层数、各阶段数据、梯度职责与旧模型区别见 [PHASE41_IMPLEMENTATION_AND_TRAINING.md](PHASE41_IMPLEMENTATION_AND_TRAINING.md)。以下描述仍作为历史基线；新候选尚未完成质量验收，默认模型不变。
+
 # 当前模型与训练数据（2026-10-07，Phase39候选）
 
 Phase39三seed训练/1367validation×三draw评分/原SHA备份/固定八视频已闭合，联合gate均失败，不采用。最终原128/64 F1 .616752/.548809、MBE .906927、LBE .450506，未超过Phase37/34总体门槛。报告收尾NameError已用独立原SHA恢复闭合，旧failed证据保留；模型训练代码未新增修改。Phase40只是待用户确认的架构/训练提案，未启动；发布默认未换，Phase26 native-GT B0/1540成绩不属于本架构成果。最新入口先读CURRENT_OPTIMIZATION_STATE.md。
