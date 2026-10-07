@@ -1,0 +1,181 @@
+{
+  "generated_utc": "2026-10-07T09:55:31.369558+00:00",
+  "verified_new_pdfs": 21,
+  "sources": [
+    {
+      "id": "content_style",
+      "url": "https://arxiv.org/pdf/2408.07005",
+      "pdf": "papers\\content_style.pdf",
+      "sha256": "505c83c8f3e26d7e71b9c84784d970f3c12d0d2115c55ff31773dde9d754964d",
+      "pages": 20,
+      "metadata": "papers\\content_style_retrieval.json"
+    },
+    {
+      "id": "deeptalk",
+      "url": "https://arxiv.org/pdf/2408.06010",
+      "pdf": "papers\\deeptalk_curl.pdf",
+      "sha256": "f2776034694b789abb0a7b3532de9678c9f447bfc52e967a9265ac5bc50fe93d",
+      "pages": 19,
+      "metadata": "papers\\deeptalk_curl_retrieval.json"
+    },
+    {
+      "id": "diffposetalk_export",
+      "url": "https://export.arxiv.org/pdf/2310.00434",
+      "pdf": "papers\\diffposetalk_export.pdf",
+      "sha256": "69e8a0eeb7ef5b2c78010b70d964e0eaeaae652c233cdb09e331565c161d7203",
+      "pages": 9,
+      "metadata": "papers\\diffposetalk_export_retrieval.json"
+    },
+    {
+      "id": "echo",
+      "url": "https://arxiv.org/pdf/2609.05506",
+      "pdf": "papers\\echo.pdf",
+      "sha256": "23d1ae54350c8685195a72fd29c9906a1ceaf0d6b7bd68624296deece253b991",
+      "pages": 10,
+      "metadata": "papers\\echo_retrieval.json"
+    },
+    {
+      "id": "editemotalk",
+      "url": "https://arxiv.org/pdf/2601.10000",
+      "pdf": "papers\\editemotalk.pdf",
+      "sha256": "97e22f765af63bffc228946523bfa97fd68b6b2a1bcd022065ade03ae481794b",
+      "pages": 10,
+      "metadata": "papers\\editemotalk_retrieval.json"
+    },
+    {
+      "id": "emoface_export",
+      "url": "https://export.arxiv.org/pdf/2408.11518",
+      "pdf": "papers\\emoface_export.pdf",
+      "sha256": "b0b1454d4f47dea55a659cabae525df9ca063f947de4312f6c853c0ea0030605",
+      "pages": 14,
+      "metadata": "papers\\emoface_export_retrieval.json"
+    },
+    {
+      "id": "emote_export",
+      "url": "https://export.arxiv.org/pdf/2306.08990",
+      "pdf": "papers\\emote_export.pdf",
+      "sha256": "4bcb7c8e943ee617cfa53672dd47cc8c02298f489429ff0aa571fdf4e84e2c1b",
+      "pages": 23,
+      "metadata": "papers\\emote_export_retrieval.json"
+    },
+    {
+      "id": "exptalk_primary",
+      "url": "https://www.ijcai.org/proceedings/2025/0202.pdf",
+      "pdf": "papers\\exptalk_primary.pdf",
+      "sha256": "abad6c568b941f93ec9f1cae548bc6f4ff87f3ef804e3fe10eaab99352d48cf2",
+      "pages": 9,
+      "metadata": "papers\\exptalk_primary_retrieval.json"
+    },
+    {
+      "id": "fmreward",
+      "url": "https://arxiv.org/pdf/2608.15296",
+      "pdf": "papers\\fmreward.pdf",
+      "sha256": "90563d173903a4937d264706d88171a2cbfd939137e3cb57c3a9a1ada74be2f0",
+      "pages": 13,
+      "metadata": "papers\\fmreward_retrieval.json"
+    },
+    {
+      "id": "media2face_export",
+      "url": "https://export.arxiv.org/pdf/2401.15687",
+      "pdf": "papers\\media2face_export.pdf",
+      "sha256": "679eae4055d816d433fc7fc9896c8edaab8bafbb429bd759bd9561e946197e9b",
+      "pages": 14,
+      "metadata": "papers\\media2face_export_retrieval.json"
+    },
+    {
+      "id": "mimic_export",
+      "url": "https://export.arxiv.org/pdf/2312.10877",
+      "pdf": "papers\\mimic_export.pdf",
+      "sha256": "c728d57d821b3d7297a8d3c1a37d7b422bb09114464265dd2b61c733abc598a2",
+      "pages": 8,
+      "metadata": "papers\\mimic_export_retrieval.json"
+    },
+    {
+      "id": "perceptual2025",
+      "url": "https://export.arxiv.org/pdf/2503.20308",
+      "pdf": "papers\\perceptual2025.pdf",
+      "sha256": "f1ee4c8ab03d2d3b588b09608dc3cc9e55a6a153c3d1bb265df12d4c9ab1702e",
+      "pages": 18,
+      "metadata": "papers\\perceptual2025_retrieval.json"
+    },
+    {
+      "id": "personalized_style_export",
+      "url": "https://export.arxiv.org/pdf/2310.17011",
+      "pdf": "papers\\personalized_style_export.pdf",
+      "sha256": "b26f01390e6c78c5f484efda05525878ff84b33e334042cf2dc33bad4a00f0b2",
+      "pages": 8,
+      "metadata": "papers\\personalized_style_export_retrieval.json"
+    },
+    {
+      "id": "pestalk",
+      "url": "https://arxiv.org/pdf/2512.05121",
+      "pdf": "papers\\pestalk.pdf",
+      "sha256": "0a61d9ad8491f2592c0ace3d50bce2a609e6c01f723a51082261e57419225f48",
+      "pages": 9,
+      "metadata": "papers\\pestalk_retrieval.json"
+    },
+    {
+      "id": "said_export",
+      "url": "https://export.arxiv.org/pdf/2401.08655",
+      "pdf": "papers\\said_export.pdf",
+      "sha256": "ee4ddbf4aac42a7adfa3b6e4a09012f3d0b17c38816d1fc82bd22cd206c1dc41",
+      "pages": 17,
+      "metadata": "papers\\said_export_retrieval.json"
+    },
+    {
+      "id": "shape_speech",
+      "url": "https://arxiv.org/pdf/2610.03436",
+      "pdf": "papers\\shape_speech.pdf",
+      "sha256": "d0fd2f3676c39eca452bb82e71b0ab0ea03550e74215735e4d361f0652186ac5",
+      "pages": 11,
+      "metadata": "papers\\shape_speech_retrieval.json"
+    },
+    {
+      "id": "toktalk",
+      "url": "https://arxiv.org/pdf/2605.31294",
+      "pdf": "papers\\toktalk.pdf",
+      "sha256": "deaa8037d649efdbf9f60efc2400b72429373207abd71c85218b5d042dcdccf2",
+      "pages": 12,
+      "metadata": "papers\\toktalk_retrieval.json"
+    },
+    {
+      "id": "uncertainty_distill",
+      "url": "https://arxiv.org/pdf/2601.19112",
+      "pdf": "papers\\uncertainty_distill.pdf",
+      "sha256": "950d9c5442333d2af1726b3cad0ce882cb9605630d207cdff028fb672ebbbd60",
+      "pages": 5,
+      "metadata": "papers\\uncertainty_distill_retrieval.json"
+    },
+    {
+      "id": "unitalker_export",
+      "url": "https://export.arxiv.org/pdf/2408.00762",
+      "pdf": "papers\\unitalker_export.pdf",
+      "sha256": "e9272d246373d3f56bdc8629804c1fe070e4d589283556b3ac59fe9ba5714544",
+      "pages": 27,
+      "metadata": "papers\\unitalker_export_retrieval.json"
+    },
+    {
+      "id": "wav2sem_export",
+      "url": "https://export.arxiv.org/pdf/2505.23290",
+      "pdf": "papers\\wav2sem_export.pdf",
+      "sha256": "9b76a89227d2d3e4f8e9f642f95c85e848cfb948e72ad668e20d83b05ee1f94a",
+      "pages": 10,
+      "metadata": "papers\\wav2sem_export_retrieval.json"
+    },
+    {
+      "id": "wildwest_repo",
+      "url": "https://dspace.library.uu.nl/bitstreams/2cd8c7bf-5ccd-462e-a46d-91a3b28768ef/download",
+      "pdf": "papers\\wildwest_repo.pdf",
+      "sha256": "b629c4c500f0eff70049ec445aebffe8369be16d5ef66704ae2bff32065e623b",
+      "pages": 14,
+      "metadata": "papers\\wildwest_repo_retrieval.json"
+    }
+  ],
+  "reused_sources": "../../final_experiment/evaluation/diagnostics/paper_protocol_audit_20261007/retrieval.json",
+  "notes": [
+    "21 new PDF acquisitions; reading scope differs by paper, see synthesis.",
+    "ProsodyTalker publisher fetch helper stopped after prolonged non-completion; all completed per-paper manifests preserved.",
+    "Wrong PESTalk DOI probe is excluded. Correct PDF DOI is 10.1145/3746027.3755190; independent lookup failed SSL.",
+    "ECHO DOI query404; use as arXiv preprint, not independently confirmed acceptance."
+  ]
+}

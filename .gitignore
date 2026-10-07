@@ -62,3 +62,21 @@ Thumbs.db
 /final_experiment/logs/
 /final_experiment/paper_tables/internal/
 /final_experiment/code/
+
+# Private execution helpers and recoverable local experiment artifacts
+/.codex-finalizer/
+/.tmp*
+/.pptx_build/
+/.pptx_inspect/
+/pptx_output/
+/final_experiment/remote_archives/
+/remote_manifest.json
+/tmp_manifest_*.py
+
+# Research originals are retained locally; publish our synthesis and source hashes
+/docs/research_20261007/papers/
+/docs/research_20261007/fulltext/
+/docs/research_20261007/searches/*.json
+/docs/research_20261007/searches/*.html
+/docs/research_20261007/evidence/*_excerpts.txt
+/docs/research_20261007/evidence/claim_ledger.json

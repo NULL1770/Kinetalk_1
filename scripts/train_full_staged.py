@@ -197,6 +197,22 @@ def flow_vector_mse(prediction, target, observed, channel_std=None):
     return (error / units).square().mean()
 
 
+def coordinate_flow_error_std(source_std, *, mode='coordinate'):
+    """Choose error units independently of standardized renderer coordinates.
+
+    Physical mode retains the original scalar residual normalization (0.25);
+    it does not alter the renderer, its conditions or the Gaussian source.
+    Default coordinate mode preserves all existing standardized computations.
+    """
+    if mode not in ('coordinate', 'physical'):
+        raise ValueError('Coordinate flow error mode must be coordinate or physical')
+    if (not torch.is_tensor(source_std) or source_std.ndim != 1 or
+            not source_std.is_floating_point() or not torch.isfinite(source_std).all() or
+            (source_std <= 0).any()):
+        raise ValueError('Coordinate flow error requires positive finite TRAIN std')
+    return source_std if mode == 'coordinate' else None
+
+
 def balanced_flow_units(channel_std, support):
     """Normalize TRAIN inverse-variance weights to mean one on fixed support.
 
@@ -465,9 +481,33 @@ def safe_target_batch(targets, clip_ids, width, device, fallback_motion=None, fa
             raise KeyError(f'Missing safe-DTW target for {clip}')
     return motion, valid, channel
 
-def optimize(loss,opt,params):
+def expression_gradient_view(value):
+    """Identical motion/velocity values; only native brow/eye Jacobians remain.
+
+    Used exclusively to compute replacement student gradients. The renderer
+    still backpropagates the complete original objective, with all mouth
+    channels open. No learned mask, target, forward projection or RNG.
+    """
+    if value.ndim != 3 or value.shape[-1] != 52:
+        raise ValueError('Expression gradient view requires [B,T,52]')
+    support = torch.zeros(52, dtype=torch.bool, device=value.device)
+    support[list(UPPER_INDICES)] = True
+    return torch.where(support, value, value.detach())
+
+
+def student_gradient_overrides(student_loss, audio):
+    """Differentiate the existing loss view only with respect to the student."""
+    parameters = [p for p in audio.parameters() if p.requires_grad]
+    gradients = torch.autograd.grad(student_loss, parameters, retain_graph=True, allow_unused=True)
+    return list(zip(parameters, gradients))
+
+
+def optimize(loss,opt,params,*,gradient_overrides=None):
     if not torch.isfinite(loss): raise FloatingPointError('Nonfinite objective')
     opt.zero_grad(set_to_none=True); loss.backward()
+    if gradient_overrides is not None:
+        for parameter, gradient in gradient_overrides:
+            parameter.grad = None if gradient is None else gradient.detach()
     norm=torch.nn.utils.clip_grad_norm_(params,1.,error_if_nonfinite=True)
     opt.step()
     return float(norm)
@@ -594,6 +634,40 @@ def train_global_prototypes(system, train, identities, device, batch_size, class
         labels.append(b['emotion_id'].cpu())
     means, counts = class_global_means(torch.cat(codes), torch.cat(labels), classes)
     return means.to(device), counts
+
+
+def emotion_intensity_prototypes(codes, emotions, levels, classes, num_levels):
+    """TRAIN label lookup: no query-specific residual latent in the target."""
+    if (codes.ndim != 2 or emotions.shape != (len(codes),) or levels.shape != emotions.shape or
+            emotions.dtype != torch.long or levels.dtype != torch.long or not torch.isfinite(codes).all() or
+            (emotions < 0).any() or (emotions >= classes).any() or
+            (levels < 0).any() or (levels >= num_levels).any()):
+        raise ValueError('Known emotion/intensity labels and finite TRAIN codes required')
+    index = emotions*num_levels + levels
+    counts = torch.bincount(index, minlength=classes*num_levels)
+    sums = codes.new_zeros(classes*num_levels, codes.shape[1]).index_add_(0,index,codes)
+    means = sums / counts.clamp_min(1)[:,None].to(codes)
+    return means.reshape(classes,num_levels,-1), counts.reshape(classes,num_levels)
+
+
+@torch.no_grad()
+def train_emotion_intensity_prototypes(system, train, identities, device, batch_size, classes, num_levels):
+    codes, emotions, levels = [], [], []
+    for ix in torch.arange(len(train['valid'])).split(batch_size):
+        b = subset(train, ix, device)
+        if not b['intensity_valid'].all():
+            raise ValueError('Named target trial requires known TRAIN intensity annotations')
+        codes.append(teacher_affect(system,b,batch_identity(identities,b))['global'].cpu())
+        emotions.append(b['emotion_id'].cpu());levels.append(b['intensity_id'].cpu())
+    means, counts = emotion_intensity_prototypes(torch.cat(codes),torch.cat(emotions),torch.cat(levels),classes,num_levels)
+    return means.to(device), counts
+
+
+def native_expression_target(batch, scales, stride):
+    """Four native upper-expression proxies relative to independent enrollment."""
+    observed = obs(batch) & batch['anchor_valid'][:,None]
+    state, mask = readout_slow_state(batch['motion'],observed,batch['anchors'],scales)
+    return masked_slow_state(state,mask,stride=stride)
 
 def audio_affect(audio, features, valid, *, global_dropout=0., dropout_generator=None):
     """Call the deployable audio path without reviving legacy state outputs.
@@ -890,6 +964,12 @@ def parser():
                    help='Explicitly drop HuBERT columns of a 1540D warm student; downstream adaptation required')
     p.add_argument('--freeze-renderer-audio', action='store_true',
                    help='Isolated warm-start audio-stage ablation: optimize student through a fixed renderer')
+    p.add_argument('--audio-gradient-scope', choices=('full', 'expression'), default='full',
+                   help='Isolated student gradient trial: native brow/eye flow and generated-semantic derivatives; full renderer/forward retained')
+    p.add_argument('--audio-supervision', choices=('flow', 'expression-prosody'), default='flow',
+                   help='Named expression/prosody student: native four-state target and TRAIN emotion/intensity prototypes; full renderer conditions detached')
+    p.add_argument('--renderer-expression-modulation', action='store_true',
+                   help='Isolated named-state receiver: zero-start framewise output-token shift/scale from the four expression states; no new loss or regional output mask')
     p.add_argument('--allow-residual-support-expansion', action='store_true',
                    help='Warm-start from a checkpoint with a strict subset of residual channels; only expansion is allowed and recorded in the recipe')
     p.add_argument('--identity-epochs',type=int,default=None)
@@ -925,6 +1005,8 @@ def parser():
                    help='Existing flow error units; isolated matched diagonal-source trial')
     p.add_argument('--flow-coordinate-system', choices=('scalar', 'train-centered-scalar', 'train-standardized'), default='scalar',
                    help='Isolated TRAIN coordinate refit with shared mean-field head initialization')
+    p.add_argument('--flow-coordinate-loss-units', choices=('coordinate', 'physical'), default='coordinate',
+                   help='Standardized-coordinate flow error units; physical retains the original common residual scalar')
     p.add_argument('--flow-source-temporal-stats', type=Path,
                    help='Bound TRAIN within-clip lag moments; same evidence file in all temporal trial arms')
     p.add_argument('--emotion-class-balance-power',type=float,default=0.0,
@@ -965,8 +1047,31 @@ def main():
             args.flow_source_noise != 'train-residual-std' or args.flow_source_stats is None or
             args.flow_vector_units != 'scalar' or args.resume):
         raise ValueError('Coordinate refit requires bound diagonal source, scalar units option and a fresh run')
+    if args.flow_coordinate_loss_units == 'physical' and (
+            args.flow_coordinate_system != 'train-standardized' or args.audio_feature_layout != 'affect-prosody'):
+        raise ValueError('Physical error trial requires standardized coordinates and the affect-only student')
     if args.flow_source_noise != 'standard' and args.flow_source_stats is None:
         raise ValueError('TRAIN-scaled flow source requires fixed statistics')
+    if args.audio_gradient_scope == 'expression' and (
+            args.paper_data is None or args.stage_checkpoint is None or args.resume or
+            args.start_stage != 'audio' or args.end_stage != 'audio' or args.ablation != 'none' or
+            args.audio_feature_layout != 'affect-prosody' or args.protect_mouth or
+            args.articulatory_mouth_only or args.freeze_renderer_audio or
+            args.endpoint_weight != 0 or args.content_timing_weight != 0 or
+            args.ordinal_mouth_weight != 0 or args.independent_probe_weight != 0 or
+            args.motion_statistics_weight != 0):
+        raise ValueError('Expression gradient trial requires isolated full-mouth 772D audio stage and original losses')
+    if args.renderer_expression_modulation and args.audio_supervision != 'expression-prosody':
+        raise ValueError('Expression modulation requires expression-prosody supervision')
+    if args.audio_supervision == 'expression-prosody' and (
+            args.paper_data is None or args.stage_checkpoint is None or args.resume or
+            args.start_stage != 'audio' or args.end_stage != 'audio' or args.ablation != 'none' or
+            args.audio_feature_layout != 'affect-prosody' or args.audio_gradient_scope != 'full' or
+            args.protect_mouth or args.articulatory_mouth_only or args.freeze_renderer_audio or
+            args.global_distill_target != 'clip' or args.global_distill_gate != 'all' or
+            args.global_distill_weight != .5 or args.endpoint_weight != 0 or args.content_timing_weight != 0 or
+            args.ordinal_mouth_weight != 0 or args.independent_probe_weight != 0 or args.motion_statistics_weight != 0):
+        raise ValueError('Named supervision requires isolated full-mouth 772D audio stage and the fixed replacement recipe')
     if (args.flow_source_noise == 'train-residual-ar' and args.flow_source_temporal_stats is None or
             args.flow_source_temporal_stats is not None and args.flow_source_stats is None):
         raise ValueError('Temporal source requires both fixed TRAIN spread and lag statistics')
@@ -1124,11 +1229,22 @@ def main():
     data['feature_stats'] = affect_audio_statistics(data['feature_stats'], args.audio_feature_layout)
     cfg['model']['audio_feature_layout'] = args.audio_feature_layout
     mean=data['feature_stats']['mean'];std=data['feature_stats']['std']
-    audio=SlowStateAffect(mean,std,stride=args.stride).to(args.device).eval()
+    temporal_layout = 'expression-prosody' if args.audio_supervision == 'expression-prosody' else 'latent'
+    if temporal_layout != 'latent':
+        cfg['model']['audio_temporal_layout'] = temporal_layout
+        cfg['model']['audio_temporal_stride'] = args.stride
+    audio=SlowStateAffect(mean,std,stride=args.stride,temporal_layout=temporal_layout).to(args.device).eval()
     if args.stage_checkpoint:
         saved=torch.load(args.stage_checkpoint,map_location='cpu',weights_only=False)
+        if (saved.get('config',{}).get('model',{}).get('audio_temporal_layout') == 'expression-prosody'
+                and args.audio_supervision != 'expression-prosody'):
+            raise ValueError('Named-condition checkpoint requires matching expression-prosody supervision; use from_checkpoint for inference')
         if saved.get('data_manifest_sha256')!=data['provenance'].get('manifest_sha256'):
             raise ValueError('Stage checkpoint belongs to another data protocol')
+        if saved.get('config',{}).get('model',{}).get('renderer_expression_modulation', False):
+            if not args.renderer_expression_modulation:
+                raise ValueError('Expression-modulated checkpoint requires its matching renderer option')
+            system.renderer.set_expression_modulation(True)
         if saved.get('config', {}).get('model', {}).get('flow_source_std') is not None and args.flow_source_noise == 'standard':
             raise ValueError('A scaled-source checkpoint requires its matching explicit source recipe')
         if saved.get('config', {}).get('model', {}).get('flow_source_rho') is not None and args.flow_source_noise != 'train-residual-ar':
@@ -1157,6 +1273,9 @@ def main():
                 raise ValueError('Stage checkpoint residual support differs; use matching protection mode or a strict support expansion')
         del saved
     elif args.start_stage!='articulation':raise ValueError('Starting later requires matching stage checkpoint')
+    if args.renderer_expression_modulation:
+        cfg['model']['renderer_expression_modulation'] = True
+        system.renderer.set_expression_modulation(True)
     source_info = None
     temporal_source_info = None
     flow_vector_std = None
@@ -1175,7 +1294,7 @@ def main():
             flow_coordinate_info = configure_flow_coordinates(system, cfg, args.flow_source_stats,
                 source_std, residual_support, args.flow_coordinate_system)
             if args.flow_coordinate_system == 'train-standardized':
-                flow_vector_std = source_std.to(args.device)
+                flow_vector_std = coordinate_flow_error_std(source_std.to(args.device), mode=args.flow_coordinate_loss_units)
         if args.flow_source_temporal_stats is not None:
             source_rho, temporal_source_info = load_flow_temporal_stats(args.flow_source_temporal_stats,
                 checkpoint_sha256=sha(args.stage_checkpoint), manifest_sha256=data['provenance']['manifest_sha256'],
@@ -1263,8 +1382,10 @@ def main():
             'scope': 'local token interaction before DiT attention; no output filter or new loss',
         },
         'global_distill_target': {
-            'mode': args.global_distill_target, 'weight': args.global_distill_weight,
-            'source': 'frozen teacher real TRAIN class mean' if args.global_distill_target != 'clip' else 'frozen per-clip teacher',
+            'mode': 'emotion-intensity-prototype' if temporal_layout != 'latent' else args.global_distill_target,
+            'weight': args.global_distill_weight,
+            'source': ('frozen teacher TRAIN emotion/intensity cell means' if temporal_layout != 'latent' else
+                       'frozen teacher real TRAIN class mean' if args.global_distill_target != 'clip' else 'frozen per-clip teacher'),
             'other_conditions': 'intensity and temporal audio unchanged',
         },
         'global_distill_gate': {
@@ -1279,6 +1400,10 @@ def main():
                               'statistics': source_info if flow_vector_std is not None else None,
                               'scope': 'Existing flow MSE units only; no extra loss or forward/output change'},
         'flow_coordinate_system': flow_coordinate_info,
+        'flow_coordinate_loss_units': {
+            'mode': args.flow_coordinate_loss_units,
+            'effective_error': 'TRAIN channel std' if flow_vector_std is not None else 'common residual scalar',
+            'scope': 'Flow error metric only; forward coordinates and all other loss terms unchanged'},
         'endpoint_weight': float(args.endpoint_weight),
         'output_projection': {
             'enabled': bool(args.bounded_output),
@@ -1290,6 +1415,21 @@ def main():
         'warm_start':bool(args.stage_checkpoint) or not bool(args.paper_data),'stage_checkpoint_sha256':sha(args.stage_checkpoint) if args.stage_checkpoint else None,
         'allow_residual_support_expansion': bool(args.allow_residual_support_expansion),
         'new_audio_global':f'{audio.input.in_features}D {args.audio_feature_layout} student; global/intensity/u_a share its selected acoustic input',
+        'audio_gradient_scope': {
+            'mode': args.audio_gradient_scope,
+            'channels': list(UPPER_INDICES) if args.audio_gradient_scope == 'expression' else None,
+            'scope': 'Student flow/generated-semantic Jacobians only; original full renderer objective, forward and semantic/global targets retained',
+            'fully_disentangled': False,
+        },
+        'audio_supervision': {
+            'mode': args.audio_supervision,
+            'temporal_layout': temporal_layout,
+            'state_target': 'native four signed upper states, independent neutral anchors, validated TRAIN scales and fixed spline' if temporal_layout != 'latent' else None,
+            'global_target': 'TRAIN emotion/intensity label prototype' if temporal_layout != 'latent' else args.global_distill_target,
+            'state_weight': 1.0 if temporal_layout != 'latent' else 0.,
+            'renderer_condition_gradient_to_student': temporal_layout == 'latent',
+            'fully_disentangled': False,
+        },
         'audio_feature_layout': {
             'mode': args.audio_feature_layout, 'student_dimensions': audio.input.in_features,
             'packed_dimensions': data['feature_stats']['source_feature_width'],
@@ -1315,6 +1455,12 @@ def main():
         'affect_mouth_indices':list(AFFECT_MOUTH),
         'mouth_reference_calibration':cfg['model'].get('mouth_reference_calibration'),
         'test_loaded':False,'default_replaced':False,'checkpoint_selection':'Fixed final epoch; intermediate validation not used for selection'}
+    if args.renderer_expression_modulation:
+        recipe['renderer_expression_modulation'] = {
+            'enabled': True, 'inputs': 'named ua first four expression states only',
+            'parameters': 'Linear4->2*dit_dim, zero weight and bias',
+            'scope': 'Framewise shift/scale of complete output tokens; original losses and full mouth support',
+        }
     if args.safe_dtw_root:
         recipe['safe_dtw_manifest_sha256'] = sha(args.safe_dtw_root / 'teacher_manifest_gated.jsonl')
         recipe['safe_dtw_artifacts_sha256'] = canonical_hash({cid:v[4] for cid,v in sorted(safe_targets.items())})
@@ -1332,7 +1478,9 @@ def main():
     if args.paper_data:
         recipe.update(
           condition='native full audio + independent neutral identity + teacher global affect + stochastic residual flow',
-          dynamic_objective='flow matching with audio temporal condition; no framewise target or Stage5',
+          dynamic_objective=('full renderer flow with detached named conditions; student native expression-state target and measured prosody'
+                             if temporal_layout != 'latent' else
+                             'flow matching with audio temporal condition; no framewise target or Stage5'),
           starting_stage=args.start_stage,acoustic_extractors='frozen pretrained content/audio features; trainable audio student in Stage3/4')
     recipe_hash=canonical_hash(recipe);args.output.mkdir(parents=True,exist_ok=True)
     gen=torch.Generator().manual_seed(args.seed)
@@ -1356,6 +1504,15 @@ def main():
     cache_current_base(system,data,args.device)
     identities=identity_cache(system,data,args.device)
     global_prototypes = None
+    prototype_counts = None
+    if args.audio_supervision == 'expression-prosody':
+        global_prototypes, prototype_counts = train_emotion_intensity_prototypes(
+            system, data['splits']['train'], identities, args.device,
+            args.batch_size, len(cfg['data']['emotion_classes']), cfg['data']['num_intensity_levels'])
+        save_checkpoint(args.output / 'global_distill_prototypes.pt', {
+            'means':global_prototypes.cpu(),'counts':prototype_counts,'test_loaded':False,
+            'fit_split':'train','recipe_sha256':recipe_hash,
+            'data_manifest_sha256':data['provenance'].get('manifest_sha256')})
     if args.global_distill_target == 'class-prototype':
         global_prototypes, prototype_counts = train_global_prototypes(
             system, data['splits']['train'], identities, args.device,
@@ -1491,15 +1648,33 @@ def main():
                                 audio_output=audio_affect(audio,b['audio_features'],b['valid'],
                                     global_dropout=args.audio_global_dropout, dropout_generator=global_dropout_gen)
                                 affect=audio_output
-                                distill_target = (teacher['global'] if global_prototypes is None
-                                                  else global_prototypes[b['emotion_id']])
+                                if args.audio_supervision == 'expression-prosody':
+                                    if not b['intensity_valid'].all() or not prototype_counts[b['emotion_id'].cpu(),b['intensity_id'].cpu()].gt(0).all():
+                                        raise ValueError('Every training target requires an observed emotion/intensity prototype')
+                                    distill_target = global_prototypes[b['emotion_id'],b['intensity_id']]
+                                else:
+                                    distill_target = (teacher['global'] if global_prototypes is None
+                                                      else global_prototypes[b['emotion_id']])
                                 distill, distill_retained = global_distillation(
                                     affect['global'], distill_target, teacher['emotion_logits'],
                                     b['emotion_id'], gate=args.global_distill_gate)
-                            out=system.flow(b['motion'],b['content'],b['valid'],identity,affect,noise=noise,time=ft,base=base,observation_mask=b['channel_mask'])
+                            flow_affect = ({k:v.detach() for k,v in affect.items()}
+                                           if args.audio_supervision == 'expression-prosody' else affect)
+                            out=system.flow(b['motion'],b['content'],b['valid'],identity,flow_affect,noise=noise,time=ft,base=base,observation_mask=b['channel_mask'])
                             flow=flow_vector_mse(out['prediction'],out['velocity_target'],out['observation_mask'],flow_vector_std);semantic=semantics(affect,b,emotion_class_weights)
                             loss=flow+.1*semantic+(args.global_distill_weight*distill if stage=='audio' else 0)
                             values={'flow':flow,'semantic':semantic,'global_distill':distill}
+                            if args.audio_supervision == 'expression-prosody':
+                                expression_target = native_expression_target(b,scales,args.stride)
+                                expression_loss = flow_vector_mse(audio_output['expression_state'],expression_target['state'],expression_target['state_mask'])
+                                loss = loss + expression_loss
+                                values['expression_state'] = expression_loss
+                            student_loss = None
+                            if args.audio_gradient_scope == 'expression':
+                                student_flow = flow_vector_mse(
+                                    expression_gradient_view(out['prediction']), out['velocity_target'],
+                                    out['observation_mask'], flow_vector_std)
+                                student_loss = student_flow + .1*semantic + args.global_distill_weight*distill
                             if stage == 'audio' and args.ablation != 'no_teacher':
                                 values['global_distill_retained'] = distill_retained
                             if args.endpoint_weight > 0:
@@ -1540,6 +1715,15 @@ def main():
                                     consistency['emotion_ce']+
                                     args.emotion_intensity_weight*consistency['intensity_ce'])
                                 loss=loss+args.emotion_consistency_weight*generated_semantic
+                                if student_loss is not None:
+                                    student_consistency = generated_emotion_consistency(
+                                        system, {**out, 'motion': expression_gradient_view(out['motion'])},
+                                        b, identity, affect, emotion_class_weights=emotion_class_weights)
+                                    student_semantic = (
+                                        args.emotion_global_weight*student_consistency['global'] +
+                                        student_consistency['emotion_ce'] +
+                                        args.emotion_intensity_weight*student_consistency['intensity_ce'])
+                                    student_loss = student_loss + args.emotion_consistency_weight*student_semantic
                                 values.update({
                                     'generated_emotion':consistency['emotion_ce'],
                                     'generated_global':consistency['global'],
@@ -1572,7 +1756,12 @@ def main():
                             # flow matching plus global semantic supervision is
                             # the objective, while stochastic sampling handles
                             # the one-to-many motion at inference.
-                    norm=optimize(loss,optimizer,parameters);total_steps+=1
+                    if args.audio_gradient_scope == 'expression':
+                        gradients = student_gradient_overrides(student_loss, audio)
+                        norm=optimize(loss,optimizer,parameters,gradient_overrides=gradients)
+                    else:
+                        norm=optimize(loss,optimizer,parameters)
+                    total_steps+=1
                     for k,v in {'total':loss,**values}.items():sums.setdefault(k,[]).append(float(v.detach()))
                     if bi%25==0:
                         progress={'event':'batch','stage':stage,'epoch':epoch+1,'batch':bi+1,'batches':len(epoch_batches),'loss':float(loss.detach()),'grad_norm':norm}

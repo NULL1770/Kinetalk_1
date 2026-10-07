@@ -226,15 +226,17 @@ class SlowStateAffect(nn.Module):
     """Global affect and a native-rate expressive condition from emotion audio.
 
     New 772D students use emotion2vec+prosody, excluding direct HuBERT inputs.
-    ``u_a`` is intended to carry expressive dynamics; it has no direct
-    framewise teacher target, so input selection alone does not prove content
-    independence. The legacy ``local`` and slow-state
+    The default latent ``u_a`` has no direct framewise target. The named
+    expression/prosody layout uses four supervised upper-expression states
+    and four measured prosody channels. Neither input selection nor these
+    expression proxies prove full content independence. The legacy ``local`` and slow-state
     keys remain in the return dictionary for old checkpoints and diagnostics,
     but the deployable architecture consumes ``u_a`` only.
     """
 
     def __init__(self, feature_mean, feature_std, *, global_dim=64, hidden=128,
-                 local_dim=64, num_emotions=8, num_levels=4, stride=16):
+                 local_dim=64, num_emotions=8, num_levels=4, stride=16,
+                 temporal_layout='latent'):
         super().__init__()
         if (not torch.is_tensor(feature_mean) or feature_mean.ndim != 1
                 or not torch.is_tensor(feature_std) or feature_std.shape != feature_mean.shape
@@ -245,6 +247,11 @@ class SlowStateAffect(nn.Module):
         if any(type(v) is not int or v < 1 for v in (global_dim, hidden, local_dim, num_emotions, num_levels, stride)):
             raise ValueError('All model dimensions and stride must be positive integers')
         self.stride = stride
+        if temporal_layout not in ('latent', 'expression-prosody'):
+            raise ValueError('Unknown temporal condition layout')
+        if temporal_layout == 'expression-prosody' and (feature_mean.numel() != 772 or local_dim < 8):
+            raise ValueError('Named expression/prosody requires 772 acoustic features and at least eight condition slots')
+        self.temporal_layout = temporal_layout
         # Serialized 772D moments unambiguously identify emotion2vec+prosody.
         # Legacy checkpoint statistics retain their original input behavior.
         self.input_feature_layout = ('affect-prosody' if feature_mean.numel() == 772
@@ -319,16 +326,38 @@ class SlowStateAffect(nn.Module):
             driving = masked_slow_state(state_override, override_mask, stride=self.stride)
         elif state_override_mask is not None:
             raise ValueError('An oracle mask requires an oracle state override')
+        if self.temporal_layout == 'expression-prosody':
+            # Four supervised expression proxies plus the four measured native
+            # prosody channels; no phonetic or unconstrained hidden-token bypass.
+            prosody = torch.where(valid[..., None], normalized[..., -4:], 0.)
+            local = F.pad(torch.cat((driving['state'], prosody), dim=-1),
+                          (0, self.local_head.out_features - 8))
         output = {'global': global_code, 'u_a': local, 'temporal': local,
                   'emotion_logits': emotion_logits,
                   'intensity_logits': intensity_logits,
                   'intensity_value': (intensity_logits.softmax(-1) * levels).sum(-1, keepdim=True)}
+        if self.temporal_layout == 'expression-prosody':
+            output.update(expression_state=prediction['state'], expression_state_mask=prediction['state_mask'])
         if include_legacy_state:
             output.update({'local': local, 'predicted_state': prediction['state'],
                            'predicted_state_mask': prediction['state_mask'],
                            'predicted_bin_state': prediction['bin_state'],
                            'predicted_bin_mask': prediction['bin_mask'], **driving})
         return output
+
+    @classmethod
+    def from_checkpoint(cls, checkpoint, *, stride=16):
+        """Restore the serialized condition meaning, including legacy models."""
+        state = checkpoint['audio']
+        model = checkpoint['config']['model']
+        student = cls(checkpoint['feature_stats']['mean'], checkpoint['feature_stats']['std'],
+            hidden=state['input.weight'].shape[0], global_dim=state['global_head.weight'].shape[0],
+            local_dim=state['local_head.weight'].shape[0], num_emotions=state['emotion_classifier.weight'].shape[0],
+            num_levels=state['intensity_classifier.weight'].shape[0],
+            stride=model.get('audio_temporal_stride', stride),
+            temporal_layout=model.get('audio_temporal_layout', 'latent'))
+        student.load_state_dict(state, strict=True)
+        return student
 
 
 class UpperInnovationFlow(nn.Module):

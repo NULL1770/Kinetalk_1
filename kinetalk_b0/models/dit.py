@@ -89,6 +89,7 @@ class ResidualDiT(nn.Module):
         global_dropout: float = 0.1,
         style_dropout: float = 0.1,
         temporal_adapter: bool = False,
+        expression_modulation: bool = False,
     ):
         super().__init__()
         self.global_dropout = global_dropout
@@ -122,6 +123,25 @@ class ResidualDiT(nn.Module):
             if index < motion_dim:
                 affect_mask[index] = True
         self.register_buffer("affect_output_mask", affect_mask, persistent=False)
+        self.expression_modulation = None
+        self.set_expression_modulation(expression_modulation)
+
+    def set_expression_modulation(self, enabled: bool) -> None:
+        """Opt-in framewise shift/scale from four explicitly named states.
+
+        The zero start preserves the old output and RNG. This modulates the
+        complete velocity head; it does not select or overwrite face regions.
+        """
+        if type(enabled) is not bool:
+            raise ValueError("expression_modulation must be Boolean")
+        if enabled and self.expression_modulation is None:
+            with torch.random.fork_rng(devices=[]):
+                modulation = nn.Linear(4, 2 * self.motion_input.out_features)
+                nn.init.zeros_(modulation.weight)
+                nn.init.zeros_(modulation.bias)
+            self.expression_modulation = modulation.to(self.motion_input.weight)
+        elif not enabled:
+            self.expression_modulation = None
 
     def set_channel_coordinates(self, mean=None, std=None) -> None:
         """Use TRAIN-centered coordinates while returning physical velocities.
@@ -190,6 +210,14 @@ class ResidualDiT(nn.Module):
         if temporal_condition is not None and local_emotion is not None:
             raise ValueError("Pass only one temporal condition alias")
         temporal = temporal_condition if temporal_condition is not None else local_emotion
+        if self.expression_modulation is not None:
+            if (temporal is None or temporal.ndim != 3 or temporal.shape[:2] != x_t.shape[:2]
+                    or temporal.shape[-1] != self.local_emotion.in_features
+                    or temporal.device != x_t.device or not temporal.is_floating_point()):
+                raise ValueError("Expression modulation requires the named temporal condition")
+            temporal = temporal if mask is None else torch.where(mask[..., None], temporal, 0.)
+            if not torch.isfinite(temporal[..., :4]).all():
+                raise ValueError("Observed expression states must be finite")
         if temporal is not None:
             context = context + self.local_emotion(temporal)
         coordinate_input = ((x_t - time[:, None, None] * self.coordinate_mean) / self.coordinate_std
@@ -206,6 +234,9 @@ class ResidualDiT(nn.Module):
             tokens = block(tokens, context, global_condition, self.style(style), mask)
         shift, scale = self.output_modulation(global_condition).chunk(2, dim=-1)
         tokens = self.output_norm(tokens) * (1.0 + scale.unsqueeze(1)) + shift.unsqueeze(1)
+        if self.expression_modulation is not None:
+            expression_shift, expression_scale = self.expression_modulation(temporal[..., :4]).chunk(2, dim=-1)
+            tokens = tokens * (1.0 + expression_scale) + expression_shift
         velocity = self.output(tokens)
         # The ordinary AdaLN path can learn to ignore a clip-level emotion
         # code while fitting the flow objective.  This output-side route makes

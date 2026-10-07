@@ -276,7 +276,11 @@ class NeutralAffectSystem(nn.Module):
             dropout=float(model["dropout"]), intensity_dim=1,
             global_dropout=float(model.get("global_condition_dropout", 0.0)),
             style_dropout=float(model.get("style_condition_dropout", 0.0)),
-            temporal_adapter=model.get("renderer_temporal_adapter", False))
+            temporal_adapter=model.get("renderer_temporal_adapter", False),
+            expression_modulation=model.get("renderer_expression_modulation", False))
+        if (model.get("renderer_expression_modulation", False)
+                and model.get("audio_temporal_layout") != "expression-prosody"):
+            raise ValueError("Expression modulation requires the named expression-prosody student")
         self.renderer.set_channel_coordinates(model.get("flow_coordinate_mean"), model.get("flow_coordinate_std"))
         self.register_buffer("architecture_version", torch.tensor(10))
         # Support is a train-protocol property, never inferred from a query's
