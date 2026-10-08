@@ -23,6 +23,30 @@ After each arm: full 1,367-clip raw/clip metrics, four fixed probes, per-class/p
 
 Phase42 improved geometry but worsened F1 and jaw range; it is not the selected new default. Phase43 has no performance result yet. Neutral supports may only reveal habitual neutral articulation; they do not uniquely identify an actor's full emotional style. The posterior sees GT residuals and may still encode B0 errors. Centering and reference exposure do not prove content disentanglement, correct style transfer, or audio-GT dynamic correspondence. Independent phoneme readout, target-style validation, matched-budget baselines, multiple seeds and public-benchmark evidence remain needed for paper claims.
 
+## Current candidate architecture and data
+
+| Part | Inputs and model | Learning responsibility |
+|---|---|---|
+| Neutral B0 | Original frozen neutral checkpoint; speech content features | Supplies the neutral articulation sequence, with no gradient updates in this experiment |
+| Audio prior p | emotion2vec768 + prosody4 only; 128-wide encoder, 4 temporal convolution blocks + 2 Transformer layers (4 heads); global32, local16 at stride2 | Global emotion/intensity supervision and normalized q/p Gaussian KL; query-motion reconstruction cannot backpropagate into p |
+| Motion posterior q | Observed GT residual, B0, adjacent residual displacement, channel support, detached style64; 128-wide encoder, 3 temporal blocks + 2 Transformer layers | Training-only inference from motion; stochastic q reconstruction, KL, and global semantic supervision; not an emotion-only oracle |
+| Reference style | Two independent same-person neutral supports; residual/B0/channel support156; 128-wide 3 temporal blocks, projection64, mean across observed references then 2-layer MLP | Learns through same-person query reconstruction; no speaker embedding table, no new identity classification loss |
+| Response decoder | B0 52 to hidden192; 4 modulated temporal convolution blocks; conditions global32 + local16 + style64; full52 output and style bias | Produces expression and mouth-amplitude changes on the original clock; all observed mouth channels remain available |
+
+Total newly trained parameters: 2,176,948 in each arm. B0 is external and frozen. q, p, style and decoder train together from fresh initialization; the prior receives KL/semantic gradients, while an additional detached-prior reconstruction term starts after epoch4 to train the decoder for deployment inputs. No new objective was introduced in Phase43.
+
+The existing TRAIN set has 12,536 query clips; the fixed internal split uses 10,903 fit clips, 743 held-speaker clips and 890 held-sentence clips. The external development set has 1,367 clips. There are 50 independent enrollment clips (two for each identity); query/enrollment clip and sentence overlap is zero in the audited data. Native query motion supervises expression response; neutral B0 supervision is not changed. No new pair-exchange training was added, and low-quality pairs are not newly admitted. All new normalization uses the fit split only. This is a development comparison, not the final all-data paper training.
+
 ## Preflight completed
 
 All three 120-update fits passed (last/first reconstruction ratios 0.228, 0.230, 0.228). All three longest-16-clip/432-frame gradient and exact-resume checks passed. GPU allocation peaks approximately 3.4–3.5 GB per process; all three 16-clip evaluations passed. Formal launch follows source snapshot and concurrency checks. Small-data fit is a correctness check, not improved validation performance.
+
+## Formal launch dispatched
+
+Implementation snapshot b34c7edd67ed9600a5dc6154c88447a918ba8598 pushed. Remote PIDs A=6344, B=6345, AB=6346. Local finite collector PID39796. The source-bound preflight/launch backup has 208 members, all original SHA verified. Root free at launch 2,335,264,768 bytes; conservative sum of longest-batch GPU allocation peaks 10,418,202,624 bytes on 25,757,220,864 bytes total GPU. Each arm uses its own checkpoint/log/binding and shared immutable code. At dispatch models first cache frozen B0; do not treat pipeline status alone as proof of optimizer progress.
+
+The local table formatter has only an LF CSV line-ending change after the remote code freeze; it does not participate in training/evaluation. Remote source SHA bindings, not the Git commit alone, identify exact executed files. The old preflight failure is preserved in the backup.
+
+## Optimizer progress verified
+
+All three arms reached at least 101 actual optimizer updates (epoch1), with finite losses/gradients. Initial model digest is identical in all three formal runs: `346bde357868122a52e3aab963b2278c128798d1259f5daa977ba491dd6d5356`. At this observation A/B/AB cost 0.471/0.559/0.506 seconds per update; total GPU usage 9,183 MiB and utilization 99%. Current estimate: 3–4 hours of training, with extra allowance for the prior reconstruction term after epoch4; full postprocessing follows. These speeds are early estimates, not a completion guarantee or a quality result. Latest original snapshot is saved at `final_experiment/evaluation/diagnostics/phase43_factorial_20261008/last_remote_snapshot.json`.

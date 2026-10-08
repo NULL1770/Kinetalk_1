@@ -1,3 +1,9 @@
+# 2026-10-08 Phase43 latest execution override
+
+Read docs/PHASE43_IMPLEMENTATION_AND_TRAINING.md and docs/PHASE43_PLAN.md first. Phase42 complete with 8 videos and six-method tables; not promoted (geometry better, F1/range worse). Git pre-change88dd7e9 and implementationb34c7ed pushed. Centered-local A and mixed-reference B implemented; 427 local tests/1skip; three120-update GPU fits, longest432-frame batch gradient/exactresume/isolation checks and16-clip evaluations passed. No new loss/B0/content inlet.
+
+Remote /root/kinetalk_phase43_factorial_20261008, arms a/b/ab, PIDs6344/6345/6346 dispatched24epochs each (10903fit/16368updates/seed47). Local collector39796 runs finite per-arm SHA backup/eight videos/table updates. Do not relaunch deployment or duplicate collectors. First preflight packaging failure is preserved; corrected preflight_state_v2.json=complete. Launch backup all originalSHA verified. All three formal arms reached101updates; identical initial model digest346bde35..., finite gradients/losses, .471/.559/.506s per update, GPU9183MiB/99%. Estimated3-4hours training then evaluation/backup/videos. No Phase43 scores yet.
+
 # 2026-10-08最高覆盖：Phase42闭合，Phase43双因素改进获授权
 
 用户允许同轮多处修改；每轮代码改动前必须推送Git；每次看结果须八情感视频、同协议基线比较、自身训练消融。已推送7fcad7ee4514d82d965b376e3667f8219318c65f且远端ref一致。恢复先读docs/PHASE43_PLAN.md、docs/PHASE42_RESULTS.md、docs/EXPERIMENT_TABLES_20261008.md，不重复论文检索和Phase42训练。
