@@ -1,8 +1,8 @@
 # Current recovery entry: Phase46 training dispatched (2026-10-08)
 
-Read PHASE46_IMPLEMENTATION_AND_TRAINING.md and PHASE46_PLAN.md first. Implementation356cea9, pre-change6e8d5d5 successfully pushed. New push/ref checks failed due network; do not claim latest upload. 38 local+remote tests, both longest432-frame GPU gradient/frozen/NaN/exactresume checks,120-update eight-emotion fits and16clip eval smokes passed.
+Read PHASE46_IMPLEMENTATION_AND_TRAINING.md and PHASE46_PLAN.md first. Pre-change6e8d5d5 and implementation356cea9 plus launch record2c73d2f successfully pushed; independent remote ref2c73d2fc38660eda7ccde2ec162701fbdef593b5 verified after using resolved tunnel address. 38 local+remote tests, both longest432-frame GPU gradient/frozen/NaN/exactresume checks,120-update eight-emotion fits and16clip eval smokes passed.
 
-Remote /root/kinetalk_phase46_receiver_20261008: mixed28213/deploy28214, watcher28215. Two decoder-only8epoch5456update arms from Phase45-u; all conditions/B0/style frozen, two deployment supports, original objective. Local finite collector53184 waits for original1367 evals then16videos/tables. Do not duplicate any launch/collector. No final Phase46 scores yet; actual update rate pending. Parent closure below remains valid. No sealed data/default changes.
+Remote /root/kinetalk_phase46_receiver_20261008: mixed28213/deploy28214, watcher28215. Two decoder-only8epoch5456update arms from Phase45-u; all conditions/B0/style frozen, two deployment supports, original objective. Local finite collector53184 waits for original1367 evals then16videos/tables. Do not duplicate any launch/collector. No final Phase46 scores yet. Both101updates verified; mixed.3155s/update, deploy.2071; same initial digest/reconstruction,790056 trainable decoder parameters, GPU93%.209 launch artifacts SHA-backed-up. Estimated35-45min training/eval plus video time. Parent closure below remains valid. No sealed data/default changes.
 
 # Current recovery entry: Phase45 COMPLETE (2026-10-08)
 
