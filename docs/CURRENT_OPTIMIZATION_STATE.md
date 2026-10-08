@@ -1,33 +1,31 @@
-# Current recovery entry: Phase47 RUNNING (2026-10-08)
+# Current recovery: Phase47 COMPLETE (2026-10-08)
 
-Read [PHASE46_RESULTS.md](PHASE46_RESULTS.md), [all 16 videos](PHASE46_VIDEO_GALLERY.md) and [tables](PHASE46_EXPERIMENT_TABLES.md) first. Older state is retained in archive/CURRENT_OPTIMIZATION_STATE_before_phase46_closure_20261008.md. Do not restart any Phase41–46 launch, pipeline, evaluation or collector.
+Read docs/PHASE47_RESULTS.md, PHASE47_VIDEO_GALLERY.md, PHASE47_EXPERIMENT_TABLES.md and PAPER_FIGURE_REQUIREMENTS.md first. Do not restart completed Phase41–47 training/evaluation/collectors. Prior recovery history is preserved in docs/archive and .codex-finalizer/planning_archive.
 
-## Verified outcome
+Full1367 development, original audio prior mean / clip[0,1]:
 
-Both Phase46 arms finished 8 added epochs / 5456 updates / full1367 development evaluation. Mixed: MBE .836943, LBE .388290, Lip3.252856mm, primary F1 .702871, jaw range .138563, correlation .490336. Deploy: .842696/.391550/3.261482mm/.705703/.135853/.491785. Lower Lip is offset by worse MBE/F1/amplitude. No joint adoption; default unchanged.
+|Model|MBE↓|LBE↓|Lip mean mm↓|Primary clip-motion F1↑|Jaw range|Jaw correlation|
+|---|---:|---:|---:|---:|---:|---:|
+|Phase45-u|.827171|.388674|3.320219|.709448|.153116|.490531|
+|Phase47-latent|.825160|.383860|3.276868|.719825|.151821|.489966|
+|Phase47-reference|.857411|.407056|3.476989|.554851|.151904|.489830|
 
-Phase45-u stays expression/dynamics reference: MBE .827171/LBE .388674/Lip3.320219mm/primary F1 .709448/jaw range .153116/correlation .490531. GT range .175279; neutral/fear F1 .468468/.477612, happy .934097. Four probes are clip-level generated-motion statistics, not frame emotion or audio-head accuracy. Other probes .663190/.729681/.668836. These single-seed development results do not establish joint SOTA.
+Latent is a modest new development candidate, not automatic default or joint SOTA. Reference is rejected. Latent four clip F1s .719825/.664336/.744721/.677342; raw .659494/.603158/.676337/.628080 not uniformly improved. Raw centered dynamics unchanged; clip jaw range -~.85%, GT .175279; brow mean bias slightly worse. Neutral/fear remain weak. Adapted EmoTalk-core geometry still leads (.745003/.331531/2.973232mm); data/budgets differ. MEDTalk/DESTalker lack verified trained rows.
 
-Only existing decoder790056 parameters trained in Phase46; all141 non-decoder tensors and full B0 outputs exact. 38 local and remote checks passed before dispatch. Closure verified two205-member arm manifests,209 launch members,5 pipeline members (overlapping lists),16 video hashes with prior full-decode/native25fps/rig receipts,14 table sources. closure_verified.json exists in diagnostics and paper_tables. The temporary unsupported utf8-sig encoding was replaced by utf-8-sig; no report values changed.
+GT main frozen motion-probe F1 .660344; audio head .880874. Probe is whole-clip generated-motion statistics, not framewise emotional/dynamic truth. F1/t-SNE alone cannot prove realism, disentanglement, generalization or publication readiness.
 
-Remote /root/kinetalk_phase46_receiver_20261008 and local final_experiment/evaluation/diagnostics/phase46_receiver_20261008 are complete. Latest read-only SSH confirms GPU1MiB/0%; root free382586880bytes, data disk324894720bytes. No new training active. Original helper .codex-finalizer/phase46_status.py is read-only; phase46_close.py only hashes existing outputs and writes a receipt. Never restart launch/collector to inspect results.
+All Phase45-u parameters/B0 frozen. Fixed ridge=.001, clip-equal TRAIN10903 residual-mean fitting: latent g32+style64→52D constant (5044 affine coefficients); reference adds independent neutral52 and predicted8-class probability interactions (29380). Different-capacity controls. Inherits24epochs/16368updates + Phase45 TRAIN10903 analytic u fit; Phase47 adds one supervised analytic fit per map, zero SGD updates. Parent/correction have separate SHA bindings.
 
-## Phase47 diagnostic status (2026-10-08)
+31 relevant checks total (30 existing/module +1 adapter), GPU128/32/32 smoke, two16clip evaluator smokes passed. Frozen parent/B0 exact, HuBERT-NaN isolation passed. Full1367 B0 predictions/metrics/probes exact. Parent oracle probes exact, coefficients max1.4662743e-5 within rtol1e-5/atol2e-5. Raw displacement max numerical difference1.1920929e-7. Original evaluator unchanged; oracle uncorrected diagnostic, never deployment.
 
-Frozen Phase45-u evidence was inspected before any edit. On fixed 96 clips, reference A/B/aggregate MBE=.835052/.872776/.858499 and jaw ranges=.125797/.156529/.151296; wrong-reference MBE=.923498. Changing a reference changes output but does not yet prove target identity transfer. GT frozen-motion probe macro-F1 is .660344, audio emotion head .880874, Phase45-u generation .709448; the probe is a clip-statistic diagnostic, not framewise emotion truth. Full prior-vs-posterior oracle gap remains large (MBE .827171 vs .237236), so the receiver and teacher target remain coupled bottlenecks.
+16videos complete, native25fps/audio/full decode/GT-B0 clock/rig checked. Fixed-middle-frame visual inspection shows no corruption, but angry/contempt/fear differences remain. No requested paper figures generated.19methods/15supervised candidates in tables, all original raw/clip geometry/coefficients/dynamics/four probes/classes/speakers/interventions/budgets retained.
 
-Phase47 independent static receiver diagnostic is running under /root/kinetalk_phase47_static_response_v2_20261008, worker PID39592; source225119d pushed. Read docs/PHASE47_PLAN.md. Local and remote30tests pass;128-fit/32+32-held GPU smoke passed frozen-state/B0/HuBERT-NaN/raw-displacement checks. Formal TRAIN10903 fit plus held-speaker743/held-sentence890 underway. No external evaluation or images yet. Old first16 smoke root preserved failed; do not restart it or dispatch. Use .codex-finalizer/phase47_status.py. Existing default model/evaluator untouched; no effect claim yet.
+Local evidence: final_experiment/evaluation/diagnostics/phase47_static_response_20261008. Tables: final_experiment/paper_tables/phase47_development_20261008. Collector local_queue_state.json=complete,16videos,PID130456 finished. Read-only helpers .codex-finalizer/phase47_status.py and phase47_eval_status.py; never dispatch/collect again.
 
-## Next diagnostic priority
+Remote /root/kinetalk_phase47_static_response_v2_20261008 and /root/autodl-tmp/kinetalk_phase47_static_eval_20261008 complete; GPU idle at last check. Root/data free304762880/93532160bytes. Arrange storage before another experiment; preserve historical evidence. Private SSH helpers hold credentials; never print/commit them.
 
-TRAIN loss declines while internal held-speaker prior position rises (~1.7% from epoch1 to8); all three external development speakers have worse MBE. Eyebrow mean-bias MSE increases .047571 -> .051168/.051690, while jaw range shrinks9.5%/11.3%. These observations suggest checking cross-speaker/reference-dependent average pose and conditional mean behavior; they do not prove causal identity leakage or identify the reference aggregation alone as the cause.
+Pushed pre-change474307e,implementation2df2af5,smoke225119d,evaluation754b702. Result closure/push receipt recorded in progress.md and closure_verified.json when complete. Unrelated third_party/voca_reference/ untouched. No child agents.
 
-Fixed Phase45-u reference A/B/two-aggregate comparison is the next control, then neutral/fear/surprise confusion and audio-prior/teacher/receiver error separation. Only after that evidence should a finite architecture/target candidate be chosen. Do not extend Phase46 or add losses based on training loss alone. Multi-seed, independent content readout, correct target-identity transfer, matched baseline budgets/official benchmark and human evaluation remain paper gaps.
+Next: diagnose teacher target coordinates on manifest-approved aligned TRAIN/internal-held neutral/emotional pairs; distinguish independent neutral baseline, predictable expression and B0/unpredictable residual. Check reference stability/content association before changing global/local targets or claiming target-identity transfer. Do not extend failed Phase46/reference or add arbitrary losses. Phase48 code/training has not started.
 
-## Persistent boundaries
-
-Before every model code-change round, archive and push current Git. Pre-change6e8d5d5, implementation356cea9, launch2c73d2f and updatea0bc941 already have successful pushes recorded; final closure archive status is recorded in the current session. Final archive 474307e82dd932d3eb80e2b87958777e406a0a80 pushed and latest independent remote-ref query confirmed exact SHA. Phase47 diagnosis now authorized and in progress; read task_plan.md. Credentials stay in private ignored helpers. No child agents. Unrelated third_party/voca_reference/ remains untouched.
-
-Neutral B0 frozen; audio prior ONLY emotion2vec768+prosody4; full mouth output; no queryGT deployment or motion-reconstruction gradient into student; no sealed tuning/oracle ranking/default promotion. Each completed candidate has eight emotions and original raw/clip/four-probe metrics. External baseline rows are adapted shared-rig methods, not official paper numbers. MEDTalk/DESTalker lack verified trained rows. A changed output under another reference is insufficient to prove target-identity transfer.
-
-Root planning files now point to this concise state; old verbose planning history is backed up in .codex-finalizer/planning_archive/phase46_closure_20261008.
+Persistent boundaries: neutral B0 frozen; student only emotion2vec768+prosody4; mouth open; no content/queryGT deployment or motion-loss student gradient; native clock/rig/raw-clip/four probes unchanged; no sealed tuning/default promotion. Git push before each model change. Multi-seed, independent content readout, correct target-identity transfer, matched baselines/official benchmark and human evaluation remain paper gaps. Future figure requirements recorded; user explicitly defers production.

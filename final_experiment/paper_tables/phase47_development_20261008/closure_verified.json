@@ -1,0 +1,230 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-10-08T14:56:10.021502+00:00",
+  "manifest_members": {
+    "diagnostic_download": 204,
+    "evaluation_root": 5,
+    "diagnostic_original": 9,
+    "smoke_original": 9,
+    "latent_download": 14,
+    "latent_original": 12,
+    "reference_download": 14,
+    "reference_original": 12
+  },
+  "arms": {
+    "latent": {
+      "videos": {
+        "neutral": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_neutral_s47_20261008/comparison.mp4",
+          "sha256": "827ddedc5f05c07fe66c05fc65dcc94b01e0ee66565d2f488d1d44ae1996683e",
+          "frames": 101
+        },
+        "happy": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_happy_s47_20261008/comparison.mp4",
+          "sha256": "4455fbfd72b0b0c7b200ff921165fddc29045ea55711aa9faa4f1199606ae9e2",
+          "frames": 103
+        },
+        "angry": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_angry_s47_20261008/comparison.mp4",
+          "sha256": "303eb8b33d73dc60aa80de0c70e840b22436e5f06e9e4b21a2ad65299c386f24",
+          "frames": 82
+        },
+        "contempt": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_contempt_s47_20261008/comparison.mp4",
+          "sha256": "f906eedeea94b6bdf9d84d288a67cf04f67b057dbc46c77471cd3afc87acca55",
+          "frames": 45
+        },
+        "disgust": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_disgust_s47_20261008/comparison.mp4",
+          "sha256": "e7e8bae38db2e52f6a4a23f0630a185a8da80392b1169c4e638f6229e1a68812",
+          "frames": 75
+        },
+        "fear": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_fear_s47_20261008/comparison.mp4",
+          "sha256": "c0bf1bbb2739bb4db5ebd6b8f005e2296f232a954c0cf6c198afb3feda5b6aa6",
+          "frames": 76
+        },
+        "sad": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_sad_s47_20261008/comparison.mp4",
+          "sha256": "d824cbea90bbd95146f252460cb83c69f5228dd27975a0b2126436f881ee709b",
+          "frames": 159
+        },
+        "surprise": {
+          "path": "final_experiment/evaluation/rendered/phase47_latent_surprise_s47_20261008/comparison.mp4",
+          "sha256": "4c852512161c2c63d84131b75ff4f931abc8f8eec6d6c984a75775fc9e8b89c2",
+          "frames": 73
+        }
+      },
+      "parent_checkpoint_sha256": "dfaca4c0dce60cf8380c08788dabf547db7433c098a599522f8ce2286851e4eb",
+      "correction_sha256": "c4276443c87a6b903e6dbf2e1460323205e7e0eda7bd7b64b9f5f5c59ac91788",
+      "report_sha256": "e103c2097f9ec08fd3780203d82021fefb1c4a1492869e10080e0890c3a96da7"
+    },
+    "reference": {
+      "videos": {
+        "neutral": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_neutral_s47_20261008/comparison.mp4",
+          "sha256": "5185f6f52f9ace8e7ed1c0452deff6a6144c9e5254d26f0d2986a564b8e0e80b",
+          "frames": 101
+        },
+        "happy": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_happy_s47_20261008/comparison.mp4",
+          "sha256": "2ac0dbf4cb0a49af124f0f8fe69a6c622f9e45b3f12eadaf461dc124fac92d4e",
+          "frames": 103
+        },
+        "angry": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_angry_s47_20261008/comparison.mp4",
+          "sha256": "e3abc5e04abdadf8f71fdaeb163fad28e5eac4b9c2b192894f50e7d1003b462d",
+          "frames": 82
+        },
+        "contempt": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_contempt_s47_20261008/comparison.mp4",
+          "sha256": "33970c341bdf7f8218b77abfb5b91b4a83c2398472b479f6ea6f2f17eb46a4af",
+          "frames": 45
+        },
+        "disgust": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_disgust_s47_20261008/comparison.mp4",
+          "sha256": "d015d67682b21d3d943b66cc81514518cf85a8885f08b3cb5462d07a944df838",
+          "frames": 75
+        },
+        "fear": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_fear_s47_20261008/comparison.mp4",
+          "sha256": "b7af9c947de14cd9cc7084230f1d3a3273f6c0067f840394420252a34dfa0455",
+          "frames": 76
+        },
+        "sad": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_sad_s47_20261008/comparison.mp4",
+          "sha256": "571b758e3719ebfe7ae4358e32f1a2e9f351317e3a2de8806b859f607bb7e374",
+          "frames": 159
+        },
+        "surprise": {
+          "path": "final_experiment/evaluation/rendered/phase47_reference_surprise_s47_20261008/comparison.mp4",
+          "sha256": "691a51b5000df2f6d530612d609a516c3bf1eae5628df45a3c7548ad255e9bab",
+          "frames": 73
+        }
+      },
+      "parent_checkpoint_sha256": "dfaca4c0dce60cf8380c08788dabf547db7433c098a599522f8ce2286851e4eb",
+      "correction_sha256": "bb1eac1ea4ba73a34e4d2165b4baa25e01b6f12b8d8b364160bb7d642d05f685",
+      "report_sha256": "29b11008162120869a9afbeccb7f38070b3632543939420bc12264670714a46b"
+    }
+  },
+  "videos": 16,
+  "table_sources": [
+    {
+      "path": "final_experiment/evaluation/diagnostics/validation_gap_20261005/report.json",
+      "sha256": "43991ede1d8e2ce8642c71e1abdbab9852c2e1d9f576f505d39c5210aa3c5924"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase41_expression_response_20261007/recovery_v1/evaluation/report.json",
+      "sha256": "58d5c472deb574f249168725a74dd97b467e60868a08d1b6eadea776b8d5d54f"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase42_fixed_prior_20261008/evaluation/report.json",
+      "sha256": "0249993655ea7e33f586a080ee7f15bd7945e35726e38446009efa2d5e962059"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/a/evaluation/report.json",
+      "sha256": "9bbb266bf15a886a5c3ae9d75c648361c188f2cee1e6a426ed0641633d056d08"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/b/evaluation/report.json",
+      "sha256": "bb332d3dd42bb7c954531186d6a96706ecb3660033206f1797b48bc1afc7e71c"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/ab/evaluation/report.json",
+      "sha256": "903a0ed208c338e9d072c375f612ccb5f1a635b9f2d51fc78e1d0f4f8bdd46a4"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/a_kl/evaluation/report.json",
+      "sha256": "9fa2d617b8db2afbb18bc02888c65e8d72551d62a08a77b87f6df09e95bc720c"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/a_mean/evaluation/report.json",
+      "sha256": "67bc07378d39d0b59ee54d1a0a5ea4b4d428e2dad878821084022772a6dfd888"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/b_mean/evaluation/report.json",
+      "sha256": "205dd12d54a2d0ec4c18e88e564f471078aef838e0dcb549ba370dcc58c1a779"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase45_target_audit_20261008/head_candidates/g/evaluation/report.json",
+      "sha256": "ccaf60154f41e332711e3d8abeece933ef689f0256264f79701b94262e63c664"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase45_target_audit_20261008/head_candidates/u/evaluation/report.json",
+      "sha256": "73d195ad4e45d0f06340376782cea497bb58c06101877bb05a4f7067ac6bf1d6"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase45_target_audit_20261008/head_candidates/gu/evaluation/report.json",
+      "sha256": "5edb0c5b338ba9fa8732484845cfa5045746372e1a61819e74087979a44ac253"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase46_receiver_20261008/mixed/evaluation/report.json",
+      "sha256": "594035a904cedd7c29bb760c254f06af2f3c0cef3c499eb6467c59533f822e3f"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase46_receiver_20261008/deploy/evaluation/report.json",
+      "sha256": "22b06412b3615f3216ae1e2ea022e054744ca17363b6a3585a85e9852cd29166"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/latent/evaluation/report.json",
+      "sha256": "e103c2097f9ec08fd3780203d82021fefb1c4a1492869e10080e0890c3a96da7"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/latent/static_run.json",
+      "sha256": "8eb551e6a152c995ecedb66f2e05375fd82589552714121e028c2a313f52a3a2"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/diagnostic/latent.pt",
+      "sha256": "c4276443c87a6b903e6dbf2e1460323205e7e0eda7bd7b64b9f5f5c59ac91788"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/diagnostic/report.json",
+      "sha256": "760f86b8a65696713dd9dee3c5cc0d0121d445b7bdf198b036dcc20a2c1f395f"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/latent/evaluation/static_response_receipt.json",
+      "sha256": "2f1f4efbd56676a4c7c3416df8c78bf3b93e2cbeaa34016fcb785f99183e766d"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/reference/evaluation/report.json",
+      "sha256": "29b11008162120869a9afbeccb7f38070b3632543939420bc12264670714a46b"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/reference/static_run.json",
+      "sha256": "1b1bef3836eb340d781818e71686ff962a55226fa6feb704f9b1b6e7122ecc53"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/diagnostic/reference.pt",
+      "sha256": "bb1eac1ea4ba73a34e4d2165b4baa25e01b6f12b8d8b364160bb7d642d05f685"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/diagnostic/report.json",
+      "sha256": "760f86b8a65696713dd9dee3c5cc0d0121d445b7bdf198b036dcc20a2c1f395f"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase47_static_response_20261008/reference/evaluation/static_response_receipt.json",
+      "sha256": "9a6041473450372d5e02219285d97e530bac91ac36d79546d345ff8008ae21a3"
+    }
+  ],
+  "historical_rows_exact": true,
+  "composite_parent_correction_sha_verified": true,
+  "budget_verified": true,
+  "table_files": {
+    "README.md": "bfe07b1515c7ab1802b8f77fa3256efbd4390466ffb7180c452209b6fb0aa786",
+    "table1_geometry_clip_all.csv": "d868f4d5f5513489a58675701d31c04e7d7062168e7d8430f61a8e2231f78630",
+    "table1_geometry_raw.csv": "9f9da7a8708f8661c5ffd2a2c02e701c174a7b0e712bcfda60c10d12697fdf8f",
+    "table2_coefficients_clip_all.csv": "6b8d51fa2c2764aa689b74fa04bd5fd41e1f7c64ebc1f89ec0aef25760683d1d",
+    "table2_coefficients_raw.csv": "51a3281ba814a6244d9b4e1ee8d1ef4bc651b0d4897f45866aff7dca2da16bbe",
+    "table3_dynamics_semantics_clip_all.csv": "6e683fce615603b6d9c0ce214021997f6950807c3c5c6feb1d2b0c321f5da535",
+    "table3_dynamics_semantics_raw.csv": "51a610fb9eaf52050f854e0b0f9513043dae1abe00a65ddd58280531721a37f4",
+    "table4_trained_ablation.csv": "e6a171c53530d219a865421644d4975e48c948911952a4db4e7b15d425ad992b",
+    "table5_inference_interventions.csv": "ac3a6d1cdef9709db56e5f595c7cd284e69956d206bfa3082626e07728cc0be2",
+    "table6_emotion_breakdown.csv": "4315337c980cb1c5c49bb65a474ce9c41504237518d9f07ad0499b053bceea61",
+    "table7_geometry_groups.csv": "ecf5961307b8953092a09106001f7a12c1041985ab69b146283e29c0024eeb50",
+    "table8_training_protocol.csv": "b9caa1f4c2127a75c432422be38226b4c81ebbac7ebc8401e9d5d5757ed5885b",
+    "tables.json": "4f45f543b9c5f4ad9aa1ad2a737376c50a7cece59271bfe8886dd253889cddbb"
+  },
+  "test_loaded": false,
+  "default_replaced": false,
+  "evaluation_rerun": false
+}

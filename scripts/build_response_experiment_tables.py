@@ -10,8 +10,31 @@ def read(p):return json.loads(Path(p).read_text(encoding='utf8'))
 def verified_report(root):
     evaluation=root/'evaluation'
     if not evaluation.exists():evaluation=root/'recovery_v1/evaluation'
-    complete=read(root/'seed47/complete.json');report=read(evaluation/'report.json')
+    report=read(evaluation/'report.json')
     assert read(evaluation/'state.json')['report_sha256']==sha(evaluation/'report.json')
+    if (root/'static_run.json').is_file():
+        spec=read(root/'static_run.json');parent=Path(spec['parent_root'])
+        complete=read(parent/'seed47/complete.json');old=read(parent/'seed47/protocol.json')
+        receipt=read(evaluation/'static_response_receipt.json')
+        fit=read(Path(spec['fit_report']))
+        assert not fit['test_loaded'] and not fit['external_validation_used'] and fit['frozen_state_exact']
+        assert report['checkpoint_sha256']==complete['final_sha256']==sha(parent/'seed47/final.pt')
+        assert receipt['parent_checkpoint_sha256']==report['checkpoint_sha256']==fit['parent_checkpoint_sha256']
+        assert receipt['correction_sha256']==sha(Path(spec['correction']))
+        assert receipt['correction_mode']==spec['mode'] and receipt['fit_clips']==fit['fit_clips']==10903
+        assert receipt['deployment_api_equal'] and not receipt['test_loaded']
+        assert report['clips']==1367 and report['test_loaded'] is False
+        protocol=dict(config=old['config'],data=old['data'],
+            args=dict(seed=47,epochs=0,matching='static_response_'+spec['mode'],reference_training='two_aggregate'),
+            updates=0,parent_epochs=old.get('parent_epochs',0)+old['args']['epochs'],
+            parent_updates=old.get('parent_updates',0)+complete['updates'],
+            analytic_fit_passes=1,analytic_fit_clips=fit['fit_clips'],
+            fitted_coefficients=5044 if spec['mode']=='latent' else 29380,
+            inherited_analytic_fit_passes=old.get('inherited_analytic_fit_passes',0)+old.get('analytic_fit_passes',0),
+            inherited_analytic_fit_clips=old.get('inherited_analytic_fit_clips',0)+old.get('analytic_fit_clips',0),
+            trainable_module='clip_constant_response',reconstruction_passes_per_update=0)
+        return evaluation,report,read(Path(spec['binding'])),protocol
+    complete=read(root/'seed47/complete.json')
     assert report['checkpoint_sha256']==complete['final_sha256']==sha(root/'seed47/final.pt')
     assert report['clips']==1367 and report['test_loaded'] is False
     return evaluation,report,read(root/'binding.json'),read(root/'seed47/protocol.json')
@@ -66,8 +89,12 @@ def build(baseline_root,responses,out,inventory=None):
         assert [p['sha256'] for p in binding['probes']]==[p['sha256'] for p in base['probes']]
         clips=read(evaluation/'per_clip.json');assert clips['clip_ids']==ids
         sources.append({'path':str(evaluation/'report.json'),'sha256':sha(evaluation/'report.json')})
+        if (root/'static_run.json').is_file():
+            spec=read(root/'static_run.json')
+            for path in [root/'static_run.json',Path(spec['correction']),Path(spec['fit_report']),evaluation/'static_response_receipt.json']:
+                sources.append({'path':str(path),'sha256':sha(path)})
         metadata.append({'method':name,'fit_clips':protocol['data']['fit_clips'],
-            'epochs':protocol['args']['epochs'],'updates':read(root/'seed47/complete.json')['updates'],
+            'epochs':protocol['args']['epochs'],'updates':protocol['updates'] if 'updates' in protocol else read(root/'seed47/complete.json')['updates'],
             'parent_epochs':protocol.get('parent_epochs',0),'parent_updates':protocol.get('parent_updates',0),
             'analytic_fit_passes':protocol.get('analytic_fit_passes',0),
             'analytic_fit_clips':protocol.get('analytic_fit_clips',0),
@@ -132,6 +159,7 @@ def build(baseline_root,responses,out,inventory=None):
         '若parent_epochs/parent_updates非零，epochs/updates为追加训练预算，总预算必须加父模型；只在相同父模型与追加预算内比较匹配方式，不能将不同父模型候选当单变量消融。',
         'analytic_fit_passes/analytic_fit_clips非零的候选实际进行了TRAIN监督解析拟合，updates=0只代表追加SGD步数为零，不能称未训练或与SGD同预算。g/u/gu复用同一次固定ridge求解，fitted_coefficients列明替换的现有mean参数数目；没有新增网络，方差未重新拟合。',
         'inherited_analytic_fit_*记录父模型已有的解析拟合，不是本轮重新拟合。Phase46两组均只更新decoder、使用双参考聚合，总重建系数1.5且步数相同；mixed每步两次重建并运行posterior，deploy一次，因此计算量不相同。与父模型对比同时改变了receiver训练和参考聚合，不能当成单变量参考消融。',
+        'Phase47为冻结Phase45-u加TRAIN监督拟合的clip常量接收器；parent checkpoint和correction分别SHA绑定。latent/reference分别5044/29380个仿射系数，容量不同；原始centered动态不变，clip后幅度与闭嘴仍需实测。不修改主评分器或训练情感probe，raw和四probe一并保留；不能由F1或小幅均值改善宣称全部动态正确。',
         '论文实践：EmoTalk Table5分别检查emotion disentangling encoder、emotion-guided attention、Lvel/Lcls、HDTF数据及encoder替换；MEDTalk §4.5/Table3检查overlap exchange、cycle exchange、disentangle、intensity和text。本项目应围绕自己的g/u职责、style/reference与teacher/student提出并重训练消融；不能直接照搬其模块名。',
         '统计核验11/11已检查：分组结果另列以检查聚合反转；不由3人推断总体个体；MEAD演员/伪GT选择偏差保留；无协变量调整/collider推断；报告8类而非只happy；不选极端片段宣称回归改善；所有1367无删坏样本；所有probe/raw保留；明确多轮开发探索；冻结交换非因果独立证明；教师看到GT非部署预测/因果反向结论。没有开展显著性检验，三开发身份及单训练seed不足以证明统计稳定。','']
     (out/'README.md').write_text('\n'.join(intro+sections),encoding='utf8',newline='\n')
