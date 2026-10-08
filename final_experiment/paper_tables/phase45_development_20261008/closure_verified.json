@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "verified_members": {
+    ".": 182,
+    "head_candidates": 5,
+    "head_candidates\\g": 192,
+    "head_candidates\\u": 192,
+    "head_candidates\\gu": 192
+  },
+  "verified_videos": 24,
+  "verified_table_sources": 12,
+  "model_mean_fit_rows_exact": true,
+  "bindings_and_worker_contract_exact": true,
+  "test_loaded": false,
+  "default_replaced": false,
+  "time": 1791461604.7273185
+}
