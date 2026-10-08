@@ -1,4 +1,4 @@
-# Current recovery entry: Phase46 COMPLETE (2026-10-08)
+# Current recovery entry: Phase47 RUNNING (2026-10-08)
 
 Read [PHASE46_RESULTS.md](PHASE46_RESULTS.md), [all 16 videos](PHASE46_VIDEO_GALLERY.md) and [tables](PHASE46_EXPERIMENT_TABLES.md) first. Older state is retained in archive/CURRENT_OPTIMIZATION_STATE_before_phase46_closure_20261008.md. Do not restart any Phase41–46 launch, pipeline, evaluation or collector.
 
@@ -16,7 +16,7 @@ Remote /root/kinetalk_phase46_receiver_20261008 and local final_experiment/evalu
 
 Frozen Phase45-u evidence was inspected before any edit. On fixed 96 clips, reference A/B/aggregate MBE=.835052/.872776/.858499 and jaw ranges=.125797/.156529/.151296; wrong-reference MBE=.923498. Changing a reference changes output but does not yet prove target identity transfer. GT frozen-motion probe macro-F1 is .660344, audio emotion head .880874, Phase45-u generation .709448; the probe is a clip-statistic diagnostic, not framewise emotion truth. Full prior-vs-posterior oracle gap remains large (MBE .827171 vs .237236), so the receiver and teacher target remain coupled bottlenecks.
 
-Phase47 now implements a separate constant expression-response map and TRAIN/internal-held diagnostic (docs/PHASE47_PLAN.md). Existing default model/evaluator untouched. Thirty targeted tests pass. Remote smoke/internal fit is next; no effect claim yet.
+Phase47 independent static receiver diagnostic is running under /root/kinetalk_phase47_static_response_v2_20261008, worker PID39592; source225119d pushed. Read docs/PHASE47_PLAN.md. Local and remote30tests pass;128-fit/32+32-held GPU smoke passed frozen-state/B0/HuBERT-NaN/raw-displacement checks. Formal TRAIN10903 fit plus held-speaker743/held-sentence890 underway. No external evaluation or images yet. Old first16 smoke root preserved failed; do not restart it or dispatch. Use .codex-finalizer/phase47_status.py. Existing default model/evaluator untouched; no effect claim yet.
 
 ## Next diagnostic priority
 
