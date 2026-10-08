@@ -25,7 +25,12 @@ def distribution_match(model,q,p,valid,mode):
     qg,qu=model.conditions(q,valid);pg,pu=model.conditions(p,valid)
     g_mean=(qg-pg).square().mean(-1)
     u_mean=torch.where(valid,(qu-pu).square().mean(-1),0.).sum(1)/valid.sum(1).clamp_min(1)
-    scale=lambda key:(torch.exp(.5*q[key+'_logvar'])-torch.exp(.5*p[key+'_logvar'])).square().mean(-1)
+    def scale(key):
+        qv,pv=q[key+'_logvar'],p[key+'_logvar']
+        if key=='u':
+            mask=p['u_mask'][...,None]
+            qv=torch.where(mask,qv,0.);pv=torch.where(mask,pv,0.)
+        return (torch.exp(.5*qv)-torch.exp(.5*pv)).square().mean(-1)
     g_scale=scale('g');mask=p['u_mask']
     u_scale=torch.where(mask,scale('u'),0.).sum(1)/mask.sum(1).clamp_min(1)
     return .25*(g_mean+u_mean+g_scale+u_scale).mean()
@@ -41,6 +46,11 @@ def frozen_digests(model):
     return {name:state_digest(getattr(model,name)) for name in ('posterior','style','decoder')}
 
 
+def scientific_args(a,reference_mode):
+    # Operational resume flag must not invalidate an otherwise identical run.
+    return {k:v for k,v in dict(vars(a),reference_training=reference_mode).items() if k!='resume'}
+
+
 def objective(model,b,refs,mode,weights=None):
     with torch.no_grad():
         style=model.encode_style(refs)['code']
@@ -48,7 +58,9 @@ def objective(model,b,refs,mode,weights=None):
     p=model.audio_prior(b['audio_features'],b['valid'])
     matching=distribution_match(model,q,p,b['valid'],mode)
     semantic=semantic_objective(model,p,b['emotion_id'],b['intensity_id'],b['intensity_valid'],weights)
-    loss=.01*matching+.1*semantic
+    # Original joint objective used .1 * .5 * (q_semantic + p_semantic).
+    # q is now frozen; keep the original p coefficient instead of doubling it.
+    loss=.01*matching+.05*semantic
     return loss,{'loss':loss,'matching':matching,'semantic':semantic}
 
 
@@ -82,12 +94,12 @@ def train(a):
     order_rng=torch.Generator().manual_seed(a.seed+20000)
     weights=class_balanced_weights(data['splits']['train']['emotion_id'][ids],8).to(device)
     protocol={'schema':'phase44_frozen_expression_prior_v1','config':model.checkpoint_config(),
-        'args':dict(vars(a),reference_training=reference_mode),'data':audit,'binding_sha256':sha(a.binding),
+        'args':scientific_args(a,reference_mode),'data':audit,'binding_sha256':sha(a.binding),
         'parent_checkpoint_sha256':binding['parent_checkpoint']['sha256'],
         'parent_epochs':parent['epoch'],'parent_updates':parent['step'],
         'initial_model_digest':state_digest(model),'frozen_digests':frozen,'neutral_digest':neutral_digest,
         'parameters':sum(p.numel() for p in model.parameters()),'trainable_parameters':sum(p.numel() for p in params),
-        'loss':'.01 frozen q/p match + .1 audio global emotion/intensity; no motion reconstruction',
+        'loss':'.01 frozen q/p match + .05 audio global emotion/intensity; no motion reconstruction',
         'test_loaded':False,'default_replaced':False}
     start_epoch=0;step=0;history=[]
     if a.resume:
@@ -154,9 +166,9 @@ def train(a):
                 'updates':step,'frozen_receiver_exact':True,'seconds':time.time()-began,'test_loaded':False}
         write(out/'smoke.json',report)
         if not passed:raise RuntimeError('Frozen-target small-data learnability gate failed')
-    write(out/'complete.json',{'status':'complete','updates':step,'epochs':epoch+1,
+    write(out/'complete.json',{'status':'complete','updates':step,'epochs':ck['epoch'],
         'parent_epochs':parent['epoch'],'parent_updates':parent['step'],'final_sha256':sha(out/'final.pt'),'test_loaded':False})
-    write(out/'state.json',{'status':'training_complete','updates':step,'epochs':epoch+1,'test_loaded':False})
+    write(out/'state.json',{'status':'training_complete','updates':step,'epochs':ck['epoch'],'test_loaded':False})
     return model,data,base
 
 

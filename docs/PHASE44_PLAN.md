@@ -18,7 +18,7 @@ A的局部q/p均值差平方5.86155，p方差均值5.19638，q方差.371816；51
 | a_mean | Phase43-A final | 归一化decoder坐标均值+高斯标准差匹配 | 检验均值压力独立于方差的修正 |
 | b_mean | Phase43-B final | 同上 | 以几何较好的B为另一候选；不冒充同起点消融 |
 
-每臂从同一seed47的既有权重开始，新增固定8轮，同10,903 fit/固定speaker与sentence内留出。优化器重新初始化，LR1e-4，匹配系数.01、语义.1沿原full-beta权重。A单参考、B混合参考协议与父模型相同。原父模型24轮预算和追加8轮预算明确报告，不能与未追加模型当等预算消融。a_kl/a_mean参数、顺序、权重、更新数相同，只有匹配公式不同。
+每臂从同一seed47的既有权重开始，新增固定8轮，同10,903 fit/固定speaker与sentence内留出。优化器重新初始化，LR1e-4，匹配系数.01、学生语义.05沿原full-beta权重（原.1乘q/p语义平均，因此p实际系数.05）。A单参考、B混合参考协议与父模型相同。原父模型24轮预算和追加8轮预算明确报告，不能与未追加模型当等预算消融。a_kl/a_mean参数、顺序、权重、更新数相同，只有匹配公式不同。
 
 q、style、decoder全部固定且eval；p以及原emotion/intensity heads学习。没有新模块、参数、motion critic、mouth gain、GT全动作重建loss或pair数据。新的训练不计算motion重建目标；q可在no_grad下看motion生成教师latent，学生p只看772D。推理签名保持audio/B0/独立参考，无queryGT。
 

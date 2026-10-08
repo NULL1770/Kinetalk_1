@@ -68,6 +68,8 @@ def build(baseline_root,responses,out,inventory=None):
         sources.append({'path':str(evaluation/'report.json'),'sha256':sha(evaluation/'report.json')})
         metadata.append({'method':name,'fit_clips':protocol['data']['fit_clips'],
             'epochs':protocol['args']['epochs'],'updates':read(root/'seed47/complete.json')['updates'],
+            'parent_epochs':protocol.get('parent_epochs',0),'parent_updates':protocol.get('parent_updates',0),
+            'matching':protocol['args'].get('matching','joint_kl'),
             'train_seed':protocol['args']['seed'],'scope':'neutral B0 + audio expression + independent reference','draws':'prior mean',
             'checkpoint_sha256':r['checkpoint_sha256']})
         for policy in policy_rows:
@@ -77,6 +79,8 @@ def build(baseline_root,responses,out,inventory=None):
         ablation.append({'method':name,'prior_variance':protocol['config'].get('prior_variance','learned'),
             'center_local':protocol['config'].get('center_local',False),
             'reference_training':protocol['args'].get('reference_training','single'),
+            'matching':metadata[-1]['matching'],'parent_epochs':metadata[-1]['parent_epochs'],
+            'parent_updates':metadata[-1]['parent_updates'],
             'fit_clips':protocol['data']['fit_clips'],'updates':metadata[-1]['updates'],**native})
         for mode,d in r['interventions'].items():
             interventions.append({'method':name,'intervention':mode,'n':d['n'],**canonical(d['metrics'])})
@@ -98,11 +102,11 @@ def build(baseline_root,responses,out,inventory=None):
             table=emit(out,name+'_'+policy,columns,rows)
             if policy=='clip_all':sections+=['## '+name,'',table,'']
     for name,columns,rows in [
-        ('table4_trained_ablation',['method','prior_variance','center_local','reference_training','fit_clips','updates','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
+        ('table4_trained_ablation',['method','prior_variance','center_local','reference_training','matching','fit_clips','parent_epochs','parent_updates','updates','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
         ('table5_inference_interventions',['method','intervention','n','arkit_mbe','arkit_lbe','jaw_centered_correlation','jaw_q90_q10','brows/centered_correlation'],interventions),
         ('table6_emotion_breakdown',['method','emotion','F1_1','F1_2','F1_3','F1_4'],classes),
         ('table7_geometry_groups',['method','group_type','group','n','arkit_mbe','arkit_lbe','lve_mean_mm_mean','eve_mean_mm_mean','jawOpen/centered_correlation','jawOpen/pred_q90_q10'],groups),
-        ('table8_training_protocol',['method','scope','fit_clips','epochs','updates','train_seed','draws'],metadata)]:
+        ('table8_training_protocol',['method','scope','fit_clips','parent_epochs','parent_updates','epochs','updates','matching','train_seed','draws'],metadata)]:
         sections+=['## '+name,'',emit(out,name,columns,rows),'']
     intro=['# 开发集实验表：同协议基线与训练消融','',
         'Material Passport: MODE=validate; STATUS=ANALYZED; sources为已完成、SHA核验的原报告；本次汇总未重新训练/重新推理。',
@@ -111,6 +115,7 @@ def build(baseline_root,responses,out,inventory=None):
         'Lip/Expression mean为顶点欧氏距离平均(mm)；LVE-max/EVE-max另列，不能混用。这里mesh FDD为上区平方位移能量时间std差的绝对值(mm²)，是沿用实现，不能将所有论文同名FDD当同公式。MBE/LBE为现有系数区域L2误差定义，不能拿其他rig的裸数值比较。',
         '四F1依次为原128/原64/辅助128/辅助64整段统计probe；不是逐帧情感GT。jaw范围GT平均0.175279，范围越大不必越好；相关与位移误差联合判断，不能以平滑低误差替代正确动态。',
         'table4只列实际重训练消融；table5是冻结推理干预，不混为训练模块消融。oracle不进入方法排名。仅单seed结果，不报伪造多seed误差条。',
+        '若parent_epochs/parent_updates非零，epochs/updates为追加训练预算，总预算必须加父模型；只在相同父模型与追加预算内比较匹配方式，不能将不同父模型候选当单变量消融。',
         '论文实践：EmoTalk Table5分别检查emotion disentangling encoder、emotion-guided attention、Lvel/Lcls、HDTF数据及encoder替换；MEDTalk §4.5/Table3检查overlap exchange、cycle exchange、disentangle、intensity和text。本项目应围绕自己的g/u职责、style/reference与teacher/student提出并重训练消融；不能直接照搬其模块名。',
         '统计核验11/11已检查：分组结果另列以检查聚合反转；不由3人推断总体个体；MEAD演员/伪GT选择偏差保留；无协变量调整/collider推断；报告8类而非只happy；不选极端片段宣称回归改善；所有1367无删坏样本；所有probe/raw保留；明确多轮开发探索；冻结交换非因果独立证明；教师看到GT非部署预测/因果反向结论。没有开展显著性检验，三开发身份及单训练seed不足以证明统计稳定。','']
     (out/'README.md').write_text('\n'.join(intro+sections),encoding='utf8',newline='\n')
