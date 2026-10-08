@@ -1,6 +1,6 @@
 # 风格的定义、现有证据和评价协议
 
-2026-10-09，Phase50。本文区分已实现、已验证和待实现，不把计划写成成果。
+2026-10-09，Phase50文献与诊断、Phase51训练。本文区分已实现、已验证和待实现，不把计划写成成果。
 
 ## 用户澄清后的主定义与执行准则（2026-10-09，优先于后面的历史计划）
 
@@ -56,7 +56,7 @@
 |Geometry identity|脸形、比例、纹理|本项目统一rig，不学习此项|眉眼系数左右不对称不等于几何左右不对称|
 |Content|说什么、音素对应的发音轨迹和时间|冻结neutral B0；student不输入HuBERT内容|输入隔离不等于统计或因果完全解耦，仍需交换测试和独立内容读出|
 
-当前ReferenceStyle输入独立neutral motion、对应冻结B0与观测mask；156D逐帧特征经3个TemporalBlock、masked pooling、64D投影与聚合MLP。Decoder宽192、4个TemporalBlock，global/local/style经四层调制，style另有52D bias。尚未实现独立neutral_bias/speaking_response子空间。
+原模型及Phase51 temporal对照的ReferenceStyle输入独立neutral motion、对应冻结B0与观测mask；156D逐帧特征经3个TemporalBlock、masked pooling、64D投影与聚合MLP。Decoder宽192、4个TemporalBlock，global/local/style经四层调制，style另有52D bias。Phase51 statistics候选已实现两个32D统计编码分支，正在接受与temporal相同预算的检验；这不是风格定义的必要组成，也尚未证明优于原编码器。
 
 ## 论文原文的使用边界
 
@@ -73,7 +73,7 @@
 4. **Generalization**：TRAIN-fit、既定internal-held身份/句子、external dev分开；不使用dev视频/统计拟合gain或选择漂亮样例；sealed保持未读。人物级bootstrap或逐人物表，明确held只有2人、dev只有3人的小样本限制。
 5. **Content/emotion preservation**：保留原MBE/LBE/lip mean与lip max、四个raw/clip probe、jaw range/centered correlation、native速度/位移误差、FDD；换风格前后的jaw lag和闭口事件仅辅助，独立phoneme/SyncNet内容评价仍缺失。强度与emotion保持不要求逐帧抄GT不可预测眨眼。
 6. **Visualization/human assessment**：固定八情感样例；同音频同情感多参考、OwnA/B、GT并排；统一相机/rig/原生25fps，不做效果选择或时间对齐。论文可用静态图补neutral左右偏置、mean/std heatmap、jaw/brow native曲线、预先固定词时刻的清晰单帧。盲化A/B人评区分lip sync、表达适配和人物风格相似性；没有受试者结果就不编人评。
-7. **Ablation**：原模型、仅bias、仅response、完整分离结构在相同TRAIN/内部划分及预算下对比；一次更换聚合+decoder不能单独归因于某模块。必须同时记录参数/更新/解析拟合预算和失败候选。
+7. **Ablation**：依据最终验证有效的结构设置原模型、固定参考/多样参考、无风格及相应结构对照，不预先要求bias/response分离。若统计分支确实获胜，再补各分支消融；一次更换聚合+decoder不能单独归因于某模块。必须区分推理干预与公平重训练，记录参数/更新/解析拟合预算和失败候选。
 
 ## 已有数据与尚未支持的结论
 
@@ -81,8 +81,8 @@ Phase48：2026有向配对，整体/嘴部统计改善比例80.36%/72.31%；部�
 
 Phase49：64D code同人/跨人RMS比TRAIN-fit .010、internal-held .367、dev .465；参考GT-B0混有B0误差/内容分布/姿态。neutral参考可能具有真实姿态差，不能靠一致性loss强行抹平。当前最佳Phase47-latent F1 .719825 / MBE .825160 / LBE .383860 / lip mean3.276868mm，未因诊断改善，未达到联合SOTA。
 
-## 本轮优化顺序
+## 历史诊断动机与当前执行顺序
 
-先审计原approved TRAIN pairs及neutral enrollment的native质量边界：teacher_mask AND event_local_mask AND source observation（mouth）；上脸另报原支持边界。对每个合法观测分解GT-B0=(GT-aligned neutral)+(aligned neutral-B0)，报告两项的均值/中心化/相邻变化以及交叉项，不能把非正交两项能量简单加成比例。
+Phase50已完成原approved TRAIN pairs及neutral enrollment的native质量边界诊断：teacher_mask AND event_local_mask AND source observation（mouth）；上脸另报原支持边界。对每个合法观测分解GT-B0=(GT-aligned neutral)+(aligned neutral-B0)，报告两项的均值/中心化/相邻变化以及交叉项，不能把非正交两项能量简单加成比例。结果见PHASE50_RESULTS.md，不重复运行。
 
-随后用TRAIN-only可观测的稳健bias与内容条件下响应统计对照原code；优先低容量、可解释的双参考共同分量，再决定最小结构变化。neutral静态bias与动态response必须各有作用检验。保留冻结neutral B0及772D情感student，模型修改前Git推送，smoke通过再训练；不放大gain、不增加一组无法识别的loss。
+当前完成Phase51两组固定预算训练，然后检查完整指标、参考A/B稳定性、目标方向与八情感渲染。以跨语句可复用的个人动作风格为目标，按实验选有效且简单的编码方式；不强制拆分静态和动态。保留冻结neutral B0及772D情感student，模型修改前Git推送，smoke通过再训练；不放大gain、不增加一组无法识别的loss。
