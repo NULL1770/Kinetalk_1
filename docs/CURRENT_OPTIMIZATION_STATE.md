@@ -1,4 +1,6 @@
-# Current recovery: Phase49 COMPLETE; style-coordinate redesign prerequisites (2026-10-08)
+# Current recovery: Phase50 COMPLETE; Phase51 implementation tested (2026-10-09)
+
+Read docs/PHASE50_RESULTS.md, docs/PHASE51_REFERENCE_RESPONSE_PLAN.md and docs/STYLE_DEFINITION_AND_EVALUATION.md FIRST. Phase50 source3568e58/plan archived473444 pushed.13 local/remote tests +24GPU smoke +2583 paired diagnostic complete;11original SHA members local. No metric improvement from this diagnostic. TRAIN has620 independent neutral query clips across20fit actors. Phase51 next: temporal encoder control versus compact posture/response encoder, diverse disjoint neutral TRAIN supports, only style+decoder training, frozen B0/772D prior;8epochs/seed47. New code tested locally, not yet dispatched at this update. Do not rerun completed Phase50.
 
 Read docs/PHASE47_RESULTS.md, PHASE47_VIDEO_GALLERY.md, PHASE47_EXPERIMENT_TABLES.md and PAPER_FIGURE_REQUIREMENTS.md first. Do not restart completed Phase41–47 training/evaluation/collectors. Prior recovery history is preserved in docs/archive and .codex-finalizer/planning_archive.
 

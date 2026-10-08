@@ -29,6 +29,7 @@ class ResponseConfig:
     prior_variance: str = 'learned'
     # A deterministic decoder transform; KL remains over the original Gaussians.
     center_local: bool = False
+    reference_encoder: str = 'temporal'
 
 
 def clean(x, mask):
@@ -172,15 +173,64 @@ class ReferenceStyle(nn.Module):
         return {'code': code, 'per_reference': per_ref, 'reference_valid': ref_valid}
 
 
+def reference_statistics(motion, base, valid, channels, scales):
+    """Equal-reference native moments, without reference temporal order.
+
+    Means describe posture while centered moments describe response to B0.
+    These statistics can still depend on phonetic coverage and fitting error;
+    they are not guaranteed causal identity coordinates.
+    """
+    if motion.ndim != 4 or base.shape != motion.shape or valid.shape != motion.shape[:3]:
+        raise ValueError('References must be [B,R,T,52] with matching observations')
+    b,r,t,c=motion.shape
+    if c!=52 or channels.shape!=(b,r,c) or channels.dtype!=torch.bool or valid.dtype!=torch.bool:
+        raise ValueError('Invalid reference channel/frame mask')
+    obs=valid[...,None]&channels[:,:,None]
+    if not obs.any((1,2,3)).all():raise ValueError('Every query requires observed references')
+    m=torch.where(obs,motion,0.)/scales
+    x=torch.where(obs,base.detach(),0.)/scales
+    if not torch.isfinite(m).all() or not torch.isfinite(x).all():
+        raise ValueError('Nonfinite observed reference')
+    count=obs.sum(2);support=count>0
+    mm=m.sum(2)/count.clamp_min(1);xm=x.sum(2)/count.clamp_min(1)
+    mc=torch.where(obs,m-mm[:,:,None],0.);xc=torch.where(obs,x-xm[:,:,None],0.)
+    mv=mc.square().sum(2)/count.clamp_min(1)
+    xv=xc.square().sum(2)/count.clamp_min(1)
+    cov=(mc*xc).sum(2)/count.clamp_min(1)
+    # Zero variance stays zero; this is descriptor extraction, not a motion gradient.
+    mr=mv.sqrt();xr=xv.sqrt();cor=cov/(mr*xr).clamp_min(1e-6)
+    def pool(z):
+        return torch.where(support,z,0.).sum(1)/support.sum(1).clamp_min(1)
+    present=support.any(1).to(m.dtype)
+    posture=torch.cat((pool(mm),pool(xm),present),-1)
+    response=torch.cat((pool(mr),pool(xr),pool(cor),present),-1)
+    return posture,response,support.any(-1)
+
+
+class StatisticalReferenceStyle(nn.Module):
+    def __init__(self,cfg):
+        super().__init__()
+        half=cfg.style_dim//2
+        self.posture=nn.Sequential(nn.Linear(156,cfg.hidden),nn.SiLU(),nn.Linear(cfg.hidden,half))
+        self.response=nn.Sequential(nn.Linear(208,cfg.hidden),nn.SiLU(),nn.Linear(cfg.hidden,half))
+
+    def forward(self,motion,base,valid,channels,scales):
+        posture,response,present=reference_statistics(motion,base,valid,channels,scales)
+        return {'code':torch.cat((self.posture(posture),self.response(response)),-1),
+                'reference_valid':present}
+
+
 class ResponseDecoder(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.input = nn.Linear(52, cfg.decoder_hidden)
         self.blocks = nn.ModuleList(TemporalBlock(cfg.decoder_hidden, 2**i) for i in range(4))
-        cond_dim = cfg.global_dim+cfg.local_dim+cfg.style_dim
+        self.partitioned = cfg.reference_encoder == 'statistics'
+        self.style_width = cfg.style_dim//2 if self.partitioned else cfg.style_dim
+        cond_dim = cfg.global_dim+cfg.local_dim+self.style_width
         self.modulations = nn.ModuleList(nn.Linear(cond_dim, cfg.decoder_hidden*2) for _ in range(4))
         self.output = nn.Linear(cfg.decoder_hidden, 52)
-        self.bias = nn.Linear(cfg.style_dim, 52)
+        self.bias = nn.Linear(self.style_width, 52)
         nn.init.normal_(self.output.weight, std=.001)
         nn.init.zeros_(self.output.bias)
         nn.init.zeros_(self.bias.weight)
@@ -189,13 +239,14 @@ class ResponseDecoder(nn.Module):
     def forward(self, base, g, u, style, valid, scales):
         base = clean(base.detach(), valid)
         h = clean(self.input(base/scales), valid)
+        posture,response=style.chunk(2,-1) if self.partitioned else (style,style)
         condition = torch.cat((g[:,None].expand(-1,len(u[0]),-1),u,
-                               style[:,None].expand(-1,len(u[0]),-1)), -1)
+                               response[:,None].expand(-1,len(u[0]),-1)), -1)
         for block, mod in zip(self.blocks, self.modulations):
             gain, shift = mod(condition).chunk(2,-1)
             h = clean(h*(1+.1*gain.tanh())+.1*shift, valid)
             h = block(h, valid)
-        return clean(base + (self.output(h)+self.bias(style)[:,None])*scales, valid)
+        return clean(base + (self.output(h)+self.bias(posture)[:,None])*scales, valid)
 
 
 class ExpressionResponse(nn.Module):
@@ -203,6 +254,8 @@ class ExpressionResponse(nn.Module):
         super().__init__()
         if cfg.stride < 1 or cfg.hidden % 4 or cfg.logvar_min >= cfg.logvar_max:
             raise ValueError('Invalid response architecture')
+        if cfg.reference_encoder not in ('temporal','statistics') or cfg.style_dim%2:
+            raise ValueError('Invalid reference encoder configuration')
         if cfg.prior_variance not in ('learned', 'unit'):
             raise ValueError('prior_variance must be learned or unit')
         if cfg.prior_variance=='unit' and not cfg.logvar_min<=0<=cfg.logvar_max:
@@ -221,7 +274,7 @@ class ExpressionResponse(nn.Module):
         self.register_buffer('scales', scales)
         self.prior = GaussianEncoder(cfg, 772, 4, fixed_variance=cfg.prior_variance=='unit')
         self.posterior = GaussianEncoder(cfg, 52*4+cfg.style_dim, 3)
-        self.style = ReferenceStyle(cfg)
+        self.style = StatisticalReferenceStyle(cfg) if cfg.reference_encoder=='statistics' else ReferenceStyle(cfg)
         self.decoder = ResponseDecoder(cfg)
         self.emotion_head = nn.Linear(cfg.global_dim, cfg.classes)
         self.intensity_head = nn.Linear(cfg.global_dim, cfg.intensities)

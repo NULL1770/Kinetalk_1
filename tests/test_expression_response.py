@@ -2,7 +2,8 @@ import io
 import pytest
 import torch
 from kinetalk_b0.models.expression_response import (
-    ExpressionResponse, ResponseConfig, motion_objective, normalized_kl, native_interpolate)
+    ExpressionResponse, ResponseConfig, motion_objective, normalized_kl, native_interpolate,
+    reference_statistics)
 
 torch.set_num_threads(2)
 
@@ -111,6 +112,16 @@ def test_no_query_gt_in_deployment_signature_and_no_legacy_parameters():
     m,*_=fixture()
     assert list(inspect.signature(m.predict).parameters)==['audio','base','valid','refs','sample','generator']
     assert not any(s in k for k in m.state_dict() for s in ['h0','prototype','flow','speaker_embedding'])
+
+
+def test_statistics_reference_is_permutation_invariant_and_finite():
+    m,a,b,v,r,t=fixture();m.cfg=ResponseConfig(**{**m.checkpoint_config(),'reference_encoder':'statistics'})
+    # Exercise the standalone descriptor, which is independent of temporal order.
+    posture,response,present=reference_statistics(r['motion'],r['b0'],r['valid'],r['channel_mask'],m.scales)
+    rev={k:x.flip(2) for k,x in r.items()}
+    other=reference_statistics(rev['motion'],rev['b0'],rev['valid'],rev['channel_mask'],m.scales)
+    for x,y in zip((posture,response,present),other):torch.testing.assert_close(x,y,rtol=0,atol=1e-6)
+    assert torch.isfinite(posture).all() and torch.isfinite(response).all()
 
 
 def test_observed_nan_fails_closed():
