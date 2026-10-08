@@ -1,4 +1,4 @@
-# Current recovery: Phase48 COMPLETE; reference-coordinate diagnosis next (2026-10-08)
+# Current recovery: Phase49 COMPLETE; style-coordinate redesign prerequisites (2026-10-08)
 
 Read docs/PHASE47_RESULTS.md, PHASE47_VIDEO_GALLERY.md, PHASE47_EXPERIMENT_TABLES.md and PAPER_FIGURE_REQUIREMENTS.md first. Do not restart completed Phase41–47 training/evaluation/collectors. Prior recovery history is preserved in docs/archive and .codex-finalizer/planning_archive.
 
@@ -35,3 +35,9 @@ Phase48 COMPLETE: read PHASE48_RESULTS.md and PHASE48_VIDEO_GALLERY.md. Frozen f
 Remote /root/kinetalk_phase48_style_audit_v2_20261008; local final_experiment/evaluation/diagnostics/phase48_style_audit_v2_20261008.6tests/24GPUsmoke/full numerical replay passed:B0/latentzero,parent1.2278557e-5. Parent/B0/correction frozen. Original worker pipeline_state.failed is STORAGE-ONLY32765298bytes>20MiB, numerical audit/state.complete. Original failure/binding preserved; storage_acceptance_receipt permits<40MiB after allmanifest checks, no rerun. Failed firstroot and earlylocalcollector records preserved. Do not restart any worker/collector/render.
 
 Implementationc01d984 pushed. Next diagnose independent neutral-reference pose/B0 residual/content association on TRAIN/internal-held and describe dev, before selecting architecture. Any new model training needs SHA-verified remote artifact cleanup first;rootfree263MB/dat93MB. Prior Phase47 metrics and all evidence above remain valid; no fresh metrics improvement from Phase48.
+
+Phase49 COMPLETE:read PHASE49_RESULTS.md/PHASE49_REFERENCE_COORDINATE_PLAN.md.25neutralenrollment actors(20fit/2held/3dev),querycaches0,6tests+stylecode replay/frozen gates pass. Code same/crossRMS ratios .010/.367/.465 support TRAIN-reference overfit concern; GTmouthmean .322/.366/.281, residual .818/1.123/.392 shows GT-B0 not pure style. M025GTbrowposeA/B differs even B0-closed frames; neutraljawGT~.002 vsB0~.04-.06. No causal leakage/poor-fit conclusion from statistics alone. No training/model/default/metric change.
+
+Source16f36d1 pushed. Remote/root/kinetalk_phase49_reference_coordinates_20261008 diagnostic complete; worker failed ONLY JSON2172526bytes>2MiB. Original failure + storage receipt retained;8members SHAverified, no reexecution. Never relaunch. Next style-coordinate/reference-quality and approved TRAIN-pair teacher decomposition before selecting a compact receiver/reference redesign; avoid ad hoc consistency losses or gain increases.
+
+Two SHA-backed obsolete Phase34 smoke last.pt remote copies reclaimed152853632bytes; local originals and .codex-finalizer/phase34_smoke_last_archive_receipt.json retain restore info. Current/B0/parent/data/probe/rig/final models untouched. Root410513408/data93532160freebytes; arrange more for full training. App happy video open request returned queued, not necessarily visible until this thread shown.
