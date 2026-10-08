@@ -1,4 +1,8 @@
-# 当前恢复入口：Phase44 已完成并拒绝推广（2026-10-08）
+# 当前恢复入口：Phase45 教师目标诊断进行中（2026-10-08）
+
+先读 [PHASE45_PLAN.md](PHASE45_PLAN.md)。修改前Phase44成果af9037a已成功推送；独立GitHub ref查询失败不等于推送成功核验。本轮新增冻结目标诊断，不改默认模型：TRAIN10903fit、743身份留出、890句子留出，clip等权固定ridge；比较学生现有128D表示、772D情感/韵律、52D B0对教师有效centered u的预测能力，及g校准、教师输入敏感性。所有归一化/拟合只用fit，外部1367不参与。3项单元测试通过，增加真实GPU现有mean映射核验。尚无新候选成绩，未启动新训练。具体执行状态以Phase45远端state/receipt为准。
+
+Phase44已完整关闭，不重跑。以下保留其事实作为参考。
 
 恢复先读 [PHASE44_RESULTS.md](PHASE44_RESULTS.md)，再按需看 [完整表格](PHASE44_EXPERIMENT_TABLES.md)、[24视频](PHASE44_VIDEO_GALLERY.md)。不要重跑已结束的训练、评估、collector或因素诊断。旧进度完整保留在 [历史状态](archive/CURRENT_OPTIMIZATION_STATE_before_phase44_closure_20261008.md)，其旧ACTIVE/待审批/Git暂停不是当前状态。
 
