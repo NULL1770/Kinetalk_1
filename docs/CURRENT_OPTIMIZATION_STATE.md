@@ -1,3 +1,13 @@
+# 2026-10-08最高覆盖：Phase42闭合，Phase43双因素改进获授权
+
+用户允许同轮多处修改；每轮代码改动前必须推送Git；每次看结果须八情感视频、同协议基线比较、自身训练消融。已推送7fcad7ee4514d82d965b376e3667f8219318c65f且远端ref一致。恢复先读docs/PHASE43_PLAN.md、docs/PHASE42_RESULTS.md、docs/EXPERIMENT_TABLES_20261008.md，不重复论文检索和Phase42训练。
+
+Phase42完成24轮/16368updates，全1367评分/190文件SHA备份/八视频全帧检查。MBE.784298/LBE.352371/lip3.118475mm/F1.606310/.559938/.637381/.566032，jaw范围.109285对GT.175279；几何改善，F1/幅度退化，不推广。旧collector128212已不存活且状态stale；新recovery_v2进程126932已完成。恢复文件local_queue_recovery_v2.json=complete。
+
+SSH四基线final与预测SHA已重新核验，VOCA-core/FaceFormer/EmoTalk-core/FaceDiffuser与validation_gap_20261005一致；未读取sealed。六方法+两训练消融+冻结干预/每类/每身份/预算表已生成，原报告均哈希核验。MEDTalk/DESTalker无已核训练行，不编造官方对比。
+
+Phase43方案：A decoder仅使用去时间均值的u（生成变换，未改独立高斯KL），B训练混合双参考/单参考，修部署参考协议差异。以Phase41 learned variance为00，新增A/B/AB同10903fit/seed47/24轮；无新loss，中性B0/772D/全嘴保持。尚待实现、正确性和真实GPU预检，未启动。
+
 # 2026-10-08最新：Phase41冻结诊断/八视频闭合，Phase42固定先验方差消融已启动
 
 恢复先读docs/PHASE41_RESULTS.md与docs/PHASE42_FIXED_PRIOR_PLAN.md；原24轮训练/full1367/344文件/八视频全部完成。factors_v1完整1367冻结诊断9文件已SHA备份，原指标重放、四probe confusion完全相同。音频g+教师u MBE.307617 vs正常.810014；教师g+音频u .758158；混合F1 .716757含GT，不是部署。u方差raw超过上限83.465%，均值差平方15.5705。
