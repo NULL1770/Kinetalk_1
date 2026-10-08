@@ -69,6 +69,9 @@ def build(baseline_root,responses,out,inventory=None):
         metadata.append({'method':name,'fit_clips':protocol['data']['fit_clips'],
             'epochs':protocol['args']['epochs'],'updates':read(root/'seed47/complete.json')['updates'],
             'parent_epochs':protocol.get('parent_epochs',0),'parent_updates':protocol.get('parent_updates',0),
+            'analytic_fit_passes':protocol.get('analytic_fit_passes',0),
+            'analytic_fit_clips':protocol.get('analytic_fit_clips',0),
+            'fitted_coefficients':protocol.get('fitted_coefficients',0),
             'matching':protocol['args'].get('matching','joint_kl'),
             'train_seed':protocol['args']['seed'],'scope':'neutral B0 + audio expression + independent reference','draws':'prior mean',
             'checkpoint_sha256':r['checkpoint_sha256']})
@@ -81,6 +84,9 @@ def build(baseline_root,responses,out,inventory=None):
             'reference_training':protocol['args'].get('reference_training','single'),
             'matching':metadata[-1]['matching'],'parent_epochs':metadata[-1]['parent_epochs'],
             'parent_updates':metadata[-1]['parent_updates'],
+            'analytic_fit_passes':metadata[-1]['analytic_fit_passes'],
+            'analytic_fit_clips':metadata[-1]['analytic_fit_clips'],
+            'fitted_coefficients':metadata[-1]['fitted_coefficients'],
             'fit_clips':protocol['data']['fit_clips'],'updates':metadata[-1]['updates'],**native})
         for mode,d in r['interventions'].items():
             interventions.append({'method':name,'intervention':mode,'n':d['n'],**canonical(d['metrics'])})
@@ -102,11 +108,11 @@ def build(baseline_root,responses,out,inventory=None):
             table=emit(out,name+'_'+policy,columns,rows)
             if policy=='clip_all':sections+=['## '+name,'',table,'']
     for name,columns,rows in [
-        ('table4_trained_ablation',['method','prior_variance','center_local','reference_training','matching','fit_clips','parent_epochs','parent_updates','updates','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
+        ('table4_trained_ablation',['method','prior_variance','center_local','reference_training','matching','fit_clips','parent_epochs','parent_updates','updates','analytic_fit_passes','analytic_fit_clips','fitted_coefficients','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
         ('table5_inference_interventions',['method','intervention','n','arkit_mbe','arkit_lbe','jaw_centered_correlation','jaw_q90_q10','brows/centered_correlation'],interventions),
         ('table6_emotion_breakdown',['method','emotion','F1_1','F1_2','F1_3','F1_4'],classes),
         ('table7_geometry_groups',['method','group_type','group','n','arkit_mbe','arkit_lbe','lve_mean_mm_mean','eve_mean_mm_mean','jawOpen/centered_correlation','jawOpen/pred_q90_q10'],groups),
-        ('table8_training_protocol',['method','scope','fit_clips','parent_epochs','parent_updates','epochs','updates','matching','train_seed','draws'],metadata)]:
+        ('table8_training_protocol',['method','scope','fit_clips','parent_epochs','parent_updates','epochs','updates','analytic_fit_passes','analytic_fit_clips','fitted_coefficients','matching','train_seed','draws'],metadata)]:
         sections+=['## '+name,'',emit(out,name,columns,rows),'']
     intro=['# 开发集实验表：同协议基线与训练消融','',
         'Material Passport: MODE=validate; STATUS=ANALYZED; sources为已完成、SHA核验的原报告；本次汇总未重新训练/重新推理。',
@@ -116,6 +122,7 @@ def build(baseline_root,responses,out,inventory=None):
         '四F1依次为原128/原64/辅助128/辅助64整段统计probe；不是逐帧情感GT。jaw范围GT平均0.175279，范围越大不必越好；相关与位移误差联合判断，不能以平滑低误差替代正确动态。',
         'table4只列实际重训练消融；table5是冻结推理干预，不混为训练模块消融。oracle不进入方法排名。仅单seed结果，不报伪造多seed误差条。',
         '若parent_epochs/parent_updates非零，epochs/updates为追加训练预算，总预算必须加父模型；只在相同父模型与追加预算内比较匹配方式，不能将不同父模型候选当单变量消融。',
+        'analytic_fit_passes/analytic_fit_clips非零的候选实际进行了TRAIN监督解析拟合，updates=0只代表追加SGD步数为零，不能称未训练或与SGD同预算。g/u/gu复用同一次固定ridge求解，fitted_coefficients列明替换的现有mean参数数目；没有新增网络，方差未重新拟合。',
         '论文实践：EmoTalk Table5分别检查emotion disentangling encoder、emotion-guided attention、Lvel/Lcls、HDTF数据及encoder替换；MEDTalk §4.5/Table3检查overlap exchange、cycle exchange、disentangle、intensity和text。本项目应围绕自己的g/u职责、style/reference与teacher/student提出并重训练消融；不能直接照搬其模块名。',
         '统计核验11/11已检查：分组结果另列以检查聚合反转；不由3人推断总体个体；MEAD演员/伪GT选择偏差保留；无协变量调整/collider推断；报告8类而非只happy；不选极端片段宣称回归改善；所有1367无删坏样本；所有probe/raw保留；明确多轮开发探索；冻结交换非因果独立证明；教师看到GT非部署预测/因果反向结论。没有开展显著性检验，三开发身份及单训练seed不足以证明统计稳定。','']
     (out/'README.md').write_text('\n'.join(intro+sections),encoding='utf8',newline='\n')
