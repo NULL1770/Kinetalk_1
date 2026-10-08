@@ -58,3 +58,7 @@ The user reported a server restart and requested all three arms be resumed. The 
 New workers A=1839, B=1840, AB=1841 use the existing trainer with --resume, continuing epochs4–24. Recovery worker SHA e2708aedd77e39be3fe7bcc83202a624ec233e50e440f3fd54e3c478cb84d2e6. Local collector39796 and its arm-A child130328 survived; reused without duplicate launch. All jobs first rebuild frozen B0 caches. Verify actual post-restart updates with .codex-finalizer/phase43_verify_resume.py; its first resumed update is compared with the original epoch4 first update. Do not rerun phase43_resume_v1.py: it refuses the existing recovery directory.
 
 Recovery verified: all three resumed actual optimization at epoch4/step2047. Every logged loss component and gradient norm of that first update matches the original pre-reboot step2047 exactly (timing excluded). Optimizer/RNG restoration is therefore verified on the real formal trajectory, not just a smoke test. GPU utilization99%, three workers alive. Remaining training estimate approximately3hours, allow3–4hours before reviewing final metrics/videos. Verification receipt: restart_v1/runtime_verification.json.
+
+## Completion supersedes launch/restart status
+
+All three arms completed24epochs/16368updates/full1367 on2026-10-08.576 original-SHA files and24videos verified. Read PHASE43_RESULTS.md for tradeoffs and PHASE43_EXPERIMENT_TABLES.md for all nine method rows. No joint winner/default promotion/new training. Do not rerun completed pipelines or collectors.

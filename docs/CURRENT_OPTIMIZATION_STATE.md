@@ -1,3 +1,11 @@
+# 2026-10-08 Phase43 COMPLETE: results, 24 videos, tables verified
+
+Read docs/PHASE43_RESULTS.md first, then PHASE43_EXPERIMENT_TABLES.md and PHASE43_VIDEO_GALLERY.md. All A/B/AB finished24epochs/16368updates/full1367 evaluation. Each192members SHA-verified, total576; all24videos full decode/clock/audio/rig checks passed. local_queue_state=complete; GPU idle. Do not restart workers/collectors.
+
+Against00 Phase41(.810014/.372413/lip3.193374/F1.636091): A centered-u MBE.827621/LBE.388066/lip3.319447/F1.695182 (.645552/.722729/.647927 otherprobes), jaw range.142617 vsGT.175279, corr.473212. B mixedrefs .787836/.358676/3.033152/.638624, jawcorr.439372/range.111435. AB .819662/.372710/3.205353/.672238. A improves expression/range but worsens geometry; B improves geometry but reduces jaw dynamics; AB not joint best. No promotion or SOTA claim, no new training. Original128 remains below.7. All baseline/raw/fourprobe tables included, protocol budget limitations disclosed.
+
+Next proposed work: frozen g/u and mean/variance diagnosis, distinguish mean bias from dynamics before next source change; A expression candidate/B geometry reference only. Internal prior held-speaker errors worsen epoch12->24, so do not blindly extend. Posteriororacle seesGT, not deploy. New code round must snapshot first. Prior restart PIDs/status/ETA below are historical.
+
 # Latest: SSH restart recovery, 2026-10-08
 
 All three old workers died on server restart. Intact epoch3/step2046 checkpoints and original logs preserved in remote and local phase43_factorial_20261008/restart_v1,19 files SHA verified. Existing frozen trainer resumed with --resume: A1839/B1840/AB1841, epochs4–24. B0 caches rebuilt; all three actual epoch4/step2047 updates verified. Loss components and gradient norms bit-exactly equal original trajectory; GPU99%. Remaining training approximately3hours; allow3–4hours for review. Existing local collector39796/child130328 reused. No source/model/objective changes. Next check phase43_verify_resume.py and runtime_verification.json for exact replay. Older PIDs below are historical.
