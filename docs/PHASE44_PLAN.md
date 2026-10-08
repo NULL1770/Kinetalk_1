@@ -36,7 +36,7 @@ q、style、decoder全部固定且eval；p以及原emotion/intensity heads学习
 
 ## 当前状态
 
-方案记录；实现及预检待完成，未启动Phase44正式训练。Phase43因素诊断已完成，原SHA备份通过。恢复先读本文件及CURRENT_OPTIMIZATION_STATE.md最高条目。
+已完成实现、预检、三组正式训练、full1367评估、冻结因素诊断、原SHA备份、24视频与完整表格。三组均不推广。完整结论见[PHASE44_RESULTS.md](PHASE44_RESULTS.md)。下面SSH interruption是历史，不能据此重启。
 
 ## SSH interruption
 
@@ -44,4 +44,4 @@ Phase44 code was committed and pushed as 8f74658. All three smoke fits passed. L
 
 ## Latest execution status
 
-All3 arms train/eval complete; see CURRENT highest entry. Formal source8f74658, PIDs1315/1316/1317 completed. Original-SHA backup,24 videos and tables collection in progress under local6196. Do not rerun launch.
+All3 arms train/eval/factors complete. Formal source8f74658, PIDs1315/1316/1317 completed. Recovery collector142288 finished;588arm/208preflight/15factor members,24videos and9table sources rehashed. Frozen119state tensors/B0 exact; oracle numerical tolerance repair documented in PHASE44_RESULTS. GPU1MiB/0% at closure. No promotion or further training. Do not rerun launch or historical collectors.

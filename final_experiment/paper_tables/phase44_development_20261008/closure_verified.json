@@ -1,0 +1,280 @@
+{
+  "status": "complete",
+  "checked_at_utc": "2026-10-08T11:26:55.831754+00:00",
+  "test_loaded": false,
+  "default_replaced": false,
+  "evaluation_rerun": false,
+  "arms": {
+    "a_kl": {
+      "original_members_rehashed": 196,
+      "videos": {
+        "neutral": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_neutral_s47_20261008/comparison.mp4",
+          "sha256": "2e0c2c3000f2c59a01d8cb30207ec92b2800794e7c7f69bd0b9ecb05b6eb1806",
+          "frames": 101,
+          "prior_full_decode_receipt_verified": true
+        },
+        "happy": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_happy_s47_20261008/comparison.mp4",
+          "sha256": "456b5856f5de3d440baad2e0a95e08d86d4031b5164e4d9fab044dab7cf1655d",
+          "frames": 103,
+          "prior_full_decode_receipt_verified": true
+        },
+        "angry": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_angry_s47_20261008/comparison.mp4",
+          "sha256": "f429ea12b66a101a9bd5928ed6250b6a1185155898bb430f8989daca91125d22",
+          "frames": 82,
+          "prior_full_decode_receipt_verified": true
+        },
+        "contempt": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_contempt_s47_20261008/comparison.mp4",
+          "sha256": "75f4f4a120cb1dbe676c0b08fd95e693ce023acc1d7107d641cac73bf2742d4a",
+          "frames": 45,
+          "prior_full_decode_receipt_verified": true
+        },
+        "disgust": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_disgust_s47_20261008/comparison.mp4",
+          "sha256": "0db23aced0c6a152577914e198e333ecc11058129e9bff5b5614f29ae14105d5",
+          "frames": 75,
+          "prior_full_decode_receipt_verified": true
+        },
+        "fear": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_fear_s47_20261008/comparison.mp4",
+          "sha256": "8eef65531e5f3fdecee5a97a5d22b95df16c45e2a7d86f0784a7c40e6e9e812a",
+          "frames": 76,
+          "prior_full_decode_receipt_verified": true
+        },
+        "sad": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_sad_s47_20261008/comparison.mp4",
+          "sha256": "1f514acf4be1635793165dd03b90b4ae359bc757e6a2b5962dbba45a72c33e3e",
+          "frames": 159,
+          "prior_full_decode_receipt_verified": true
+        },
+        "surprise": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_kl_surprise_s47_20261008/comparison.mp4",
+          "sha256": "28cca5ebb108c13c0c18ef453c6b71ffc757a030d0dc5d62662ad30cd20b5599",
+          "frames": 73,
+          "prior_full_decode_receipt_verified": true
+        }
+      },
+      "frozen_output_verification": {
+        "passed": true,
+        "parent": "a",
+        "frozen_state_tensors_exact": 119,
+        "neutral_predictions_metrics_probes_exact": true,
+        "oracle_probes_exact": true,
+        "oracle_metrics_rtol": 1e-06,
+        "oracle_metrics_atol": 1e-08,
+        "oracle_coefficients_atol": 5e-05,
+        "oracle_coefficients_max_abs": 1.4662742614746094e-05,
+        "oracle_metric_max_abs_differences": {
+          "posterior_oracle/raw": 1.9971219273884344e-06,
+          "posterior_oracle/clip_all": 9.800011682159493e-07
+        },
+        "reports_modified": false,
+        "test_loaded": false
+      },
+      "final_sha256": "85cc767400ea15c7c061ffe975271e9fd0d26d634b9a582c58c969c075f7579f",
+      "report_sha256": "9fa2d617b8db2afbb18bc02888c65e8d72551d62a08a77b87f6df09e95bc720c"
+    },
+    "a_mean": {
+      "original_members_rehashed": 196,
+      "videos": {
+        "neutral": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_neutral_s47_20261008/comparison.mp4",
+          "sha256": "9472fe4d60976de19c6356960a47c615ce1d76356b599f83d0d2db92c04eb98f",
+          "frames": 101,
+          "prior_full_decode_receipt_verified": true
+        },
+        "happy": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_happy_s47_20261008/comparison.mp4",
+          "sha256": "92a26f85afbb68488a60a3b6badc74dd1b7293745a7bb089adda338c282a086a",
+          "frames": 103,
+          "prior_full_decode_receipt_verified": true
+        },
+        "angry": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_angry_s47_20261008/comparison.mp4",
+          "sha256": "04f2fda6429d18b54e88f72c2141214adc8803fde178e2074f9cf17c5033933b",
+          "frames": 82,
+          "prior_full_decode_receipt_verified": true
+        },
+        "contempt": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_contempt_s47_20261008/comparison.mp4",
+          "sha256": "8700061500f4f01d012c5a4bb25d0c170f981c63f55977f4e5ef99fc8f187986",
+          "frames": 45,
+          "prior_full_decode_receipt_verified": true
+        },
+        "disgust": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_disgust_s47_20261008/comparison.mp4",
+          "sha256": "b0d9c081535a11b00ab1bf79791ea8477a8b15a2e868f17fadfdee3c07264cea",
+          "frames": 75,
+          "prior_full_decode_receipt_verified": true
+        },
+        "fear": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_fear_s47_20261008/comparison.mp4",
+          "sha256": "e8cfdf60de0c6f549342f07751655637a806ea2e1f8aa728cf0af9d91f8c7fc2",
+          "frames": 76,
+          "prior_full_decode_receipt_verified": true
+        },
+        "sad": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_sad_s47_20261008/comparison.mp4",
+          "sha256": "7459cc02ac13045efe4c9bd86bab7be475807121d20f45c8f27591d8a2d345c7",
+          "frames": 159,
+          "prior_full_decode_receipt_verified": true
+        },
+        "surprise": {
+          "path": "final_experiment/evaluation/rendered/phase44_a_mean_surprise_s47_20261008/comparison.mp4",
+          "sha256": "f406baae9557e6927e10558a0fedea69966f0253146cb4b5a9a31c2863dd9d89",
+          "frames": 73,
+          "prior_full_decode_receipt_verified": true
+        }
+      },
+      "frozen_output_verification": {
+        "passed": true,
+        "parent": "a",
+        "frozen_state_tensors_exact": 119,
+        "neutral_predictions_metrics_probes_exact": true,
+        "oracle_probes_exact": true,
+        "oracle_metrics_rtol": 1e-06,
+        "oracle_metrics_atol": 1e-08,
+        "oracle_coefficients_atol": 5e-05,
+        "oracle_coefficients_max_abs": 1.4662742614746094e-05,
+        "oracle_metric_max_abs_differences": {
+          "posterior_oracle/raw": 1.9971219273884344e-06,
+          "posterior_oracle/clip_all": 9.800011682159493e-07
+        },
+        "reports_modified": false,
+        "test_loaded": false
+      },
+      "final_sha256": "ba7241b19bc7d2db7c4f8c72fd67cc26934c99f03ccac0cd9c498e39e2139533",
+      "report_sha256": "67bc07378d39d0b59ee54d1a0a5ea4b4d428e2dad878821084022772a6dfd888"
+    },
+    "b_mean": {
+      "original_members_rehashed": 196,
+      "videos": {
+        "neutral": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_neutral_s47_20261008/comparison.mp4",
+          "sha256": "494a2e7579e8cdad364d542c404b2ed92a8bbad6a2521c3d873bf1aa2d705196",
+          "frames": 101,
+          "prior_full_decode_receipt_verified": true
+        },
+        "happy": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_happy_s47_20261008/comparison.mp4",
+          "sha256": "fd9c593c4fee9510c703e5e8974d451e24b3de9c972c5db0070a1c3b5d790320",
+          "frames": 103,
+          "prior_full_decode_receipt_verified": true
+        },
+        "angry": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_angry_s47_20261008/comparison.mp4",
+          "sha256": "8a71c6d328a0102fdeaab856743cc6a2383b12991b7cef0f021aa66dbcf6f1e6",
+          "frames": 82,
+          "prior_full_decode_receipt_verified": true
+        },
+        "contempt": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_contempt_s47_20261008/comparison.mp4",
+          "sha256": "62284feec6fde5686c14ad4180010158b6ead129b3a9f7e4264893cedde3ae88",
+          "frames": 45,
+          "prior_full_decode_receipt_verified": true
+        },
+        "disgust": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_disgust_s47_20261008/comparison.mp4",
+          "sha256": "f3ed6db770c97f36a9352bc9db5ebd3a804f4bbd57cbd3682056fc999dec5dfd",
+          "frames": 75,
+          "prior_full_decode_receipt_verified": true
+        },
+        "fear": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_fear_s47_20261008/comparison.mp4",
+          "sha256": "49a2e11041be368ec80ce237c8feccee9c2952197a2336ca7d9224452b5d122b",
+          "frames": 76,
+          "prior_full_decode_receipt_verified": true
+        },
+        "sad": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_sad_s47_20261008/comparison.mp4",
+          "sha256": "5b6cf61490b119a3338f145f079cf868058d75303710849d78f4f70aeebe07ed",
+          "frames": 159,
+          "prior_full_decode_receipt_verified": true
+        },
+        "surprise": {
+          "path": "final_experiment/evaluation/rendered/phase44_b_mean_surprise_s47_20261008/comparison.mp4",
+          "sha256": "18dee2c366421ef102ecfae03ec8fdeee0dcdbc2c30520392203aa4950ab627c",
+          "frames": 73,
+          "prior_full_decode_receipt_verified": true
+        }
+      },
+      "frozen_output_verification": {
+        "passed": true,
+        "parent": "b",
+        "frozen_state_tensors_exact": 119,
+        "neutral_predictions_metrics_probes_exact": true,
+        "oracle_probes_exact": true,
+        "oracle_metrics_rtol": 1e-06,
+        "oracle_metrics_atol": 1e-08,
+        "oracle_coefficients_atol": 5e-05,
+        "oracle_coefficients_max_abs": 2.5153160095214844e-05,
+        "oracle_metric_max_abs_differences": {
+          "posterior_oracle/raw": 3.280321287491006e-06,
+          "posterior_oracle/clip_all": 5.835384932595389e-06
+        },
+        "reports_modified": false,
+        "test_loaded": false
+      },
+      "final_sha256": "9cac26780a08233ff5f05e1a34369d7248e77c1f70cb42a826ca2662503cac32",
+      "report_sha256": "205dd12d54a2d0ec4c18e88e564f471078aef838e0dcb549ba370dcc58c1a779"
+    }
+  },
+  "table_sources": [
+    {
+      "path": "final_experiment/evaluation/diagnostics/validation_gap_20261005/report.json",
+      "sha256": "43991ede1d8e2ce8642c71e1abdbab9852c2e1d9f576f505d39c5210aa3c5924"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase41_expression_response_20261007/recovery_v1/evaluation/report.json",
+      "sha256": "58d5c472deb574f249168725a74dd97b467e60868a08d1b6eadea776b8d5d54f"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase42_fixed_prior_20261008/evaluation/report.json",
+      "sha256": "0249993655ea7e33f586a080ee7f15bd7945e35726e38446009efa2d5e962059"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/a/evaluation/report.json",
+      "sha256": "9bbb266bf15a886a5c3ae9d75c648361c188f2cee1e6a426ed0641633d056d08"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/b/evaluation/report.json",
+      "sha256": "bb332d3dd42bb7c954531186d6a96706ecb3660033206f1797b48bc1afc7e71c"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/ab/evaluation/report.json",
+      "sha256": "903a0ed208c338e9d072c375f612ccb5f1a635b9f2d51fc78e1d0f4f8bdd46a4"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/a_kl/evaluation/report.json",
+      "sha256": "9fa2d617b8db2afbb18bc02888c65e8d72551d62a08a77b87f6df09e95bc720c"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/a_mean/evaluation/report.json",
+      "sha256": "67bc07378d39d0b59ee54d1a0a5ea4b4d428e2dad878821084022772a6dfd888"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/b_mean/evaluation/report.json",
+      "sha256": "205dd12d54a2d0ec4c18e88e564f471078aef838e0dcb549ba370dcc58c1a779"
+    }
+  ],
+  "preflight_members_rehashed": 208,
+  "factor_members_rehashed": 15,
+  "table_files": {
+    "README.md": "246e9edd09185f3103f2005dc98f605d20433a33cb64c47a38cea12b1143e88c",
+    "table1_geometry_clip_all.csv": "79b60334a87810d72091322e34188e4613490d84abf017dacea5bc12ea175a0a",
+    "table1_geometry_raw.csv": "367fe60e5530a2b118941e52d03b63d94fa4f9ad5a2637b07058e7d1bbe55775",
+    "table2_coefficients_clip_all.csv": "a85f10d8ea5a979efd7df4c3c2bbcd4bd68420d16568ffc21700f0275b29a121",
+    "table2_coefficients_raw.csv": "ae2d0f52350bdc6763c222486555031c0032ba1081873e0efb0012c51009b3ee",
+    "table3_dynamics_semantics_clip_all.csv": "dd40c5f348a9c0b5d4ea84a100007760671282905ddd2044d4dffc77c24f6916",
+    "table3_dynamics_semantics_raw.csv": "2778f4e0c08c8f3b5fdafb8247bdd1611154db4aed739ac1b969c710a917d3e9",
+    "table4_trained_ablation.csv": "ddc5f0dd040b754630b530bb46c552d84f13ddbcce7bbf2976666a51a3f7982d",
+    "table5_inference_interventions.csv": "b22b7e2b5706417cf7ffbda9603a8757ba149988446d9fcb7fc058597ce83009",
+    "table6_emotion_breakdown.csv": "90a24f897e372cec8a87568ae59e9150961b56a17d328f1f9c30feec258d888f",
+    "table7_geometry_groups.csv": "1a971ab064938ff95f89efff683ceb9f290fdefadd103b5c3d5733f96f79d345",
+    "table8_training_protocol.csv": "6f8d2bf697e8ed95da3c3145f19e113f50cff19583fe92c8e2385c1a62ce0bba",
+    "tables.json": "b9bfe35d088b994d750419d074526e00ad0c1bb7a9d7042103047fed71f51e3f"
+  }
+}
