@@ -1,6 +1,12 @@
 import numpy as np
 import pytest
-from scripts.audit_reference_style_swap import summary,matched_pairs,target_direction,export,change
+from scripts.audit_reference_style_swap import summary,matched_pairs,target_direction,export,change,canonical_batches
+
+
+def test_smoke_preserves_saved_batch_context_and_native_order():
+    assert canonical_batches(35,[34,0,17])==[list(range(16)),list(range(16,32)),[32,33,34]]
+    assert canonical_batches(35,[17,31])==[list(range(16,32))]
+    with pytest.raises(ValueError):canonical_batches(35,[35])
 
 
 def test_stats_ignore_invalid_unsupported_and_nonadjacent_displacements():

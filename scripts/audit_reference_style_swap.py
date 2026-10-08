@@ -26,6 +26,14 @@ from scripts.render_dynamic_rig_comparison import ARKIT_NAMES
 REGIONS={'all51':list(range(51)),'mouth':list(range(14,41)),'brows':list(range(41,46)),'eyes':list(range(14))}
 STATS=('mean','centered_rms','q90_q10','displacement_rms')
 
+def canonical_batches(n,selected,batch_size=16):
+    """Retain original padded inference context for every selected clip."""
+    selected=set(selected)
+    if batch_size<1 or not selected or min(selected)<0 or max(selected)>=n:
+        raise ValueError('Invalid canonical inference selection')
+    return [list(range(start,min(start+batch_size,n))) for start in range(0,n,batch_size)
+            if selected.intersection(range(start,min(start+batch_size,n)))]
+
 def matched_pairs(sentence,emotion,intensity,speaker):
     """Exact label/text-key match, reject ambiguous same-person repetitions."""
     groups=defaultdict(list)
@@ -143,6 +151,7 @@ def run(a):
     for name,digest in binding['source_files'].items():
         assert sha(Path(__file__).resolve().parents[1]/name)==digest,name
     model,_=restore_model(binding,device);model.eval().requires_grad_(False)
+    assert sha(a.correction)==binding['style_audit']['correction']['sha256']
     ck=torch.load(a.correction,map_location=device,weights_only=False)
     assert ck['mode']=='latent' and ck['parent_checkpoint_sha256']==binding['parent_checkpoint']['sha256']
     assert ck['data_manifest_sha256']==binding['data_manifest_sha256'] and not ck['test_loaded']
@@ -177,8 +186,9 @@ def run(a):
     pred_stats=np.zeros((2,2,n,3,4,52));gt_stats=np.zeros((n,4,52))
     changes={};maximum={'parent':0.,'latent':0.,'base':0.};display={};style_rows=[]
     display_lookup={cid:name for name,cid in binding['display_clips'].items()}
-    processed=0
-    for sub in torch.tensor(ids).split(16):
+    processed=0;chosen=set(ids)
+    for batch_ids in canonical_batches(n,ids):
+        sub=torch.tensor(batch_ids)
         b=q.batch(sub,device);refs=reference_batch(data,b,device)
         p=model.audio_prior(b['audio_features'],b['valid']);p_before={k:x.clone() for k,x in p.items()}
         normal,own_style=compute(model,correction,b,p,refs)
@@ -190,6 +200,7 @@ def run(a):
             swapped[sid],_=compute(model,correction,b,p,refs_for(data,b,device,sid))
         assert all(torch.equal(p[k],x) for k,x in p_before.items())
         for j,i in enumerate(sub.tolist()):
+            if i not in chosen:continue
             length=int(q['_lengths'][i]);v=b['valid'][j,:length].cpu().numpy()
             ch=b['channel_mask'][j].cpu().numpy();tm=b['times'][j,:length].cpu().numpy()
             gt=b['motion'][j,:length].cpu().numpy();sid=int(q['speaker_id'][i]);sindex=people.index(sid)
@@ -220,7 +231,7 @@ def run(a):
                     reference_ids=['none']+['|'.join(refs_meta[x]['clip_ids']) for x in ordered]+[refs_meta[sid]['clip_ids'][0],refs_meta[sid]['clip_ids'][1]]
                     path=out/'render_inputs'/f'{method}_{e}.npz'
                     display[method+'/'+e]=export(path,rows,v,tm,ch,q['clip_id'][i],labels,reference_ids)
-        processed+=len(sub)
+        processed+=sum(i in chosen for i in batch_ids)
         write(out/'state.json',dict(status='auditing',clips_processed=processed,total=len(ids),test_loaded=False))
     anchors={};all_codes={}
     for sid in people:
