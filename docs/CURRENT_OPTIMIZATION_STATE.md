@@ -1,3 +1,7 @@
+# Latest: SSH restart recovery, 2026-10-08
+
+All three old workers died on server restart. Intact epoch3/step2046 checkpoints and original logs preserved in remote and local phase43_factorial_20261008/restart_v1,19 files SHA verified. Existing frozen trainer resumed with --resume: A1839/B1840/AB1841, epochs4–24. B0 caches rebuilt; all three actual epoch4/step2047 updates verified. Loss components and gradient norms bit-exactly equal original trajectory; GPU99%. Remaining training approximately3hours; allow3–4hours for review. Existing local collector39796/child130328 reused. No source/model/objective changes. Next check phase43_verify_resume.py and runtime_verification.json for exact replay. Older PIDs below are historical.
+
 # 2026-10-08 Phase43 latest execution override
 
 Read docs/PHASE43_IMPLEMENTATION_AND_TRAINING.md and docs/PHASE43_PLAN.md first. Phase42 complete with 8 videos and six-method tables; not promoted (geometry better, F1/range worse). Git pre-change88dd7e9 and implementationb34c7ed pushed. Centered-local A and mixed-reference B implemented; 427 local tests/1skip; three120-update GPU fits, longest432-frame batch gradient/exactresume/isolation checks and16-clip evaluations passed. No new loss/B0/content inlet.
