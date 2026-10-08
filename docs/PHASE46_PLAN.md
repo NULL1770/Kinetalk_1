@@ -1,6 +1,6 @@
 # Phase46: frozen-prior deployment receiver adaptation
 
-2026-10-08. Pre-change snapshot 6e8d5d5 already pushed. Phase45 is closed; do not restart it. Phase46 is not yet launched.
+2026-10-08. Completed; see [PHASE46_RESULTS.md](PHASE46_RESULTS.md). Both arms finished 8 epochs, 5,456 updates, full 1,367 development evaluation, 16 videos and table/hash closure. No joint improvement; retain Phase45-u as expression reference. Do not restart Phase45 or Phase46. The fixed plan below records the original hypothesis.
 
 ## Evidence and hypothesis
 
@@ -27,4 +27,4 @@ After training: full original1367 development evaluator, original raw+clip metri
 
 ## Execution status
 
-Plan recorded; implementation/preflight pending. Server GPU idle; root filesystem free ~681MiB. Check storage budget before launch, use shared data/code and avoid checkpoint copies. Never delete raw evidence to make space without verified backup.
+Training/evaluation/collection complete. Original pre-change snapshot 6e8d5d5 and implementation 356cea9 were pushed before dispatch. Latest read-only GPU check: 1 MiB / 0%; root free ~365 MiB, data disk ~310 MiB. Use shared data/code for future work; preserve original evidence. No new training is active.

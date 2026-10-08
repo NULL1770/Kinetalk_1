@@ -1,0 +1,195 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-10-08T13:27:34.538613+00:00",
+  "preflight_members": 5,
+  "launch_members": 209,
+  "arm_members": {
+    "mixed": 205,
+    "deploy": 205
+  },
+  "videos": 16,
+  "table_sources": [
+    {
+      "path": "final_experiment/evaluation/diagnostics/validation_gap_20261005/report.json",
+      "sha256": "43991ede1d8e2ce8642c71e1abdbab9852c2e1d9f576f505d39c5210aa3c5924"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase41_expression_response_20261007/recovery_v1/evaluation/report.json",
+      "sha256": "58d5c472deb574f249168725a74dd97b467e60868a08d1b6eadea776b8d5d54f"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase42_fixed_prior_20261008/evaluation/report.json",
+      "sha256": "0249993655ea7e33f586a080ee7f15bd7945e35726e38446009efa2d5e962059"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/a/evaluation/report.json",
+      "sha256": "9bbb266bf15a886a5c3ae9d75c648361c188f2cee1e6a426ed0641633d056d08"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/b/evaluation/report.json",
+      "sha256": "bb332d3dd42bb7c954531186d6a96706ecb3660033206f1797b48bc1afc7e71c"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase43_factorial_20261008/ab/evaluation/report.json",
+      "sha256": "903a0ed208c338e9d072c375f612ccb5f1a635b9f2d51fc78e1d0f4f8bdd46a4"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/a_kl/evaluation/report.json",
+      "sha256": "9fa2d617b8db2afbb18bc02888c65e8d72551d62a08a77b87f6df09e95bc720c"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/a_mean/evaluation/report.json",
+      "sha256": "67bc07378d39d0b59ee54d1a0a5ea4b4d428e2dad878821084022772a6dfd888"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase44_prior_refine_20261008/b_mean/evaluation/report.json",
+      "sha256": "205dd12d54a2d0ec4c18e88e564f471078aef838e0dcb549ba370dcc58c1a779"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase45_target_audit_20261008/head_candidates/g/evaluation/report.json",
+      "sha256": "ccaf60154f41e332711e3d8abeece933ef689f0256264f79701b94262e63c664"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase45_target_audit_20261008/head_candidates/u/evaluation/report.json",
+      "sha256": "73d195ad4e45d0f06340376782cea497bb58c06101877bb05a4f7067ac6bf1d6"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase45_target_audit_20261008/head_candidates/gu/evaluation/report.json",
+      "sha256": "5edb0c5b338ba9fa8732484845cfa5045746372e1a61819e74087979a44ac253"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase46_receiver_20261008/mixed/evaluation/report.json",
+      "sha256": "594035a904cedd7c29bb760c254f06af2f3c0cef3c499eb6467c59533f822e3f"
+    },
+    {
+      "path": "final_experiment/evaluation/diagnostics/phase46_receiver_20261008/deploy/evaluation/report.json",
+      "sha256": "22b06412b3615f3216ae1e2ea022e054744ca17363b6a3585a85e9852cd29166"
+    }
+  ],
+  "arms": {
+    "mixed": {
+      "manifest_members": 205,
+      "videos": {
+        "neutral": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_neutral_s47_20261008/comparison.mp4",
+          "sha256": "cac0e898e336b1085950b46994e76f33c5411b5596a60c24ec0a0ec8dd42f4d5",
+          "frames": 101
+        },
+        "happy": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_happy_s47_20261008/comparison.mp4",
+          "sha256": "b4ba9b1921b0f22433c0509e3a14540fecbfd59346e1dd0e818df9eaab9a3969",
+          "frames": 103
+        },
+        "angry": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_angry_s47_20261008/comparison.mp4",
+          "sha256": "18f688569edff87ff67b419d5df11329fbb52967cf60dae43fafcb194c669b29",
+          "frames": 82
+        },
+        "contempt": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_contempt_s47_20261008/comparison.mp4",
+          "sha256": "57f89b65e45ce390fb833b122aff9961dee6224e0a38e6d642d84d56cd240736",
+          "frames": 45
+        },
+        "disgust": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_disgust_s47_20261008/comparison.mp4",
+          "sha256": "d1903e3350186e09f19b05bc76f43ff3071b0f0f8abdeb7d06ab88cb80366e40",
+          "frames": 75
+        },
+        "fear": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_fear_s47_20261008/comparison.mp4",
+          "sha256": "61c32f5e5412b1ca8fd7f77733b545067f5c8a4c88cdc977386ef29cd6e2ead0",
+          "frames": 76
+        },
+        "sad": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_sad_s47_20261008/comparison.mp4",
+          "sha256": "9825e46a25f1da2a5779cebf462513502e44a0ca0a2e765972712d2c305aad75",
+          "frames": 159
+        },
+        "surprise": {
+          "path": "final_experiment/evaluation/rendered/phase46_mixed_surprise_s47_20261008/comparison.mp4",
+          "sha256": "13e13e1d47993a2e1d313089b0c7315a62d86916efc38636137fe632cea6bf8e",
+          "frames": 73
+        }
+      },
+      "checkpoint_sha256": "6e58c6404f03c948378bd0217c05d4a0a6f6e1c098d285ecad007308687bb768",
+      "report_sha256": "594035a904cedd7c29bb760c254f06af2f3c0cef3c499eb6467c59533f822e3f",
+      "mbe": 0.8369434763500907,
+      "lbe": 0.38828960640592314,
+      "lip_mm": 3.252856307456618,
+      "jaw_range": 0.13856338579057775,
+      "jaw_correlation": 0.4903364189725324,
+      "macro_f1": 0.7028705760512131
+    },
+    "deploy": {
+      "manifest_members": 205,
+      "videos": {
+        "neutral": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_neutral_s47_20261008/comparison.mp4",
+          "sha256": "d2d80e703f7404d2fd2bff9d44b2596849b27c05388c9d46503a267653fb09a3",
+          "frames": 101
+        },
+        "happy": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_happy_s47_20261008/comparison.mp4",
+          "sha256": "cde28facd415c052cf0929aae87c3b6ac0c4d9b5bceab0b0f1187a74a2fd0cef",
+          "frames": 103
+        },
+        "angry": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_angry_s47_20261008/comparison.mp4",
+          "sha256": "ef7b5c8f718485bdc79e3dd3a794d65b16dc188299ba6ca3775f2f0664e113f6",
+          "frames": 82
+        },
+        "contempt": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_contempt_s47_20261008/comparison.mp4",
+          "sha256": "3d2d8436a3446007691310864f89bdedf29d4e04f2f977829e8634273d1c35b7",
+          "frames": 45
+        },
+        "disgust": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_disgust_s47_20261008/comparison.mp4",
+          "sha256": "94d47a9719a5c7e81f7dadfd1d517f724c4664c800b389db2fa6017697ee1374",
+          "frames": 75
+        },
+        "fear": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_fear_s47_20261008/comparison.mp4",
+          "sha256": "c12f356e274161cedd8dd673238f079a8ed4b8839fb59526afc2b96231959da8",
+          "frames": 76
+        },
+        "sad": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_sad_s47_20261008/comparison.mp4",
+          "sha256": "77ab954dfeb6718bd7d4fe5001255a17307994cac3d7840d8035beb4d9ecedce",
+          "frames": 159
+        },
+        "surprise": {
+          "path": "final_experiment/evaluation/rendered/phase46_deploy_surprise_s47_20261008/comparison.mp4",
+          "sha256": "b5aba02419c95dd264bd250e128ffb491b1c9198e5ad17dd0a6a8aa62c574bbc",
+          "frames": 73
+        }
+      },
+      "checkpoint_sha256": "000e62e6bb61e7a01a6e35f0d91214c9b3c5aadc0def798be909ef08a3ce424b",
+      "report_sha256": "22b06412b3615f3216ae1e2ea022e054744ca17363b6a3585a85e9852cd29166",
+      "mbe": 0.8426961148615447,
+      "lbe": 0.3915502170402925,
+      "lip_mm": 3.2614816495495127,
+      "jaw_range": 0.13585303350329267,
+      "jaw_correlation": 0.4917850326142058,
+      "macro_f1": 0.705702647719697
+    }
+  },
+  "table_files": {
+    "README.md": "4029ef66204f1cb70d0da4806e1a1cfe0430410d68b1df8e639fd84a9791d906",
+    "table1_geometry_clip_all.csv": "1b4325f777deda5784e491dae23448fe524ead0debc5363bdc42d2a682d516c8",
+    "table1_geometry_raw.csv": "fcd76552da612d9e5a3ad67cdf98c14b254414682f6917fcf4e9d580593230e4",
+    "table2_coefficients_clip_all.csv": "7706dcc5c5809f769191c802daddf470f61f260c5d79d072078a003bb7627783",
+    "table2_coefficients_raw.csv": "1a9b5288acb6b3d2f20ade06cfffca6ecff630bf514723679f96584e1d017372",
+    "table3_dynamics_semantics_clip_all.csv": "e6b950a8d6de4cd58d962d48284fbe6979b92b877845348057aff004386cb01f",
+    "table3_dynamics_semantics_raw.csv": "c9a24d33fddee409ce696443c68c94a22fe61bf255e5a39f9a42532d3ae96d37",
+    "table4_trained_ablation.csv": "1d0c3a8a18e4852607e4ce70a79ec4f98397db6f92ee4c3eb975f76f71634526",
+    "table5_inference_interventions.csv": "e92b4c53122f8be8e81a0a52ec1ff695359629b74002c91b4337f0b766079476",
+    "table6_emotion_breakdown.csv": "4ba5eb57dec2e3e06ddba43219eee760678a08ce20af9d4512a72b9e6874ea44",
+    "table7_geometry_groups.csv": "0e767c86fa418a83d81ce5bef73143f9ce74536d0ef871111c0cf77f5f92fd36",
+    "table8_training_protocol.csv": "554c3ce5a948851aa1fb09296816fa1c74de8735b394e14529fdc0b2089fcb9e",
+    "tables.json": "9772c64635b0751fc6a7f1e4bb17e9f314bfe1499fbd19302bcbd41e9b2f2a86"
+  },
+  "test_loaded": false,
+  "default_replaced": false,
+  "evaluation_rerun": false
+}
