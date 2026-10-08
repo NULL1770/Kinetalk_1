@@ -37,3 +37,11 @@ q、style、decoder全部固定且eval；p以及原emotion/intensity heads学习
 ## 当前状态
 
 方案记录；实现及预检待完成，未启动Phase44正式训练。Phase43因素诊断已完成，原SHA备份通过。恢复先读本文件及CURRENT_OPTIMIZATION_STATE.md最高条目。
+
+## SSH interruption
+
+Phase44 code was committed and pushed as 8f74658. All three smoke fits passed. Last observed a_kl complete; a_mean runtime passed and16-clip evaluation running; b_mean waiting for runtime/evaluation. Final statuses were unverified when SSH11473 refused connections. phase44_launch.py attempted only read/validation and did not launch because connection failed; no formal launch receipt was written. Preserve the root and resume after connection recovery.
+
+## Latest execution status
+
+All3 arms train/eval complete; see CURRENT highest entry. Formal source8f74658, PIDs1315/1316/1317 completed. Original-SHA backup,24 videos and tables collection in progress under local6196. Do not rerun launch.

@@ -1,3 +1,15 @@
+# 2026-10-08 Phase44 TRAIN/EVAL COMPLETE; collection in progress
+
+SSH recovery verified all preflight gates complete and no existing workers/locks/receipt, then launched once (PIDs 1315/1316/1317). Each completed 8 added epochs / 5456 updates and full1367 evaluation in about34minutes. Source8f74658 and parent checkpoints match bindings; remote Git ref reverified. No model code changes this turn. Launch helper first call continued while output/session metadata was accidentally discarded; a second launch call was blocked by existing receipt BEFORE mutation. No duplicate training. Do not run phase44_launch.py again.
+
+Latest readout: a_kl MBE .830979 / LBE .390528 / LipMean3.288994 / original128 F1 .649915; a_mean .825540/.393767/3.268096/.688865; b_mean .796286/.359408/3.046861/.599134. a_mean improves over matched a_kl but does not jointly beat parentA (.827621/.388066/3.319447/.695182); jaw range .142617 -> .111908 (GT .175279). Audio semantic F1 .877547 is NOT generated-motion F1. No promotion/SOTA claim.
+
+Local finite collector6196 started with no prior collector lock/process; collects all original-SHA artifacts then eight videos per arm and external/ablation tables. Root local_queue_state and per-arm local_queue_state are authoritative; do not duplicate. Next: verify all196 members per arm, frozen posterior/B0 metric equality, 24videos and tables; produce PHASE44_RESULTS.md then archive Git. Old status entries below are historical. No new optimization code until result closure and pre-change Git snapshot.
+
+# 2026-10-08 Phase44 preflight awaiting SSH
+
+Phase43 results closed and pushed. Phase44 code snapshot 8f74658 successfully pushed after a transient reset; remote push success verified in this turn. All three refinement smokes and a_kl/a_mean runtime checks passed. Last observed a_kl complete, a_mean at16-clip evaluation, b_mean awaiting runtime/eval. Final statuses unverified when SSH port refused. Formal launch did not occur. Do not rerun or create duplicate remote root. On SSH recovery inspect /root/kinetalk_phase44_prior_refine_20261008/preflight_state.json, each arm preflight_v2_state.json, and formal launch absence, then finish preflight and launch using phase44_launch.py.
+
 # 2026-10-08 Phase43 COMPLETE: results, 24 videos, tables verified
 
 Read docs/PHASE43_RESULTS.md first, then PHASE43_EXPERIMENT_TABLES.md and PHASE43_VIDEO_GALLERY.md. All A/B/AB finished24epochs/16368updates/full1367 evaluation. Each192members SHA-verified, total576; all24videos full decode/clock/audio/rig checks passed. local_queue_state=complete; GPU idle. Do not restart workers/collectors.
