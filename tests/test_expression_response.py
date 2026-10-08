@@ -7,10 +7,10 @@ from kinetalk_b0.models.expression_response import (
 torch.set_num_threads(2)
 
 
-def fixture():
+def fixture(prior_variance='learned'):
     torch.manual_seed(19)
     model=ExpressionResponse(ResponseConfig(hidden=16,decoder_hidden=24,global_dim=8,
-        local_dim=4,style_dim=8),torch.zeros(772),torch.ones(772),torch.ones(52)*.2)
+        local_dim=4,style_dim=8,prior_variance=prior_variance),torch.zeros(772),torch.ones(772),torch.ones(52)*.2)
     valid=torch.ones(2,9,dtype=torch.bool);valid[1,7:]=False
     audio=torch.randn(2,9,1540);base=torch.rand(2,9,52,requires_grad=True)
     refs={'motion':torch.rand(2,2,7,52),'b0':torch.rand(2,2,7,52),
@@ -28,8 +28,9 @@ def test_prior_has_no_content_access_even_nan():
     assert not g[...,:768].any() and not g[~v].any() and g[...,768:].abs().sum()>0
 
 
-def test_gradients_obey_training_responsibilities():
-    m,a,b,v,r,t=fixture();p=m.audio_prior(a,v);s=m.encode_style(r)['code']
+@pytest.mark.parametrize('prior_variance',['learned','unit'])
+def test_gradients_obey_training_responsibilities(prior_variance):
+    m,a,b,v,r,t=fixture(prior_variance);p=m.audio_prior(a,v);s=m.encode_style(r)['code']
     ch=torch.ones(2,52,dtype=torch.bool)
     q=m.motion_posterior(torch.rand_like(b),b,s,v,ch,t)
     y=m.decode(b,q,s,v,sample=True)
@@ -115,3 +116,38 @@ def test_no_query_gt_in_deployment_signature_and_no_legacy_parameters():
 def test_observed_nan_fails_closed():
     m,a,b,v,r,t=fixture();a[0,0,800]=float('nan')
     with pytest.raises(ValueError):m.audio_prior(a,v)
+
+
+def test_unit_prior_removes_only_prior_variance_rows_and_matches_initialization():
+    old,a,b,v,r,t=fixture();model,*_=fixture('unit');cfg=model.cfg
+    assert model.prior.global_head.out_features==cfg.global_dim
+    assert model.prior.local_head.out_features==cfg.local_dim
+    assert model.posterior.global_head.out_features==2*cfg.global_dim
+    assert model.posterior.local_head.out_features==2*cfg.local_dim
+    before=old.state_dict()
+    for k,value in model.state_dict().items():
+        expected=before[k][:len(value)] if k.startswith(('prior.global_head.','prior.local_head.')) else before[k]
+        torch.testing.assert_close(value,expected,rtol=0,atol=0)
+    p=model.audio_prior(a,v);other=old.audio_prior(a,v)
+    for k in ('g_mean','u_mean','u_mask'):torch.testing.assert_close(p[k],other[k],rtol=0,atol=0)
+    assert torch.equal(p['g_logvar'],torch.zeros_like(p['g_logvar']))
+    assert torch.equal(p['u_logvar'],torch.zeros_like(p['u_logvar']))
+    q={k:x.clone() for k,x in p.items()};q['g_mean']+=2;q['u_mean']+=2
+    # Unit variances: KL is half squared mean error, normalized by factor/length/dim.
+    torch.testing.assert_close(normalized_kl(q,p),torch.tensor(2.))
+    q['u_mean'][~p['u_mask']]=1000.
+    torch.testing.assert_close(normalized_kl(q,p),torch.tensor(2.))
+    rng=torch.Generator().manual_seed(11);state=rng.get_state()
+    y=model.predict(a,b,v,r,sample=True,generator=rng)
+    restored=ExpressionResponse(ResponseConfig(**model.checkpoint_config()),
+        model.feature_mean,model.feature_std,model.scales)
+    restored.load_state_dict(model.state_dict(),strict=True);rng.set_state(state)
+    torch.testing.assert_close(y,restored.predict(a,b,v,r,sample=True,generator=rng),rtol=0,atol=0)
+
+
+def test_unit_prior_still_rejects_content_access_even_nan():
+    model,a,b,v,r,t=fixture('unit');a.requires_grad_();p=model.audio_prior(a,v)
+    changed=a.detach().clone();changed[...,:768]=float('nan');other=model.audio_prior(changed,v)
+    for k in p:torch.testing.assert_close(p[k],other[k],rtol=0,atol=0)
+    g=torch.autograd.grad(p['g_mean'].sum()+p['u_mean'].sum(),a)[0]
+    assert not g[...,:768].any() and g[...,768:].abs().sum()>0

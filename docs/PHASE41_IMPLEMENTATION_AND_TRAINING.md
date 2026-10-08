@@ -1,3 +1,5 @@
+> 2026-10-08最新覆盖：Phase41原24轮、完整1367、冻结因素诊断及八视频均完成。见PHASE41_RESULTS.md与PHASE41_VIDEO_GALLERY.md。Phase42固定prior covariance单项对照已启动，见PHASE42_FIXED_PRIOR_PLAN.md；以下历史启动/恢复状态不作为当前任务入口。
+
 # Phase41：已批准的新架构实施与训练
 
 2026-10-07。恢复时首先读本文及 CURRENT_OPTIMIZATION_STATE.md。用户最新授权：先上传当前成果，再实施 proposal_v2、清理冗余、验证、训练并安排评估和渲染；确认训练启动后结束对话并给预计耗时。旧文档待批准/Git暂停已失效。
@@ -70,3 +72,12 @@
 ## 启动确认与预计耗时
 
 正式epoch1已实际完成101次更新，平均0.472秒/update，loss均有限；GPU约3GB，未发生OOM。后20轮增加detached-prior解码，训练预计约2.5–3小时；完整评估、传回和八视频预计总共3–4小时。用户可约4小时后回看；此为吞吐量估算，不是质量承诺。preflight11个原SHA成员已本地闭合。
+
+## 2026-10-08检查：训练完成，导出导致评估中断（恢复中）
+
+24epochs/16368updates已完成，final SHA962cacc3fd630ece11dd111695957ee8f4ec7a61c9b622b6df0d3cd7b7ec2a94已远端重核。原source未变。评估在第55号固定angry导出时将边缘无效帧当异常，中断整评分；八片段均有1–3边缘无效帧，旧Phase39本来用最长连续有效段。本轮修复仅显示导出，保留原生times，评分仍用全部原生有效帧。14本地测试pass。原pipeline/collector failed证据保留，另开recovery_v1评分，不重训、不修改模型/目标/评分公式。
+内部留出epoch24: speaker p/q position=.453227/.053849，sentence=.437574/.025297；p logvar TRAIN均值1.9561接近上限2，需结合冻结因素诊断判断，不将oracle当部署。全validation指标仍待补全。
+
+# 2026-10-08 Phase41完整开发评估已闭合
+
+先读docs/PHASE41_RESULTS.md（在docs目录内则PHASE41_RESULTS.md）。训练24轮16368次完成；完整1367评分已恢复且SHA核验，未重训。纯音频clip MBE.810014/LBE.372413/Lip3.193374mm/jawcorr.468447/原128F1.636091；口型改善、F1未超Phase34seed47 .672117，jaw幅度比GT低28.6%。posterior oracle不是部署。远端recovery_v1 complete，本地唯一collector20432下载344成员后八视频，原失败状态保留。训练8成员已本地SHA闭合。新训练未启动，默认不推广。

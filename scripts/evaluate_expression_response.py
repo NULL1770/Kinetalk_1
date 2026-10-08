@@ -16,7 +16,7 @@ from scripts.train_expression_response import (configure,load_runtime,cache_base
                                               write,sha,state_digest)
 from scripts.arkit_benchmark_report import score_fullface
 from scripts.evaluate_vertex_lve import evaluate as vertex_evaluate
-from scripts.audit_matched_motion_curves import region_values,REGIONS,RC
+from scripts.audit_matched_motion_curves import region_values,REGIONS,RC,longest_valid_span
 from scripts.build_validation_gap_table import COEFFICIENT,VERTEX
 from scripts.render_dynamic_rig_comparison import ARKIT_NAMES
 
@@ -65,6 +65,34 @@ def alter_local(p,mode,generator):
         else:raise ValueError(mode)
         result['u_mean'][i,mask]=z
     return result
+
+
+def export_render_input(path,*,motion,base,prior,posterior,valid,times,channels,clip_id):
+    """Display only: keep the longest native observed span, never fill or retime.
+
+    This is the same preregistered display policy as the Phase39 comparison.
+    Full-sequence scoring is independent and retains all observed frames.
+    """
+    valid=valid.detach().cpu();times=times.detach().cpu()
+    if valid.dtype!=torch.bool or valid.ndim!=1 or times.shape!=valid.shape:
+        raise ValueError('Expected bool valid[T] and native times[T]')
+    start,stop=longest_valid_span(valid.numpy());sl=slice(start,stop)
+    clock=times[sl]
+    if not torch.isfinite(clock).all() or (len(clock)>1 and not torch.isclose(
+        clock[1:]-clock[:-1],torch.full_like(clock[1:],.04),rtol=1e-5,atol=1e-7).all()):
+        raise ValueError('Display requires contiguous native 25fps observations')
+    values=torch.stack([v.detach().cpu()[sl] for v in (motion,base,prior,posterior)])
+    channels=channels.detach().cpu()
+    if channels.dtype!=torch.bool or channels.shape!=(52,) or not channels.any():
+        raise ValueError('Observed bool channel support[52] required')
+    if values.shape!=(4,stop-start,52) or not torch.isfinite(values[...,channels]).all():
+        raise ValueError('Observed render values must be finite')
+    np.savez_compressed(path,channels=np.array(ARKIT_NAMES),times=clock.numpy(),
+        valid=valid[sl].numpy(),channel_mask=channels.numpy(),clip_id=clip_id,noise_seed=-1,
+        source_start_frame=start,source_stop_frame=stop,source_frames=len(valid),
+        display_policy='longest_native_observed_span_earliest_tie_no_fill_no_retime',
+        mode_names=np.array(['GT','Neutral_B0','Audio_prior_mean','Posterior_ORACLE']),
+        motions=values.numpy())
 
 
 @torch.no_grad()
@@ -119,12 +147,10 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None):
             saved.append({k:y[j,:length].cpu() for k,y in preds.items()})
             emotion=next((name for name,cid in display.items() if cid==q['clip_id'][i]),None)
             if emotion:
-                assert b['valid'][j,:length].all(), 'Fixed display must not fill missing frames'
-                np.savez_compressed(out/'render_inputs'/f'{emotion}.npz',channels=np.array(ARKIT_NAMES),
-                    times=b['times'][j,:length].cpu().numpy(),valid=v[:length].numpy(),
-                    channel_mask=b['channel_mask'][j].cpu().numpy(),clip_id=q['clip_id'][i],noise_seed=-1,
-                    mode_names=np.array(['GT','Neutral_B0','Audio_prior_mean','Posterior_ORACLE']),
-                    motions=torch.stack([gt[:length],*[preds[k][j,:length].cpu() for k in ('neutral_b0','prior_mean','posterior_oracle')]]).numpy())
+                export_render_input(out/'render_inputs'/f'{emotion}.npz',motion=gt[:length],
+                    base=preds['neutral_b0'][j,:length],prior=preds['prior_mean'][j,:length],
+                    posterior=preds['posterior_oracle'][j,:length],valid=v[:length],
+                    times=b['times'][j,:length],channels=b['channel_mask'][j],clip_id=q['clip_id'][i])
         # Interventions are diagnostic subsets, never pooled with native scores.
         if diagnostic_ids.intersection(sub.tolist()):
             controls={'normal':preds['prior_mean']}

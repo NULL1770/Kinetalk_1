@@ -206,7 +206,7 @@ def train(a):
         ids=chosen
         cache_base(data,base,device,{'train':ids,'validation':[]})
     else:cache_base(data,base,device)
-    cfg=ResponseConfig()
+    cfg=ResponseConfig(prior_variance=a.prior_variance)
     mean,std,scales=fit_statistics(data,ids)
     model=ExpressionResponse(cfg,mean,std,scales).to(device)
     optimizer=torch.optim.AdamW(model.parameters(),lr=a.lr,weight_decay=.01)
@@ -223,12 +223,15 @@ def train(a):
         original=json.loads((out/'protocol.json').read_text())
         for key in ('seed','epochs','batch_size','lr','smoke','smoke_steps'):
             if original['args'][key]!=vars(a)[key]:raise ValueError('Resume configuration differs: '+key)
+        if original['config'].get('prior_variance','learned')!=cfg.prior_variance:
+            raise ValueError('Resume prior variance differs')
         if original['binding_sha256']!=protocol['binding_sha256']:raise ValueError('Resume source binding changed')
     else:write(out/'protocol.json',protocol)
     start_epoch=0;step=0;history=[]
     if a.resume:
         ck=torch.load(out/'last.pt',map_location=device,weights_only=False)
         assert ck['neutral_digest']==frozen_digest and ck['binding_sha256']==sha(a.binding)
+        if ResponseConfig(**ck['config'])!=cfg:raise ValueError('Resume architecture differs')
         model.load_state_dict(ck['model']);optimizer.load_state_dict(ck['optimizer'])
         latent_rng.set_state(ck['latent_rng'].cpu());order_rng.set_state(ck['order_rng'].cpu())
         torch.set_rng_state(ck['torch_rng'].cpu())
@@ -304,6 +307,7 @@ def parser():
     p.add_argument('--epochs',type=int,default=24);p.add_argument('--batch-size',type=int,default=16)
     p.add_argument('--lr',type=float,default=2e-4);p.add_argument('--smoke',action='store_true')
     p.add_argument('--smoke-steps',type=int,default=120);p.add_argument('--resume',action='store_true')
+    p.add_argument('--prior-variance',choices=('learned','unit'),default='learned')
     return p
 
 

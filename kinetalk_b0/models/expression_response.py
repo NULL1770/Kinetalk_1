@@ -24,6 +24,9 @@ class ResponseConfig:
     intensities: int = 4
     logvar_min: float = -6.
     logvar_max: float = 2.
+    # Diagnostic ablation: fix only p's covariance to I. q's covariance,
+    # sampling and reconstruction stay unchanged; no learned p variance head.
+    prior_variance: str = 'learned'
 
 
 def clean(x, mask):
@@ -103,18 +106,32 @@ def native_interpolate(tokens, token_mask, valid, stride):
 
 
 class GaussianEncoder(nn.Module):
-    def __init__(self, cfg, input_dim, depth):
+    def __init__(self, cfg, input_dim, depth, *, fixed_variance=False):
         super().__init__()
         self.cfg = cfg
         self.encoder = TemporalEncoder(input_dim, cfg.hidden, depth)
+        self.fixed_variance = fixed_variance
         self.global_head = nn.Linear(cfg.hidden, 2*cfg.global_dim)
         self.local_head = nn.Linear(cfg.hidden, 2*cfg.local_dim)
+        if fixed_variance:
+            # Initialize identically to the learned-covariance control, then
+            # discard variance rows without drawing RNG or keeping parameters.
+            for head, width in ((self.global_head,cfg.global_dim),(self.local_head,cfg.local_dim)):
+                head.weight = nn.Parameter(head.weight[:width].detach().clone())
+                head.bias = nn.Parameter(head.bias[:width].detach().clone())
+                head.out_features = width
 
     def forward(self, x, valid):
         h = self.encoder(x, valid)
         tokens, mask = stride_pool(h, valid, self.cfg.stride)
-        gm, gv = self.global_head(masked_pool(h, valid)).chunk(2, -1)
-        um, uv = self.local_head(tokens).chunk(2, -1)
+        global_raw = self.global_head(masked_pool(h, valid))
+        local_raw = self.local_head(tokens)
+        if self.fixed_variance:
+            gm, um = global_raw, local_raw
+            gv, uv = torch.zeros_like(gm), torch.zeros_like(um)
+        else:
+            gm, gv = global_raw.chunk(2, -1)
+            um, uv = local_raw.chunk(2, -1)
         return {'g_mean': gm, 'g_logvar': gv.clamp(self.cfg.logvar_min, self.cfg.logvar_max),
                 'u_mean': clean(um, mask), 'u_logvar': clean(uv.clamp(
                     self.cfg.logvar_min, self.cfg.logvar_max), mask), 'u_mask': mask}
@@ -184,6 +201,10 @@ class ExpressionResponse(nn.Module):
         super().__init__()
         if cfg.stride < 1 or cfg.hidden % 4 or cfg.logvar_min >= cfg.logvar_max:
             raise ValueError('Invalid response architecture')
+        if cfg.prior_variance not in ('learned', 'unit'):
+            raise ValueError('prior_variance must be learned or unit')
+        if cfg.prior_variance=='unit' and not cfg.logvar_min<=0<=cfg.logvar_max:
+            raise ValueError('Unit prior variance requires logvar bounds containing zero')
         self.cfg = cfg
         mean, std = torch.as_tensor(feature_mean).float(), torch.as_tensor(feature_std).float()
         if mean.shape != (772,) or std.shape != (772,) or (std <= 0).any():
@@ -196,7 +217,7 @@ class ExpressionResponse(nn.Module):
         self.register_buffer('feature_mean', mean)
         self.register_buffer('feature_std', std)
         self.register_buffer('scales', scales)
-        self.prior = GaussianEncoder(cfg, 772, 4)
+        self.prior = GaussianEncoder(cfg, 772, 4, fixed_variance=cfg.prior_variance=='unit')
         self.posterior = GaussianEncoder(cfg, 52*4+cfg.style_dim, 3)
         self.style = ReferenceStyle(cfg)
         self.decoder = ResponseDecoder(cfg)

@@ -1,3 +1,17 @@
+# 2026-10-08最新：Phase41冻结诊断/八视频闭合，Phase42固定先验方差消融已启动
+
+恢复先读docs/PHASE41_RESULTS.md与docs/PHASE42_FIXED_PRIOR_PLAN.md；原24轮训练/full1367/344文件/八视频全部完成。factors_v1完整1367冻结诊断9文件已SHA备份，原指标重放、四probe confusion完全相同。音频g+教师u MBE.307617 vs正常.810014；教师g+音频u .758158；混合F1 .716757含GT，不是部署。u方差raw超过上限83.465%，均值差平方15.5705。
+
+新唯一改动p covariance=I，删除p方差行6192参数；q仍Gaussian采样，原KL/权重/数据10903/预算24轮不变。中性B0、772D、全嘴、无h0保持。共同初始化逐位一致，本地418 passed/1 skipped，远端预检和真实GPU smoke通过。Phase42正式训练已启动，PID7743，当前training；不重启Phase41旧collector或训练。SOTA未达成、sealed未读、默认不推广。
+
+# 2026-10-08 Phase41完整开发评估已闭合
+
+先读docs/PHASE41_RESULTS.md（在docs目录内则PHASE41_RESULTS.md）。训练24轮16368次完成；完整1367评分已恢复且SHA核验，未重训。纯音频clip MBE.810014/LBE.372413/Lip3.193374mm/jawcorr.468447/原128F1.636091；口型改善、F1未超Phase34seed47 .672117，jaw幅度比GT低28.6%。posterior oracle不是部署。远端recovery_v1 complete，本地唯一collector20432下载344成员后八视频，原失败状态保留。训练8成员已本地SHA闭合。新训练未启动，默认不推广。
+
+# 2026-10-08最新：Phase41训练完成；评估导出修复中
+
+24轮16368次已完成且final SHA复核。旧pipeline与collector因显示导出有效帧断言failed，非训练失败。另建recovery_v1只恢复评分/八视频，原失败证据保留；见PHASE41_IMPLEMENTATION_AND_TRAINING.md末节。不要重训或重复启动旧collector。
+
 # Phase41最新运行状态（2026-10-07）
 
 新架构已实现，通过408本地测试/1skip、真实GPU梯度与精确恢复、小样本可学习性及16条评估。单seed47/24轮/10903fit正式任务已启动，唯一远端pipeline2694，本地collector13360。详情及恢复流程见 [PHASE41_IMPLEMENTATION_AND_TRAINING.md](PHASE41_IMPLEMENTATION_AND_TRAINING.md)。Git原成果bacdd88已推送；不重启旧Phase39。新的完整指标尚未产生；不可宣称SOTA或已完全解耦。

@@ -21,9 +21,12 @@ def main(root):
         assert sha(__file__)==launch['pipeline_sha256']
         assert sha(root/'binding.json')==launch['binding_sha256']
         for n,h in binding['source_files'].items():assert sha(root/'code'/n)==h,n
+        variance=binding.get('prior_variance','learned')
+        if launch.get('prior_variance','learned')!=variance:
+            raise ValueError('Launch prior variance disagrees with binding')
         write(state,{'status':'training','pid':os.getpid(),'started_at':time.time(),'test_loaded':False})
         a=parser().parse_args(['--binding',str(root/'binding.json'),'--output',str(root/'seed47'),
-                              '--epochs','24','--seed','47','--batch-size','16'])
+                              '--epochs','24','--seed','47','--batch-size','16','--prior-variance',variance])
         runtime=train(a)
         write(state,{'status':'evaluating','pid':os.getpid(),'test_loaded':False})
         evaluate(binding,root/'seed47',root/'evaluation',runtime=runtime)

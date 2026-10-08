@@ -1,3 +1,5 @@
+> 最新2026-10-08：Phase41训练/完整评分已完成，见PHASE41_RESULTS.md。新Phase42只固定audio prior方差，架构/训练职责仍按PHASE41_IMPLEMENTATION_AND_TRAINING.md，详见PHASE42_FIXED_PRIOR_PLAN.md。以下旧Phase39表仅历史。
+
 > 最新：Phase41内容条件表达响应已实施并开始首轮训练；实际层数、各阶段数据、梯度职责与旧模型区别见 [PHASE41_IMPLEMENTATION_AND_TRAINING.md](PHASE41_IMPLEMENTATION_AND_TRAINING.md)。以下描述仍作为历史基线；新候选尚未完成质量验收，默认模型不变。
 
 # 当前模型与训练数据（2026-10-07，Phase39候选）
