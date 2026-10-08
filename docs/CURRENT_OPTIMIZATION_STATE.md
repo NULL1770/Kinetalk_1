@@ -1,4 +1,4 @@
-# Current recovery: Phase47 COMPLETE (2026-10-08)
+# Current recovery: Phase48 style audit IN PROGRESS (2026-10-08)
 
 Read docs/PHASE47_RESULTS.md, PHASE47_VIDEO_GALLERY.md, PHASE47_EXPERIMENT_TABLES.md and PAPER_FIGURE_REQUIREMENTS.md first. Do not restart completed Phase41–47 training/evaluation/collectors. Prior recovery history is preserved in docs/archive and .codex-finalizer/planning_archive.
 
@@ -26,6 +26,8 @@ Remote /root/kinetalk_phase47_static_response_v2_20261008 and /root/autodl-tmp/k
 
 Pushed pre-change474307e,implementation2df2af5,smoke225119d,evaluation754b702. Result closure/push receipt recorded in progress.md and closure_verified.json when complete. Unrelated third_party/voca_reference/ untouched. No child agents.
 
-Next: diagnose teacher target coordinates on manifest-approved aligned TRAIN/internal-held neutral/emotional pairs; distinguish independent neutral baseline, predictable expression and B0/unpredictable residual. Check reference stability/content association before changing global/local targets or claiming target-identity transfer. Do not extend failed Phase46/reference or add arbitrary losses. Phase48 code/training has not started.
+Next: diagnose teacher target coordinates on manifest-approved aligned TRAIN/internal-held neutral/emotional pairs; distinguish independent neutral baseline, predictable expression and B0/unpredictable residual. Check reference stability/content association before changing global/local targets or claiming target-identity transfer. Do not extend failed Phase46/reference or add arbitrary losses. Phase48 audit code is implemented; model training not started.
 
 Persistent boundaries: neutral B0 frozen; student only emotion2vec768+prosody4; mouth open; no content/queryGT deployment or motion-loss student gradient; native clock/rig/raw-clip/four probes unchanged; no sealed tuning/default promotion. Git push before each model change. Multi-seed, independent content readout, correct target-identity transfer, matched baselines/official benchmark and human evaluation remain paper gaps. Future figure requirements recorded; user explicitly defers production.
+
+Phase48: read PHASE48_STYLE_AUDIT_PLAN.md and scripts/audit_reference_style_swap.py. Plan2bb5b76/full audit2445ae7 pushed. Canonical full1367 B0 cache used for24smoke, strict B0 equality retained. No worker/root launched yet. Correct remote latent curves at /root/autodl-tmp/kinetalk_phase47_static_eval_20261008/latent/curves.pt, SHAeffc44326ea6a3ceebcc497b442e8b0dd33b449573eb2ab6f2bfed0eb546a183.

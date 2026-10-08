@@ -162,7 +162,11 @@ def run(a):
     if a.smoke:
         ids=[next(i for i in ids if int(q['speaker_id'][i])==sid and int(q['emotion_id'][i])==e)
              for sid in people for e in range(8)]
-    cache_base(data,base,device,{'train':[],'validation':ids})
+    # Always cache validation B0 in canonical full order, even for the
+    # 24-clip smoke. The saved parent curves were produced from this exact
+    # order; subset/reordered caching can change reduction widths and create
+    # needless false failures in the bit-exact gate.
+    cache_base(data,base,device,{'train':[],'validation':list(range(len(q['valid'])))})
     before=(state_digest(model),state_digest(base.stage1),state_digest(correction))
     saved={}
     for method,path in [('parent',a.parent_curves),('latent',a.latent_curves)]:
