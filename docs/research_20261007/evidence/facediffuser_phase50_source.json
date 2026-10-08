@@ -1,0 +1,16 @@
+{
+  "url": "https://arxiv.org/html/2309.11306v1",
+  "html_sha256": "b6f63fd61e837e7ca387a0a45f002fcbe1a48c2273b80e9af05547b839e78655",
+  "sections": [
+    "3",
+    "4.1",
+    "6.1",
+    "6.2",
+    "6.3",
+    "7"
+  ],
+  "repo": "https://github.com/uuembodiedsocialai/FaceDiffuser",
+  "repo_tree_sha": "e15f3500fdae0eda962f5d018488dfa0a1a9d552",
+  "retrieved": "2026-10-09",
+  "pdf_status": "incomplete_download_not_used"
+}
