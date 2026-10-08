@@ -7,6 +7,7 @@ or framewise scores. A visible difference alone is not identity correctness.
 from __future__ import annotations
 import argparse
 from collections import defaultdict
+import gzip
 import json
 from pathlib import Path
 import sys
@@ -139,6 +140,8 @@ def run(a):
     if out.exists():raise FileExistsError('Existing diagnostic; never rerun')
     out.mkdir(parents=True);(out/'render_inputs').mkdir()
     binding=json.loads(Path(a.binding).read_text(encoding='utf-8-sig'))
+    for name,digest in binding['source_files'].items():
+        assert sha(Path(__file__).resolve().parents[1]/name)==digest,name
     model,_=restore_model(binding,device);model.eval().requires_grad_(False)
     ck=torch.load(a.correction,map_location=device,weights_only=False)
     assert ck['mode']=='latent' and ck['parent_checkpoint_sha256']==binding['parent_checkpoint']['sha256']
@@ -163,12 +166,14 @@ def run(a):
     before=(state_digest(model),state_digest(base.stage1),state_digest(correction))
     saved={}
     for method,path in [('parent',a.parent_curves),('latent',a.latent_curves)]:
+        assert sha(path)==binding['style_audit']['baseline_curves'][method]['sha256']
         z=torch.load(path,map_location='cpu',weights_only=False)
         assert z['clip_id']==q['clip_id'] and not z['test_loaded'];saved[method]=z['predictions']
     n=len(q['valid']);methods=('parent','latent');policies=('raw','clip_all')
     pred_stats=np.zeros((2,2,n,3,4,52));gt_stats=np.zeros((n,4,52))
     changes={};maximum={'parent':0.,'latent':0.,'base':0.};display={};style_rows=[]
     display_lookup={cid:name for name,cid in binding['display_clips'].items()}
+    processed=0
     for sub in torch.tensor(ids).split(16):
         b=q.batch(sub,device);refs=reference_batch(data,b,device)
         p=model.audio_prior(b['audio_features'],b['valid']);p_before={k:x.clone() for k,x in p.items()}
@@ -211,8 +216,9 @@ def run(a):
                     reference_ids=['none']+['|'.join(refs_meta[x]['clip_ids']) for x in ordered]+[refs_meta[sid]['clip_ids'][0],refs_meta[sid]['clip_ids'][1]]
                     path=out/'render_inputs'/f'{method}_{e}.npz'
                     display[method+'/'+e]=export(path,rows,v,tm,ch,q['clip_id'][i],labels,reference_ids)
-        write(out/'state.json',dict(status='auditing',clips_processed=sum(len(x) for x in [ids[:ids.index(sub[-1].item())+1]]),total=len(ids),test_loaded=False))
-    anchors={}
+        processed+=len(sub)
+        write(out/'state.json',dict(status='auditing',clips_processed=processed,total=len(ids),test_loaded=False))
+    anchors={};all_codes={}
     for sid in people:
         ref=data['refs'][sid];means=[]
         codes={}
@@ -223,8 +229,11 @@ def run(a):
         for j in range(2):
             means.append(summary(ref['motion'][j].numpy(),ref['valid'][j].numpy(),ref['channel_mask'][j].numpy(),ref['times'][j].numpy())[0])
         anchors[sid]=np.mean(means,axis=0)
+        all_codes[sid]=codes
         style_rows.append(dict(speaker_id=sid,**refs_meta[sid],A_B_cosine=correlation(codes['A'],codes['B']),
             A_B_rms=float(np.sqrt(np.mean((codes['A']-codes['B'])**2))),AB_norm=float(np.linalg.norm(codes['AB']))))
+    cross_codes=[dict(source=s,target=t,AB_cosine=correlation(all_codes[s]['AB'],all_codes[t]['AB']),
+        AB_rms=float(np.sqrt(np.mean((all_codes[s]['AB']-all_codes[t]['AB'])**2)))) for s in people for t in people if s<t]
     chosen=set(ids);pairs=[(i,j) for i,j in pairs if i in chosen and j in chosen]
     target_rows={};scales=model.scales.cpu().numpy()
     for m,method in enumerate(methods):
@@ -246,6 +255,8 @@ def run(a):
         default_replaced=False,smoke=a.smoke,clips=len(ids),parent_checkpoint_sha256=binding['parent_checkpoint']['sha256'],
         correction_sha256=sha(a.correction),source_sha256=sha(__file__),data_manifest_sha256=binding['data_manifest_sha256'],
         frozen_state_exact=True,baseline_replay_max_abs=maximum,reference_metadata=refs_meta,style_code=style_rows,
+        cross_speaker_style_code=cross_codes,
+        baseline_curves=binding['style_audit']['baseline_curves'],
         data_audit=audit,matched_groups=sum(len(x)>1 for x in groups.values()),
         three_person_groups=sum(len(x)==3 for x in groups.values()),matched_directed_pairs=len(pairs),
         unmatched_clips=sum(len(x)==1 for x in groups.values()),render_inputs=display,
@@ -263,7 +274,10 @@ def run(a):
     assert before==(state_digest(model),state_digest(base.stage1),state_digest(correction))
     np.savez_compressed(out/'native_statistics.npz',predictions=pred_stats[:,:,ids],gt=gt_stats[ids],indices=np.asarray(ids),
         methods=np.asarray(methods),policies=np.asarray(policies),stats=np.asarray(STATS),target_speaker_ids=np.asarray(people))
-    write(out/'per_pair.json',finite(target_rows));write(out/'report.json',finite(report))
+    # Preserve every pair in a compact lossless artifact on the nearly full host.
+    with gzip.open(out/'per_pair.json.gz','wt',encoding='utf-8') as f:
+        json.dump(finite(target_rows),f,allow_nan=False,separators=(',',':'))
+    write(out/'report.json',finite(report))
     manifest={p.relative_to(out).as_posix():dict(size=p.stat().st_size,sha256=sha(p)) for p in out.rglob('*') if p.is_file() and p.name!='state.json'}
     write(out/'manifest.json',dict(files=manifest,test_loaded=False))
     write(out/'state.json',dict(status='complete',clips=len(ids),report_sha256=sha(out/'report.json'),test_loaded=False))
