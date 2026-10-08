@@ -42,7 +42,15 @@ def run(a):
     assert neutral==parent['neutral_digest']
     roles={k:list(fold[k]) for k in ('train','speaker_dev','sentence_dev')}
     if a.smoke:
-        roles={k:v[:16] for k,v in roles.items()}
+        # Contiguous first clips cover very few identities/categories and make
+        # a high-dimensional reference fit an invalid generalization smoke.
+        emotions=data['splits']['train']['emotion_id']
+        fit=[]
+        for e in range(8):
+            pool=[i for i in roles['train'] if int(emotions[i])==e]
+            fit.extend(pool[j] for j in np.linspace(0,len(pool)-1,min(16,len(pool)),dtype=int))
+        roles={k:([*fit] if k=='train' else [v[j] for j in
+            np.linspace(0,len(v)-1,min(32,len(v)),dtype=int)]) for k,v in roles.items()}
     all_ids=sum(roles.values(),[])
     cache_base(data,base,device,{'train':all_ids,'validation':[]})
     q=data['splits']['train']
