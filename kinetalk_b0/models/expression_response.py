@@ -27,6 +27,8 @@ class ResponseConfig:
     # Diagnostic ablation: fix only p's covariance to I. q's covariance,
     # sampling and reconstruction stay unchanged; no learned p variance head.
     prior_variance: str = 'learned'
+    # A deterministic decoder transform; KL remains over the original Gaussians.
+    center_local: bool = False
 
 
 def clean(x, mask):
@@ -252,7 +254,11 @@ class ExpressionResponse(nn.Module):
             if not sample:return mu
             eps = torch.randn(mu.shape,device=mu.device,dtype=mu.dtype,generator=generator)
             return mu + (.5*distribution[key+'_logvar']).exp()*eps
-        return latent('g'),native_interpolate(latent('u'),distribution['u_mask'],valid,self.cfg.stride)
+        g = latent('g')
+        u = native_interpolate(latent('u'),distribution['u_mask'],valid,self.cfg.stride)
+        if self.cfg.center_local:
+            u = clean(u-masked_pool(u,valid)[:,None],valid)
+        return g,u
 
     def decode(self, base, distribution, style, valid, sample=False, generator=None):
         g,u = self.conditions(distribution,valid,sample,generator)

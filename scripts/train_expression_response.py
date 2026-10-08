@@ -136,6 +136,24 @@ def repeated_query(batch):
             [x for item in v for x in (item,item)] for k,v in batch.items()}
 
 
+def training_reference_views(refs, mode='single', step=0):
+    """Two views per query: A/B, or AB/one alternating support. No RNG draw."""
+    if mode not in ('single','mixed'):
+        raise ValueError('Unknown reference training mode')
+    if any(v.shape[1]!=2 for v in refs.values()):
+        raise ValueError('Training requires exactly two independent supports')
+    if mode=='single':
+        return {k:v.flatten(0,1).unsqueeze(1) for k,v in refs.items()}
+    result={}
+    for k,v in refs.items():
+        z=v.new_zeros((2*v.shape[0],*v.shape[1:]))
+        z[0::2]=v
+        z[1::2,0]=v[:,step%2]
+        # Slot 1 of single views is absent, including both boolean masks.
+        result[k]=z
+    return result
+
+
 def fit_statistics(data,ids):
     """Exclude internal held-out speakers/sentences even from normalization."""
     total=torch.zeros(772,dtype=torch.float64);squares=total.clone();count=0
@@ -206,7 +224,7 @@ def train(a):
         ids=chosen
         cache_base(data,base,device,{'train':ids,'validation':[]})
     else:cache_base(data,base,device)
-    cfg=ResponseConfig(prior_variance=a.prior_variance)
+    cfg=ResponseConfig(prior_variance=a.prior_variance,center_local=a.center_local)
     mean,std,scales=fit_statistics(data,ids)
     model=ExpressionResponse(cfg,mean,std,scales).to(device)
     optimizer=torch.optim.AdamW(model.parameters(),lr=a.lr,weight_decay=.01)
@@ -215,6 +233,7 @@ def train(a):
     weights=class_balanced_weights(data['splits']['train']['emotion_id'][ids],8).to(device)
     protocol={'schema':'expression_response_v1','config':asdict(cfg),'args':vars(a),
               'binding_sha256':sha(a.binding),'data':audit,'neutral_digest':frozen_digest,
+              'initial_model_digest':state_digest(model),
               'parameters':sum(p.numel() for p in model.parameters()),
               'loss':'q motion(position+.5 adjacent displacement) + annealed .01 KL + .1 global semantic + .5 detached prior motion after epoch4',
               'training_scope':'TRAIN internal speaker/sentence development split; not final all-data result',
@@ -225,6 +244,10 @@ def train(a):
             if original['args'][key]!=vars(a)[key]:raise ValueError('Resume configuration differs: '+key)
         if original['config'].get('prior_variance','learned')!=cfg.prior_variance:
             raise ValueError('Resume prior variance differs')
+        if original['config'].get('center_local',False)!=cfg.center_local:
+            raise ValueError('Resume local centering differs')
+        if original['args'].get('reference_training','single')!=a.reference_training:
+            raise ValueError('Resume reference training differs')
         if original['binding_sha256']!=protocol['binding_sha256']:raise ValueError('Resume source binding changed')
     else:write(out/'protocol.json',protocol)
     start_epoch=0;step=0;history=[]
@@ -232,6 +255,8 @@ def train(a):
         ck=torch.load(out/'last.pt',map_location=device,weights_only=False)
         assert ck['neutral_digest']==frozen_digest and ck['binding_sha256']==sha(a.binding)
         if ResponseConfig(**ck['config'])!=cfg:raise ValueError('Resume architecture differs')
+        if ck.get('reference_training','single')!=a.reference_training:
+            raise ValueError('Checkpoint reference training differs')
         model.load_state_dict(ck['model']);optimizer.load_state_dict(ck['optimizer'])
         latent_rng.set_state(ck['latent_rng'].cpu());order_rng.set_state(ck['order_rng'].cpu())
         torch.set_rng_state(ck['torch_rng'].cpu())
@@ -245,7 +270,8 @@ def train(a):
         order=torch.tensor(ids)[torch.randperm(len(ids),generator=order_rng)]
         batches=[order]*a.smoke_steps if a.smoke else list(order.split(a.batch_size))
         for index,sub in enumerate(batches):
-            b=data['splits']['train'].batch(sub,device);refs=reference_batch(data,b,device,two_subsets=True)
+            b=data['splits']['train'].batch(sub,device)
+            refs=training_reference_views(reference_batch(data,b,device),a.reference_training,step)
             b=repeated_query(b);optimizer.zero_grad(set_to_none=True)
             beta=.01 if a.smoke else .01*min(1.,(epoch+1)/4)
             prior_weight=0. if a.smoke or epoch<4 else .5
@@ -277,7 +303,7 @@ def train(a):
                     'order_rng':order_rng.get_state(),'torch_rng':torch.get_rng_state(),
                     'cuda_rng':torch.cuda.get_rng_state_all() if device.type=='cuda' else [],
                     'history':history,'neutral_digest':frozen_digest,'binding_sha256':sha(a.binding),
-                    'test_loaded':False}
+                    'reference_training':a.reference_training,'test_loaded':False}
         save(out/'last.pt',checkpoint);write(out/'history.json',history)
         eta=max(0,a.epochs-epoch-1)*float(np.mean(durations[-3:]))
         write(out/'state.json',{'status':'training','epoch':epoch+1,'updates':step,'epoch_seconds':duration,
@@ -308,6 +334,8 @@ def parser():
     p.add_argument('--lr',type=float,default=2e-4);p.add_argument('--smoke',action='store_true')
     p.add_argument('--smoke-steps',type=int,default=120);p.add_argument('--resume',action='store_true')
     p.add_argument('--prior-variance',choices=('learned','unit'),default='learned')
+    p.add_argument('--center-local',action='store_true')
+    p.add_argument('--reference-training',choices=('single','mixed'),default='single')
     return p
 
 

@@ -24,9 +24,14 @@ def main(root):
         variance=binding.get('prior_variance','learned')
         if launch.get('prior_variance','learned')!=variance:
             raise ValueError('Launch prior variance disagrees with binding')
+        center=binding.get('center_local',False)
+        refs=binding.get('reference_training','single')
+        if launch.get('center_local',False)!=center or launch.get('reference_training','single')!=refs:
+            raise ValueError('Launch factorial settings disagree with binding')
         write(state,{'status':'training','pid':os.getpid(),'started_at':time.time(),'test_loaded':False})
         a=parser().parse_args(['--binding',str(root/'binding.json'),'--output',str(root/'seed47'),
-                              '--epochs','24','--seed','47','--batch-size','16','--prior-variance',variance])
+                              '--epochs','24','--seed','47','--batch-size','16','--prior-variance',variance,
+                              '--reference-training',refs]+(['--center-local'] if center else []))
         runtime=train(a)
         write(state,{'status':'evaluating','pid':os.getpid(),'test_loaded':False})
         evaluate(binding,root/'seed47',root/'evaluation',runtime=runtime)

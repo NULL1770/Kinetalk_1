@@ -25,7 +25,7 @@ def canonical(metrics):
 
 def emit(out,name,columns,rows):
     with (out/(name+'.csv')).open('w',encoding='utf-8-sig',newline='') as f:
-        w=csv.DictWriter(f,fieldnames=columns,extrasaction='ignore');w.writeheader();w.writerows(rows)
+        w=csv.DictWriter(f,fieldnames=columns,extrasaction='ignore',lineterminator='\n');w.writeheader();w.writerows(rows)
     def fmt(x):
         if x is None:return '—'
         if isinstance(x,(float,np.floating)):return f'{x:.6g}' if math.isfinite(x) else '—'
@@ -113,10 +113,10 @@ def build(baseline_root,responses,out,inventory=None):
         'table4只列实际重训练消融；table5是冻结推理干预，不混为训练模块消融。oracle不进入方法排名。仅单seed结果，不报伪造多seed误差条。',
         '论文实践：EmoTalk Table5分别检查emotion disentangling encoder、emotion-guided attention、Lvel/Lcls、HDTF数据及encoder替换；MEDTalk §4.5/Table3检查overlap exchange、cycle exchange、disentangle、intensity和text。本项目应围绕自己的g/u职责、style/reference与teacher/student提出并重训练消融；不能直接照搬其模块名。',
         '统计核验11/11已检查：分组结果另列以检查聚合反转；不由3人推断总体个体；MEAD演员/伪GT选择偏差保留；无协变量调整/collider推断；报告8类而非只happy；不选极端片段宣称回归改善；所有1367无删坏样本；所有probe/raw保留；明确多轮开发探索；冻结交换非因果独立证明；教师看到GT非部署预测/因果反向结论。没有开展显著性检验，三开发身份及单训练seed不足以证明统计稳定。','']
-    (out/'README.md').write_text('\n'.join(intro+sections),encoding='utf8')
+    (out/'README.md').write_text('\n'.join(intro+sections),encoding='utf8',newline='\n')
     report={'sources':sources,'test_loaded':False,'rows':policy_rows,'trained_ablations':ablation,'protocols':metadata,
             'response_groups':groups,'metrics_unchanged':True,'validation_only':True}
-    (out/'tables.json').write_text(json.dumps(report,indent=2,allow_nan=False),encoding='utf8')
+    (out/'tables.json').write_text(json.dumps(report,indent=2,allow_nan=False),encoding='utf8',newline='\n')
     return report
 
 if __name__=='__main__':

@@ -196,7 +196,7 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None):
             'diagnostic_indices':sorted(diagnostic_ids),
             'limits':['posterior_oracle uses query GT, never deployment','jaw closure threshold .05 is rig-specific, not phoneme accuracy',
                       'same-clock output and t-SNE do not prove content disentanglement','wrong reference difference alone does not prove correct identity transfer',
-                      'independent phoneme readout and mixed-reference enrollment remain future stages']}
+                      'independent phoneme readout and target-style transfer validation remain future stages']}
     assert state_digest(model)==before,'Evaluation mutated trained state'
     write(out/'report.json',finite(report));write(out/'per_clip.json',finite({'clip_ids':q['clip_id'][:n],'results':scored}))
     torch.save({'clip_id':q['clip_id'][:n],'predictions':saved,'test_loaded':False},out/'curves.pt')
