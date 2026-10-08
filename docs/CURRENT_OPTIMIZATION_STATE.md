@@ -1,4 +1,4 @@
-# Current recovery: Phase48 style audit IN PROGRESS (2026-10-08)
+# Current recovery: Phase48 COMPLETE; reference-coordinate diagnosis next (2026-10-08)
 
 Read docs/PHASE47_RESULTS.md, PHASE47_VIDEO_GALLERY.md, PHASE47_EXPERIMENT_TABLES.md and PAPER_FIGURE_REQUIREMENTS.md first. Do not restart completed Phase41–47 training/evaluation/collectors. Prior recovery history is preserved in docs/archive and .codex-finalizer/planning_archive.
 
@@ -30,6 +30,8 @@ Next: diagnose teacher target coordinates on manifest-approved aligned TRAIN/int
 
 Persistent boundaries: neutral B0 frozen; student only emotion2vec768+prosody4; mouth open; no content/queryGT deployment or motion-loss student gradient; native clock/rig/raw-clip/four probes unchanged; no sealed tuning/default promotion. Git push before each model change. Multi-seed, independent content readout, correct target-identity transfer, matched baselines/official benchmark and human evaluation remain paper gaps. Future figure requirements recorded; user explicitly defers production.
 
-Phase48: read PHASE48_STYLE_AUDIT_PLAN.md and scripts/audit_reference_style_swap.py. Plan2bb5b76/full audit2445ae7 pushed. Canonical full1367 B0 cache used for24smoke, strict B0 equality retained. No worker/root launched yet. Correct remote latent curves at /root/autodl-tmp/kinetalk_phase47_static_eval_20261008/latent/curves.pt, SHAeffc44326ea6a3ceebcc497b442e8b0dd33b449573eb2ab6f2bfed0eb546a183.
+Phase48 COMPLETE: read PHASE48_RESULTS.md and PHASE48_VIDEO_GALLERY.md. Frozen full1367,2026directed matched pairs; no training/default change/sealed. Target-stat overall/mouth mean improvement80.3554%/72.3100%, but A/B instability (M025codecos.224; same-personoutputMAE76.4%ofcross,closurediscord22.3%). M025->M037/M039 browtarget and M025->M037mouthvelocity worsen. Positive partial action-style evidence, not face shape or universal identity disentanglement. All8six-panel videos verified+fixed-middle-frame visual review. Closure original SHA rehashed,source gates retained.
 
-First Phase48 actualGPU smoke stopped normal-output replay at max2.6166439e-5 vs unchanged2e-5 tolerance; B0 exact passed, full not launched. Preserve failed root. Canonical original16 inference context fix + test implemented; fresh v2 will be dispatched after archive/tests.
+Remote /root/kinetalk_phase48_style_audit_v2_20261008; local final_experiment/evaluation/diagnostics/phase48_style_audit_v2_20261008.6tests/24GPUsmoke/full numerical replay passed:B0/latentzero,parent1.2278557e-5. Parent/B0/correction frozen. Original worker pipeline_state.failed is STORAGE-ONLY32765298bytes>20MiB, numerical audit/state.complete. Original failure/binding preserved; storage_acceptance_receipt permits<40MiB after allmanifest checks, no rerun. Failed firstroot and earlylocalcollector records preserved. Do not restart any worker/collector/render.
+
+Implementationc01d984 pushed. Next diagnose independent neutral-reference pose/B0 residual/content association on TRAIN/internal-held and describe dev, before selecting architecture. Any new model training needs SHA-verified remote artifact cleanup first;rootfree263MB/dat93MB. Prior Phase47 metrics and all evidence above remain valid; no fresh metrics improvement from Phase48.
