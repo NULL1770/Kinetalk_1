@@ -1,0 +1,8 @@
+﻿method,scope,fit_clips,parent_epochs,parent_updates,epochs,updates,analytic_fit_passes,analytic_fit_clips,fitted_coefficients,inherited_analytic_fit_passes,inherited_analytic_fit_clips,trainable_module,reconstruction_passes_per_update,matching,train_seed,draws
+VOCA-core (shared audio/ARKit),shared-audio ARKit adaptation,12536,,,80,,,,,,,,,,42,1
+FaceFormer (shared audio/ARKit),shared-audio ARKit adaptation,12536,,,100,,,,,,,,,,42,1
+EmoTalk-core (shared audio/ARKit),shared-audio ARKit adaptation,12536,,,80,,,,,,,,,,42,1
+FaceDiffuser (frozen KineTalk conditions/ARKit),shared-audio ARKit adaptation,12536,,,100,,,,,,,,,,42,3
+Phase52,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+posture_bias+style_modulation_columns,1,reference_style_only,47,prior mean
+Phase53-style-only,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+posture_bias+style_modulation_columns,1,reference_style_only,47,prior mean
+Phase63-native-affine,neutral B0 + audio expression + independent reference,10903,32,21824,8,5456,0,0,0,1,10903,native_affine_decoder_except_posture_bias,1,native_affine_response,47,prior mean

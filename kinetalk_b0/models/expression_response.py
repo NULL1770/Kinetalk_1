@@ -240,6 +240,15 @@ class ResponseDecoder(nn.Module):
         nn.init.zeros_(self.bias.weight)
         nn.init.zeros_(self.bias.bias)
 
+        if cfg.response_head == 'bounded_residual':
+            # Keep legacy initialization/RNG unchanged. This pointwise branch
+            # sees affect and reference response only, never B0 or its hidden
+            # states. Zero is an exact identity, including the posture offset.
+            with torch.random.fork_rng(devices=[]):
+                self.residual_gain = nn.Linear(cond_dim, 52)
+            nn.init.zeros_(self.residual_gain.weight)
+            nn.init.zeros_(self.residual_gain.bias)
+
     def forward(self, base, g, u, style, valid, scales, posture_grad_mask=None):
         base = clean(base.detach(), valid)
         h = clean(self.input(base/scales), valid)
@@ -266,7 +275,11 @@ class ResponseDecoder(nn.Module):
             # The reference offset learns neutral tendencies, not the actor's
             # average emotion. Forward values are identical for every label.
             offset=torch.where(posture_grad_mask[:,None],offset,offset.detach())
-        return clean(base + (self.output(h)+offset[:,None])*scales, valid)
+        residual = self.output(h)
+        if hasattr(self, 'residual_gain'):
+            gain = 1. + .5 * self.residual_gain(clean(condition, valid)).tanh()
+            residual = residual * gain
+        return clean(base + (residual+offset[:,None])*scales, valid)
 
 
 class NativeAffineDecoder(nn.Module):
@@ -323,7 +336,7 @@ class ExpressionResponse(nn.Module):
             raise ValueError('Invalid style modulation')
         if cfg.style_modulation=='factorized' and cfg.reference_encoder!='statistics':
             raise ValueError('Factorized modulation requires statistical references')
-        if cfg.response_head not in ('residual', 'native_affine'):
+        if cfg.response_head not in ('residual', 'native_affine', 'bounded_residual'):
             raise ValueError('Invalid response head')
         if cfg.response_head == 'native_affine' and cfg.reference_encoder != 'statistics':
             raise ValueError('Native affine response requires statistical references')
