@@ -2,6 +2,8 @@
 
 ## Latest: read this first
 
+IMPORTANT latestSSH11473 connectionrefused：lastverifiedPhase63 epoch4step2147，当前远端训练状态未知，不继续宣称active或保证ETA。原collector51592因未捕获SSH错误退出，原failure/lock/errorlog保留；已修复boundedwait的SSH重连处理并启动新的collector139204，等待状态waiting_ssh，不自动重启远端训练。已向用户请求确认/重启SSH。恢复后先查12910及子进程/complete.json/last.pt，仍活跃则只观察；被重启中断则按原绑定与optimizer checkpoint --resume继续未完成8轮，不新建变体、不重复smoke/完整实验。先确认Git与source/parent/neutral hashes。当前正式模型及身份图仍是Phase53。Collector新日志phase63_collect_resume*.log，旧错误保留phase63_collect_error.log/collector_initial_failure.json/collector_failed_51592.lock。
+
 LatestreadPhase63正式epoch4/8,step2147/5456,~.103s/update。已有3轮history，内部身份loss并非单调改善，尚无外部生成指标。独立有限2小时本地collector PID51592已启动，锁在diagnostics/phase63_native_affine_20261009/collector.lock；状态local_queue_state.json，日志.codex-finalizer/phase63_collect*.log。训练/评估完成后自动SHA收集、重放336指标、与原Phase53 B0曲线逐字节比较、导出基线/消融/干预/八情感表、生成本轮身份曲线并渲染8主对比+8风格视频。主对比加入已SHA核验的adaptedFaceDiffuser固定seed42，同GT/clock/support。不能重复启动collector或remote worker。人工结果审阅与模型推广尚未执行。
 
 Phase61 worker8268已收齐212原始文件/9827676bytes，源码与60组/840字段重放通过；禁止重启。Phase62 worker12206已完成完整1367评估并收齐19原始文件/115710802bytes，293源码SHA及336字段重放通过，8视频完成/全帧解码。V3结果MBE.762805/LBE.368069/Lip3.243318/F1.678671/jawrange.126920/corr.476134/closure.388260；闭口下降.012761，否决。读PHASE61_RESULTS/PHASE62_RESULTS。正式模型仍Phase53。
