@@ -1,0 +1,12 @@
+{
+  "schema": "pdf_read_preflight/1",
+  "verdict": "PASS",
+  "file": "D:\\科研\\小论文\\.architecture_build\\method_sources\\ferro2013.pdf",
+  "sha256": "238d39afbb187c7c61f8a6b2b52bd13d31b901a1d0177feb3854a991c3693e1c",
+  "declared_page_count": 7,
+  "enumerated_page_count": 7,
+  "reader_page_count": 7,
+  "warnings": [],
+  "generated_at": "2026-09-22T03:48:22.416674+00:00",
+  "tool": "pdf_read_preflight/1.0.0"
+}

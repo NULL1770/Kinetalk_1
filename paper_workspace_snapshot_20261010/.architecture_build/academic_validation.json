@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "presentation-finalization.v1",
+  "finalSha256": "48743f54262c424ebb0cd4ac71513a422efbffdc303347cf5aa76fb76de178bd",
+  "byteCount": 69639,
+  "packageIntegrity": {
+    "chart_count": 0,
+    "claim_boundary": "Structural package checks only; no slide text, notes, formulas, chart values, or native PowerPoint execution were inspected.",
+    "finding_count": 0,
+    "findings": [],
+    "notes_parts_skipped": 3,
+    "relationship_part_count": 11,
+    "slide_count": 3,
+    "status": "pass",
+    "exitCode": 0,
+    "findingCount": 0,
+    "warnings": []
+  },
+  "presentationLayout": {
+    "finding_count": 0,
+    "findings": [],
+    "font_policy": {
+      "checked_text_script_count": 179,
+      "native_font_rendering_verified": false,
+      "observed_font_families": [
+        "Arial",
+        "Microsoft YaHei",
+        "Times New Roman"
+      ],
+      "observed_font_use_counts": {
+        "Arial": 76,
+        "Microsoft YaHei": 57,
+        "Times New Roman": 46
+      },
+      "passed": true,
+      "performed": true
+    },
+    "slide_count": 3,
+    "slide_size_in": [
+      16.6667,
+      9.375
+    ],
+    "warning_count": 9,
+    "warnings": [
+      {
+        "connector_id": "504",
+        "connector_z": 157,
+        "kind": "connector_over_text",
+        "slide": 1,
+        "text_object_id": "42",
+        "text_z": 43
+      },
+      {
+        "connector_id": "513",
+        "connector_z": 166,
+        "kind": "connector_over_text",
+        "slide": 1,
+        "text_object_id": "101",
+        "text_z": 102
+      },
+      {
+        "connector_id": "522",
+        "connector_z": 175,
+        "kind": "connector_over_text",
+        "slide": 1,
+        "text_object_id": "108",
+        "text_z": 109
+      },
+      {
+        "connector_id": "685",
+        "connector_z": 338,
+        "kind": "connector_over_text",
+        "slide": 1,
+        "text_object_id": "332",
+        "text_z": 333
+      },
+      {
+        "connector_id": "504",
+        "connector_z": 157,
+        "kind": "connector_over_text",
+        "slide": 2,
+        "text_object_id": "42",
+        "text_z": 43
+      },
+      {
+        "connector_id": "513",
+        "connector_z": 166,
+        "kind": "connector_over_text",
+        "slide": 2,
+        "text_object_id": "101",
+        "text_z": 102
+      },
+      {
+        "connector_id": "522",
+        "connector_z": 175,
+        "kind": "connector_over_text",
+        "slide": 2,
+        "text_object_id": "108",
+        "text_z": 109
+      },
+      {
+        "connector_id": "685",
+        "connector_z": 338,
+        "kind": "connector_over_text",
+        "slide": 2,
+        "text_object_id": "332",
+        "text_z": 333
+      },
+      {
+        "connector_id": "397",
+        "connector_z": 180,
+        "kind": "connector_over_text",
+        "slide": 3,
+        "text_object_id": "171",
+        "text_z": 172
+      }
+    ],
+    "exitCode": 0,
+    "findingCount": 0,
+    "fontPolicy": {
+      "checked_text_script_count": 179,
+      "native_font_rendering_verified": false,
+      "observed_font_families": [
+        "Arial",
+        "Microsoft YaHei",
+        "Times New Roman"
+      ],
+      "observed_font_use_counts": {
+        "Arial": 76,
+        "Microsoft YaHei": 57,
+        "Times New Roman": 46
+      },
+      "passed": true,
+      "performed": true
+    }
+  },
+  "fontSelection": {
+    "basis": "design",
+    "approvedFamilies": [
+      "Arial",
+      "Times New Roman",
+      "Microsoft YaHei"
+    ],
+    "scriptFonts": {},
+    "referenceSha256": null,
+    "referenceFontsVerifiedInEncodedText": false,
+    "checked_text_script_count": 179,
+    "native_font_rendering_verified": false,
+    "observed_font_families": [
+      "Arial",
+      "Microsoft YaHei",
+      "Times New Roman"
+    ],
+    "observed_font_use_counts": {
+      "Arial": 76,
+      "Microsoft YaHei": 57,
+      "Times New Roman": 46
+    },
+    "passed": true,
+    "performed": true
+  },
+  "firstPartyImport": {
+    "performed": true,
+    "passed": true,
+    "slideCount": 3,
+    "sha256": "48743f54262c424ebb0cd4ac71513a422efbffdc303347cf5aa76fb76de178bd",
+    "runtimeNodeModules": "C:/Users/zhh/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
+    "nodeExecutable": "C:\\Users\\zhh\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe"
+  },
+  "nativeTableArithmetic": {
+    "performed": true,
+    "checked_column_count": 0,
+    "checks": [],
+    "claim_boundary": "Displayed-value arithmetic with rounding tolerance; not source-data verification.",
+    "eligible_table_count": 0,
+    "finding_count": 0,
+    "findings": [],
+    "native_table_count": 0,
+    "passed": true,
+    "schema_version": "presentation-native-table-arithmetic.v1",
+    "skipped_tables": [],
+    "slide_count": 3,
+    "warning_count": 0,
+    "warnings": []
+  },
+  "nativeChartTitles": {
+    "performed": true,
+    "checks": [],
+    "finding_count": 0,
+    "findings": [],
+    "native_chart_count": 0,
+    "native_powerpoint_verified": false,
+    "passed": true,
+    "presentation_sha256": "48743f54262c424ebb0cd4ac71513a422efbffdc303347cf5aa76fb76de178bd",
+    "schema_version": "presentation-native-chart-titles.v1",
+    "slide_count": 3,
+    "source_text_emitted": false,
+    "unresolved_linked_title_count": 0
+  },
+  "sourceDerivedPolicyFlags": [
+    "--expected-slide-size-emu",
+    "15240000,8572500",
+    "--cover-role",
+    "none",
+    "--approved-font-family",
+    "Arial",
+    "--approved-font-family",
+    "Times New Roman",
+    "--approved-font-family",
+    "Microsoft YaHei"
+  ],
+  "nativeChartValidation": {
+    "detectedOwnerSlides": [],
+    "detectedChartCount": 0,
+    "targetApplication": null,
+    "sourceChartOwnersExplicitlyDeclared": false,
+    "validatorRan": false,
+    "passed": true
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "schema": "blender_dynamic_rig_v1",
+  "blender": "4.3.0",
+  "source_object": "face.001",
+  "source_vertices": 6191,
+  "brow_geometry": {
+    "browDownLeft": {
+      "max_local_displacement": 1.3533080961645263,
+      "nonzero_vertices": 4752
+    },
+    "browDownRight": {
+      "max_local_displacement": 1.3049498682560052,
+      "nonzero_vertices": 4756
+    },
+    "browInnerUp": {
+      "max_local_displacement": 1.2295628172120672,
+      "nonzero_vertices": 4675
+    },
+    "browOuterUpLeft": {
+      "max_local_displacement": 1.2434669019337958,
+      "nonzero_vertices": 4542
+    },
+    "browOuterUpRight": {
+      "max_local_displacement": 1.3069614699308962,
+      "nonzero_vertices": 4580
+    }
+  },
+  "mapping": {
+    "eyeBlinkLeft": "eyeBlinkLeft",
+    "eyeLookDownLeft": "eyeLookDownLeft",
+    "eyeLookInLeft": "eyeLookInLeft",
+    "eyeLookOutLeft": "eyeLookOutLeft",
+    "eyeLookUpLeft": "eyeLookUpLeft",
+    "eyeSquintLeft": "eyeSquintLeft",
+    "eyeWideLeft": "eyeWideLeft",
+    "eyeBlinkRight": "eyeBlinkRight",
+    "eyeLookDownRight": "eyeLookDownRight",
+    "eyeLookInRight": "eyeLookInRight",
+    "eyeLookOutRight": "eyeLookOutRight",
+    "eyeLookUpRight": "eyeLookUpRight",
+    "eyeSquintRight": "eyeSquintRight",
+    "eyeWideRight": "eyeWideRight",
+    "jawForward": "jawForward",
+    "jawLeft": "jawLeft",
+    "jawRight": "jawRight",
+    "jawOpen": "jawOpen",
+    "mouthClose": "mouthClose",
+    "mouthFunnel": "mouthFunnel",
+    "mouthPucker": "mouthPucker",
+    "mouthLeft": "mouthLeft",
+    "mouthRight": "mouthRight",
+    "mouthSmileLeft": "mouthSmileLeft",
+    "mouthSmileRight": "mouthSmileRight",
+    "mouthFrownLeft": "mouthFrownLeft",
+    "mouthFrownRight": "mouthFrownRight",
+    "mouthDimpleLeft": "mouthDimpleLeft",
+    "mouthDimpleRight": "mouthDimpleRight",
+    "mouthStretchLeft": "mouthStretchLeft",
+    "mouthStretchRight": "mouthStretchRight",
+    "mouthRollLower": "mouthRollLower",
+    "mouthRollUpper": "mouthRollUpper",
+    "mouthShrugLower": "mouthShrugLower",
+    "mouthShrugUpper": "mouthShrugUpper",
+    "mouthPressLeft": "mouthPressLeft",
+    "mouthPressRight": "mouthPressRight",
+    "mouthLowerDownLeft": "mouthLowerDownLeft",
+    "mouthLowerDownRight": "mouthLowerDownRight",
+    "mouthUpperUpLeft": "mouthUpperUpLeft",
+    "mouthUpperUpRight": "mouthUpperUpRight",
+    "browDownLeft": "browDownLeft",
+    "browDownRight": "browDownRight",
+    "browInnerUp": "browInnerUp",
+    "browOuterUpLeft": "browOuterUpLeft",
+    "browOuterUpRight": "browOuterUpRight",
+    "cheekPuff": "cheekPuff",
+    "cheekSquintLeft": "cheekSquintLeft",
+    "cheekSquintRight": "cheekSquintRight",
+    "noseSneerLeft": "noseSneerLeft",
+    "noseSneerRight": "noseSneerRight",
+    "tongueOut": "tongueOut"
+  },
+  "modes": [
+    "KineTalk facial sequence"
+  ],
+  "independent_shape_keys": true,
+  "old_actions_cleared": true,
+  "camera": {
+    "type": "ORTHO",
+    "scale": 0.49000000953674316,
+    "tile_spacing": 0.49
+  },
+  "display_material": "same neutral clay, geometry unchanged",
+  "resolution": [
+    480,
+    480
+  ],
+  "frame_start": 1,
+  "frame_end": 5,
+  "fps": 25,
+  "original_blend_saved": false,
+  "frame_value_max_error": 0.0,
+  "display_filled_frames": 0
+}
