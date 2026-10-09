@@ -1,0 +1,191 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{url}
+\title{ARFTalk: Articulation-Aware Residual Flow Matching for Expressive Speech-Driven 3D Facial Animation}
+\author{\IEEEauthorblockN{Author Name}\IEEEauthorblockA{Department or Institution\\City, Country\\author@example.com}}
+\begin{document}
+\maketitle
+\begin{abstract}
+Speech-driven 3D facial animation aims to synthesize facial motion synchronized with speech and expressive in appearance. Articulatory motion, speaker-related motion characteristics, and emotion are entangled in observed sequences. We present ARFTalk, an articulation-aware residual flow matching framework for ARKit blendshape coefficients. A speech-conditioned articulation base models speech-related mouth motion. For each reference audio-motion pair, the predicted articulation is subtracted before residual statistics are aggregated into a speaker-related motion-style condition and static coefficient offset. A motion teacher learns a clip-level affective representation from residual motion and transfers it to an audio student. A conditional residual flow combines reference, affective, and acoustic temporal conditions to synthesize expressive facial motion.
+\end{abstract}
+\begin{IEEEkeywords}
+speech-driven 3D facial animation, articulation-aware motion modeling, reference conditioning, speaker-related motion style, emotion distillation, residual flow matching, ARKit blendshape coefficients
+\end{IEEEkeywords}
+\section{Introduction}
+Speech-driven 3D facial animation generates continuous facial motion from speech and supports digital human interaction, virtual characters, and immersive communication. Natural talking faces must align mouth motion with speech articulation, preserve speaker-related motion characteristics across utterances, and express affective behavior compatible with the speech. These factors jointly shape the observed face, making their coordinated modeling important for personalized expressive animation \cite{voca,meshtalk,faceformer}.
+
+Recent studies have expanded speech-to-motion mapping from lip synchronization to affective and stylistic control. FaceFormer uses pretrained speech representations and a Transformer to model long-range audio-motion dependencies \cite{faceformer}; MeshTalk separates speech-correlated and weakly correlated motion factors \cite{meshtalk}; and CodeTalker introduces a discrete motion prior to reduce the uncertainty of continuous trajectory prediction \cite{codetalker}. Emotion-aware methods such as EmoTalk, EMOTE, and MEDTalk learn affective representations or dynamic controls \cite{emotalk,emote,medtalk}. Generative methods including FaceDiffuser, DiffPoseTalk, and DEEPTalk model multiple plausible motions under the same speech condition \cite{facediffuser,diffposetalk,deeptalk}. In reference-conditioned generation, a reference sequence contains both sentence-specific articulation and speaker-related execution characteristics. The reference content can therefore enter a reusable condition unless the articulation component is accounted for explicitly.
+
+ARFTalk addresses this issue with an articulation-base and conditional-residual formulation. The articulation base predicts content-dependent mouth motion. For each paired reference, the corresponding base prediction is subtracted and residual statistics from multiple independent references are aggregated into a speaker-related motion-style condition and a static coefficient offset. A motion teacher receives target residual motion after subtracting articulation and static offset and learns a clip-level affective representation. An audio student predicts the corresponding global condition and acoustic temporal context from speech. The residual flow generator combines these conditions with articulation context and samples expressive residual motion. A fixed support mask limits the channels affected by the residual path, while mouth calibration supplies selected static offsets.
+
+At inference, the system takes target speech and registered neutral reference audio-motion pairs. Target motion, emotion labels, and text are not required. Our contributions are:
+\begin{itemize}
+\item an articulation-aware residual flow matching framework for reference-conditioned expressive ARKit facial animation;
+\item residual reference encoding that reduces sentence-specific articulation before learning speaker-related motion conditions;
+\item a motion-teacher to audio-student transfer path that supplies global affective supervision while retaining acoustic temporal context for residual generation.
+\end{itemize}
+\section{Related Work}
+\subsection{Speech-Driven 3D Facial Motion}
+VOCA predicts 3D face meshes from speech and uses subject conditioning to capture speaking styles \cite{voca}. MeshTalk separates audio-correlated and weakly correlated motion \cite{meshtalk}. FaceFormer uses self-supervised speech features and long temporal context \cite{faceformer}, while SelfTalk adds cycle consistency for audio-lip correspondence \cite{selftalk}. CodeTalker maps speech to a learned discrete motion space \cite{codetalker}. FaceDiffuser, DiffSpeaker, and GLDiTalker use diffusion-based generation to model motion distributions and improve diversity \cite{facediffuser,diffspeaker,glditalker}.
+\subsection{Reference-Conditioned Personalization}
+Imitator adapts a speech-driven prior using short target references \cite{imitator}. StyleTalk extracts controllable speaking style from one example \cite{styletalk}, TalkingStyle learns personalized motion from multiple audio-animation samples \cite{talkingstyle}, and DiffPoseTalk conditions diffusion generation on a continuous style embedding from a reference clip \cite{diffposetalk}. These works establish the value of reference motion for speaker-related personalization. ARFTalk uses paired reference speech to estimate and subtract sentence-specific articulation before aggregating residual statistics.
+\subsection{Emotion and Expressive Animation}
+EmoTalk learns content-emotion representations from speech \cite{emotalk}. EMOTE separates speech-dependent articulation from longer-term facial expression with frame-level lip and sequence-level emotion supervision \cite{emote}. MEDTalk learns disentangled content and emotion embeddings and predicts dynamic intensity from audio and text \cite{medtalk}. DEITalk and DEEPTalk model dynamic or probabilistic emotion representations \cite{deitalk,deeptalk}. DESTalker uses neutral-first residual generation for emotion and style modulation \cite{destalker}, while SubtleTalk applies residual flow matching to weakly correlated dynamics \cite{subtletalk}. ARFTalk combines a speech-conditioned articulation base, reference residual conditions, a motion-side affective teacher, and a stochastic residual generator.
+\section{Method}
+\subsection{Overview}
+Given target speech $A$ and $K$ independent neutral reference audio-motion pairs from the same speaker,
+\begin{equation}
+\mathcal{R}_s=\{(A_s^{(k)},M_s^{(k)})\}_{k=1}^{K},
+\end{equation}
+the system generates an ARKit coefficient sequence $\hat M\in\mathbb{R}^{T\times52}$. The frozen articulation base produces
+\begin{equation}
+(B,H_0)=B_0(C(A)),
+\end{equation}
+where $B$ is speech-related articulation motion and $H_0$ is the temporal context. The final motion is
+\begin{equation}
+\hat M=B+b_{\mathrm{id}}+\mathcal{S}\odot\hat R,
+\end{equation}
+where $\mathcal{S}\in\{0,1\}^{52}$ is a fixed residual-support mask and $\hat R$ is sampled by the conditional flow.
+
+\subsection{Articulation Base and Reference Conditions}
+The articulation base maps speech content to ARKit coefficients and is trained with mouth-coefficient reconstruction and valid-frame velocity consistency. After training it is frozen for reference registration, teacher learning, and audio learning. For reference $k$, the residual is
+\begin{equation}
+R_s^{(k)}=M_s^{(k)}-B_0(C(A_s^{(k)})).
+\end{equation}
+We compute per-channel means and standard deviations on valid frames and observed channels. A shared encoder aggregates multiple references:
+\begin{equation}
+z_{\mathrm{id}}=\frac{1}{K}\sum_{k=1}^{K}E_{\mathrm{id}}\left([\mu_s^{(k)},\sigma_s^{(k)}]\right).
+\end{equation}
+The static coefficient offset is
+\begin{equation}
+\tilde b_{\mathrm{id}}=\beta\tanh(W_bz_{\mathrm{id}}+c_b).
+\end{equation}
+This condition represents cross-utterance speaker-related motion characteristics and coefficient offsets rather than geometric identity reconstruction. In mouth-protection mode, training-set calibration supplies static mouth offsets while the articulation base retains time-varying mouth motion.
+
+\subsection{Motion Teacher and Audio Student}
+The training residual after subtracting articulation and static offset is
+\begin{equation}
+R_t^*=M_t-B_t-b_{\mathrm{id}}.
+\end{equation}
+A motion teacher $E_m$ reads $R^*$ and valid-frame differences, pools temporal features, and predicts a clip-level affective representation $g_m$, emotion logits, and intensity logits. The teacher provides global affective supervision and does not provide frame-level brow or eye trajectories. The audio student receives native-rate acoustic features $X_a$ and produces
+\begin{equation}
+(g_a,u_a,\hat e_a,\hat\iota_a)=E_a(X_a),
+\end{equation}
+where $g_a$ is a clip-level affective condition and $u_a$ is an acoustic temporal condition. Global distillation is
+\begin{equation}
+\mathcal{L}_{\mathrm{distill}}=\left\|g_a-\operatorname{sg}(g_m)\right\|_2^2,
+\end{equation}
+where $\operatorname{sg}$ denotes stop-gradient.
+
+\subsection{Conditional Residual Flow}
+Let $P_{\mathcal{S}}$ retain the selected support. The normalized target residual is
+\begin{equation}
+R=P_{\mathcal{S}}(M-B-b_{\mathrm{id}}),\qquad Z=R/\gamma.
+\end{equation}
+With $\epsilon\sim\mathcal{N}(0,I)$ and $\tau\sim\mathcal{U}(0,1)$,
+\begin{equation}
+X_\tau=(1-\tau)\epsilon+\tau Z,\qquad V^*=Z-\epsilon.
+\end{equation}
+The temporal context and global modulation are
+\begin{equation}
+H_{\mathrm{ctx}}=P_h(H_0)+P_u(u_a),\qquad
+G=P_g(g)+P_\iota(\iota)+P_z(z_{\mathrm{id}})+P_\tau(\tau).
+\end{equation}
+The residual DiT uses self-attention for residual dependencies, cross-attention to articulation and acoustic contexts, and adaptive modulation from global conditions. Its flow matching objective is
+\begin{equation}
+\mathcal{L}_{\mathrm{FM}}=\mathbb{E}\left[\left\|P_{\mathcal{S}}\left(v_\theta(X_\tau,\tau;H_0,u_a,g,z_{\mathrm{id}},\iota)-V^*\right)\right\|_2^2\right].
+\end{equation}
+At inference, numerical integration of the learned velocity field from a random initial state produces $\hat R$. The main configuration excludes mouth and jaw channels from $\mathcal{S}$, so mouth coefficients satisfy
+\begin{equation}
+\hat M_{t,j}=B_{t,j}+(b_{\mathrm{id}})_j.
+\end{equation}
+
+\subsection{Training and Inference}
+The model is optimized in four deployable stages: articulation-base training; reference-condition registration with frozen $B_0$; joint motion-teacher, audio-condition, and flow training; and audio-student and flow training with a frozen teacher. The audio-stage objective is
+\begin{equation}
+\mathcal{L}_{\mathrm{audio}}=\mathcal{L}_{\mathrm{FM}}+\lambda_s(\mathcal{L}_{\mathrm{emo}}^a+\mathcal{L}_{\mathrm{int}}^a)+\lambda_d\mathcal{L}_{\mathrm{distill}}.
+\end{equation}
+At inference, the system extracts $C(A)$ and $X_a$, computes $B,H_0$, predicts $g_a,\iota_a,u_a$, samples $\hat R$, and synthesizes the ARKit sequence.
+
+\section{Experiments}
+\subsection{Dataset and Preprocessing}
+We establish a unified speech-to-ARKit facial animation protocol on MEAD. Video frames are converted to 52-dimensional coefficients with a fixed extraction pipeline and aligned with 25-fps acoustic features. The protocol covers neutral, angry, contempt, disgust, fear, happy, sad, and surprise. Query clips and registration references are disjoint at speaker and utterance levels. The split contains 12,536 training queries, 1,367 development queries, and 537 identity-independent test queries. Each speaker has independent neutral audio-motion pairs for extracting the reference condition and static offset. Valid-frame masks are preserved. Normalization statistics, channel scales, embedding reduction, and model selection are estimated on the training split only. Each test input is generated with eight fixed random seeds and all samples are aggregated without selecting by target error.
+
+\subsection{Baselines and Implementation}
+Comparisons use the same speech features, frame rate, valid-frame masks, and speaker splits. VOCA, FaceFormer, and EmoTalk outputs are converted to 52-dimensional ARKit coefficients. FaceDiffuser uses the same channel order, audio preprocessing, and query split. Vertex-based outputs are mapped to a common mesh with a fixed ARKit-to-mesh rig. ARFTalk uses a 128-dimensional reference condition, a 64-dimensional global affective condition, and a 64-dimensional native-rate acoustic condition. Mouth calibration is estimated on the training split and frozen for development and test evaluation.
+
+\subsection{Evaluation Metrics}
+In coefficient space, we report mean blendshape error (MBE) over all observed channels and lip blendshape error (LBE) over a fixed 12-channel lip mask. In mesh space, coefficients are mapped with a fixed neutral mesh and blendshape deltas:
+\begin{equation}
+V_t=V_0+\sum_{j=1}^{52}Y_{t,j}\Delta V_j.
+\end{equation}
+Lip vertex error (LVE) is computed on lip vertices, and expression vertex error (EVE) on non-lip expression regions. Facial distribution discrepancy (FDD) compares temporal regional displacement-energy distributions. Emotion recognition uses a linear readout fitted on the training split and reports macro-F1 over eight emotions. t-SNE visualizes audio and generated-motion affective representations after training-only standardization and PCA.
+
+\subsection{Main Results and Ablations}
+Table~\ref{tab:main} reports LVE, EVE, and FDD in mesh space; Table~\ref{tab:coef} reports MBE and LBE in coefficient space. Table~\ref{tab:ablation} evaluates removal of residual factorization, mouth protection and calibration, and the motion-teacher to audio-student path. Each variant uses the same data split, training budget, random seeds, and inference settings. We additionally analyze regional brow and eye activity, temporal standard deviation, velocity statistics, and multi-sample distribution distance.
+\begin{table}[t]
+\centering
+\caption{Mesh-space comparison. Values are placeholders until final evaluation.}
+\label{tab:main}
+\begin{tabular}{lccc}\toprule
+Method & LVE$\downarrow$ & EVE$\downarrow$ & FDD$\downarrow$\\\midrule
+VOCA & -- & -- & --\\
+FaceFormer & -- & -- & --\\
+EmoTalk & -- & -- & --\\
+FaceDiffuser & -- & -- & --\\
+ARFTalk & -- & -- & --\\\bottomrule
+\end{tabular}
+\end{table}
+TESTLINE
+\begin{table}[t]
+\centering
+\caption{Coefficient-space comparison. Values are placeholders until final evaluation.}
+\label{tab:coef}
+\begin{tabular}{lcc}\toprule
+Method & MBE$\downarrow$ & LBE$\downarrow$\\\midrule
+EmoTalk & -- & --\\
+FaceDiffuser & -- & --\\
+ARFTalk & -- & --\\\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[t]
+\centering
+\caption{Ablation study. Values are placeholders until final evaluation.}
+\label{tab:ablation}
+\begin{tabular}{lcccc}\toprule
+Variant & MBE$\downarrow$ & LBE$\downarrow$ & EVE$\downarrow$ & Macro-F1$\uparrow$\\\midrule
+Full & -- & -- & -- & --\\
+w/o residual factorization & -- & -- & -- & --\\
+w/o mouth protection & -- & -- & -- & --\\
+w/o emotion teacher & -- & -- & -- & --\\bottomrule
+\end{tabular}
+\end{table}
+\begin{thebibliography}{00}
+\bibitem{voca} D. Cudeiro et al., "Capture, Learning, and Synthesis of 3D Speaking Styles," in \emph{CVPR}, 2019.
+\bibitem{meshtalk} A. Richard et al., "MeshTalk: 3D Face Animation from Speech Using Cross-Modality Disentanglement," in \emph{ICCV}, 2021.
+\bibitem{faceformer} Y. Fan et al., "FaceFormer: Speech-Driven 3D Facial Animation With Transformers," in \emph{CVPR}, 2022.
+\bibitem{selftalk} Z. Peng et al., "SelfTalk: A Self-Supervised Comprehensive Framework for Speech-Driven 3D Facial Animation," in \emph{ACM Multimedia}, 2023.
+\bibitem{facexhubert} K. I. Haque and Z. Yumak, "FaceXHuBERT: Text-less Speech-driven Expressive 3D Facial Animation," in \emph{MIG}, 2023.
+\bibitem{codetalker} J. Xing et al., "CodeTalker: Speech-Driven 3D Facial Animation with Discrete Motion Prior," in \emph{CVPR}, 2023.
+\bibitem{kmtalk} Z. Xu et al., "KMTalk: Speech-Driven 3D Facial Animation with Key Motion Embedding," in \emph{ECCV Workshops}, 2024.
+\bibitem{facediffuser} S. Stan et al., "FaceDiffuser: Speech-Driven 3D Facial Animation Synthesis Using Diffusion," in \emph{MIG}, 2023.
+\bibitem{diffspeaker} Z. Ma et al., "DiffSpeaker: Speech-Driven 3D Facial Animation with Diffusion Transformer," in \emph{IJCB}, 2025.
+\bibitem{glditalker} Y. Lin et al., "GLDiTalker: Speech-Driven 3D Facial Animation with Graph Latent Diffusion Transformer," in \emph{IJCAI}, 2025.
+\bibitem{imitator} B. Thambiraja et al., "Imitator: Personalized Speech-driven 3D Facial Animation," in \emph{ICCV}, 2023.
+\bibitem{styletalk} Y. Ma et al., "StyleTalk: One-Shot Talking Head Generation with Controllable Speaking Styles," in \emph{AAAI}, 2023.
+\bibitem{talkingstyle} W. Song et al., "TalkingStyle: Personalized Speech-Driven 3D Facial Animation With Style Preservation," \emph{IEEE TVCG}, 2025.
+\bibitem{diffposetalk} Z. Sun et al., "DiffPoseTalk: Speech-Driven Stylistic 3D Facial Animation and Head Pose Generation via Diffusion Models," in \emph{ACM Multimedia}, 2024.
+\bibitem{emotalk} Z. Peng et al., "EmoTalk: Speech-Driven Emotional Disentanglement for 3D Face Animation," in \emph{ICCV}, 2023.
+\bibitem{emote} R. Dan\v{e}\v{c}ek et al., "Emotional Speech-Driven Animation with Content-Emotion Disentanglement," in \emph{SIGGRAPH Asia}, 2023.
+\bibitem{medtalk} C. Liu et al., "MEDTalk: Multimodal Controlled 3D Facial Animation with Dynamic Emotions by Disentangled Embedding," in \emph{ACM Multimedia}, 2025.
+\bibitem{deitalk} K. Shen et al., "DEITalk: Speech-Driven 3D Facial Animation with Dynamic Emotional Intensity Modeling," in \emph{ACM Multimedia}, 2024.
+\bibitem{deeptalk} J. Kim et al., "DEEPTalk: Dynamic Emotion Embedding for Probabilistic Speech-Driven 3D Face Animation," in \emph{AAAI}, 2025.
+\bibitem{destalker} X. Yang et al., "DESTalker: Disentangling Emotion and Style for Expressive 3D Facial Animation via Residual Generation," \emph{Computer Animation and Virtual Worlds}, 2026.
+\bibitem{subtletalk} C. Ding et al., "SubtleTalk: Generating Controllable Weakly-correlated Facial Dynamics for 3D Talking Heads via Residual Flow Matching," in \emph{ACM Multimedia}, 2026.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,12 @@
+{
+  "schema": "pdf_read_preflight/1",
+  "verdict": "PASS",
+  "file": "D:\\科研\\小论文\\.architecture_build\\method_sources\\gneiting2007.pdf",
+  "sha256": "d31a0c5f0ae8fec1a0a6544db5d056645b2d7296d71b44a2e8efb293c7d87ba2",
+  "declared_page_count": 20,
+  "enumerated_page_count": 20,
+  "reader_page_count": 20,
+  "warnings": [],
+  "generated_at": "2026-09-22T03:49:20.627376+00:00",
+  "tool": "pdf_read_preflight/1.0.0"
+}

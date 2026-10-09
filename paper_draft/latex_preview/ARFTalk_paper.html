@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="" />
+  <title>ARFTalk: Articulation-Aware Residual Flow Matching for Expressive Speech-Driven 3D Facial Animation</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    div.abstract {
+      margin: 2em 2em 2em 2em;
+      text-align: left;
+      font-size: 85%;
+    }
+    div.abstract-title {
+      font-weight: bold;
+      text-align: center;
+      padding: 0;
+      margin-bottom: 0.5em;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+<style>
+@page{size:Letter;margin:0.55in} body{font-family:'Times New Roman',serif;font-size:9pt;line-height:1.15;color:#111;max-width:7.4in;margin:auto} h1{font-size:18pt;text-align:center;margin:0 0 8pt} h2{font-size:12pt;margin:10pt 0 3pt;border-bottom:.4pt solid #555} h3{font-size:10pt;margin:7pt 0 2pt} p{margin:3pt 0;text-align:justify} table{font-size:8pt;border-collapse:collapse;margin:5pt auto} td,th{padding:2pt 4pt;border-bottom:.4pt solid #777} pre{font-size:7.5pt;white-space:pre-wrap;background:#fafafa;padding:3pt} .math{font-size:9pt}
+</style></head>
+<body>
+<header id="title-block-header">
+<h1 class="title">ARFTalk: Articulation-Aware Residual Flow Matching for
+Expressive Speech-Driven 3D Facial Animation</h1>
+<p class="author"></p>
+<div class="abstract">
+<div class="abstract-title">Abstract</div>
+<p>Speech-driven 3D facial animation aims to synthesize facial motion
+synchronized with speech and expressive in appearance. Articulatory
+motion, speaker-related motion characteristics, and emotion are
+entangled in observed sequences. We present ARFTalk, an
+articulation-aware residual flow matching framework for ARKit blendshape
+coefficients. A speech-conditioned articulation base models
+speech-related mouth motion. For each reference audio-motion pair, the
+predicted articulation is subtracted before residual statistics are
+aggregated into a speaker-related motion-style condition and static
+coefficient offset. A motion teacher learns a clip-level affective
+representation from residual motion and transfers it to an audio
+student. A conditional residual flow combines reference, affective, and
+acoustic temporal conditions to synthesize expressive facial motion.</p>
+</div>
+</header>
+<div class="IEEEkeywords">
+<p>speech-driven 3D facial animation, articulation-aware motion
+modeling, reference conditioning, speaker-related motion style, emotion
+distillation, residual flow matching, ARKit blendshape coefficients</p>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>Speech-driven 3D facial animation generates continuous facial motion
+from speech and supports digital human interaction, virtual characters,
+and immersive communication. Natural talking faces must align mouth
+motion with speech articulation, preserve speaker-related motion
+characteristics across utterances, and express affective behavior
+compatible with the speech. These factors jointly shape the observed
+face, making their coordinated modeling important for personalized
+expressive animation <span class="citation"
+data-cites="voca meshtalk faceformer"></span>.</p>
+<p>Recent studies have expanded speech-to-motion mapping from lip
+synchronization to affective and stylistic control. FaceFormer uses
+pretrained speech representations and a Transformer to model long-range
+audio-motion dependencies <span class="citation"
+data-cites="faceformer"></span>; MeshTalk separates speech-correlated
+and weakly correlated motion factors <span class="citation"
+data-cites="meshtalk"></span>; and CodeTalker introduces a discrete
+motion prior to reduce the uncertainty of continuous trajectory
+prediction <span class="citation" data-cites="codetalker"></span>.
+Emotion-aware methods such as EmoTalk, EMOTE, and MEDTalk learn
+affective representations or dynamic controls <span class="citation"
+data-cites="emotalk emote medtalk"></span>. Generative methods including
+FaceDiffuser, DiffPoseTalk, and DEEPTalk model multiple plausible
+motions under the same speech condition <span class="citation"
+data-cites="facediffuser diffposetalk deeptalk"></span>. In
+reference-conditioned generation, a reference sequence contains both
+sentence-specific articulation and speaker-related execution
+characteristics. The reference content can therefore enter a reusable
+condition unless the articulation component is accounted for
+explicitly.</p>
+<p>ARFTalk addresses this issue with an articulation-base and
+conditional-residual formulation. The articulation base predicts
+content-dependent mouth motion. For each paired reference, the
+corresponding base prediction is subtracted and residual statistics from
+multiple independent references are aggregated into a speaker-related
+motion-style condition and a static coefficient offset. A motion teacher
+receives target residual motion after subtracting articulation and
+static offset and learns a clip-level affective representation. An audio
+student predicts the corresponding global condition and acoustic
+temporal context from speech. The residual flow generator combines these
+conditions with articulation context and samples expressive residual
+motion. A fixed support mask limits the channels affected by the
+residual path, while mouth calibration supplies selected static
+offsets.</p>
+<p>At inference, the system takes target speech and registered neutral
+reference audio-motion pairs. Target motion, emotion labels, and text
+are not required. Our contributions are:</p>
+<ul>
+<li><p>an articulation-aware residual flow matching framework for
+reference-conditioned expressive ARKit facial animation;</p></li>
+<li><p>residual reference encoding that reduces sentence-specific
+articulation before learning speaker-related motion conditions;</p></li>
+<li><p>a motion-teacher to audio-student transfer path that supplies
+global affective supervision while retaining acoustic temporal context
+for residual generation.</p></li>
+</ul>
+<h1 id="related-work">Related Work</h1>
+<h2 id="speech-driven-3d-facial-motion">Speech-Driven 3D Facial
+Motion</h2>
+<p>VOCA predicts 3D face meshes from speech and uses subject
+conditioning to capture speaking styles <span class="citation"
+data-cites="voca"></span>. MeshTalk separates audio-correlated and
+weakly correlated motion <span class="citation"
+data-cites="meshtalk"></span>. FaceFormer uses self-supervised speech
+features and long temporal context <span class="citation"
+data-cites="faceformer"></span>, while SelfTalk adds cycle consistency
+for audio-lip correspondence <span class="citation"
+data-cites="selftalk"></span>. CodeTalker maps speech to a learned
+discrete motion space <span class="citation"
+data-cites="codetalker"></span>. FaceDiffuser, DiffSpeaker, and
+GLDiTalker use diffusion-based generation to model motion distributions
+and improve diversity <span class="citation"
+data-cites="facediffuser diffspeaker glditalker"></span>.</p>
+<h2 id="reference-conditioned-personalization">Reference-Conditioned
+Personalization</h2>
+<p>Imitator adapts a speech-driven prior using short target references
+<span class="citation" data-cites="imitator"></span>. StyleTalk extracts
+controllable speaking style from one example <span class="citation"
+data-cites="styletalk"></span>, TalkingStyle learns personalized motion
+from multiple audio-animation samples <span class="citation"
+data-cites="talkingstyle"></span>, and DiffPoseTalk conditions diffusion
+generation on a continuous style embedding from a reference clip <span
+class="citation" data-cites="diffposetalk"></span>. These works
+establish the value of reference motion for speaker-related
+personalization. ARFTalk uses paired reference speech to estimate and
+subtract sentence-specific articulation before aggregating residual
+statistics.</p>
+<h2 id="emotion-and-expressive-animation">Emotion and Expressive
+Animation</h2>
+<p>EmoTalk learns content-emotion representations from speech <span
+class="citation" data-cites="emotalk"></span>. EMOTE separates
+speech-dependent articulation from longer-term facial expression with
+frame-level lip and sequence-level emotion supervision <span
+class="citation" data-cites="emote"></span>. MEDTalk learns disentangled
+content and emotion embeddings and predicts dynamic intensity from audio
+and text <span class="citation" data-cites="medtalk"></span>. DEITalk
+and DEEPTalk model dynamic or probabilistic emotion representations
+<span class="citation" data-cites="deitalk deeptalk"></span>. DESTalker
+uses neutral-first residual generation for emotion and style modulation
+<span class="citation" data-cites="destalker"></span>, while SubtleTalk
+applies residual flow matching to weakly correlated dynamics <span
+class="citation" data-cites="subtletalk"></span>. ARFTalk combines a
+speech-conditioned articulation base, reference residual conditions, a
+motion-side affective teacher, and a stochastic residual generator.</p>
+<h1 id="method">Method</h1>
+<h2 id="overview">Overview</h2>
+<p>Given target speech
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+independent neutral reference audio-motion pairs from the same speaker,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℛ</mi><mi>s</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>A</mi><mi>s</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi>M</mi><mi>s</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><msubsup><mo stretchy="false" form="postfix">}</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></msubsup><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\mathcal{R}_s=\{(A_s^{(k)},M_s^{(k)})\}_{k=1}^{K},
+\end{equation}</annotation></semantics></math> the system generates an
+ARKit coefficient sequence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>M</mi><mo accent="true">̂</mo></mover><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>T</mi><mo>×</mo><mn>52</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\hat M\in\mathbb{R}^{T\times52}</annotation></semantics></math>.
+The frozen articulation base produces
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo>,</mo><msub><mi>H</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>B</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>C</mi><mo stretchy="false" form="prefix">(</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+(B,H_0)=B_0(C(A)),
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+is speech-related articulation motion and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>0</mn></msub><annotation encoding="application/x-tex">H_0</annotation></semantics></math>
+is the temporal context. The final motion is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>M</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>B</mi><mo>+</mo><msub><mi>b</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>+</mo><mi>𝒮</mi><mo>⊙</mo><mover><mi>R</mi><mo accent="true">̂</mo></mover><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\hat M=B+b_{\mathrm{id}}+\mathcal{S}\odot\hat R,
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒮</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><msup><mo stretchy="false" form="postfix">}</mo><mn>52</mn></msup></mrow><annotation encoding="application/x-tex">\mathcal{S}\in\{0,1\}^{52}</annotation></semantics></math>
+is a fixed residual-support mask and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>R</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat R</annotation></semantics></math>
+is sampled by the conditional flow.</p>
+<h2 id="articulation-base-and-reference-conditions">Articulation Base
+and Reference Conditions</h2>
+<p>The articulation base maps speech content to ARKit coefficients and
+is trained with mouth-coefficient reconstruction and valid-frame
+velocity consistency. After training it is frozen for reference
+registration, teacher learning, and audio learning. For reference
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+the residual is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>R</mi><mi>s</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msubsup><mi>M</mi><mi>s</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>−</mo><msub><mi>B</mi><mn>0</mn></msub><mo stretchy="false" form="prefix">(</mo><mi>C</mi><mo stretchy="false" form="prefix">(</mo><msubsup><mi>A</mi><mi>s</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+R_s^{(k)}=M_s^{(k)}-B_0(C(A_s^{(k)})).
+\end{equation}</annotation></semantics></math> We compute per-channel
+means and standard deviations on valid frames and observed channels. A
+shared encoder aggregates multiple references:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mi>K</mi></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><msub><mi>E</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mo stretchy="false" form="prefix">[</mo><msubsup><mi>μ</mi><mi>s</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><msubsup><mi>σ</mi><mi>s</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">]</mo><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+z_{\mathrm{id}}=\frac{1}{K}\sum_{k=1}^{K}E_{\mathrm{id}}\left([\mu_s^{(k)},\sigma_s^{(k)}]\right).
+\end{equation}</annotation></semantics></math> The static coefficient
+offset is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>b</mi><mo accent="true">̃</mo></mover><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>=</mo><mi>β</mi><mrow><mi mathvariant="normal">tanh</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mi>b</mi></msub><msub><mi>z</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>+</mo><msub><mi>c</mi><mi>b</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\tilde b_{\mathrm{id}}=\beta\tanh(W_bz_{\mathrm{id}}+c_b).
+\end{equation}</annotation></semantics></math> This condition represents
+cross-utterance speaker-related motion characteristics and coefficient
+offsets rather than geometric identity reconstruction. In
+mouth-protection mode, training-set calibration supplies static mouth
+offsets while the articulation base retains time-varying mouth
+motion.</p>
+<h2 id="motion-teacher-and-audio-student">Motion Teacher and Audio
+Student</h2>
+<p>The training residual after subtracting articulation and static
+offset is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>R</mi><mi>t</mi><mo>*</mo></msubsup><mo>=</mo><msub><mi>M</mi><mi>t</mi></msub><mo>−</mo><msub><mi>B</mi><mi>t</mi></msub><mo>−</mo><msub><mi>b</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+R_t^*=M_t-B_t-b_{\mathrm{id}}.
+\end{equation}</annotation></semantics></math> A motion teacher
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>m</mi></msub><annotation encoding="application/x-tex">E_m</annotation></semantics></math>
+reads
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mo>*</mo></msup><annotation encoding="application/x-tex">R^*</annotation></semantics></math>
+and valid-frame differences, pools temporal features, and predicts a
+clip-level affective representation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>m</mi></msub><annotation encoding="application/x-tex">g_m</annotation></semantics></math>,
+emotion logits, and intensity logits. The teacher provides global
+affective supervision and does not provide frame-level brow or eye
+trajectories. The audio student receives native-rate acoustic features
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>a</mi></msub><annotation encoding="application/x-tex">X_a</annotation></semantics></math>
+and produces
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>g</mi><mi>a</mi></msub><mo>,</mo><msub><mi>u</mi><mi>a</mi></msub><mo>,</mo><msub><mover><mi>e</mi><mo accent="true">̂</mo></mover><mi>a</mi></msub><mo>,</mo><msub><mover><mi>ι</mi><mo accent="true">̂</mo></mover><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>E</mi><mi>a</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+(g_a,u_a,\hat e_a,\hat\iota_a)=E_a(X_a),
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><mi>a</mi></msub><annotation encoding="application/x-tex">g_a</annotation></semantics></math>
+is a clip-level affective condition and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>u</mi><mi>a</mi></msub><annotation encoding="application/x-tex">u_a</annotation></semantics></math>
+is an acoustic temporal condition. Global distillation is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msub><mo>=</mo><msubsup><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mi>g</mi><mi>a</mi></msub><mo>−</mo><mi mathvariant="normal">sg</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>g</mi><mi>m</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn><mn>2</mn></msubsup><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}
+\mathcal{L}_{\mathrm{distill}}=\left\|g_a-\operatorname{sg}(g_m)\right\|_2^2,
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">sg</mi><annotation encoding="application/x-tex">\operatorname{sg}</annotation></semantics></math>
+denotes stop-gradient.</p>
+<h2 id="conditional-residual-flow">Conditional Residual Flow</h2>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>𝒮</mi></msub><annotation encoding="application/x-tex">P_{\mathcal{S}}</annotation></semantics></math>
+retain the selected support. The normalized target residual is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><msub><mi>P</mi><mi>𝒮</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>M</mi><mo>−</mo><mi>B</mi><mo>−</mo><msub><mi>b</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>Z</mi><mo>=</mo><mi>R</mi><mi>/</mi><mi>γ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+R=P_{\mathcal{S}}(M-B-b_{\mathrm{id}}),\qquad Z=R/\gamma.
+\end{equation}</annotation></semantics></math> With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi><mo>∼</mo><mi>𝒩</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>I</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\epsilon\sim\mathcal{N}(0,I)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∼</mo><mi>𝒰</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau\sim\mathcal{U}(0,1)</annotation></semantics></math>,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>τ</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>τ</mi><mo stretchy="false" form="postfix">)</mo><mi>ϵ</mi><mo>+</mo><mi>τ</mi><mi>Z</mi><mo>,</mo><mspace width="2.0em"></mspace><msup><mi>V</mi><mo>*</mo></msup><mo>=</mo><mi>Z</mi><mo>−</mo><mi>ϵ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+X_\tau=(1-\tau)\epsilon+\tau Z,\qquad V^*=Z-\epsilon.
+\end{equation}</annotation></semantics></math> The temporal context and
+global modulation are
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">x</mi></mrow></msub><mo>=</mo><msub><mi>P</mi><mi>h</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>H</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>P</mi><mi>u</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>u</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>G</mi><mo>=</mo><msub><mi>P</mi><mi>g</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>g</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>P</mi><mi>ι</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>ι</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>P</mi><mi>z</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>P</mi><mi>τ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>τ</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+H_{\mathrm{ctx}}=P_h(H_0)+P_u(u_a),\qquad
+G=P_g(g)+P_\iota(\iota)+P_z(z_{\mathrm{id}})+P_\tau(\tau).
+\end{equation}</annotation></semantics></math> The residual DiT uses
+self-attention for residual dependencies, cross-attention to
+articulation and acoustic contexts, and adaptive modulation from global
+conditions. Its flow matching objective is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">M</mi></mrow></msub><mo>=</mo><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mi>P</mi><mi>𝒮</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>θ</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>τ</mi></msub><mo>,</mo><mi>τ</mi><mo>;</mo><msub><mi>H</mi><mn>0</mn></msub><mo>,</mo><msub><mi>u</mi><mi>a</mi></msub><mo>,</mo><mi>g</mi><mo>,</mo><msub><mi>z</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><mo>,</mo><mi>ι</mi><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msup><mi>V</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">∥</mo></mrow><mn>2</mn><mn>2</mn></msubsup><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\mathcal{L}_{\mathrm{FM}}=\mathbb{E}\left[\left\|P_{\mathcal{S}}\left(v_\theta(X_\tau,\tau;H_0,u_a,g,z_{\mathrm{id}},\iota)-V^*\right)\right\|_2^2\right].
+\end{equation}</annotation></semantics></math> At inference, numerical
+integration of the learned velocity field from a random initial state
+produces
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>R</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat R</annotation></semantics></math>.
+The main configuration excludes mouth and jaw channels from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒮</mi><annotation encoding="application/x-tex">\mathcal{S}</annotation></semantics></math>,
+so mouth coefficients satisfy
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>M</mi><mo accent="true">̂</mo></mover><mrow><mi>t</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>B</mi><mrow><mi>t</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>b</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">d</mi></mrow></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>j</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\hat M_{t,j}=B_{t,j}+(b_{\mathrm{id}})_j.
+\end{equation}</annotation></semantics></math></p>
+<h2 id="training-and-inference">Training and Inference</h2>
+<p>The model is optimized in four deployable stages: articulation-base
+training; reference-condition registration with frozen
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mn>0</mn></msub><annotation encoding="application/x-tex">B_0</annotation></semantics></math>;
+joint motion-teacher, audio-condition, and flow training; and
+audio-student and flow training with a frozen teacher. The audio-stage
+objective is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">o</mi></mrow></msub><mo>=</mo><msub><mi>ℒ</mi><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">M</mi></mrow></msub><mo>+</mo><msub><mi>λ</mi><mi>s</mi></msub><mo stretchy="false" form="prefix">(</mo><msubsup><mi>ℒ</mi><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi></mrow><mi>a</mi></msubsup><mo>+</mo><msubsup><mi>ℒ</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">t</mi></mrow><mi>a</mi></msubsup><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>λ</mi><mi>d</mi></msub><msub><mi>ℒ</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+\mathcal{L}_{\mathrm{audio}}=\mathcal{L}_{\mathrm{FM}}+\lambda_s(\mathcal{L}_{\mathrm{emo}}^a+\mathcal{L}_{\mathrm{int}}^a)+\lambda_d\mathcal{L}_{\mathrm{distill}}.
+\end{equation}</annotation></semantics></math> At inference, the system
+extracts
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo stretchy="false" form="prefix">(</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">C(A)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>a</mi></msub><annotation encoding="application/x-tex">X_a</annotation></semantics></math>,
+computes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>,</mo><msub><mi>H</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">B,H_0</annotation></semantics></math>,
+predicts
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>a</mi></msub><mo>,</mo><msub><mi>ι</mi><mi>a</mi></msub><mo>,</mo><msub><mi>u</mi><mi>a</mi></msub></mrow><annotation encoding="application/x-tex">g_a,\iota_a,u_a</annotation></semantics></math>,
+samples
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>R</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat R</annotation></semantics></math>,
+and synthesizes the ARKit sequence.</p>
+<h1 id="experiments">Experiments</h1>
+<h2 id="dataset-and-preprocessing">Dataset and Preprocessing</h2>
+<p>We establish a unified speech-to-ARKit facial animation protocol on
+MEAD. Video frames are converted to 52-dimensional coefficients with a
+fixed extraction pipeline and aligned with 25-fps acoustic features. The
+protocol covers neutral, angry, contempt, disgust, fear, happy, sad, and
+surprise. Query clips and registration references are disjoint at
+speaker and utterance levels. The split contains 12,536 training
+queries, 1,367 development queries, and 537 identity-independent test
+queries. Each speaker has independent neutral audio-motion pairs for
+extracting the reference condition and static offset. Valid-frame masks
+are preserved. Normalization statistics, channel scales, embedding
+reduction, and model selection are estimated on the training split only.
+Each test input is generated with eight fixed random seeds and all
+samples are aggregated without selecting by target error.</p>
+<h2 id="baselines-and-implementation">Baselines and Implementation</h2>
+<p>Comparisons use the same speech features, frame rate, valid-frame
+masks, and speaker splits. VOCA, FaceFormer, and EmoTalk outputs are
+converted to 52-dimensional ARKit coefficients. FaceDiffuser uses the
+same channel order, audio preprocessing, and query split. Vertex-based
+outputs are mapped to a common mesh with a fixed ARKit-to-mesh rig.
+ARFTalk uses a 128-dimensional reference condition, a 64-dimensional
+global affective condition, and a 64-dimensional native-rate acoustic
+condition. Mouth calibration is estimated on the training split and
+frozen for development and test evaluation.</p>
+<h2 id="evaluation-metrics">Evaluation Metrics</h2>
+<p>In coefficient space, we report mean blendshape error (MBE) over all
+observed channels and lip blendshape error (LBE) over a fixed 12-channel
+lip mask. In mesh space, coefficients are mapped with a fixed neutral
+mesh and blendshape deltas:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>=</mo><msub><mi>V</mi><mn>0</mn></msub><mo>+</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mn>52</mn></munderover><msub><mi>Y</mi><mrow><mi>t</mi><mo>,</mo><mi>j</mi></mrow></msub><mi mathvariant="normal">Δ</mi><msub><mi>V</mi><mi>j</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+V_t=V_0+\sum_{j=1}^{52}Y_{t,j}\Delta V_j.
+\end{equation}</annotation></semantics></math> Lip vertex error (LVE) is
+computed on lip vertices, and expression vertex error (EVE) on non-lip
+expression regions. Facial distribution discrepancy (FDD) compares
+temporal regional displacement-energy distributions. Emotion recognition
+uses a linear readout fitted on the training split and reports macro-F1
+over eight emotions. t-SNE visualizes audio and generated-motion
+affective representations after training-only standardization and
+PCA.</p>
+<h2 id="main-results-and-ablations">Main Results and Ablations</h2>
+<p>Table <a href="#tab:main" data-reference-type="ref"
+data-reference="tab:main">1</a> reports LVE, EVE, and FDD in mesh space;
+Table <a href="#tab:coef" data-reference-type="ref"
+data-reference="tab:coef">2</a> reports MBE and LBE in coefficient
+space. Table <a href="#tab:ablation" data-reference-type="ref"
+data-reference="tab:ablation">3</a> evaluates removal of residual
+factorization, mouth protection and calibration, and the motion-teacher
+to audio-student path. Each variant uses the same data split, training
+budget, random seeds, and inference settings. We additionally analyze
+regional brow and eye activity, temporal standard deviation, velocity
+statistics, and multi-sample distribution distance.</p>
+<div id="tab:main">
+<table>
+<caption>Mesh-space comparison. Values are placeholders until final
+evaluation.</caption>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th
+style="text-align: center;">LVE<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th
+style="text-align: center;">EVE<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th
+style="text-align: center;">FDD<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">VOCA</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">FaceFormer</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">EmoTalk</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">FaceDiffuser</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">ARFTalk</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>TESTLINE</p>
+<div id="tab:coef">
+<table>
+<caption>Coefficient-space comparison. Values are placeholders until
+final evaluation.</caption>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th
+style="text-align: center;">MBE<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th
+style="text-align: center;">LBE<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">EmoTalk</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">FaceDiffuser</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">ARFTalk</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tab:ablation">
+<table>
+<caption>Ablation study. Values are placeholders until final
+evaluation.</caption>
+<thead>
+<tr>
+<th style="text-align: left;">Variant</th>
+<th
+style="text-align: center;">MBE<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th
+style="text-align: center;">LBE<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th
+style="text-align: center;">EVE<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↓</mo><annotation encoding="application/x-tex">\downarrow</annotation></semantics></math></th>
+<th
+style="text-align: center;">Macro-F1<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↑</mo><annotation encoding="application/x-tex">\uparrow</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Full</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">w/o residual factorization</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">w/o mouth protection</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">w/o emotion teacher</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;">bottomrule</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="thebibliography">
+<p><span>00</span> D. Cudeiro et al., "Capture, Learning, and Synthesis
+of 3D Speaking Styles," in <em>CVPR</em>, 2019. A. Richard et al.,
+"MeshTalk: 3D Face Animation from Speech Using Cross-Modality
+Disentanglement," in <em>ICCV</em>, 2021. Y. Fan et al., "FaceFormer:
+Speech-Driven 3D Facial Animation With Transformers," in <em>CVPR</em>,
+2022. Z. Peng et al., "SelfTalk: A Self-Supervised Comprehensive
+Framework for Speech-Driven 3D Facial Animation," in <em>ACM
+Multimedia</em>, 2023. K. I. Haque and Z. Yumak, "FaceXHuBERT: Text-less
+Speech-driven Expressive 3D Facial Animation," in <em>MIG</em>, 2023. J.
+Xing et al., "CodeTalker: Speech-Driven 3D Facial Animation with
+Discrete Motion Prior," in <em>CVPR</em>, 2023. Z. Xu et al., "KMTalk:
+Speech-Driven 3D Facial Animation with Key Motion Embedding," in
+<em>ECCV Workshops</em>, 2024. S. Stan et al., "FaceDiffuser:
+Speech-Driven 3D Facial Animation Synthesis Using Diffusion," in
+<em>MIG</em>, 2023. Z. Ma et al., "DiffSpeaker: Speech-Driven 3D Facial
+Animation with Diffusion Transformer," in <em>IJCB</em>, 2025. Y. Lin et
+al., "GLDiTalker: Speech-Driven 3D Facial Animation with Graph Latent
+Diffusion Transformer," in <em>IJCAI</em>, 2025. B. Thambiraja et al.,
+"Imitator: Personalized Speech-driven 3D Facial Animation," in
+<em>ICCV</em>, 2023. Y. Ma et al., "StyleTalk: One-Shot Talking Head
+Generation with Controllable Speaking Styles," in <em>AAAI</em>, 2023.
+W. Song et al., "TalkingStyle: Personalized Speech-Driven 3D Facial
+Animation With Style Preservation," <em>IEEE TVCG</em>, 2025. Z. Sun et
+al., "DiffPoseTalk: Speech-Driven Stylistic 3D Facial Animation and Head
+Pose Generation via Diffusion Models," in <em>ACM Multimedia</em>, 2024.
+Z. Peng et al., "EmoTalk: Speech-Driven Emotional Disentanglement for 3D
+Face Animation," in <em>ICCV</em>, 2023. R. Daněček et al., "Emotional
+Speech-Driven Animation with Content-Emotion Disentanglement," in
+<em>SIGGRAPH Asia</em>, 2023. C. Liu et al., "MEDTalk: Multimodal
+Controlled 3D Facial Animation with Dynamic Emotions by Disentangled
+Embedding," in <em>ACM Multimedia</em>, 2025. K. Shen et al., "DEITalk:
+Speech-Driven 3D Facial Animation with Dynamic Emotional Intensity
+Modeling," in <em>ACM Multimedia</em>, 2024. J. Kim et al., "DEEPTalk:
+Dynamic Emotion Embedding for Probabilistic Speech-Driven 3D Face
+Animation," in <em>AAAI</em>, 2025. X. Yang et al., "DESTalker:
+Disentangling Emotion and Style for Expressive 3D Facial Animation via
+Residual Generation," <em>Computer Animation and Virtual Worlds</em>,
+2026. C. Ding et al., "SubtleTalk: Generating Controllable
+Weakly-correlated Facial Dynamics for 3D Talking Heads via Residual Flow
+Matching," in <em>ACM Multimedia</em>, 2026.</p>
+</div>
+</body>
+</html>
+
+

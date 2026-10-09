@@ -1,0 +1,12 @@
+{
+  "schema": "pdf_read_preflight/1",
+  "verdict": "PASS",
+  "file": "D:\\科研\\小论文\\Templates\\Checking list.pdf",
+  "sha256": "914ee810cb101d4c9e543763798abe4bcf9b1b0d490db8593d3c0afaee212e56",
+  "declared_page_count": 1,
+  "enumerated_page_count": 1,
+  "reader_page_count": 1,
+  "warnings": [],
+  "generated_at": "2026-09-22T03:31:00.783774+00:00",
+  "tool": "pdf_read_preflight/1.0.0"
+}
