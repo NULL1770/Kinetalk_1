@@ -1,4 +1,15 @@
-# Current: Phase58 complete/rejected; original overview revision in progress (2026-10-09)
+# Current: Phase60 rejected; Phase61 complete, collect corrected fit (2026-10-09)
+
+## Recovery update: supersedes all older running / archive-pending entries below
+
+Git local and independently verified GitHub HEAD: e0541c9a8214a1d5c5d8cdd2ab094819f37bd5b3.
+Official model remains Phase53 style-only; no candidate promoted and no active training.
+Phase59 worker6199 complete, all198 source files archived and SHA verified;840 summary fields replay exactly. V2 endpoints were forced after optimization, so do not adopt it.
+Phase60 retry7161 complete/full1367, all26 originals/115013342bytes locally SHA verified. MBE .76248956, LBE .36758557, lip3.24028534mm, F1 .68222438, jaw range .12651879, corr .47589440, closure F1 .38763712. Tiny geometry gain but closure drops .013384 against Phase53 .40102120: reject. Its reference controls have inconsistent B0; never use them as identity evidence. No Phase60 videos rendered yet.
+Phase61 worker8268 complete at /root/kinetalk_phase61_fixed_endpoints_20261009; candidate_passed=true. V3 fixes every endpoint inside solver bounds and checks deployed objective. ReportSHA701590dbb876765a38a12ca16ce75698edb2f5a1be38315227ca0db4e64341d1. Collect and summarize, never relaunch. A Phase62 integration is not yet implemented/launched.
+Identity plots complete:05_identity_style_curves and eight05b_style_native_<emotion> PNG/PDF/SVG/CSV in paper_reference_20261009/figures. Only original Phase53 single-factor audit; unsmoothed native curves, fixed samples. SourceGT is not donor counterfactual GT. See IDENTITY_STYLE_CURVES.md. Figure package ZIP/manifest need updating.
+Remote free space last53858304bytes. Phase53 style-only original curves.pt removed remotely only after verified local archive; restore before old remote audits. Phase60 curves locally verified and still remote, eligible for verified archival to make room.
+Next: collect61 -> storage check -> consistent calibrated receiver integration with configure(47), BLASthreads2 and SHA bindings -> all-eight renders. If gain stays tiny/closures worsen, reject amplitude-only correction and train a justified receiver change preserving neutralB0/772D/no-student-motion-gradient/native-mask constraints. No new training design was approved or implemented yet. User requests real mouth improvement vs FaceDiffuser plus identity curves; keep honest paper limitations.
 
 ## Latestcontinuation2026-10-09 (supersedes staleheader)
 Originaloverviewcompleted4db9567. Phase59ec58dd3 full3298neutralcandidate passed all8heldraw/clipgates,12local/remote tests;9resultoriginalsSHAverified,fullsourcearchivepending. Read PHASE59_RESULTS.md. Worker6199complete,neverrelaunch. No checkpoint changed;threshold-specific eventpreservation doesnotprove phonemepreservation.
