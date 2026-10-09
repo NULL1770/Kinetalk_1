@@ -249,6 +249,15 @@ class ResponseDecoder(nn.Module):
             nn.init.zeros_(self.residual_gain.weight)
             nn.init.zeros_(self.residual_gain.bias)
 
+        if cfg.response_head == 'affect_adapter':
+            # A zero-start additive branch for affect amplitude.  It receives
+            # only the latent affect state, reference response code, and the
+            # scalar local-energy envelope; B0/content features never enter
+            # this branch.  The exact zero output preserves the parent model
+            # before adaptation and lets us test whether missing expression
+            # amplitude can be learned without rescaling the old residual.
+            self.affect_adapter = AffectAdapter(cfg, self.style_width, self.partitioned)
+
     def forward(self, base, g, u, style, valid, scales, posture_grad_mask=None):
         base = clean(base.detach(), valid)
         h = clean(self.input(base/scales), valid)
@@ -279,7 +288,45 @@ class ResponseDecoder(nn.Module):
         if hasattr(self, 'residual_gain'):
             gain = 1. + .5 * self.residual_gain(clean(condition, valid)).tanh()
             residual = residual * gain
+        if hasattr(self, 'affect_adapter'):
+            residual = residual + self.affect_adapter(g, u, style, valid)
         return clean(base + (residual+offset[:,None])*scales, valid)
+
+
+class AffectAdapter(nn.Module):
+    """Expression-only additive adapter with no content/B0 input.
+
+    The local latent is reduced to an RMS envelope before conditioning, so the
+    adapter can follow affect/prosody energy while avoiding token directions
+    that could carry phonetic content.  Its final layer is zero initialized,
+    making the parent decoder an exact initialization.
+    """
+    def __init__(self, cfg, style_width, partitioned):
+        super().__init__()
+        self.partitioned = partitioned
+        cond = cfg.global_dim + style_width + 1
+        hidden = max(32, cfg.decoder_hidden // 2)
+        self.input = nn.Linear(cond, hidden)
+        self.block = TemporalBlock(hidden, 1)
+        self.output = nn.Linear(hidden, 52)
+        nn.init.zeros_(self.output.weight)
+        nn.init.zeros_(self.output.bias)
+
+    def forward(self, g, u, style, valid):
+        if self.partitioned:
+            # Statistical references partition posture and response.  For the
+            # temporal encoder, the two halves are identical; using the latter
+            # keeps the adapter independent of posture offsets.
+            response = style[..., style.shape[-1] // 2:]
+        else:
+            response = style
+        envelope = clean(u.square().mean(-1, keepdim=True).sqrt(), valid)
+        cond = torch.cat((g[:, None].expand(-1, u.shape[1], -1),
+                          response[:, None].expand(-1, u.shape[1], -1),
+                          envelope), -1)
+        h = clean(F.silu(self.input(cond)), valid)
+        h = self.block(h, valid)
+        return clean(self.output(h), valid)
 
 
 class NativeAffineDecoder(nn.Module):
@@ -336,7 +383,7 @@ class ExpressionResponse(nn.Module):
             raise ValueError('Invalid style modulation')
         if cfg.style_modulation=='factorized' and cfg.reference_encoder!='statistics':
             raise ValueError('Factorized modulation requires statistical references')
-        if cfg.response_head not in ('residual', 'native_affine', 'bounded_residual'):
+        if cfg.response_head not in ('residual', 'native_affine', 'bounded_residual', 'affect_adapter'):
             raise ValueError('Invalid response head')
         if cfg.response_head == 'native_affine' and cfg.reference_encoder != 'statistics':
             raise ValueError('Native affine response requires statistical references')
