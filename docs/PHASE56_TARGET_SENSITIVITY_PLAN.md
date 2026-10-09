@@ -1,0 +1,19 @@
+# Phase56: paired expression target sensitivity
+
+2026-10-09. Pre-change Git75668a9 already pushed. Continue user-authorized optimization; no neural model change in this diagnostic. Read Phase54/55 results first; prior Phase37/39 named-expression state designs already failed and are not being repeated.
+
+Question: how much do approved expression-difference targets depend on small neutral alignment perturbations, and do fixed local dynamics statistics trade temporal detail against sensitivity/coverage? This cannot establish ground-truth reliability without independent annotation/repeated neutral targets.
+
+The safe manifest names both HuBERT and MFCC alignments, but the first checked MFCC strict artifact is absent and its original directory is absent. Count availability on the exact selected2583 TRAIN pairs and disclose it. Do not call a manufactured alternative a second empirical alignment. Existing path-error fields measure aligner agreement, not annotated timing error; boundary/viseme status fields are missing in the inventoried release.
+
+Protocol: same2024 TRAIN-fit,281 internal-speaker,278 internal-sentence approved emotional pairs; exact Phase54 original teacher/event hashes and native observation/channel masks. No external development query inference, audio feature reading, sealed data, fitting or optimizer. Original B0 is loaded read-only for its support and state hash; no B0 predictions or model edits. Subgroups retain every emotion and both existing whole-clip event gates. Safe local event masking always applies, even if the whole-clip gate passes.
+
+Fixed descriptive windows1/5/11 native frames (40/200/440ms sample support), no parameter selection. Require every frame/channel and every25fps interval inside the window; never fill gaps, shrink edge windows, or smooth across discontinuities. Report lost coverage. Center each compared signal on the same observed channel support before dynamic-energy comparison; static posture must not inflate low-pass energy. Local standard deviation describes amplitude; it is not semantic emotion ground truth. Moving-average and residual energies are nonorthogonal, not an additive spectral decomposition.
+
+Stress test: hold query motion fixed and replace the neutral target with its existing immediately preceding/following native frame. Both shifts require shared source/teacher/event support and continuous native intervals. Average squared change across the two shifts; report absolute error and ratios to corresponding unperturbed centered/displacement/local-std energies on exactly that support. This fixed ±40ms perturbation is NOT sampled from measured alignment uncertainty and is NOT a new training target or deployed retiming.
+
+Report clip-equal supported-channel statistics per region, original fold and emotion; fixed disjoint path-p95 bins<40/40–60/≥60ms and event-agreement bins<.5/.5–.75/≥.75, plus Spearman correlations with proper average tie ranks. No class dropping or selection by held results. Null for missing/zero-energy normalized statistics; include valid counts.
+
+Meaningful tests: independent brute-force window moments, event/channel gaps and irregular native clocks, analytic shifted-linear teacher error, zero sensitivity for constant neutral, static-bias invariance, fast versus slow attenuation, no-support behavior and rank ties. Fixed24clip smoke then full2583 audit. Fresh output,32MiB artifact cap, bounded runtime. Preserve source, manifest, pair/event and report hashes, compressed per-clip statistics. Do not relaunch completed workers.
+
+Decision: if targets are sensitive, avoid treating every full residual derivative as precise emotion supervision. If smoothed statistics look more stable, that alone does not justify a new temporal module or smoothing loss: coverage and audio predictability must also be demonstrated. User approval is not a new barrier; scientific evidence is needed to choose a useful change.
