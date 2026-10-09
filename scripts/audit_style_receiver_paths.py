@@ -19,8 +19,15 @@ def decode_paths(model,base,g,u,style,valid,*,bias=True,modulation=True):
     if not modulation:response=torch.zeros_like(response)
     condition=torch.cat((g[:,None].expand(-1,u.shape[1],-1),u,response[:,None].expand(-1,u.shape[1],-1)),-1)
     for block,mod in zip(d.blocks,d.modulations):
-        gain,shift=mod(condition).chunk(2,-1)
-        h=block(clean(h*(1+.1*gain.tanh())+.1*shift,valid),valid)
+        if d.factorized:
+            affect=F.linear(condition[...,:d.affect_width],mod.weight[:,:d.affect_width],mod.bias)
+            reference=F.linear(condition[...,d.affect_width:],mod.weight[:,d.affect_width:])
+            gain,shift=affect.chunk(2,-1);sg,ss=reference.chunk(2,-1)
+            h=h*(1+.1*gain.tanh())+.1*shift
+            h=block(clean(h*(1+.1*sg.tanh())+.1*ss.tanh(),valid),valid)
+        else:
+            gain,shift=mod(condition).chunk(2,-1)
+            h=block(clean(h*(1+.1*gain.tanh())+.1*shift,valid),valid)
     offset=d.bias(posture)[:,None] if bias else 0.
     return clean(base+(d.output(h)+offset)*model.scales,valid)
 

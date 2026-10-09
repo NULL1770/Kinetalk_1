@@ -30,6 +30,7 @@ class ResponseConfig:
     # A deterministic decoder transform; KL remains over the original Gaussians.
     center_local: bool = False
     reference_encoder: str = 'temporal'
+    style_modulation: str = 'joint'
 
 
 def clean(x, mask):
@@ -226,6 +227,8 @@ class ResponseDecoder(nn.Module):
         self.input = nn.Linear(52, cfg.decoder_hidden)
         self.blocks = nn.ModuleList(TemporalBlock(cfg.decoder_hidden, 2**i) for i in range(4))
         self.partitioned = cfg.reference_encoder == 'statistics'
+        self.factorized = cfg.style_modulation == 'factorized'
+        self.affect_width = cfg.global_dim+cfg.local_dim
         self.style_width = cfg.style_dim//2 if self.partitioned else cfg.style_dim
         cond_dim = cfg.global_dim+cfg.local_dim+self.style_width
         self.modulations = nn.ModuleList(nn.Linear(cond_dim, cfg.decoder_hidden*2) for _ in range(4))
@@ -236,17 +239,33 @@ class ResponseDecoder(nn.Module):
         nn.init.zeros_(self.bias.weight)
         nn.init.zeros_(self.bias.bias)
 
-    def forward(self, base, g, u, style, valid, scales):
+    def forward(self, base, g, u, style, valid, scales, posture_grad_mask=None):
         base = clean(base.detach(), valid)
         h = clean(self.input(base/scales), valid)
         posture,response=style.chunk(2,-1) if self.partitioned else (style,style)
         condition = torch.cat((g[:,None].expand(-1,len(u[0]),-1),u,
                                response[:,None].expand(-1,len(u[0]),-1)), -1)
         for block, mod in zip(self.blocks, self.modulations):
-            gain, shift = mod(condition).chunk(2,-1)
-            h = clean(h*(1+.1*gain.tanh())+.1*shift, valid)
+            if self.factorized:
+                # Reference magnitude cannot saturate the affect nonlinearity.
+                affect = F.linear(condition[...,:self.affect_width],mod.weight[:,:self.affect_width],mod.bias)
+                reference = F.linear(condition[...,self.affect_width:],mod.weight[:,self.affect_width:])
+                gain,shift=affect.chunk(2,-1)
+                style_gain,style_shift=reference.chunk(2,-1)
+                h=h*(1+.1*gain.tanh())+.1*shift
+                h=clean(h*(1+.1*style_gain.tanh())+.1*style_shift.tanh(),valid)
+            else:
+                gain, shift = mod(condition).chunk(2,-1)
+                h = clean(h*(1+.1*gain.tanh())+.1*shift, valid)
             h = block(h, valid)
-        return clean(base + (self.output(h)+self.bias(posture)[:,None])*scales, valid)
+        offset=self.bias(posture)
+        if posture_grad_mask is not None:
+            if posture_grad_mask.dtype!=torch.bool or posture_grad_mask.shape!=(base.shape[0],):
+                raise ValueError('Posture gradient mask must be bool[B]')
+            # The reference offset learns neutral tendencies, not the actor's
+            # average emotion. Forward values are identical for every label.
+            offset=torch.where(posture_grad_mask[:,None],offset,offset.detach())
+        return clean(base + (self.output(h)+offset[:,None])*scales, valid)
 
 
 class ExpressionResponse(nn.Module):
@@ -256,6 +275,10 @@ class ExpressionResponse(nn.Module):
             raise ValueError('Invalid response architecture')
         if cfg.reference_encoder not in ('temporal','statistics') or cfg.style_dim%2:
             raise ValueError('Invalid reference encoder configuration')
+        if cfg.style_modulation not in ('joint','factorized'):
+            raise ValueError('Invalid style modulation')
+        if cfg.style_modulation=='factorized' and cfg.reference_encoder!='statistics':
+            raise ValueError('Factorized modulation requires statistical references')
         if cfg.prior_variance not in ('learned', 'unit'):
             raise ValueError('prior_variance must be learned or unit')
         if cfg.prior_variance=='unit' and not cfg.logvar_min<=0<=cfg.logvar_max:
@@ -313,9 +336,9 @@ class ExpressionResponse(nn.Module):
             u = clean(u-masked_pool(u,valid)[:,None],valid)
         return g,u
 
-    def decode(self, base, distribution, style, valid, sample=False, generator=None):
+    def decode(self, base, distribution, style, valid, sample=False, generator=None,posture_grad_mask=None):
         g,u = self.conditions(distribution,valid,sample,generator)
-        return self.decoder(base,g,u,style,valid,self.scales)
+        return self.decoder(base,g,u,style,valid,self.scales,posture_grad_mask)
 
     def predict(self, audio, base, valid, refs, *, sample=False, generator=None):
         """Deployment API deliberately has no query-motion/labels input."""

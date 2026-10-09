@@ -1,6 +1,7 @@
 """Diverse independent neutral supports; frozen B0 and audio expression prior.
 
 Original temporal style control versus a compact posture/response descriptor.
+Optional factorized bounded style conditioning and neutral offset supervision.
 No query motion enters deployment; no reconstruction gradient enters the prior.
 """
 from __future__ import annotations
@@ -43,10 +44,12 @@ def sampled_references(q,pairs,device):
     return {k:batch[k].reshape(len(pairs),2,*batch[k].shape[1:]) for k in ('motion','b0','valid','channel_mask')}
 
 
-def candidate(parent,mode):
-    if mode=='temporal':return parent
+def candidate(parent,mode,modulation='joint'):
+    if mode=='temporal':
+        if modulation!='joint':raise ValueError('Temporal mode requires legacy modulation')
+        return parent
     if mode!='statistics':raise ValueError('Unknown style mode')
-    cfg=replace(parent.cfg,reference_encoder='statistics')
+    cfg=replace(parent.cfg,reference_encoder='statistics',style_modulation=modulation)
     model=ExpressionResponse(cfg,parent.feature_mean,parent.feature_std,parent.scales).to(parent.scales.device)
     old=parent.state_dict();state=model.state_dict()
     # Keep the audio/posterior and common B0 receiver exactly. New style paths
@@ -107,6 +110,14 @@ def mask_reference_gradients(model,scope):
         if mod.weight.grad is not None:mod.weight.grad[:,:width]=0.
 
 
+def mask_posture_gradients(model,b,neutral_id):
+    if neutral_id is not None and not b['emotion_id'].eq(neutral_id).any():
+        # Skip Adam momentum and weight decay as well as reconstruction on
+        # batches with no neutral query. Zero gradients alone do not do this.
+        for module in (model.style.posture,model.decoder.bias):
+            for p in module.parameters():p.grad=None
+
+
 def verify_protected_moments(model,opt):
     width=model.cfg.global_dim+model.cfg.local_dim
     for mod in model.decoder.modulations:
@@ -116,10 +127,11 @@ def verify_protected_moments(model,opt):
                 raise ValueError('Frozen modulation columns have optimizer momentum')
 
 
-def objective(model,b,refs):
+def objective(model,b,refs,neutral_id=None):
     with torch.no_grad():p=model.audio_prior(b['audio_features'],b['valid'])
     s=model.encode_style(refs)['code']
-    y=model.decode(b['b0'],p,s,b['valid'])
+    mask=b['emotion_id'].eq(neutral_id) if neutral_id is not None else None
+    y=model.decode(b['b0'],p,s,b['valid'],posture_grad_mask=mask)
     return motion_objective(y,b['motion'],b['valid'],b['channel_mask'],b['times'],model.scales)
 
 
@@ -148,7 +160,8 @@ def train(a):
     cache_base(data,base,device,{'train':canonical,'validation':[]})
     parent,ck=restore_model(binding,device);neutral=state_digest(base.stage1)
     assert neutral==ck['neutral_digest']
-    model=candidate(parent,a.mode);params,opt=reference_optimizer(model,a.scope,a.lr)
+    model=candidate(parent,a.mode,a.modulation);params,opt=reference_optimizer(model,a.scope,a.lr)
+    neutral_id=data['config']['data']['emotion_classes'].index('neutral') if a.posture_supervision=='neutral_only' else None
     frozen=frozen_digests(model)
     protected=protected_receiver_digest(model) if a.scope=='style_only' else None
     budget=inherited_budget(ck)
@@ -167,6 +180,7 @@ def train(a):
         reconstruction_passes_per_update=1,protected_receiver_digest=protected,
         modulation_weight_decay=0. if a.scope=='style_only' else .01,
         loss='original position + .5 adjacent displacement; p_mean; no new loss',
+        posture_supervision=a.posture_supervision,style_modulation=a.modulation,
         oracle_limit='Inherited motion posterior not recalibrated to changed style; not a selection metric',
         test_loaded=False,external_validation_used=False,**budget)
     start,step,history=0,0,[]
@@ -196,9 +210,10 @@ def train(a):
             b=q.batch(sub,device)
             pairs=fixed_pairs if a.smoke else choose_supports(q,pools,sub.tolist(),ref_rng)
             refs=sampled_references(q,pairs,device)
-            opt.zero_grad(set_to_none=True);loss,parts=objective(model,b,refs)
+            opt.zero_grad(set_to_none=True);loss,parts=objective(model,b,refs,neutral_id)
             if not torch.isfinite(loss):raise FloatingPointError('Nonfinite reference objective')
             loss.backward();mask_reference_gradients(model,a.scope)
+            mask_posture_gradients(model,b,neutral_id)
             norm=torch.nn.utils.clip_grad_norm_(params,1.,error_if_nonfinite=True)
             assert all(p.grad is None for n,p in model.named_parameters() if not n.startswith(('style.','decoder.')))
             assert all(p.grad is None for p in base.stage1.parameters())
@@ -253,6 +268,8 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--binding',required=True);p.add_argument('--output',required=True)
     p.add_argument('--mode',choices=('temporal','statistics'),required=True);p.add_argument('--device',default='cuda')
     p.add_argument('--scope',choices=('joint','style_only'),default='joint')
+    p.add_argument('--modulation',choices=('joint','factorized'),default='joint')
+    p.add_argument('--posture-supervision',choices=('all','neutral_only'),default='all')
     p.add_argument('--seed',type=int,default=47);p.add_argument('--epochs',type=int,default=8)
     p.add_argument('--batch-size',type=int,default=16);p.add_argument('--lr',type=float,default=1e-4)
     p.add_argument('--smoke',action='store_true');p.add_argument('--smoke-steps',type=int,default=120);p.add_argument('--resume',action='store_true')
