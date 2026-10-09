@@ -167,41 +167,12 @@ def montage(root):
 
 
 def teaser(root):
-    from scipy.io import wavfile
-    out=root/'figures';repo=Path(__file__).resolve().parents[1]
-    fig,ax=plt.subplots(figsize=(12.8,8));ax.set(xlim=(0,13),ylim=(0,8));ax.axis('off')
-    ax.text(.2,7.7,'From expressive speech to facial motion',fontsize=21,fontweight='bold',color=INK)
-    ax.text(.2,7.26,'Audio expression meets neutral articulation and reference motion style',fontsize=11.5,color=SUB)
-    ax.text(.2,6.77,'AUDIO INPUT',fontsize=9,fontweight='bold',color=SUB)
-    ax.text(8.1,6.77,'GENERATED MOTION',fontsize=9,fontweight='bold',color=SUB)
-    box(ax,4.55,2.1,2.3,4.15,'KineTalk','neutral B0\n\naudio g + u\n\nreference style',TEAL,'#edf7f4',16)
-    data=json.loads((root/'data/metadata.json').read_text())
-    emotions=['happy','angry','sad','surprise']
-    for i,e in enumerate(emotions):
-        y=5.8-i*1.18;color=COLORS[data['classes'].index(e)]
-        cid=data['display'][e]['clip_id']
-        audio=repo/f'final_experiment/data/mead_media_v1/wav/{cid}.wav'
-        if e=='happy':audio=repo/f'final_experiment/evaluation/render_inputs/{cid}.wav'
-        sr,w=wavfile.read(audio);w=w.astype(float)
-        if w.ndim>1:w=w.mean(1)
-        blocks=np.array_split(w,180);amplitude=np.array([np.sqrt((b*b).mean()) for b in blocks]);amplitude/=max(amplitude.max(),1e-9)
-        xx=np.linspace(.45,3.2,len(amplitude));ax.vlines(xx,y-amplitude*.25,y+amplitude*.25,color=color,lw=1)
-        ax.text(.45,y-.48,e.capitalize(),fontsize=14,color=color,fontweight='bold')
-        arrow(ax,[(3.4,y),(4.55,y)],color)
-        arrow(ax,[(6.85,y),(7.65,y)],color)
-        im=Image.open(root/'stills_transparent'/f'{e}_peak_gt_jaw_m5.png')
-        # The source stills are square.  Keep equal data units here so the
-        # teaser never stretches the rendered face horizontally.
-        ax.imshow(im,extent=(8.1,9.18,y-.54,y+.54),aspect='equal',zorder=2)
-        ax.text(10.25,y,e.capitalize(),fontsize=12,color=color,va='center')
-    ax.plot([.2,12.8],[1.33,1.33],color='#d9dfe6')
-    ax.text(.2,.88,'Reference-driven style',fontsize=13,fontweight='bold',color=GOLD)
-    ax.text(.2,.4,'Same source audio and emotion conditions;\nchange only the neutral reference.',fontsize=9,color=SUB,linespacing=1.5)
-    for j,mode in enumerate((1,2,3)):
-        x=7.5+j*1.65
-        ax.imshow(Image.open(root/'stills_transparent'/f'style_happy_m{mode}.png'),extent=(x,x+1.05,.2,1.25),aspect='equal',zorder=2)
-        ax.text(x+.625,.04,['M025 AB','M037 AB','M039 AB'][j],fontsize=8,ha='center',color=SUB)
-    save(fig,out,'04_overview_teaser')
+    # The original single-query composition supersedes the multi-emotion v1.
+    if __package__:
+        from .build_kinetalk_overview import build_overview
+    else:
+        from build_kinetalk_overview import build_overview
+    return build_overview(root)
 
 
 if __name__=='__main__':

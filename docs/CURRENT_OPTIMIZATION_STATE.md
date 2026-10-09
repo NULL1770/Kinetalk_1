@@ -1,14 +1,15 @@
-# Current: paper references complete; Phase58 full fit running (2026-10-09)
+# Current: Phase58 complete/rejected; original overview revision in progress (2026-10-09)
 
-Read PHASE58_NEUTRAL_AMPLITUDE_PLAN.md. Prechange eea349a pushed. New same-frame
-monotone neutral-amplitude candidate (nine fixed knots per27mouth channels,
-identity endpoints/tails); only native-neutral/approved-pair TRAIN targets.
-11 local + 11 remote tests and 24-clip smoke pass technical checks. Code12caf7e pushed. Worker1604 at /root/kinetalk_phase58_neutral_amplitude_20261009 is fitting/scoring all3298selected neutral targets. Smoke quality gate is false (tiny fit), not a main-model promotion.
-No main receiver/student/B0 changes. Joint held position/range/closure/timing
-gates precede any integration. SSH restored; GPU idle. Six completed Phase52/53
-last.pt files65,711,262bytes SHA archived locally then removed remotely; finals
-unchanged, rootfree118,325,248bytes. Archive receipt under
-final_experiment/artifact_archive/phase58_completed_last_20261009.
+Read PHASE58_RESULTS.md. Worker1604 COMPLETE in202.44sec; do not relaunch.
+11local/11remote tests +24clip smoke +3298target fullfit complete. HeldmouthMSE
+improves5.596–11.852%, rangeerror13.027–17.325%; closuregatefails3of4heldsubsets
+(raw+clip),so no integration/newgenerator gain. Phase53 remains current.
+212originalfiles9,816,755bytesSHAverified/198sources;840summaryfieldsreplayed.
+Report12b0c4587b496e578c5cd3f3c92fbe01ed7ab5130b7c4064446d84e841021f4f.
+No training active or queued. Read OVERVIEW_FIGURE_V2_DESIGN.md for user's
+correction: original composition around one utterance/neutral scaffold/audio
+expression/reference swap; previous EmoTalk-like multiemotion teaser superseded.
+Latest pushed prechange8716dbe; unrelatedthird_party/voca_reference untouched.
 
 Four requested reference types are complete: seven figures in PNG/PDF/SVG and90transparent+90white1024-square stills under final_experiment/evaluation/paper_reference_20261009. Read PAPER_REFERENCE_FIGURES_20261009.md for captions/provenance/limits. Data exports SHAverified; one joint motion t-SNE with all1367clips/domain, no seed search. Seven-method8emotion+fixed4time panels include adapted FaceDiffuser fixedseed42. GT-native timestamps shared per method; no word boundaries invented. Reference-style/architecture/teaser matchPhase53. Finalteaser squareproportions and final7method panels visuallychecked. Figures show actual mismatches; no new generator gain. Next optimization design pending; don't relaunchPhase54–57.
 

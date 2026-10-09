@@ -21,12 +21,15 @@ Each figure has PNG (300 dpi), editable SVG, and PDF versions in `figures/`.
 |2 supplement|02b_native_time_sequence|Four fixed native timestamps of the happy utterance|
 |Style|02c_reference_style|Fixed query audio/expression; three speakers' references and own A/B|
 |3|03_model_architecture|Actual Phase53 architecture and training/inference boundaries|
-|4|04_overview_teaser|Expressive-audio examples and reference-style overview|
+|4|04_overview_kinetalk_v2|Original one-utterance neutral-scaffold + reference intervention overview|
 
 `stills_transparent/` and `stills_white/` each contain 90 separate 1024×1024 PNGs.
 These are intended for the user's PowerPoint assembly. Filenames map to source
 clip, method and timestamp in `stills_manifest.json`. The diagram SVGs are the
-editable drawing references; no PowerPoint deck was requested.
+editable drawing references; no PowerPoint deck was requested. The earlier
+`04_overview_teaser` is superseded; use `04_overview_kinetalk_v2` for the paper.
+Its composition and evidence limits are recorded in
+`docs/OVERVIEW_FIGURE_V2_DESIGN.md`.
 
 For one-file transfer, `final_experiment/evaluation/paper_reference_figures_20261009.zip`
 contains the figures, all 180 stills, manifests, projection coordinates and the
