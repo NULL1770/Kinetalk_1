@@ -1,3 +1,11 @@
+# Current: Phase51 CLOSED; Phase52 scope intervention next (2026-10-09)
+
+Read PHASE51_RESULTS.md and PHASE52_STYLE_SCOPE_PLAN.md. Both complete1367 evals +2026matched style audits;24videos and21method/17candidate tables locally verified. No relaunch. Temporal F1 .734619 / MBE .859197; statistics .712325 / .809449 but jaw range .126797 and corr .468724. Style stability improves, geometry/dynamics mixed; no default promoted. Hypothesis for Phase52: freeze shared receiver and learn only reference-specific parameters, same statistical initialization/supports/loss. Parameter freezing does not guarantee correct output timing.
+
+All original evaluation36files and style45files SHAverified under diagnostics/phase51_evaluation_20261009. CollectorPID138996 complete24videos; all fixed-middle frames reviewed. Source d9a06dc push succeeded after one TLS timeout. root437821440/data93532160 free. No model edits since Phase51 yet.
+
+Historical notes below superseded where conflicting.
+
 # Current recovery: Phase51 complete; full evaluation ACTIVE (2026-10-09)
 
 Both eight-epoch runs completed: temporal SHA b8bde2389ac9dd47bc8b3aa30a34009454dc1ef62f09a9f0ea17a6849af6d03a; statistics SHA a4d735a72f599cb1b2115d8d9ea1340abc02fa69be14f58500c620a8f30bf6ec. All original preflight/formal artifacts locally SHAverified. Do not relaunch training.
