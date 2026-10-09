@@ -1,4 +1,16 @@
-# Current: Phase60 rejected; Phase61 complete, collect corrected fit (2026-10-09)
+# Current: Phase62 rejected; Phase63 native-affine training active (2026-10-09)
+
+## Latest: read this first
+
+LatestreadPhase63正式epoch4/8,step2147/5456,~.103s/update。已有3轮history，内部身份loss并非单调改善，尚无外部生成指标。独立有限2小时本地collector PID51592已启动，锁在diagnostics/phase63_native_affine_20261009/collector.lock；状态local_queue_state.json，日志.codex-finalizer/phase63_collect*.log。训练/评估完成后自动SHA收集、重放336指标、与原Phase53 B0曲线逐字节比较、导出基线/消融/干预/八情感表、生成本轮身份曲线并渲染8主对比+8风格视频。主对比加入已SHA核验的adaptedFaceDiffuser固定seed42，同GT/clock/support。不能重复启动collector或remote worker。人工结果审阅与模型推广尚未执行。
+
+Phase61 worker8268已收齐212原始文件/9827676bytes，源码与60组/840字段重放通过；禁止重启。Phase62 worker12206已完成完整1367评估并收齐19原始文件/115710802bytes，293源码SHA及336字段重放通过，8视频完成/全帧解码。V3结果MBE.762805/LBE.368069/Lip3.243318/F1.678671/jawrange.126920/corr.476134/closure.388260；闭口下降.012761，否决。读PHASE61_RESULTS/PHASE62_RESULTS。正式模型仍Phase53。
+
+Phase63方案先于代码记录于PHASE63_NATIVE_AFFINE_PLAN。旧decoder由直接B0正全局gain+仅g/u/reference_response输入的表达TCN替代；prior/q/style/语义头/posture bias/B0全部冻结，原位置+.5相邻位移loss不变。8epoch/5456update，seed47，TRAIN10903+620独立neutral支持。实现15356f93fdf293284502596dfc639952d6f8296f已通过GitHub Git-data双次GET精确确认。61本地/61远端测试及120步GPUsmoke通过（lossratio.574757，冻结/NaN检查通过）。freshroot /root/kinetalk_phase63_native_affine_20261009 worker12910，正在正式训练流程；禁止重复dispatch。训练后自动full1367+2026style审计，不默认推广模型。实时状态读seed47/state.json，不把smoke loss当正式指标。
+
+身份曲线36文件已打包为final_experiment/evaluation/identity_style_curves_20261009.zip；paper_reference_manifest_v2.json含240原始及新增项，原zip/manifest保留不覆盖。八情感05b曲线源于原Phase53正确单因素审计，不是Phase62或尚未完成Phase63。未平滑/重选片段；读IDENTITY_STYLE_CURVES.md。
+
+Storage:为本轮安全移除远端Phase60以及Phase53joint、Phase51temporal/statistics的已完成curves.pt冗余副本；本地原件全部SHA验证并保留，权重/数据/报告未删除。恢复路径见.codex-finalizer/phase62_archive_receipt.json、phase63_curve_archive_receipt.json以及旧phase60_curve_archive_receipt.json。任何旧远端重放需先恢复对应曲线。最后free269176832bytes（Phase63smoke结束）。不触碰third_party/voca_reference。
 
 ## Recovery update: supersedes all older running / archive-pending entries below
 

@@ -20,6 +20,7 @@ Each figure has PNG (300 dpi), editable SVG, and PDF versions in `figures/`.
 |2|02a_emotion_comparison|Eight emotions, seven rows including GT and adapted baselines|
 |2 supplement|02b_native_time_sequence|Four fixed native timestamps of the happy utterance|
 |Style|02c_reference_style|Fixed query audio/expression; three speakers' references and own A/B|
+|Style curves|05_identity_style_curves / 05b_style_native_<emotion>|Categorical transfer statistics and eight unsmoothed native time-curve panels; see IDENTITY_STYLE_CURVES.md|
 |3|03_model_architecture|Actual Phase53 architecture and training/inference boundaries|
 |4|04_overview_kinetalk_v2|Original one-utterance neutral-scaffold + reference intervention overview|
 
@@ -35,6 +36,11 @@ For one-file transfer, `final_experiment/evaluation/paper_reference_figures_2026
 contains the figures, all 180 stills, manifests, projection coordinates and the
 render receipt (about 121 MB). `paper_reference_manifest.json` records SHA-256
 for every packaged figure/still.
+
+The original zip/manifest remain preserved. `paper_reference_manifest_v2.json`
+adds all 36 identity/style plot and CSV files (240 items total).
+`final_experiment/evaluation/identity_style_curves_20261009.zip` separately
+contains the identity curves, editable vectors, source receipts and caption limits.
 
 Method indices in filenames: m0 GT; m1 neutral B0; m2 VOCA-core; m3 EmoTalk-core;
 m4 FaceFormer; m5 Phase53 joint; m6 FaceDiffuser. Style figure indices have their

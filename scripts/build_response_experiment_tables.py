@@ -45,6 +45,8 @@ def verified_report(root):
         protocol=dict(protocol,args=dict(protocol['args'],reference_training='diverse_neutral_two',matching='reference_'+scope))
         protocol.setdefault('trainable_module','style_encoder+full_decoder')
         protocol.setdefault('reconstruction_passes_per_update',1)
+    if protocol.get('schema')=='native_affine_receiver_train_v1':
+        protocol=dict(protocol,args=dict(protocol['args'],reference_training='diverse_neutral_two',matching='native_affine_response'))
     return evaluation,report,read(root/'binding.json'),protocol
 
 def canonical(metrics):
@@ -119,6 +121,7 @@ def build(baseline_root,responses,out,inventory=None):
             row.update({f'F1_{i+1}':p['macro_f1'] for i,p in enumerate(d['probes'])});policy_rows[policy].append(row)
         native=policy_rows['clip_all'][-1]
         ablation.append({'method':name,'prior_variance':protocol['config'].get('prior_variance','learned'),
+            'response_head':protocol['config'].get('response_head','residual'),
             'center_local':protocol['config'].get('center_local',False),
             'style_modulation':protocol['config'].get('style_modulation','joint'),
             'posture_supervision':protocol.get('posture_supervision','all'),
@@ -153,7 +156,7 @@ def build(baseline_root,responses,out,inventory=None):
             table=emit(out,name+'_'+policy,columns,rows)
             if policy=='clip_all':sections+=['## '+name,'',table,'']
     for name,columns,rows in [
-        ('table4_trained_ablation',['method','prior_variance','center_local','reference_training','matching','style_modulation','posture_supervision','fit_clips','parent_epochs','parent_updates','updates','analytic_fit_passes','analytic_fit_clips','fitted_coefficients','inherited_analytic_fit_passes','inherited_analytic_fit_clips','trainable_module','reconstruction_passes_per_update','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
+        ('table4_trained_ablation',['method','response_head','prior_variance','center_local','reference_training','matching','style_modulation','posture_supervision','fit_clips','parent_epochs','parent_updates','updates','analytic_fit_passes','analytic_fit_clips','fitted_coefficients','inherited_analytic_fit_passes','inherited_analytic_fit_clips','trainable_module','reconstruction_passes_per_update','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
         ('table5_inference_interventions',['method','intervention','n','arkit_mbe','arkit_lbe','jaw_centered_correlation','jaw_q90_q10','brows/centered_correlation'],interventions),
         ('table6_emotion_breakdown',['method','emotion','F1_1','F1_2','F1_3','F1_4'],classes),
         ('table7_geometry_groups',['method','group_type','group','n','arkit_mbe','arkit_lbe','lve_mean_mm_mean','eve_mean_mm_mean','jawOpen/centered_correlation','jawOpen/pred_q90_q10'],groups),

@@ -1,0 +1,9 @@
+{
+  "report_sha256": "b4764bb8964dde037f74ba209b92519b65c331efe9f7e8d69bf4274766d167bc",
+  "parent_report_sha256": "b3e14b28378cfe7503b240b98914b737e4cb965b456309696de9c8d582e59b31",
+  "baseline_report_sha256": "43991ede1d8e2ce8642c71e1abdbab9852c2e1d9f576f505d39c5210aa3c5924",
+  "checkpoint_sha256": "80a7ca69b0f868bad6361381e1ca8e4e168ca227a0548221f8efa71b42169c41",
+  "calibration_sha256": "8a2faec88f87b3178c69dedc40ed5d200c55c30757517af2ffa7af22398133dc",
+  "test_loaded": false,
+  "candidate_rejected": true
+}
