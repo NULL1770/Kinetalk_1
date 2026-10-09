@@ -1,3 +1,17 @@
+# Current: Phase52 formal training ACTIVE (2026-10-09)
+
+Read PHASE51_RESULTS.md and PHASE52_STYLE_SCOPE_PLAN.md first. Git pre-change13351ce and implementationf7adcfb pushed.56local+56remote tests and120step GPU smoke pass (loss first10 .691840 -> last10 .449539, ratio .649773). Frozen B0/prior/receiver tensors exact; HuBERTNaN isolation; style gradients and resume checked.
+
+Remote /root/kinetalk_phase52_style_scope_20261009, workerPID4435. Formal seed47 statistics/style_only eight epochs,5456updates. Latest epoch1step301 at~.142s/update. Do not relaunch. The29second epoch earlier quoted is SMOKE, not formal; approximate training15-20min plus full evaluation/style audit/16videos total25-35min from this snapshot. Real improvement pending.
+
+Pipeline queues unchanged full1367 evaluation, frozen GT/B0/audio replay,24clip style smoke and1367/2026matched style audit. Local finite2h collectorPID34668 waits and collects SHA originals, builds22method/18candidate tables and renders16fixed eight-emotion main/style videos. If worker/collector fails, preserve failure and diagnose; do not restart completed roots. Visual review of Phase52 will remain pending until model returns to inspect. No automatic promotion.
+
+Preflight197original members/19323576bytes incl186bound sources and both smoke checkpoints locally SHAverified under diagnostics/phase52_style_scope_20261009/preflight. root415703040free at epoch1; current/probe/data/rig untouched. Collector state/log available locally and phase52_status.py read-only. User permits leaving after real training starts.
+
+Phase51 already closed:1367x2eval+2026x2style,24videos fulldecode/native/rig and visualchecks,21method/17candidate tables. Statistics improves style but shrinks jaw; temporal F1 .734619/MBE .859197,statistics .712325/.809449. Best joint dev still not SOTA. Phase52 restricts trainable scope without adding architecture/loss/gain; parameter freezing does NOT prove output timing independent.
+
+Earlier records below historical and superseded.
+
 # Current: Phase51 CLOSED; Phase52 scope intervention next (2026-10-09)
 
 Read PHASE51_RESULTS.md and PHASE52_STYLE_SCOPE_PLAN.md. Both complete1367 evals +2026matched style audits;24videos and21method/17candidate tables locally verified. No relaunch. Temporal F1 .734619 / MBE .859197; statistics .712325 / .809449 but jaw range .126797 and corr .468724. Style stability improves, geometry/dynamics mixed; no default promoted. Hypothesis for Phase52: freeze shared receiver and learn only reference-specific parameters, same statistical initialization/supports/loss. Parameter freezing does not guarantee correct output timing.
