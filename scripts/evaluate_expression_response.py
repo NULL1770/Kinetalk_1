@@ -160,7 +160,7 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None,neutral_calib
                 controls[mode+'_u']=model.decode(b0,alter_local(prior,mode,rng),style,b['valid'])
             for name,ref in [('wrong_reference',reference_batch(data,b,device,wrong_speaker=True)),
                 ('reference_A',{k:x[:,:1] for k,x in refs.items()}),('reference_B',{k:x[:,1:2] for k,x in refs.items()})]:
-                controls[name]=model.decode(b['b0'],prior,model.encode_style(ref)['code'],b['valid'])
+                controls[name]=model.decode(b0,prior,model.encode_style(ref)['code'],b['valid'])
             for j,i in enumerate(sub.tolist()):
                 if i not in diagnostic_ids:continue
                 for name,p in controls.items():interventions[name].append(metrics(p[j].clamp(0,1),b,j))
@@ -188,6 +188,9 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None,neutral_calib
         f=torch.stack(fs)
         return [classification_metrics(labels,net(f[:,mask]).argmax(-1),names) for net,mask in probes]
     report={'schema':'phase41_response_development_v1','clips':n,'test_loaded':False,'default_replaced':False,
+            'neutral_calibration_enabled':neutral_calibration is not None,
+            'reference_controls_use_same_query_scaffold':True,
+            'neutral_scaffold_kind':'TRAIN_calibrated_frozen_B0' if neutral_calibration is not None else 'original_frozen_B0',
             'checkpoint_sha256':sha(Path(run)/'final.pt'),'data_manifest_sha256':binding['data_manifest_sha256'],
             'rig_sha256':binding['rig_sha256'],'training_scope':'TRAIN internal fit subset; compare budgets/data before paper claims',
             'stochastic_sampling':'not yet validated; main inference is prior mean',

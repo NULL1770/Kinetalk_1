@@ -142,6 +142,31 @@ def test_torch_matches_numpy_candidate():
     np.testing.assert_allclose(actual, expected, rtol=1e-6, atol=1e-6)
 
 
+def test_solver_receipt_matches_deployed_objective_with_endpoint_pressure():
+    f = NeutralAmplitudeFit()
+    for i in range(2):
+        x, y, mask, times = sample(offset=i*.01)
+        # Strong endpoint pressure exposes post-hoc endpoint corrections.
+        x[:10, CHANNELS] = 0.; y[:10, CHANNELS] = .3
+        x[-10:, CHANNELS] = 1.; y[-10:, CHANNELS] = .7
+        f.add(x, y, mask, times, provenance=provenance(i))
+    state=f.solve()
+    for r in state['solver']:
+        assert r['endpoint_residual_max_abs'] == 0.
+        assert abs(r['objective_change']-r['deployed_objective_change']) < 1e-10
+
+
+def test_torch_boundary_tails_and_batch_equivalence():
+    state=fit_sample()
+    vals=np.array([-.2,0.,.049,.05,.0501,.1,.5,1.,1.2],dtype=np.float64)
+    x=np.broadcast_to(vals[None,:,None],(2,len(vals),52)).copy()
+    expected=apply_calibration(x,state)
+    actual=apply_calibration_tensor(torch.from_numpy(x),state).numpy()
+    np.testing.assert_allclose(actual,expected,rtol=0,atol=1e-14)
+    np.testing.assert_array_equal(actual[...,17] < .05,x[...,17] < .05)
+    np.testing.assert_array_equal(actual[:,[0,-1]],x[:,[0,-1]])
+
+
 def test_gate_requires_all_held_subsets_and_both_views():
     groups = {}
     for role in ('speaker_dev', 'sentence_dev'):

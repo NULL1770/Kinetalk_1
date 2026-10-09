@@ -7,6 +7,8 @@ as facial-geometry identity.
 from __future__ import annotations
 
 import argparse
+import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -32,8 +34,57 @@ def load(path: Path):
     }
 
 
-def finite(values):
-    return np.asarray(values, dtype=float)
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def time_curves(report, data, output):
+    """Plot all eight fixed audit utterances without smoothing or retiming."""
+    artifacts={}; features=('Jaw opening','Smile mean','Inner brow raise','Smile L - R')
+    for key, receipt in data['render_inputs'].items():
+        emotion=key.split('/')[-1]
+        path=report.parent/'render_inputs'/('candidate_'+emotion+'.npz')
+        assert sha(path)==receipt['sha256']
+        with np.load(path,allow_pickle=False) as z:
+            motions=z['motions'].copy();times=z['times'].copy();valid=z['valid'].copy()
+            names=z['mode_names'].tolist();channels=z['channels'].tolist()
+            support=z['channel_mask'].copy();clip=str(z['clip_id'].item())
+        if (motions.shape!=(6,len(times),52) or not valid.all()
+                or not np.isclose(np.diff(times),.04,rtol=1e-5,atol=1e-7).all()):
+            raise ValueError('Native contiguous display span required')
+        ix=[channels.index(n) for n in ('jawOpen','mouthSmileLeft','mouthSmileRight','browInnerUp')]
+        if not support[ix].all(): raise ValueError('Selected channels must be observed')
+        # Same clipping convention as the aggregate panel. Targets remain raw.
+        rendered=motions.copy();rendered[1:]=rendered[1:].clip(0.,1.)
+        jaw,left,right,brow=[rendered[:,:,j] for j in ix]
+        traces=np.stack([jaw,(left+right)/2.,brow,left-right],axis=-1)
+        fig,axes=plt.subplots(2,4,figsize=(12,5.1),sharex=True,sharey='col')
+        colors=['#2563eb','#d97706','#059669']
+        for j,feature in enumerate(features):
+            for k,color in zip((1,2,3),colors):
+                axes[0,j].plot(times,traces[k,:,j],color=color,lw=1.3,label=names[k])
+            axes[0,j].plot(times,traces[0,:,j],color='#6b7280',lw=.9,ls='--',alpha=.75,label='Source GT')
+            for k,color in zip((4,5),('#7c3aed','#e11d48')):
+                axes[1,j].plot(times,traces[k,:,j],color=color,lw=1.3,label=names[k])
+            axes[0,j].set_title(feature);axes[1,j].set_xlabel('Native audio time (s)')
+            for a in axes[:,j]: a.grid(axis='y',alpha=.2)
+        axes[0,0].set_ylabel('Reference swap\nCoefficient');axes[1,0].set_ylabel('Same-person A / B\nCoefficient')
+        axes[0,0].legend(loc='upper left',fontsize=7,frameon=False,ncol=2)
+        axes[1,0].legend(loc='upper left',fontsize=7,frameon=False)
+        fig.suptitle('Fixed audio and expression; reference-conditioned motion style — '+emotion,fontsize=11)
+        fig.tight_layout(rect=(0,0,1,.94))
+        stem='05b_style_native_'+emotion
+        for ext in ('png','pdf','svg'):
+            fig.savefig(output/(stem+'.'+ext),dpi=300,bbox_inches='tight',pad_inches=.1)
+        plt.close(fig)
+        with (output/(stem+'.csv')).open('w',encoding='utf8',newline='') as f:
+            writer=csv.writer(f);writer.writerow(['clip_id','mode','time_s',*features])
+            for k,name in enumerate(names):
+                for i,t in enumerate(times):writer.writerow([clip,name,float(t),*traces[k,i].tolist()])
+        artifacts[emotion]=dict(source=str(path.resolve()),sha256=sha(path),clip_id=clip,
+            frames=len(times),modes=names,plot_policy='clip_generated_0_1_GT_raw',
+            no_smoothing=True,no_retiming=True,features=list(features))
+    return artifacts
 
 
 def build(report: Path, output: Path):
@@ -44,19 +95,18 @@ def build(report: Path, output: Path):
     regions = ("mouth", "brows", "all51")
     stats = ("mean", "q90_q10", "displacement_rms")
 
-    # Each target point averages the two incoming source directions.  The
-    # source report already contains clip-level aggregation and provenance;
-    # this is only a deterministic presentation transform.
+    # Weight incoming directions by their pair counts, preserving the
+    # original clip/pair aggregation rather than averaging unequal groups.
     rows = []
     for target_sid in speakers:
-        incoming = [v["metrics"] for k, v in directions.items()
+        incoming = [v for k, v in directions.items()
                     if int(k.split("->")[1]) == target_sid]
         row = {"target_speaker": target_sid, "target": SPEAKER_NAMES.get(target_sid, str(target_sid))}
         for region in regions:
             for stat in stats:
                 for suffix in ("before", "after"):
-                    vals = [x[f"{region}/{stat}_{suffix}"] for x in incoming]
-                    row[f"{region}/{stat}_{suffix}"] = float(np.mean(vals))
+                    vals = [x['metrics'][f"{region}/{stat}_{suffix}"] for x in incoming]
+                    row[f"{region}/{stat}_{suffix}"] = float(np.average(vals,weights=[x['n'] for x in incoming]))
         rows.append(row)
 
     plt.rcParams.update({"font.size": 9, "axes.spines.top": False,
@@ -66,8 +116,9 @@ def build(report: Path, output: Path):
     labels = [r["target"] for r in rows]
     colors = {"before": "#6b7280", "after": "#2563eb"}
     for suffix, label in (("before", "source reference"), ("after", "swapped reference")):
-        axes[0].plot(x, [r[f"mouth/mean_{suffix}"] for r in rows], marker="o",
-                     linewidth=2, color=colors[suffix], label=label)
+        offset=-.055 if suffix=='before' else .055
+        axes[0].plot(x+offset, [r[f"mouth/mean_{suffix}"] for r in rows], marker="o",
+                     linestyle='none', color=colors[suffix], label=label)
     axes[0].set_xticks(x, labels)
     axes[0].set_ylabel("normalized mouth mean error")
     axes[0].set_title("Reference target alignment")
@@ -78,7 +129,7 @@ def build(report: Path, output: Path):
     cross = response["cross"]["metrics"]
     bars = [own["mouth/mae"], cross["mouth/mae"]]
     labels2 = ["same speaker\n(A↔B)", "cross speaker\n(reference swap)"]
-    axes[1].plot(labels2, bars, marker="o", linewidth=2.3, color="#d97706")
+    axes[1].bar(labels2, bars, width=.5,color=['#7c3aed','#d97706'])
     axes[1].set_ylabel("mouth MAE")
     axes[1].set_title("Style sensitivity and stability")
     axes[1].grid(axis="y", alpha=.22)
@@ -93,19 +144,23 @@ def build(report: Path, output: Path):
     protocol = {
         "schema": "identity_style_curve_v1",
         "source_report": str(report),
+        "source_report_sha256":sha(report),
         "source_key": "candidate/clip_all",
         "training_performed": False,
         "test_loaded": False,
         "speaker_labels": SPEAKER_NAMES,
         "target_points": rows,
+        "aggregation":"pair-count-weighted incoming source directions",
         "same_vs_cross_mouth_mae": {"same_speaker_A_B": bars[0], "cross_speaker": bars[1]},
         "interpretation": "Behavioral reference-conditioned style on a shared rig; not facial geometry identity.",
         "limits": [
             "Three development identities only.",
             "Cross-person targets are native clip statistics, not framewise counterfactual ground truth.",
             "The curves do not prove speaker recognition or geometry transfer.",
+            "Source GT in time plots is context for the source performance, not a target-person counterfactual.",
         ],
     }
+    protocol['native_time_curves']=time_curves(report,data,output)
     (output / "05_identity_style_curves.json").write_text(
         json.dumps(protocol, indent=2, ensure_ascii=False), encoding="utf-8")
     return protocol

@@ -105,7 +105,7 @@ def run(a):
     counts = {role: {kind: sum(r['provenance']['role'] == role and r['provenance']['target_kind'] == kind for r in rows)
         for kind in ('native_neutral', 'approved_neutral_pair')} for role in selected}
     assert state_digest(base.stage1) == digest
-    report = dict(schema='phase58_neutral_amplitude_result_v1', smoke=a.smoke, counts=counts,
+    report = dict(schema='neutral_amplitude_result_v2', calibration_schema=fit['schema'], smoke=a.smoke, counts=counts,
         summary=summary, gate=held_gate(summary), frozen_neutral_exact=True, neutral_state_sha256=digest,
         fit_sha256=sha(out/'calibration.json'), validation_queries_used=False, test_loaded=False,
         main_model_replaced=False, expression_student_loaded=False, neutral_amplitude_fit_performed=True,

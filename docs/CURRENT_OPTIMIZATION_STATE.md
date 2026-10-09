@@ -1,5 +1,12 @@
 # Current: Phase58 complete/rejected; original overview revision in progress (2026-10-09)
 
+## Latestcontinuation2026-10-09 (supersedes staleheader)
+Originaloverviewcompleted4db9567. Phase59ec58dd3 full3298neutralcandidate passed all8heldraw/clipgates,12local/remote tests;9resultoriginalsSHAverified,fullsourcearchivepending. Read PHASE59_RESULTS.md. Worker6199complete,neverrelaunch. No checkpoint changed;threshold-specific eventpreservation doesnotprove phonemepreservation.
+
+Phase60retry7161 active at /root/kinetalk_phase60_event_eval_20261009/evaluation_retry;first7026failedbeforeinference(missingtest).13remote tests passed,full1367 scoring. Realprogressin evaluation_retry/state.json;retryheaderstayspreflight. Local01d5b57 addsTorchcalibration/evaluator. Primaryprediction is validcandidate,but reference_A/B/wrong_reference controls mix original/calibrated B0: do not use for identityclaims. Fixcontrols and endpointsolver before finaladoption. V2nonjaw/lastjaw endpoints were forced aftersolver instead of constrainedinsidebounds;heldmetrics use serializedmap but solverobjective differsdeployedobjective. Preserve oldcandidate/eval.
+
+Rootstorage: Phase53style-only/evaluation/curves.pt remotelyremoved afterlocal+remoteSHA/openfdcheck;88,842,300bytes reclaimed. SHA f574fc3447e609df5f6af298e542dfe577e219cb6d3bc8ca97dd46e50487ac57. Finalcheckpoint retained. Restore fromlocaloriginalplus .codex-finalizer/phase60_curve_archive_receipt.json before originalstyleaudit. Rootfree178MB afterreclaim. Initial05categoricalidentitychartgenerated;actual8emotionnativecurvespending. Git01d5b57localpushunconfirmed(networkfailures);ec58dd3pushed. No student/B0training/sealedinput. third_party/voca_reference untouched.
+
 Read PHASE58_RESULTS.md. Worker1604 COMPLETE in202.44sec; do not relaunch.
 11local/11remote tests +24clip smoke +3298target fullfit complete. HeldmouthMSE
 improves5.596–11.852%, rangeerror13.027–17.325%; closuregatefails3of4heldsubsets

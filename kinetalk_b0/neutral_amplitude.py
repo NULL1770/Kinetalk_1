@@ -14,7 +14,8 @@ CHANNELS = tuple(range(14, 41))
 JAW_CHANNEL = 17
 CLOSURE_THRESHOLD = 0.05
 KNOTS = np.linspace(0., 1., 9)
-SCHEMA = 'neutral_monotone_amplitude_v2_event_preserving'
+SCHEMA = 'neutral_monotone_amplitude_v3_fixed_endpoints'
+REPLAY_SCHEMAS = (SCHEMA, 'neutral_monotone_amplitude_v2_event_preserving')
 
 
 def basis(x):
@@ -105,9 +106,6 @@ class NeutralAmplitudeFit:
         ridge = .001/len(KNOTS)
         difference = np.diff(np.eye(9), axis=0)
         # Optimize knot residuals d. Monotonicity applies to KNOTS+d.
-        constraint = LinearConstraint(difference, -np.diff(KNOTS), np.inf)
-        lower, upper = -KNOTS.copy(), 1-KNOTS
-        lower[[0, -1]] = 0.; upper[[0, -1]] = 0.
         residuals, receipts = [], []
         for c in range(len(CHANNELS)):
             a, b = gram[c]+ridge*np.eye(9), cross[c]
@@ -115,11 +113,9 @@ class NeutralAmplitudeFit:
             if CHANNELS[c] == JAW_CHANNEL:
                 baseline = CLOSURE_THRESHOLD + (1.-CLOSURE_THRESHOLD)*KNOTS
             fit_lower, fit_upper = -baseline.copy(), 1.-baseline.copy()
-            if CHANNELS[c] == JAW_CHANNEL:
-                # The first knot is the exact closure boundary.  Without
-                # this explicit anchor, a fitted residual at the first knot
-                # would change the event threshold while remaining monotone.
-                fit_lower[0] = fit_upper[0] = 0.
+            # Fix endpoint residuals *inside* the solve, for every channel.
+            # A projection after solving would change the deployed objective.
+            fit_lower[[0, -1]] = fit_upper[[0, -1]] = 0.
             fit = minimize(lambda d: float(d@a@d-2*d@b), np.zeros(9),
                 jac=lambda d: 2*(a@d-b), method='SLSQP',
                 constraints=LinearConstraint(difference, -np.diff(baseline), np.inf),
@@ -129,14 +125,14 @@ class NeutralAmplitudeFit:
                 raise RuntimeError('Constrained fit failed: '+fit.message)
             # Remove only numerical constraint error; endpoints remain exact.
             values = np.maximum.accumulate(np.clip(baseline+fit.x, 0., 1.))
-            values[0], values[-1] = 0., 1.
-            if CHANNELS[c] == JAW_CHANNEL:
-                values[0] = CLOSURE_THRESHOLD
-                values[-1] = 1.
-                residuals.append(values-baseline)
-            else:
-                residuals.append(values-KNOTS)
-            receipts.append(dict(iterations=int(fit.nit), objective_change=float(fit.fun)))
+            values[0], values[-1] = baseline[0], baseline[-1]
+            deployed = values-baseline
+            if np.max(np.abs(deployed-fit.x)) > 1e-8:
+                raise RuntimeError('Deployed map differs from constrained solution')
+            residuals.append(deployed)
+            receipts.append(dict(iterations=int(fit.nit), objective_change=float(fit.fun),
+                deployed_objective_change=float(deployed@a@deployed-2*deployed@b),
+                endpoint_residual_max_abs=float(np.max(np.abs(fit.x[[0,-1]])))))
         return dict(schema=SCHEMA, channels=list(CHANNELS), knots=KNOTS.tolist(),
             residuals=np.stack(residuals).tolist(), ridge=.001, displacement_weight=.5,
             count=self.count.tolist(), fit_rows=self.rows, solver=receipts,
@@ -150,7 +146,7 @@ def apply_calibration(x, fit):
     x = np.asarray(x)
     if not np.issubdtype(x.dtype, np.floating) or x.ndim < 2 or x.shape[-1] != 52:
         raise ValueError('Floating [...,52] B0 required')
-    if (fit.get('schema') != SCHEMA or fit.get('channels') != list(CHANNELS)
+    if (fit.get('schema') not in REPLAY_SCHEMAS or fit.get('channels') != list(CHANNELS)
             or fit.get('knots') != KNOTS.tolist()
             or fit.get('development_used_for_fit') is not False
             or fit.get('test_used_for_fit') is not False
@@ -184,7 +180,7 @@ def apply_calibration(x, fit):
 
 def apply_calibration_tensor(x, fit):
     """Torch equivalent used by the frozen receiver evaluation path."""
-    if not isinstance(x, torch.Tensor) or not x.is_floating_point() or x.shape[-1] != 52:
+    if not isinstance(x, torch.Tensor) or not x.is_floating_point() or x.ndim < 2 or x.shape[-1] != 52:
         raise ValueError('Floating torch [...,52] B0 required')
     apply_calibration(np.zeros((1, 52), dtype=np.float64), fit)
     residuals = torch.as_tensor(fit['residuals'], dtype=x.dtype, device=x.device)
