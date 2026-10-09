@@ -86,6 +86,7 @@ def run(a):
                 for method in method_dirs:
                     item=baselines[method]['clips'][cid]
                     for key,value in [('target',gt),('valid',valid),('times',batch['times'][j,:length].cpu()),('channel_mask',batch['channel_mask'][j].cpu())]:
+                        if key=='target' and key not in item:continue  # Historical baseline saves predictions/masks, not query GT.
                         torch.testing.assert_close(item[key],value,rtol=0,atol=0,equal_nan=True)
                     values.append(item['prediction'][start:stop])
                 values.append(curves['joint']['predictions'][i]['prior_mean'][start:stop])
