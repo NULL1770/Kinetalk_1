@@ -1,8 +1,9 @@
 import copy
 import numpy as np
 import pytest
+import torch
 from kinetalk_b0.neutral_amplitude import (
-    KNOTS, CHANNELS, SCHEMA, NeutralAmplitudeFit, apply_calibration, basis, jaw_basis, held_gate, measures)
+    KNOTS, CHANNELS, SCHEMA, NeutralAmplitudeFit, apply_calibration, apply_calibration_tensor, basis, jaw_basis, held_gate, measures)
 
 
 def sample(n=80, offset=0.):
@@ -131,6 +132,14 @@ def test_jaw_closed_branch_is_event_preserving():
     assert np.all(out[x[:, 17] >= .05, 17] >= .05-1e-12)
     np.testing.assert_array_equal(out[:, :14], x[:, :14])
     np.testing.assert_array_equal(out[:, 41:], x[:, 41:])
+
+
+def test_torch_matches_numpy_candidate():
+    state = fit_sample()
+    x = sample(n=41)[0].astype(np.float32)
+    expected = apply_calibration(x, state)
+    actual = apply_calibration_tensor(torch.from_numpy(x), state).numpy()
+    np.testing.assert_allclose(actual, expected, rtol=1e-6, atol=1e-6)
 
 
 def test_gate_requires_all_held_subsets_and_both_views():

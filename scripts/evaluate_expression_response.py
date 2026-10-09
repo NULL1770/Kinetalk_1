@@ -19,6 +19,7 @@ from scripts.evaluate_vertex_lve import evaluate as vertex_evaluate
 from scripts.audit_matched_motion_curves import region_values,REGIONS,RC,longest_valid_span
 from scripts.build_validation_gap_table import COEFFICIENT,VERTEX
 from scripts.render_dynamic_rig_comparison import ARKIT_NAMES
+from kinetalk_b0.neutral_amplitude import apply_calibration_tensor
 
 
 def finite(value):
@@ -96,7 +97,7 @@ def export_render_input(path,*,motion,base,prior,posterior,valid,times,channels,
 
 
 @torch.no_grad()
-def evaluate(binding,run,out,device='cuda',limit=None,runtime=None):
+def evaluate(binding,run,out,device='cuda',limit=None,runtime=None,neutral_calibration=None):
     device=torch.device(device);out=Path(out);out.mkdir(parents=True,exist_ok=True)
     ck=torch.load(Path(run)/'final.pt',map_location=device,weights_only=False)
     complete=json.loads((Path(run)/'complete.json').read_text())
@@ -131,10 +132,11 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None):
     (out/'render_inputs').mkdir(exist_ok=True)
     for sub in torch.arange(n).split(16):
         b=q.batch(sub,device);refs=reference_batch(data,b,device)
+        b0 = apply_calibration_tensor(b['b0'], neutral_calibration) if neutral_calibration is not None else b['b0']
         style=model.encode_style(refs)['code'];prior=model.audio_prior(b['audio_features'],b['valid'])
-        post=model.motion_posterior(b['motion'],b['b0'],style,b['valid'],b['channel_mask'],b['times'])
-        preds={'prior_mean':model.decode(b['b0'],prior,style,b['valid']),
-               'posterior_oracle':model.decode(b['b0'],post,style,b['valid']),'neutral_b0':b['b0']}
+        post=model.motion_posterior(b['motion'],b0,style,b['valid'],b['channel_mask'],b['times'])
+        preds={'prior_mean':model.decode(b0,prior,style,b['valid']),
+               'posterior_oracle':model.decode(b0,post,style,b['valid']),'neutral_b0':b0}
         g_preds.extend(model.emotion_head(prior['g_mean']).argmax(-1).cpu().tolist())
         for j,i in enumerate(sub.tolist()):
             length=int(q['_lengths'][i]);v=b['valid'][j].cpu();gt=b['motion'][j].cpu()
@@ -155,7 +157,7 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None):
         if diagnostic_ids.intersection(sub.tolist()):
             controls={'normal':preds['prior_mean']}
             for mode in ('static','reverse','shuffle'):
-                controls[mode+'_u']=model.decode(b['b0'],alter_local(prior,mode,rng),style,b['valid'])
+                controls[mode+'_u']=model.decode(b0,alter_local(prior,mode,rng),style,b['valid'])
             for name,ref in [('wrong_reference',reference_batch(data,b,device,wrong_speaker=True)),
                 ('reference_A',{k:x[:,:1] for k,x in refs.items()}),('reference_B',{k:x[:,1:2] for k,x in refs.items()})]:
                 controls[name]=model.decode(b['b0'],prior,model.encode_style(ref)['code'],b['valid'])
@@ -178,7 +180,7 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None):
                     target['g_mean']=pp['g_mean']
                     dest=target['u_mask'][0];source=pp['u_mean'][0,pp['u_mask'][0]].T[None]
                     target['u_mean'][0,dest]=F.interpolate(source,size=int(dest.sum()),mode='linear',align_corners=False)[0].T
-                    y=model.decode(b['b0'][j:j+1],target,style[j:j+1],b['valid'][j:j+1])
+                    y=model.decode(b0[j:j+1],target,style[j:j+1],b['valid'][j:j+1])
                     interventions['wrong_matched_audio'].append(metrics(y[0].clamp(0,1),b,j))
         write(out/'state.json',{'status':'scoring','clips':int(sub[-1])+1,'total':n,'test_loaded':False})
         print(json.dumps({'event':'evaluation','clips':int(sub[-1])+1,'total':n}),flush=True)
@@ -209,5 +211,7 @@ def evaluate(binding,run,out,device='cuda',limit=None,runtime=None):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--binding',required=True);p.add_argument('--run',required=True)
     p.add_argument('--output',required=True);p.add_argument('--limit',type=int);p.add_argument('--device',default='cuda')
+    p.add_argument('--neutral-calibration',type=Path)
     a=p.parse_args();configure(47)
-    evaluate(json.loads(Path(a.binding).read_text()),a.run,a.output,a.device,a.limit)
+    calibration=json.loads(a.neutral_calibration.read_text()) if a.neutral_calibration else None
+    evaluate(json.loads(Path(a.binding).read_text()),a.run,a.output,a.device,a.limit,neutral_calibration=calibration)

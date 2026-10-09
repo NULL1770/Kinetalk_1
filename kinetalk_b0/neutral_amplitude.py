@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, minimize
+import torch
+import torch.nn.functional as F
 
 CHANNELS = tuple(range(14, 41))
 JAW_CHANNEL = 17
@@ -176,6 +178,34 @@ def apply_calibration(x, fit):
     design[..., jaw, :] = np.where(
         open_frame[..., None], jaw_basis(x[..., JAW_CHANNEL]), 0.)
     out[..., CHANNELS] = x[..., CHANNELS] + np.einsum(
+        '...ck,ck->...c', design, residuals)
+    return out
+
+
+def apply_calibration_tensor(x, fit):
+    """Torch equivalent used by the frozen receiver evaluation path."""
+    if not isinstance(x, torch.Tensor) or not x.is_floating_point() or x.shape[-1] != 52:
+        raise ValueError('Floating torch [...,52] B0 required')
+    apply_calibration(np.zeros((1, 52), dtype=np.float64), fit)
+    residuals = torch.as_tensor(fit['residuals'], dtype=x.dtype, device=x.device)
+    values = x[..., CHANNELS].clamp(0., 1.)
+    u = values * (len(KNOTS)-1)
+    left = u.floor().long().clamp(max=len(KNOTS)-2)
+    w = u - left.to(x.dtype)
+    design = F.one_hot(left, len(KNOTS)).to(x.dtype) * (1.-w[..., None])
+    design = design + F.one_hot(left+1, len(KNOTS)).to(x.dtype) * w[..., None]
+    jaw = CHANNELS.index(JAW_CHANNEL)
+    design[..., jaw, :] = 0.
+    z = ((x[..., JAW_CHANNEL]-CLOSURE_THRESHOLD)/(1.-CLOSURE_THRESHOLD)).clamp(0., 1.)
+    ju = z * (len(KNOTS)-1)
+    jleft = ju.floor().long().clamp(max=len(KNOTS)-2)
+    jw = ju-jleft.to(x.dtype)
+    jdesign = F.one_hot(jleft, len(KNOTS)).to(x.dtype) * (1.-jw[..., None])
+    jdesign = jdesign + F.one_hot(jleft+1, len(KNOTS)).to(x.dtype) * jw[..., None]
+    design[..., jaw, :] = torch.where(
+        (x[..., JAW_CHANNEL] >= CLOSURE_THRESHOLD)[..., None], jdesign, torch.zeros_like(jdesign))
+    out = x.clone()
+    out[..., CHANNELS] = x[..., CHANNELS] + torch.einsum(
         '...ck,ck->...c', design, residuals)
     return out
 
