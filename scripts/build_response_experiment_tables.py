@@ -120,6 +120,8 @@ def build(baseline_root,responses,out,inventory=None):
         native=policy_rows['clip_all'][-1]
         ablation.append({'method':name,'prior_variance':protocol['config'].get('prior_variance','learned'),
             'center_local':protocol['config'].get('center_local',False),
+            'style_modulation':protocol['config'].get('style_modulation','joint'),
+            'posture_supervision':protocol.get('posture_supervision','all'),
             'reference_training':protocol['args'].get('reference_training','single'),
             'matching':metadata[-1]['matching'],'parent_epochs':metadata[-1]['parent_epochs'],
             'parent_updates':metadata[-1]['parent_updates'],
@@ -151,7 +153,7 @@ def build(baseline_root,responses,out,inventory=None):
             table=emit(out,name+'_'+policy,columns,rows)
             if policy=='clip_all':sections+=['## '+name,'',table,'']
     for name,columns,rows in [
-        ('table4_trained_ablation',['method','prior_variance','center_local','reference_training','matching','fit_clips','parent_epochs','parent_updates','updates','analytic_fit_passes','analytic_fit_clips','fitted_coefficients','inherited_analytic_fit_passes','inherited_analytic_fit_clips','trainable_module','reconstruction_passes_per_update','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
+        ('table4_trained_ablation',['method','prior_variance','center_local','reference_training','matching','style_modulation','posture_supervision','fit_clips','parent_epochs','parent_updates','updates','analytic_fit_passes','analytic_fit_clips','fitted_coefficients','inherited_analytic_fit_passes','inherited_analytic_fit_clips','trainable_module','reconstruction_passes_per_update','arkit_mbe','arkit_lbe','lve_mean_mm_mean','jaw_centered_correlation','jaw_q90_q10','F1_1','F1_2','F1_3','F1_4'],ablation),
         ('table5_inference_interventions',['method','intervention','n','arkit_mbe','arkit_lbe','jaw_centered_correlation','jaw_q90_q10','brows/centered_correlation'],interventions),
         ('table6_emotion_breakdown',['method','emotion','F1_1','F1_2','F1_3','F1_4'],classes),
         ('table7_geometry_groups',['method','group_type','group','n','arkit_mbe','arkit_lbe','lve_mean_mm_mean','eve_mean_mm_mean','jawOpen/centered_correlation','jawOpen/pred_q90_q10'],groups),
