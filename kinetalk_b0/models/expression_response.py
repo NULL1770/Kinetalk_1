@@ -31,6 +31,7 @@ class ResponseConfig:
     center_local: bool = False
     reference_encoder: str = 'temporal'
     style_modulation: str = 'joint'
+    response_head: str = 'residual'
 
 
 def clean(x, mask):
@@ -268,6 +269,49 @@ class ResponseDecoder(nn.Module):
         return clean(base + (self.output(h)+offset[:,None])*scales, valid)
 
 
+class NativeAffineDecoder(nn.Module):
+    """Keep B0 on its native clock; conditions control a positive global gain.
+
+    The additive expression network never receives B0 or content features.
+    This constrains the content path, not the complete output: additive
+    expression can still change closures and must be checked empirically.
+    """
+    def __init__(self, cfg):
+        super().__init__()
+        width = cfg.style_dim // 2
+        self.log_gain_limit = math.log(4.)
+        self.gain = nn.Sequential(nn.LayerNorm(cfg.global_dim + width),
+            nn.Linear(cfg.global_dim + width, cfg.hidden), nn.SiLU(), nn.Linear(cfg.hidden, 52))
+        self.expression = TemporalEncoder(cfg.global_dim + cfg.local_dim + width,
+                                         cfg.hidden, 3, attention=0)
+        self.output = nn.Linear(cfg.hidden, 52)
+        self.bias = nn.Linear(width, 52)
+        nn.init.zeros_(self.gain[-1].weight)
+        nn.init.zeros_(self.gain[-1].bias)
+        nn.init.normal_(self.output.weight, std=.001)
+        nn.init.zeros_(self.output.bias)
+        nn.init.zeros_(self.bias.weight)
+        nn.init.zeros_(self.bias.bias)
+
+    def components(self, g, u, style, valid):
+        posture, response = style.chunk(2, -1)
+        raw = self.gain(torch.cat((g, response), -1))
+        gain = (self.log_gain_limit * (raw / self.log_gain_limit).tanh()).exp()
+        conditions = clean(torch.cat((g[:, None].expand(-1, u.shape[1], -1),
+                            clean(u, valid), response[:, None].expand(-1, u.shape[1], -1)), -1), valid)
+        expression = clean(self.output(self.expression(conditions, valid)), valid)
+        return gain, expression, self.bias(posture)
+
+    def forward(self, base, g, u, style, valid, scales, posture_grad_mask=None):
+        gain, expression, offset = self.components(g, u, style, valid)
+        if posture_grad_mask is not None:
+            if posture_grad_mask.dtype != torch.bool or posture_grad_mask.shape != (base.shape[0],):
+                raise ValueError('Posture gradient mask must be bool[B]')
+            offset = torch.where(posture_grad_mask[:, None], offset, offset.detach())
+        return clean(clean(base.detach(), valid) * gain[:, None] +
+                     (expression + offset[:, None]) * scales, valid)
+
+
 class ExpressionResponse(nn.Module):
     def __init__(self, cfg: ResponseConfig, feature_mean, feature_std, scales):
         super().__init__()
@@ -279,6 +323,10 @@ class ExpressionResponse(nn.Module):
             raise ValueError('Invalid style modulation')
         if cfg.style_modulation=='factorized' and cfg.reference_encoder!='statistics':
             raise ValueError('Factorized modulation requires statistical references')
+        if cfg.response_head not in ('residual', 'native_affine'):
+            raise ValueError('Invalid response head')
+        if cfg.response_head == 'native_affine' and cfg.reference_encoder != 'statistics':
+            raise ValueError('Native affine response requires statistical references')
         if cfg.prior_variance not in ('learned', 'unit'):
             raise ValueError('prior_variance must be learned or unit')
         if cfg.prior_variance=='unit' and not cfg.logvar_min<=0<=cfg.logvar_max:
@@ -298,7 +346,7 @@ class ExpressionResponse(nn.Module):
         self.prior = GaussianEncoder(cfg, 772, 4, fixed_variance=cfg.prior_variance=='unit')
         self.posterior = GaussianEncoder(cfg, 52*4+cfg.style_dim, 3)
         self.style = StatisticalReferenceStyle(cfg) if cfg.reference_encoder=='statistics' else ReferenceStyle(cfg)
-        self.decoder = ResponseDecoder(cfg)
+        self.decoder = NativeAffineDecoder(cfg) if cfg.response_head == 'native_affine' else ResponseDecoder(cfg)
         self.emotion_head = nn.Linear(cfg.global_dim, cfg.classes)
         self.intensity_head = nn.Linear(cfg.global_dim, cfg.intensities)
 
