@@ -20,7 +20,7 @@ from scripts.train_full_staged import load_safe_native_targets, safe_target_batc
 from scripts.audit_reference_style_swap import REGIONS
 
 KINDS = ('centered', 'displacement')
-FEATURES = ('u', 'hidden', 'audio', 'base')
+FEATURES = ('u', 'hidden', 'audio', 'base', 'conditional')
 COMPONENTS = ('expression_difference', 'neutral_base_error', 'total_residual')
 
 
@@ -182,7 +182,7 @@ def run(a):
     capture = {}
     hook = model.prior.encoder.register_forward_hook(lambda m, inp, h: capture.update(h=h))
     probes = {(kind, feat):ChannelRidge(dim, device=device)
-              for kind in KINDS for feat, dim in [('u',cfg.local_dim), ('hidden',cfg.hidden), ('audio',772), ('base',52)]}
+              for kind in KINDS for feat, dim in [('u',cfg.local_dim), ('hidden',cfg.hidden), ('audio',772), ('base',52), ('conditional',676)]}
     weights, energies, summaries, arrays, metadata = {}, {}, {}, {}, []
     checked = False
     for role, indices in chosen.items():
@@ -199,6 +199,18 @@ def run(a):
                 h = capture['h']
                 _, u = model.conditions(p, b['valid'])
                 features = {'u':u, **frame_features(model, b, h)}
+                # Diagnostic only: a receiver-side interaction between the
+                # frozen B0 content base and audio-predicted clip emotion /
+                # intensity probabilities. No query labels, GT motion or
+                # content feature enters the audio prior/student.
+                with torch.no_grad():
+                    emotion_prob = torch.softmax(model.emotion_head(p['g_mean']), -1)
+                    intensity_prob = torch.softmax(model.intensity_head(p['g_mean']), -1)
+                base = features['base']
+                features['conditional'] = torch.cat(
+                    (base,
+                     base[..., None, :].expand(-1, -1, 8, -1).mul(emotion_prob[:, None, :, None]).flatten(-2),
+                     base[..., None, :].expand(-1, -1, 4, -1).mul(intensity_prob[:, None, :, None]).flatten(-2)), -1)
                 torch.testing.assert_close(features['hidden'] @ model.prior.local_head.weight[:cfg.local_dim].T,
                                            u, rtol=1e-4, atol=1e-5)
                 if not checked:

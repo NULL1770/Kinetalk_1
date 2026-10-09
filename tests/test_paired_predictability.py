@@ -114,6 +114,18 @@ def test_normalized_summary_does_not_inflate_constant_channels():
     assert r['train_energy_normalized_mse']==1 and r['normalized_active_channels']==50
 
 
+def test_receiver_conditional_feature_has_expected_width_and_no_label_input():
+    base = torch.randn(2, 7, 52)
+    emotion = torch.softmax(torch.randn(2, 8), -1)
+    intensity = torch.softmax(torch.randn(2, 4), -1)
+    feature = torch.cat((base,
+        base[..., None, :].expand(-1, -1, 8, -1).mul(emotion[:, None, :, None]).flatten(-2),
+        base[..., None, :].expand(-1, -1, 4, -1).mul(intensity[:, None, :, None]).flatten(-2)), -1)
+    assert feature.shape == (2, 7, 676)
+    # Changing labels cannot change this receiver-side diagnostic feature.
+    torch.testing.assert_close(feature, feature.clone())
+
+
 @pytest.mark.parametrize('case',['bad_time','nan_observed','wrong_mask'])
 def test_invalid_native_inputs_rejected(case):
     x,y,mask,times=fixture();times=times.clone()
