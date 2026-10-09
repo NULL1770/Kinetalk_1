@@ -40,7 +40,10 @@ def main():
     obj.animation_data_clear();obj.data.shape_keys.animation_data_clear();obj.location=(0,0,-.02)
     obj.hide_viewport=False;obj.hide_render=False;obj.hide_set(False)
     material=bpy.data.materials.new('SharedClay');material.use_nodes=True
-    shader=material.node_tree.nodes.get('Principled BSDF');shader.inputs['Base Color'].default_value=(.46,.49,.53,1);shader.inputs['Roughness'].default_value=.7
+    shader=next((node for node in material.node_tree.nodes if node.type=='BSDF_PRINCIPLED'),None)
+    if shader is None:
+        shader=material.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
+    shader.inputs['Base Color'].default_value=(.46,.49,.53,1);shader.inputs['Roughness'].default_value=.7
     obj.data.materials.clear();obj.data.materials.append(material)
     keys=obj.data.shape_keys.key_blocks
     for key in keys:key.value=0
