@@ -1,0 +1,1274 @@
+PDF page 1
+Variogram-Based Proper Scoring Rules for Probabilistic
+Forecasts of Multivariate Quantities*
+MICHAEL SCHEUERER AND THOMAS M. HAMILL
+NOAA/Earth System Research Laboratory, Boulder, Colorado
+(Manuscript received 19 August 2014, in ﬁnal form 2 December 2014)
+ABSTRACT
+Proper scoring rules provide a theoretically principled framework for the quantitative assessment of the
+predictive performance of probabilistic forecasts. While a wide selection of such scoring rules for univariate
+quantities exists, there are only few scoring rules for multivariate quantities, and many of them require that
+forecasts are given in the form of a probability density function. The energy score, a multivariate general-
+ization of the continuous ranked probability score, is the only commonly used score that is applicable in the
+important case of ensemble forecasts, where the multivariate predictive distribution is represented by a ﬁnite
+sample. Unfortunately, its ability to detect incorrectly speciﬁed correlations between the components of the
+multivariate quantity is somewhat limited. In this paper the authors present an alternative class of proper
+scoring rules based on the geostatistical concept of variograms. The sensitivity of these variogram-based
+scoring rules to incorrectly predicted means, variances, and correlations is studied in a number of examples
+with simulated observations and forecasts; they are shown to be distinctly more discriminative with respect to
+the correlation structure. This conclusion is conﬁrmed in a case study with postprocessed wind speed forecasts
+at ﬁve wind park locations in Colorado.
+1. Introduction
+During the last two decades a paradigm shift has oc-
+curred in the practice of numerical weather prediction
+(NWP). To account for the various sources of uncertainty
+in the NWP model output, ensemble prediction systems
+were developed and have now become state of the art in
+meteorological forecasting ( Buizza et al. 2005 ; Lewis
+2005; Leutbecher and Palmer 2008 ). Those ensemble
+forecasts aim to represent the range of possible outcomes,
+and probabilistic statements like the probability of ex-
+ceeding a certain amount of precipitation can be derived
+from them and help making informed decisions.
+Along with the availability of probabilistic forecasts
+comes the need for both diagnostic and quantitative
+methods to assess the quality of those forecasts and to
+compare the performance of competing forecasters. A
+probabilistic forecast should be calibrated (i.e., statisti-
+cally consistent with the values that materialize) and sharp
+(i.e., very speciﬁc about the anticipated weather;Gneiting
+et al. 2007). Sharpness can be assessed via numerical and
+graphical summaries of the width of the prediction in-
+tervals that come with a predictive probability distribu-
+tion. The notion of calibration is more complex, and
+different types of calibration have been established.
+Marginal calibration measures the similarity of the ag-
+gregated predictive distribution and the climatological
+distribution of the predictand, and can be checked by
+comparing the average predictive cumulative distribution
+function (CDF) with the empirical CDF of the observa-
+tions (Gneiting et al. 2007). Probabilistic calibration con-
+cerns the dynamical aspects of probabilistic forecasts and
+can be assessed by studying veriﬁcation rank histograms
+(Anderson 1996; Hamill and Colucci 1997; Hamill 2001).
+To make a quantitative comparison of different
+forecast methods, summary measures of their predictive
+performance are required. Those measures should take
+both calibration and sharpness into account. To this
+end, scoring rules have been proposed which assign
+a numerical score S(F, y) to each pair ( F, y) where F is
+the CDF of the predictive distribution and y is the
+* Supplemental information related to this paper is available at
+the Journals Online website: http://dx.doi.org/10.1175/MWR-D-
+14-00269.s1.
+Corresponding author address: Michael Scheuerer, NOAA/
+ESRL, Physical Sciences Division 325 Broadway, R/PSD1, Boul-
+der, CO 80305.
+E-mail: michael.scheuerer@noaa.gov
+APRIL 2015 S C H E U E R E R A N D H A M I L L 1321
+DOI: 10.1175/MWR-D-14-00269.1
+PDF page 2
+realized value. If we take scoring rules to be negatively
+oriented, S(F, y) can be viewed as a penalty that the
+forecasters wish to minimize. A crucial property that
+one should always require from a scoring rule is that it is
+proper, which is formally deﬁned by the requirement
+EG S(G, Y) # EG S(F, Y) " F, G , (1)
+where EG S(F, Y) denotes the expected score of the
+forecast CDF F when the verifying observations y are
+realizations of a random variable Y with CDF G, and "
+means ‘‘for all.’’ The score is strictly proper if the
+equality holds only if F 5 G (Gneiting and Raftery
+2007). Using only proper scoring rules is important in
+practice because the above inequality implies that
+a forecaster who knows the true distribution G has no
+incentive to predict any F 6¼ G, and is encouraged to
+quote her true belief. It has been demonstrated that the
+use of improper scores can lead to misguided inferences
+about predictive performance ( Gneiting 2011).
+The notions and methods mentioned above refer to
+probabilistic forecasts of univariate quantities. In some
+applications, however, multivariate quantities are of
+interest where multivariate can either refer to several
+different weather variables, or to a single variable con-
+sidered at different locations in space or points in time
+simultaneously. River basin streamﬂow forecasts, for
+example, rely heavily on the meteorological inputs, and
+the runoff of mountain streams in spring season depends
+on both temperature (because of its impact on the
+amount of meltwater) and precipitation amounts. It is
+therefore important to know if an observed temperature
+above the predictive mean is likely to be associated with
+observed precipitation amounts above the predictive
+mean. If there is a positive or negative association be-
+tween those two variables it should be reﬂected by the
+joint probabilistic forecast. Moreover, simultaneous
+consideration of all locations in the river basin and
+several lead times may be required. A recent article by
+Wilks (2014) considers probabilistic forecasting of heat
+waves, which requires the simultaneous study of mini-
+mum temperature and dewpoint temperature at two
+consecutive days, and Feldmann et al. (2015) study sta-
+tistical postprocessing methods that yield calibrated
+temperature forecasts simultaneously at several loca-
+tions. A number of multivariate generalizations of the
+veriﬁcation rank histogram have been proposed ( Smith
+and Hansen 2004 ; Wilks 2004 ; Gneiting et al. 2008 ;
+Thorarinsdottir et al. 2015 ; Ziegel and Gneiting 2014 )
+that are sensitive to misrepresentations of both univar-
+iate characteristics and correlations between the differ-
+ent components of the multivariate quantity under
+consideration.
+As far as proper scoring rules are concerned, the
+forecast veriﬁcation toolbox is still rather limited. On
+the one hand there is the energy score (ES) and gener-
+alizations of it ( Gneiting and Raftery 2007 ):
+Sen(F, y) 5 EF kX 2 yk 2 1
+2 EF kX 2 X0k,
+where X and X0 are independent random vectors that
+are distributed according to the multivariate CDF F and
+k/C1k is the Euclidean norm. The energy score has the
+appealing property that it generalizes the univariate
+continuous ranked probability score (CRPS; Hersbach
+2000) and is readily applicable also to ensemble fore-
+casts. It has been pointed out, however, that this score is
+often not sufﬁciently sensitive to misspeciﬁcations of the
+correlations between the different components ( Pinson
+and Girard 2012 ; Pinson and Tastu 2013 ). This is a big
+drawback since unlike the means and variances those
+correlations cannot be studied by applying univariate
+scores to the individual components. On the other hand,
+t h e r ea r es c o r i n gr u l e s[ e . g . ,t h el o g a r i t h m i cs c o r eb y
+Roulston and Smith (2002) , applied to a multivariate
+probability density function] that are more sensitive to
+misspeciﬁed correlations, but require that the forecast is
+given in terms of a predictive density, and are thus not
+applicable in the important case of ensemble forecasts.
+Dawid and Sebastiani (1999)proposed some multivariate
+scoring rules that depend only on the mean vectormF and
+t h ec o v a r i a n c em a t r i xSF of the predictive distributionF.A
+particularly appealing example is the scoring rule [hereaf-
+ter referred to as the Dawid–Sebastiani score (DSS)]:
+SDS(F, y) 5 log detSF 1 (y 2 mF )0S21
+F (y 2 mF ).
+It is equivalent to the logarithmic score for multivariate
+Gaussian predictive distributions and remains a proper
+(though not strictly proper) score relative to the larger
+class probability distributions for which the second
+moments of all components are ﬁnite ( Gneiting and
+Raftery 2007). In principle this score could be applied to
+empirical versions of mF and SF that were estimated
+from an ensemble, but unless the sample size is much
+larger than the dimension of the multivariate quantity,
+sampling errors can have disastrous effects on the cal-
+culation of detSF and S21
+F , and render this score useless
+in the context of ensemble forecasting (see e.g., Table 2
+in Feldmann et al. 2015 ). Accordingly, in section 2 we
+propose a new, proper, multivariate score that is based
+on pairwise differences between all components of the
+multivariate quantity and that we hypothesize is more
+readily usable for ensemble forecast diagnosis. Some
+simulation examples are presented in section 3 . These
+1322 MONTHLY WEATHER REVIEW V OLUME 143
+PDF page 3
+will demonstrate that this new score is sensitive to mis-
+speciﬁed correlations between the different components,
+and that it is useful for ensemble forecast diagnosis even
+when the number of ensemble members is moderate. An
+application of the new score in the context of probabilistic
+wind speed forecasting at several locations in Colorado
+simultaneously is presented in section 4,b e f o r ew ec o n -
+clude with a short discussion in section 5.
+2. A scoring rule based on pairwise differences
+The basic idea of the class of multivariate scoring rules
+proposed in the following is to consider pairwise dif-
+ferences of the components of the multivariate quantity
+of interest. This has already been suggested in the con-
+text of rank histograms (e.g., Fig. 5 in Hamill 2001) and
+recently been utilized by Feldmann et al. (2015) in a di-
+agnostic plot to check the adequacy of a statistical model
+for spatial correlations. Denote by y the vector of ob-
+servations, by yi its ith component, and assume that y is
+a realization of the random vector Y. Adopting the
+concept of a variogram (also referred to as structure
+function) from geostatistics we study the quantity
+g2(i, j) 5 1
+2EjYi 2 Yjj2 ,
+where E denotes the expectation under the (multivari-
+ate) distribution of Y, which is assumed to have ﬁnite
+second moments. Denoting mi :5 E(Yi), s2
+i :5 var(Yi)
+and rij :5 corr(Yi, Yj) we have
+EjYi 2 Yjj2 5 (mi 2 mj)2 1 (s2
+i 2 2sisjrij 1 s2
+j ) , (2)
+which shows that g2 depends not only on the ﬁrst and
+second moments of the individual components, but also
+on their correlations. More generally, one can consider
+variograms of order p . 0:
+gp(i, j) 5 1
+2EjYi 2 Yjjp .
+The special cases p 5 1a n d p 5 0:5 are known as
+madogram and rodogram, respectively ( Bruno and
+Raspa 1989; Emery 2005). Variograms of order p can be
+deﬁned for any multivariate distribution for which thepth
+absolute moments exist. For p 6¼ 2 and non-Gaussian
+distributions they can usually not be expressed as simple
+functions of the means, variances, and correlations of Yi
+and Yj, but they still depend on all of those quantities, and
+are therefore potentially useful for comparing the multi-
+variate dependence structure of forecasts and observa-
+tions. While condensing the information about the
+dependence of Yi and Yj into a single number gp(i, j)
+implies a certain loss of information, we shall see that
+utilizing these quantities in the framework of scoring
+rules results in a performance measure that is sensitive to
+various types of miscalibration of multivariate forecasts.
+For a given d-variate observation vector y and forecast
+distribution F we deﬁne the variogram score of order p
+(VS-p):
+Sgp
+(F, y) 5 /C229
+d
+i,j51
+wij(jyi 2 yjjp 2 EF jXi 2 Xjjp)2 , (3)
+where Xi and Xj are the ith and the jth component of
+a random vector X that is distributed according to F, and
+wij are nonnegative weights. The score Sgp measures the
+dissimilarity between approximations of the variograms
+of order p of observations and forecasts over all pairs of
+components of the quantity of interest. For the obser-
+vations, our best guess of EjYi 2 Yjjp is simply the
+powered absolute difference of yi and yj. When the
+forecast distribution is given in the form of an ensemble
+x(1), ... , x(m), the forecast variogram EF jXi 2 Xjjp can be
+approximated by
+EF jXi 2 Xjjp ’ 1
+m /C229
+m
+k51
+jx(k)
+i 2 x(k)
+j jp, i, j 5 1, ... , d .
+(4)
+Pairs of squared variogram differences can be empha-
+sized or downweighted through the choice of the
+weights. This might be motivated by a subjective de-
+cision of an expert to put focus on certain component
+combinations. In a spatial context, for example, the
+possibility of emphasizing differences corresponding to
+pairs of locations that are either close by or a certain
+distance apart is related to the idea of scale-dependent
+veriﬁcation (e.g., Jung and Leutbecher 2008 ). Down-
+weighting certain pairs can also help mitigating the ef-
+fects of sampling error. To see this, assume for simplicity
+that the random vector Y follows a multivariate
+Gaussian distribution with identical mean in all com-
+ponents. Deﬁning s2
+ij :5 s2
+i 2 2sisjrij 1 s2
+j we then have
+EjYi 2 Yjj1 5
+ﬃﬃﬃﬃ
+2
+p
+r
+sij , var jYi 2 Yjj1 5
+/C18
+1 2 2
+p
+/C19
+s2
+ij
+EjYi 2 Yjj2 5 s2
+ij , var jYi 2 Yjj2 5 2s4
+ij .
+This shows that in both cases, both magnitude and var-
+iability of pairs of weakly correlated components are
+higher than for strongly correlated components. The
+former would therefore dominate the VS- p on the one
+hand, and introduce more variability on the other hand,
+which implies that downweighting pairs that are ex-
+pected to have relatively weak correlations can beneﬁt
+APRIL 2015 S C H E U E R E R A N D H A M I L L 1323
+PDF page 4
+the signal-to-noise ratio. In situations where there is
+some notion of distance between the ith and jth com-
+ponent (e.g., time lag as in the examples in section 3 or
+spatial distance as in section 4 ), correlations at short
+distances are typically stronger than those at longer
+distances. As a pragmatic ad hoc choice of the weights
+we then suggest to let them be proportional to the in-
+verse distances between the corresponding components.
+This idea of downweighting certain pairs of components
+is conceptually similar to covariance localization in data
+assimilation ( Houtekamer and Mitchell 2001 ; Hamill
+et al. 2001 ), where elements in the empirical covariance
+matrix that correspond to conceivably weakly or un-
+correlated components are tapered down toward zero to
+reduce the effects of sampling error. When the multi-
+variate quantity consists of variables of different type
+(e.g., temperature, pressure, and relative humidity),
+there is no obvious notion of distance and even the
+deﬁnition of Sgp seems doubtful as we would be sub-
+tracting quantities with potentially different units. In
+that situation, one could apply Sgp to standardized
+components:
+~yi :5 yi 2 m(cl)
+i
+s(cl)
+i
+, ~Xi :5 Xi 2 m(cl)
+i
+s(cl)
+i
+, i 5 1, ... , d ,
+where m(cl)
+i and s(cl)
+i are the climatological mean and
+variance of the variables, respectively. This approach has
+been suggested in multivariate geostatistics in the context
+of variance-based cross variograms, which are the equiv-
+alent of our score in the situation where components can
+correspond to different variables. In the geostatistical
+context it can be justiﬁed by the fact that predictors de-
+rived from variance-based cross variograms do not de-
+pend on the particular unit, and so the user should work
+with standardized variables in order to minimize the ef-
+f e c t so fs a m p l i n ge r r o r(Cressie and Wikle 1998). In some
+applications there might be better, more problem-speciﬁc
+meteorological concepts to transform weather variables of
+different type in a way that brings them all to a scale in
+which they can be compared, one example being the total-
+energy norm (e.g., Hamill et al. 2003).
+We now show thatSgp is proper relative to the class of the
+probability distributions for which the (2p)th moments of
+all components are ﬁnite. To see this, consider ﬁrst a single
+pair (i, j). For any such pair, the mean of the random var-
+iable Z d jYi 2 Yjjp minimizes the expected squared de-
+viation of Z from any ﬁxed numbera 2 R,t h a ti s ,
+E[Z 2 E(Z)]2 # E(Z 2 a)2 .
+This means that the inequality in (1) holds separately for
+any pair (i, j), but then it also holds for the weighted sum
+over all pairs, for any choice of nonnegative weights.
+Note, however, that the VS- p is not strictly proper be-
+cause it only depends on the pth absolute moment of the
+distribution of component differences, and can there-
+fore not distinguish between distributions of Z that have
+the same pth absolute moment but different higher
+moments. Moreover, large-scale random errors that are
+the same for all components cancel out when differences
+are considered; likewise, a bias that is the same for all
+components will go undetected. The simulation study in
+section 3 shows, however, that for suitable choices of p
+the VS- p is quite sensitive to misspeciﬁcations of the
+correlation structure of Y. More importantly, this is still
+true when EF jXi 2 Xjjp has to be estimated as in (4)
+from an ensemble that represents the predictive distri-
+bution F. This approximation introduces quite a bit of
+additional sampling error, but the effects on the score’s
+propriety and discrimination ability will be shown to be
+much less severe as for the Dawid–Sebastiani score. This
+makes the VS- p a favorable score in the context of en-
+semble forecasting, on which we focus in the rest of this
+paper.
+Before comparing it with the ES and DSS in simula-
+tions, we shall mention that the VS- p can be viewed as
+a special case of a much larger class of scoring rules.
+Consider the mapping gp, ~w: Rd / Rd2
+deﬁned by
+[gp, ~w(y)]ij 5 ~wijjyi 2 yjjp, i, j 5 1, ... , d ,
+where ~w is the weight vector of the transformation gp, ~w.
+Choosing ~wij 5 ﬃﬃﬃﬃﬃﬃwij
+p , we can rewrite the VS-p from (3) as
+Sgp
+(F, y) 5 /C229
+d
+i,j51
+f[gp, ~w(y)]ij 2 EF [gp, ~w(X)]ijg2 ,
+which shows that the VS- p of a single, multivariate
+forecast is (up to the factor 1/ d2) the same as the mean
+squared error (MSE) over the d2 components of the
+transformed forecast vector. The generalization of the
+VS-p is now obvious: instead of the MSE, we can apply
+any other univariate scoring rule to the components of
+gp, ~w(X)a n dgp, ~w(y), and take the mean over the resultingd2
+values as an alternative sc ore for our multivariate
+quantity. Or, we can apply the ES to the d2-variate
+vectors gp, ~w(X) and gp, ~w(y), rather than to X and y di-
+rectly. These generalizations will also be studied in the
+subsequent section.
+3. Simulation study
+We compare the energy score, the Dawid–Sebastiani
+score, and the variogram score of order p 5 0:5, 1, and 2,
+using inverse distance weights as described above. In all
+1324 MONTHLY WEATHER REVIEW V OLUME 143
+PDF page 5
+experiments we generate n 5 5000 observation vectors
+of dimension d, and an m-member ensemble of forecast
+vectors of the same dimension with both correct and
+misspeciﬁed means, variances, or correlations. To un-
+derstand the impact of representing the predictive dis-
+tribution by an ensemble on the different scores, we
+consider both small ( m 5 20) and medium-sized
+(m 5 100) ensembles. While a formal deﬁnition of be-
+ing proper exists and allows one to check this property
+mathematically, there does not seem to be a commonly
+accepted measure of a scoring rule’s ability to discrimi-
+nate between calibrated and uncalibrated forecasts. This
+is an important characteristic though that determines its
+utility for forecast veriﬁcation in practice. In this simu-
+lation study, we try to get some sense of the discrimi-
+nation ability of the various scores by repeating each
+experiment 10 times and visualizing the respective out-
+comes by boxplots. Even though the scores are averaged
+over 5000 cases, they still vary from one experiment to
+another. If the group of average scores obtained with
+calibrated forecasts is clearly separated from the one
+obtained with uncalibrated forecasts, we will interpret
+this as good discrimination ability of the scoring rule that
+was utilized. Conversely, if there is a strong overlap of
+the ranges of outcomes obtained with calibrated and
+uncalibrated forecasts, we will conclude that the scoring
+rule that produced these outcomes cannot reliably de-
+tect this particular type of miscalibration.
+a. Miscalibrated marginal distributions
+Although we contend that multivariate veriﬁcation
+should focus on the correlations between the different
+components (predictive means and variances can be com-
+pared in a ﬁrst step with univariate veriﬁcation techniques),
+we shall start with a ﬁrst experiment that compares the
+different scores with respect to their ability to detect biases
+and over- or underdispersion of the forecasts. We already
+noted that the VS-p is unable to detect a bias that is the
+same for all components, but we can consider a situation
+where this simple type of bias has been removed while an
+erroneous trend is present in the forecast means. Speciﬁ-
+cally, let the observation vectors be realizations of
+a Gaussian random vectorY of dimensiond 5 5w i t hz e r o
+mean, unit variance, and correlation function:
+corr(Yi, Yj) 5 exp
+/C18
+2ji 2 jj
+r
+/C19
+, i, j 5 1, ... , d . (5)
+In this experiment we take r 5 3. If we associate each
+component with a time point, Y can be viewed as a short,
+stationary autoregressive AR(1) process. Note that the
+deﬁnitions of all scores studied here neither exploit nor
+rely on this property of stationarity. Moreover, since the
+scores are calculated separately for each of the 5000
+cases and averaged only afterward, they can also be
+applied in situations where the distribution of the ob-
+servation vector differs from one case to another. The
+possibility of exploiting preliminary knowledge about
+the multivariate dependence structure is further dis-
+cussed in the second example below. To compare the
+sensitivity of the different scores to misspeciﬁcations of
+means and variances, we generate forecasts with the
+same exponential correlation function as above and
+1) correct variances but biased means: mF 5 (20:5,
+20:25, 0; 0:25, 0:5)0;
+2) correct means and variances;
+3) correct means but too large variances: s2
+i 5 1:5,
+i 5 1, ... , 5; and
+4) correct means but too small variances: s2
+i 5 0:6667,
+i 5 1, ... ,5 .
+The corresponding boxplots are shown in Fig. 1 .W e
+note ﬁrst of all that the inﬂuence of ensemble size is rather
+different from one score to another. For the ES, there is
+hardly any difference betweenm 5 20 with m 5 100. This
+can be an advantage if only an ensemble of very small size
+is available, but it also suggests that the ES cannot distin-
+guish a very good representation of the predictive distri-
+bution F from a very sparse one. This is different for the
+VS-p values, which consistently improve with increasing
+ensemble size, thus showing that the ﬁnite sample repre-
+sentation of F does have a noticeable effect on the score.
+This sampling effect, however, does not change the qual-
+itative conclusions about the predictive performance of the
+different forecasts (this is also true for the examples con-
+sidered below). A really substantial change of the scores
+due to the different ﬁnite representations of the predictive
+distribution can be observed with the DSS (note the dif-
+ferent scales form 5 20 and m 5 100). The approximation
+of mF and SF by empirical means and covariances esti-
+mated from the small ensemble is so poor that the resulting
+scores lead to false conclusions about predictive perfor-
+mance, favoring the overdispersive ensemble over the
+calibrated one. For the larger ensemble, this score bias
+due to insufﬁcient representation of F plays a smaller
+role, and the DSS discriminates well between the correct
+and uncalibrated forecasts. The ES is very effective in
+detecting the erroneous linear trend corresponding to the
+forecasts simulated according to 1), but the separation
+between the calibrated and over/underdispersive fore-
+casts is less distinct. Among the different VS- p studied
+here, the VS- p with p 5 0:5 has clearly the best discrim-
+ination ability. It identiﬁes the miscalibration of the mean
+less clearly than the ES, but is more effective in detecting
+over and underdispersiveness. The VS- p with p 5 1s t i l l
+detects all types of miscalibration reasonably well. It is
+APRIL 2015 S C H E U E R E R A N D H A M I L L 1325
+PDF page 6
+noticeable, however, that with increasing p the random
+variations between scores obtained with identical setups
+become larger and larger and blur the systematic differ-
+ences between calibrated and uncalibrated forecasts.
+Before we turn to the genuinely multivariate aspects we
+would like to recall that the VS-p is not strictly proper. In
+the present situation, for example, the effects of an er-
+roneous trend and underdispersion can cancel out [for
+p 5 2 this can be seen directly from (2)]. We therefore
+emphasize again that an analysis of the marginal distri-
+butions by means of univariate scores should precede the
+study of multivariate properties.
+b. Misspeciﬁed correlation strength
+In our second experiment we focus on the correlation
+structure of the multivariate quantity under consideration.
+We study the ability of the different scores to detect whether
+the correlations between the different components of the
+forecast vectors are too weak, adequate, or too strong
+compared to the corresponding correlations of the obser-
+vation vectors. Moreover, we study the effect of increasing
+the dimension fromd 5 5t o d 5 15 on the different scores.
+In both cases, we consider again a zero mean, unit variance
+AR(1) process with correlation function given in(5).F o rt h e
+observation vectors, we chooser 5 3 as before and compare
+ensemble forecasts simulated with the same correlation
+model, butr 5 2, r 5 3, and r 5 4:5. The boxplots inFig. 2
+for the ES conﬁrm the conclusion of Pinson and Tastu
+(2013) that the ES can hardly discriminate multivariate
+forecasts that differ only with respect to their correlations
+between individual components. For the DSS the conclu-
+sion is as in the ﬁrst experiment. It discriminates well be-
+tween calibrated and uncalibrated forecasts if the ensemble
+that represents the predictive distribution is sufﬁciently
+large. A small ensemble, however, results in an inaccurate
+approximation ofmF and SF , and the corresponding DSS
+leads to misguided inference. This representation issue is
+much less severe for the VS-p,a n df o rp 5 0:5a n dp 5 1i t
+discriminates well between correct and incorrect correlation
+strengths. Forp 5 2 the discrimination ability is still better
+than for the ES but overall not very satisfactory with ran-
+dom differences between identical setups having the same
+magnitude as systematic score differences due to mis-
+calibration. Increasing the dimension fromd 5 5t o d 5 15
+has a slightly negative effect on the discrimination ability of
+the VS-p. This may be somewhat surprising since a larger
+dimension entails more data that are used for the calculation
+of Sgp . However, since our deﬁnition of the VS-p in (3) does
+not make any assumption (e.g., stationarity in a time series
+or spatial context) about the correlation structure of fore-
+casts and observations, increasing the number of summands
+in (3) doesnot lead to an averaging of sampling error. If one
+was absolutely sure that some additional structural as-
+sumption is justiﬁed [i.e., that the set of all pairs (i, j)c a nb e
+represented as a union of disjoint subsets I1, ... , IN such
+that the component differences corresponding to the pairs in
+each subset have the samepth absolute moment], one could
+replace deﬁnition(3) by
+Sgp
+(F, y): 5 /C229
+N
+k51
+wk
+"
+/C229
+(i,j)2Ik
+jyi 2 yjjp 2 /C229
+(i,j)2Ik
+EF jXi 2 Xjjp
+#2
+.
+This way, additional structural information could be
+exploited and an increase of d would then likely reduce
+sampling error and improve the discrimination ability of
+the score. In the present example, the simulated AR(1)
+process is stationary and proceeding as described above
+with Ik :5 [(i, j): ji 2 jj 5 k] would be justiﬁed. In general,
+however, such information is not available, and while
+simplifying assumptions are common and appropriate in
+FIG. 1. (from left to right) Energy, Dawid–Sebastiani, and variogram scores of order p 5 0.5, 1, and 2 for ensemble size m 5 20 and
+m 5 100. The boxplots corresponding to mean-biased, correct, over-, and underdispersive forecasts are cornﬂower blue, violet, light blue,
+and dark blue, respectively. The boxes cover the ﬁrst to third quartile of the 10 outcomes, the black line shows the median, and the
+whiskers extend to the data extremes.
+1326 MONTHLY WEATHER REVIEW V OLUME 143
+PDF page 7
+statistical modeling, we contend that veriﬁcation methods
+should avoid unwarranted preliminary assumptions
+about forecasts and observations as far as possible. We
+therefore recommend retaining the deﬁnition in(3),e v e n
+though it is less favorable with respect to the VS- p’s dis-
+crimination ability. The fact that the discrimination
+ability in the present example even gets slightly worse
+from d 5 5t o d 5 15 can probably be explained by the
+fact that the fraction of pairs of components in Sgp (F, y)
+with rather weak correlations increases, and thus more
+variability is introduced into the calculation of the score.
+c. Misspeciﬁed correlation model
+In the third experiment, we vary the entire correlation
+model rather than just the correlation strength. We now
+consider only the case d 5 15 and simulate observations
+with zero mean, unit variance, and correlation function:
+(i) corr( Yi, Yj) 5
+/C18
+1 1 ji 2 jj
+3
+/C19 21
+, and
+(ii) corr( Yi, Yj)
+5 exp
+/C18
+2ji 2 jj
+4
+/C19/C20
+0:75 1 0:25 cos
+/C18 ji 2 jjp
+2
+/C19/C21
+.
+Both of them yield correlations at lag 1 that are very
+similar to the exponential model in (5) with r 5 3. Model
+(i), however, has much stronger correlations at larger
+lags, and model (ii) has a periodic component that
+makes it oscillate around this exponential reference
+model. Can the VS- p detect those differences between
+the model in (5) and models (i) and (ii), respectively,
+even though our proposed weighting scheme down-
+weights larger lags? Figure 3 conﬁrms many of the
+conclusions from the preceding experiment. The ES
+again lacks sensitivity to misspeciﬁcations of the corre-
+lation structure while the VS- p distinguishes much bet-
+ter between the correct and the incorrect correlation
+model. Again, however, the discrimination ability de-
+pends on p, with smaller values yielding signiﬁcantly
+better results. The DSS has similar issues in this example
+as in those discussed above. Their magnitude drops
+dramatically when passing from 20 to 100 ensemble
+members, although the underlying multivariate distri-
+bution is the same. In the case where the observations
+have long-range dependence, both ensemble sizes are
+insufﬁcient to reduce this score’s representation bias
+enough to yield the proper ranking between correct and
+incorrect forecasts. In the example with the oscillating
+correlation model, the DSS yields the correct ranking
+and separates the two cases very well. However, it may
+well be that this is simply an example where the bias due
+to the ﬁnite representation of the predictive distribution
+favors the correct ranking by chance.
+d. Misspeciﬁed generating process
+When we introduced the VS- p in section 2 ,w ee m -
+phasized that this family of scoring rules is proper, but not
+strictly proper. It is based only on the pth absolute mo-
+ment of differences between all pairs of components. It
+is clear that biases that are the same for all components
+cancel out. It is also clear that certain combinations of
+FIG.2 .A si n Fig. 1, but for forecasts with too weak (light blue), adequate (violet), and too strong (dark blue) correlations compared to the
+observations for (top) d 5 5 and (bottom) d 5 15.
+APRIL 2015 S C H E U E R E R A N D H A M I L L 1327
+PDF page 8
+misspeciﬁcations (e.g., overestimation of correlation
+strength and overestimation of marginal variances) can
+partially or fully cancel out. But even if it has been as-
+sured that the marginal distributions are calibrated, the
+pth absolute moment of component differences does in
+general not fully characterize the multivariate dependence.
+How good is the VS-p in distinguishing forecasts that are
+entirely correct (i.e., have been generated by the same
+process as the observations) from forecasts that have
+correct means, variances,and correlations, but have been
+generated by a completely different mechanism? It can
+be expected that the answer depends on the particular
+generating process, and we are careful to make general
+claims as to this issue. Yet it is instructive to study at least
+one such example. We simulate observations as follows:
+1) Draw a random number y from a Poisson distribution
+with parameter l 5 8.
+2) Draw y locations t1, ... , ty from a uniform distribu-
+tion on the interval [0, 16].
+3) Denoting by ( /C1 )1 the maximum of 0 and the function
+in brackets, deﬁne
+yt 5
+ﬃﬃﬃﬃﬃ
+15
+8
+r
+/C229
+y
+i51
+[1 2 (t 2 ti)2]1, t 5 1, ... , 15 . (6)
+One can think of t1, ... , ty as storm centers that have an
+inﬂuence on all locations within a radius of one unit,
+expressed by the inﬂuence function (1 2 x2)1. The dif-
+ferent local storms are then added up to the ﬁnal out-
+come. This process is a special case of a so-called shot
+noise process. Using results from Matérn (1986, chapter
+3.3), one can show that with the speciﬁc choices made
+above y is a sample of a stationary time series with meanﬃﬃﬃﬃﬃﬃﬃ
+5/3
+p
+, variance 1, and correlation function:
+corr(Yi, Yj) 5
+ 
+1 1 3ji 2 jj
+2 1 ji 2 jj2
+4
+!/C18
+1 2 ji 2 jj
+2
+/C19 3
+1
+.
+We now compare forecasts that were generated in the
+same way as this shot noise observation process with
+forecasts that have the same means, variances, and
+correlations, but were simulated from a multivariate
+Gaussian distribution. An illustration of one sample path,
+respectively, on the full interval [1, 15] is provided
+in the supplemental material to this paper. The results of
+this comparison are depicted in Fig. 4. A few conclusions
+are very consistent with what we already observed be-
+fore. The discrimination ability of the ES is rather poor,
+and the DSS favors the incorrect model as a result of
+insufﬁcient approximation of mF and SF , even in the
+case where m 5 100. Recall that the DSS depends on the
+predictive distribution only through its component
+means and variances, and intercomponent correlations,
+so for a perfect approximation of mF and SF we would
+expect the DSS to be indifferent toward the particular
+forecast generation process. The same is true for the
+VS-2, while the effect of the generation process on the
+VS-1 and VS-0.5 is not quite as obvious. For the ﬁrst
+time, we observe problems related to the ﬁnite sample
+representation of the predictive distribution also with
+FIG.3 .A si n Fig. 1, but for forecasts with (left violet boxplots) correct and (right dark blue boxplots) incorrect correlation structure
+where the correct correlation function is that using (top) model (i) or (bottom) model (ii) in section 3c ; and the incorrect correlation
+function is, in both cases, the exponential model in (5) with r 5 3.
+1328 MONTHLY WEATHER REVIEW V OLUME 143
+PDF page 9
+the VS-2 and VS-1. The good discrimination ability of
+the VS-0.5 may be based on several factors. On the one
+hand, the 0.5th absolute moment of differences seems
+to be very informative about the generating process.
+It is not clear though, whether this is speciﬁc to the
+present example or whether this is true in general. On
+the other hand, we have already observed that the
+choice p 5 0:5 entails less sampling variability compared
+to larger values, and this likely contributes to the favor-
+able performance of the VS-0.5 in the present example
+as well.
+e. Sensitivity of the variogram score of order p to the
+choice of weights
+So far, we have always chosen the weights in (3)
+proportional to the inverse distance between the com-
+ponents. We have argued in section 2 that such a choice
+is reasonable whenever there is some natural notion
+of distance, and correlations between components
+are expected to decrease with this distance. Yet, this
+choice is quite ad hoc, and it is natural to ask how
+sensitive the discrimination ability of the VS- p is with
+regard to the choice of weights, and if other choices
+yield a similar or even better performance. To answer
+this question, we repeat the ﬁrst two experiments, this
+time considering only the case where d 5 15 and
+m 5 20. We restrict our attention to the VS-0.5, but
+study two alternative weighting schemes: no weighting
+at all (i.e., wij [ 1) and a kind of localization scheme
+where wij 5 [1 2 (ji 2 jj/3)2]1 (i.e., pairs of components
+more than three units apart are not considered at all). The
+results in Fig. 5 are as one might have expected. Mis-
+specifying the range parameter in our exponential cor-
+relation model in (5) affects correlations between all
+pairs of components. As pointed out in section 2 , close
+by, strongly correlated components have a more favor-
+able signal to noise ratio, and so it is not surprising that
+the localization weighting scheme has the best, and the
+unweighted VS-0.5 has the worst discrimination ability.
+The same conclusion holds in the experiment where the
+correlation function of the observations has a periodic
+component. Even at short lags, this correlation functions
+differs quite strongly from the simple exponential
+model, and focusing on close-by component pairs,
+therefore, beneﬁts the score’s discrimination ability.
+Differences between the long-range correlation model
+and the exponential model, on the contrary, are more
+noticeable for pairs of components that are farther
+apart, and hence the unweighted VS-0.5 performs best.
+Overall, we conclude that if prior knowledge about cor-
+relations is available, some sort of localization scheme
+with appropriately chosen cutoff radius should be used. In
+the absence of such knowledge, the inverse distance
+weighting scheme seems to be a good compromise. We
+FIG.4 .A si n Fig. 1, but for forecasts of (left violet boxplots) correct (shot noise) type and (right dark blue boxplots) incorrect (Gaussian)
+process type.
+FIG. 5. VS-0.5 for three different component weights—unweighted, inverse distance, and localized—for the case where d 5 15 and
+m 5 20. The three plots on the left are for the correlation strength experiment with too weak, adequate, and too strong correlations being
+represented by light blue, violet, and dark blue boxplots, respectively, and those on the right are for the correlation model experiment with
+correct forecasts being represented by violet and incorrect forecasts being represented by dark blue boxplots.
+APRIL 2015 S C H E U E R E R A N D H A M I L L 1329
+PDF page 10
+ﬁnally note that even the unweighted score permits better
+identiﬁcation of misspeciﬁed dependence structures than
+the ES.
+f. Generalizations of the variogram score of order p
+At the end of section 2 , we pointed out that the VS- p
+deﬁned in (3) can be viewed as a special case of
+a larger class of scoring rules which transforms both
+forecast and observation vectors to d2-dimensional
+vectors of weighted, powered, absolute differences
+between the components of the original vectors. Here,
+we ﬁx p 5 0:5 and deﬁne the weight vector ~w of the
+transformation g0:5, ~w through ~wij 5 1/
+ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+ji 2 jj
+p
+.W i t h
+these choices, the VS-0 .5 with inverse distance
+weights is (up to a constant factor) the same as the
+MSE of the componentwise means of the transformed
+forecasts with respect to the transformed observa-
+tions. As alternative scores, we consider the mean
+absolute error (MAE) of the componentwise medians
+of the transformed forecasts, the mean continuous
+ranked probability score (MCRPS) over all compo-
+nents of the transformed forecasts, and the ES of the
+vector of transformed forecast. Figure 6 shows results
+for the setting of our correlation model experiment in
+section 3c with d 5 15 and m 5 20, where the obser-
+vation is generated according to section 3c model (i)
+and (ii), respectively, and the scores are used to dis-
+tinguish correct forecasts from those that erroneously
+use an exponential correlat ion model. The main point
+to note is that all scores are able to distinguish the
+correct from the incorrect correlation model, showing
+that it is really the transformation g0:5, ~w,r a t h e rt h a n
+the particular score applied to the transformed vec-
+tors, that is crucial for detecting misspeciﬁed de-
+pendence structures. With the MAE and MCRPS
+being particular discriminative in the example with
+long-range dependence and the ES faring best in the
+example with a periodic component, there is no clear
+ranking among the different scores. The MSE, the
+score that corresponds to the VS-0.5, demonstrates
+good discrimination ability in both examples. Its
+preference over the other options is by no means im-
+perative, but it seems to be a good compromise, and
+thus a reasonable standard choice.
+4. Evaluating multisite wind speed forecasts
+We ﬁnally apply our score in a data example to
+evaluate and compare statistically calibrated, proba-
+bilistic forecasts of wind speeds at ﬁve major wind park
+locations in the state of Colorado. Speciﬁcally, we
+consider the period from 1 January to 31 December
+2013, use 80-m wind speed forecasts from the second-
+generation GEFS reforecast dataset ( Hamill et al.
+2013) and the corresponding reanalyses for both cali-
+bration and veriﬁcation. The reforecast ensemble has
+11 members and was initialized once daily at 0000 UTC.
+We study 80-m wind speed predictions with lead
+times of 24, 48, and 72 h at the grid points that are
+closest to
+d Cedar Point Wind Farm (250 MW, operational since
+2011);
+d Cedar Creek Wind Farms I and II (550 MW, opera-
+tional since 2007/10);
+d Peetz Table Wind Energy Center (430 MW, opera-
+tional since 2001/07);
+d Colorado Green Wind Farm (162 MW, operational
+since 2003); and
+d Cheyenne Ridge Wind Project (under development,
+project size 300–600 MW).
+As explained above, the ensemble forecasts
+f1s, ... , f11s, s 2 S , where S denotes the set of the ﬁve
+wind park locations, can be interpreted as a sample from
+the multivariate distribution that describes the simulta-
+neous predictions. The raw model output, however, of-
+ten suffers from systematic biases and typically fails
+to fully represent prediction uncertainty ( Hamill and
+Colucci 1997 ). To calibrate the marginal predictive
+FIG. 6. Different scores that result from applying the ES, MAE, MSE, and MCRPS to the g0:5, ~w-transformed forecast and observation
+vectors. The two left and right boxplots within each panel correspond to the experiments where the observation is generated according to
+section 3c models (i) and (ii), respectively, with correct forecasts colored in violet and incorrect forecasts colored in dark blue.
+1330 MONTHLY WEATHER REVIEW V OLUME 143
+PDF page 11
+distributions, we follow Thorarinsdottir and Gneiting
+(2010) and ﬁt a heteroscedastic regression model to past
+forecast–observation pairs that turns the ensemble mean
+f s and the ensemble variance S2
+s at location s into a
+predictive truncated normal distribution,
+Ys j f1s, ... , f11s ; N 0(as 1 bsf s, cs 1 dsS2
+s ) , (7)
+for the observed wind speed Ys at s. A separate model is
+ﬁtted for each location, each forecast lead time, and each
+month of the veriﬁcation period from 1 January to 31
+December 2013. For each month, forecasts and obser-
+vations from the same, the preceding, and the sub-
+sequent month in the years 2010, 2011, and 2012 are used
+as training data for the model ﬁtting procedure [for de-
+tails about that procedure we refer toThorarinsdottir and
+Gneiting (2010)]. Once the parameters as, bs, cs,a n d ds
+for each month, location, and lead time are determined,
+a predictive distribution for the day under consider-
+ation can be obtained by plugging the corresponding
+ensemble mean and variance into (7). Diagnostic plots
+(not shown here) conﬁrm that the univariate probabi-
+listic forecasts obtained in this way are calibrated (i.e.,
+they are unbiased and represent the prediction uncertainty
+adequately).
+The postprocessing scheme just described only ad-
+dresses the marginal distributions. In our particular ex-
+ample, however, power network operators might be
+interested in whether low wind speeds (and hence low
+wind power production) at one wind park will be com-
+pensated by higher wind speeds at the other wind parks,
+or whether wind speeds will be low at all wind parks
+simultaneously. To account for this multivariate aspect
+of our prediction problem and address correlations be-
+tween the forecasts at the different locations, we use the
+ensemble copula coupling (ECC) technique ( Schefzik
+et al. 2013 ), which turns the ﬁve marginal predictive
+distributions back into an ensemble ~f 1s, ... , ~f 11s, s 2 S
+that has the same rank correlation structure as the
+original ensemble but calibrated margins. Speciﬁcally, if
+Fs denotes the predictive, truncated normal CDF at lo-
+cation s, calibrated ensemble forecasts are obtained via
+~f 1s 5 F21
+s
+/C18 rs(1)
+12
+/C19
+, ... , ~f 11s 5 F21
+s
+/C18 rs(11)
+12
+/C19
+, s 2 S , (8)
+where Fs
+21 is the predictive q uantile function at s and
+rs(k) 5 rank(fks), k 5 1, ... , 11. With other words, the
+original forecasts are replaced by quantiles (this par-
+ticular way of sampling is referred to as ECC-Q) of the
+calibrated marginal distributions in such a way that
+the ordering of the ensemble member forecasts re-
+mains unchanged. In this way, the (ﬂow dependent) rank
+correlation information of the raw GEFS ensemble is
+preserved.
+Does this preservation of rank correlations really
+yield noticeably better multivariate forecasts than
+a sampling scheme in which rs is a random perturbation
+of the set f1, ... ,1 1 g (i.e., no spatial correlations) or
+one in which rs is the identity (i.e., maximal spatial de-
+pendence)? We compute those alternative, marginally
+calibrated ensembles (‘‘random-Q,’’ ‘‘ordered-Q’’) as
+well and use the ES, the VS-0.5, and the VS-1 to evaluate
+and compare the corresponding multivariate wind speed
+forecasts with those of the raw and ECC-Q ensemble.
+Again, we use inverse distance weights for the VS- p
+where distance is now the geographical distance (in
+kilometers) between the wind farm locations. Since in
+section 3 the empirical DSS turned out to be unreliable
+for small ensemble sizes and the VS-2 was always less
+discriminative than the VS-0.5 and VS-1, only the two
+latter are considered here as alternatives to the ES. In
+order to facilitate the comparison between the three
+different scores, we turn them into skill scores with re-
+spect to the raw ensemble. That is, instead of the energy
+score ES* for method ‘‘*’’ we state the energy skill score
+ESS* =1 2 ES*/ESens, which measures the increase in
+predictive performance compared to the raw ensemble
+(likewise for the variogram scores). All skill scores in
+Table 1 agree that ECC-Q yields the most skillful,
+multivariate probabilistic forecasts. The ordered-Q en-
+semble, for which wind speeds are simultaneously low or
+high at all locations, is less skillful than the uncalibrated
+ensemble; the corresponding multivariate structure is
+clearly inappropriate. The comparison between ECC-Q
+and random-Q is more interesting, and conﬁrms the
+above ﬁndings about the respective sensitivity of the ES
+and the VS- p to miscalibration. The ESS yields a some-
+what clearer distinction between the raw and the ECC-Q
+ensemble, which differ in their marginal distribution,
+but have the same rank correlations. The random-Q
+TABLE 1. Skill scores of the ECC-Q, random-Q, and ordered-Q ensembles with respect to the raw ensemble.
+Lead time 24 h Lead time 48 h Lead time 72 h
+ESS VSS-0.5 VSS-1 ESS VSS-0.5 VSS-1 ESS VSS-0.5 VSS-1
+ECC-Q 0.184 0.171 0.151 0.119 0.119 0.096 0.063 0.036 0.027
+Random-Q 0.175 0.047 0.088 0.108 20.020 20.017 0.051 20.087 20.063
+Ordered-Q 20.284 20.147 20.062 20.420 20.231 20.145 20.493 20.461 20.299
+APRIL 2015 S C H E U E R E R A N D H A M I L L 1331
+PDF page 12
+ensemble, however, scores almost as well as the ECC-Q
+ensemble, despite its doubtful assumption of spatial in-
+dependence. Under the VS-0.5 and VS-1, on the contrary,
+the random-Q ensemble fares distinctly worse than the
+ECC-Q ensemble, and has even negative skill for lead
+times larger than 24 h. Those two ensembles yield identi-
+cal forecasts at each location individually, but their com-
+ponents have different rank correlations. Again, the VS-p
+can detect those differences more clearly.
+5. Discussion
+In their recent review on probabilistic forecasting,
+Gneiting and Katzfuss (2014 , p. 146) note as one out of
+eight key issues for future research that
+‘‘There is a pressing need for the development of
+decision-theoretically principled methods for the evalu-
+ation of probabilistic forecasts of multivariate variables.’’
+When the focus is on the correlation structure and the
+mean and covariance matrix of the predictive distribu-
+tion are given in closed form, the DSS is an excellent
+choice. The examples in section 3 show, however, that
+the usage of this score can be problematic when the
+probabilistic forecasts are represented by an ensemble
+of limited size, and empirical versions of the predictive
+mean vector and covariance matrix have to be used. In
+spite of being proper, the DSS can then lead to entirely
+wrong conclusions about predictive performance,
+which suggests that this scoring rule is far from being
+fair in the sense of Fricker et al. (2013) .I nt h i sp a p e r ,
+we have presented a new class of multivariate scores
+based on powered differences between pairs of com-
+ponents of the multivariate quantity, denoted as
+variogram scores of order p (VS-p). In our simulation
+studies the VS- p was also negatively affected by the
+sampling error due to representing the predictive dis-
+tribution by a (possibly small) ensemble. In the ma-
+jority of cases, however, it led to the correct
+conclusions about predictive performance, which
+suggests that it is much closer to being fair than the
+DSS. Moreover, it is more successful than the ES
+in distinguishing forecasts with different correlation
+structures. Three different choices of powers p were
+studied for the VS- p, and it was found that the best
+results are obtained with p 5 0:5, while p 5 2w a s
+clearly suboptimal. Would a VS- p with p , 0:5h a v e
+even better properties? At least for Gaussian pre-
+dictive distributions, a square root transformation is
+likely already the best choice since the distribution of
+jXi 2 Xjj0:5 is almost perfectly symmetric and thus has
+much better sampling properties than the strongly skewed
+distribution that comes with the choicep 5 2( Cressie and
+Hawkins 1980). If the predictive distribution itself is al-
+ready skewed, however, then smaller powers may indeed
+be favorable to obtain a near-symmetric distribution of
+jXi 2 Xjjp.
+In section 4 , we considered a data example with sta-
+tistically postprocessed wind speed forecasts. Scoring
+rules in general, and the VS- p in particular, may how-
+ever also be useful diagnostic tools in the development
+process of ensemble prediction systems. In the context
+of data assimilation, for example, it is important that the
+ensemble adequately represents the variances and co-
+variances between different variables at different loca-
+tions. Comparing different ensembles via scoring rules
+rather than empirical covariances (averaged over a cer-
+tain time period) has the advantage that the former
+evaluate every time point separately and average the
+scores rather than covariances. This is more adequate if
+those covariances are ﬂow dependent. Moreover, if the
+scores are normalized in a reasonable way (for the VS- p
+this could be done by requiring that the weights sum to
+one on each day), even the space dimension may change
+over time, and averaging the corresponding scores
+would still make sense. If the distribution of the ob-
+servation errors is known, those can be taken into account
+by simulating a sample /C15il, i 5 1, ... , d, l 5 1, ... , M of
+such errors and adding them to the ensemble forecasts. The
+empirical version of the VS-p then becomes
+Sgp
+(F, y) 5 /C229
+d
+i,j51
+wij
+ 
+jyi 2 yjjp 2 1
+mM /C229
+m
+k51
+/C229
+M
+l51
+jf (k)
+i 1 /C15il 2 f (k)
+j 2 /C15jljp
+!2
+,
+and by choosing M— the number of simulated observa-
+tion error vectors—large enough, one can reduce at least
+part of the additional variability that is introduced into
+the score. It remains to be seen if the signal-to-noise
+ratio in those applications is large enough for this score
+to be still sufﬁciently discriminative.
+W et h i n kt h a tt h ec l a s so fV S -p proposed here is
+a useful contribution to address the above-mentioned
+research issue of decision t heoretically principled
+methods for multivariate forecast evaluation. It has
+certain limitations, resulting from the fact that is not
+strictly proper as discussed in section 2 . Given the
+1332 MONTHLY WEATHER REVIEW V OLUME 143
+PDF page 13
+strong increase in the number of degrees of freedom
+with the dimension of the quantity to be forecast, it is
+unlikely, however, that there exists a single multivariate
+score that serves all purposes. We strongly recommend
+that several different scores be always considered before
+drawing conclusions. Some of the limitations of the VS-p
+can be addressed by studying the ES (which is more
+sensitive to misspeciﬁcations of the predictive mean and
+less affected by the ﬁnite representation of the predictive
+distribution) or univariate scores for the marginal dis-
+tributions alongside with our VS- p. Focusing on differ-
+ences between components is probably the most natural,
+but by no means the only possible transformation of the
+multivariate quantity that leads to a multivariate score
+that is sensitive to correlations between components. In
+some applications, studying composite quantities like
+minima, maxima, or averages over several locations or
+lead times (Berrocal et al. 2007; Feldmann et al. 2015), or
+indexes that involve multiple quantities ( Wilks 2014)i s
+a natural way to turn multivariate quantities into uni-
+variate ones that can be evaluated by standard univariate
+scores. This way, speciﬁc (and practically relevant) as-
+pects of the multivariate predictive distribution can be
+evaluated, and this sort of veriﬁcation is another rec-
+ommended supplement to general purpose multivariate
+scores like the ES or the VS- p presented here.
+Acknowledgments. The authors thank Tilmann
+Gneiting, Martin Leutbecher, and two anonymous re-
+viewers for useful discussions and comments on the
+manuscript. This research was performed while the ﬁrst
+author held a National Research Council Research
+Associateship Award at NOAA’s Earth System Re-
+search Laboratory. The publication was partially sup-
+ported by a NOAA/Ofﬁce of Weather and Air Quality
+(OWAQ) USWRP grant.
+REFERENCES
+Anderson, J. L., 1996: A method for producing and evaluating
+probabilistic forecasts from ensemble model integrations.
+J. Climate, 9, 1518–1530, doi:10.1175/1520-0442(1996)009,1518:
+AMFPAE.2.0.CO;2.
+Berrocal, V. J., A. E. Raftery, and T. Gneiting, 2007: Combining
+spatial statistical and ensemble information in probabilistic
+weather forecasts. Mon. Wea. Rev., 135, 1386–1402,
+doi:10.1175/MWR3341.1.
+Bruno, R., and G. Raspa, 1989: Geosta tistical characterization of
+fractal models of surfaces. Geostatistics, M. Armstrong, Ed.,
+Quantitative Geology and Geostatistics, Vol. 4, Springer,
+77–89.
+Buizza, R., P. L. Houtekamer, Z. Toth, G. Pellerin, M. Wei, and
+Y. Zhu, 2005: A comparison of the ECMWF, MSC, and NCEP
+global ensemble prediction systems. Mon. Wea. Rev., 133,
+1076–1097, doi:10.1175/MWR2905.1.
+Cressie, N., and D. M. Hawkins, 1980: Robust estimation of the
+variogram I. Math. Geol., 12, 115–125, doi: 10.1007/
+BF01035243.
+——, and C. K. Wikle, 1998: The variance-based cross-variogram:
+You can add apples and oranges. Math. Geol., 30, 789–799,
+doi:10.1023/A:1021770324434 .
+Dawid, A. P., and P. Sebastiani, 1999: Coherent dispersion cri-
+teria for optimal experimental design. Ann. Stat., 27, 65–81,
+doi:10.1214/aos/1018031101 .
+Emery, X., 2005: Variograms of order v: A tool to validate
+a bivariate distribution model. Math. Geol., 37, 163–181,
+doi:10.1007/s11004-005-1307-4 .
+Feldmann, K., M. Scheuerer, and T. L. Thorarinsdottir, 2015:
+Spatial postprocessing of ensemble forecasts for temperature
+using nonhomogeneous Gaussian regression. Mon. Wea. Rev.,
+143, 955–971, doi:10.1175/MWR-D-14-00210.1.
+Fricker, T. E., C. A. T. Ferro, and D. B. Stephenson, 2013: Three
+recommendations for evaluating climate predictions. Meteor.
+Appl., 20, 246–255, doi:10.1002/met.1409.
+Gneiting, T., 2011: Making and evaluating point forecasts. J. Amer.
+Stat. Assoc., 106, 746–762, doi:10.1198/jasa.2011.r10138.
+——, and A. E. Raftery, 2007: Strictly proper scoring rules, pre-
+diction, and estimation. J. Amer. Stat. Assoc., 102, 359–378,
+doi:10.1198/016214506000001437.
+——, and M. Katzfuss, 2014: Probabilistic forecasting. Ann. Rev. Stat.
+Appl., 1, 125–151, doi:10.1146/annurev-statistics-062713-085831.
+——, F. Balabdaoui, and A. E. Raftery, 2007: Probabilistic fore-
+casts, calibration and sharpness. J. Roy. Stat. Soc., 69B, 243–
+268, doi:10.1111/j.1467-9868.2007.00587.x.
+——, L. I. Stanberry, E. P. Grimit, L. Held, and N. A. Johnson,
+2008: Assessing probabilistic forecasts of multivariate
+quantities, with an application to ensemble predictions
+of surface winds. TEST, 17, 211–235, doi: 10.1007/
+s11749-008-0114-x .
+Hamill, T. M., 1999: Hypothesis tests for evaluating numerical
+precipitation forecasts. Wea. Forecasting, 14, 155–167,
+doi:10.1175/1520-0434(1999)014,0155:HTFENP.2.0.CO;2.
+——, 2001: Interpretation of rank histograms for verifying en-
+semble forecasts. Mon. Wea. Rev., 129, 550–560, doi:10.1175/
+1520-0493(2001)129,0550:IORHFV.2.0.CO;2.
+——, and S. J. Colucci, 1997: Veriﬁcation of Eta-RSM short-range
+ensemble forecasts.Mon. Wea. Rev.,125, 1312–1327, doi:10.1175/
+1520-0493(1997)125,1312:VOERSR.2.0.CO;2.
+——, J. S. Whitaker, and C. Snyder, 2001: Distance-dependent
+ﬁltering of background error covariance estimates in an en-
+semble Kalman ﬁlter. Mon. Wea. Rev., 129, 2776–2790,
+doi:10.1175/1520-0493(2001)129,2776:DDFOBE.2.0.CO;2.
+——, C. Snyder, and J. S. Whitaker, 2003: Ensemble forecasts and
+the properties of ﬂow-dependent analysis-error covariance.
+Mon. Wea. Rev., 131, 1741–1758, doi:10.1175/2559.1.
+——, G. T. Bates, J. S. Whitaker, D. R. Murray, M. Fiorino, T. J.
+Galarneau Jr., Y. Zhu, and W. Lapenta, 2013: NOAA’s second-
+generation global medium-range ensemble reforecast data-
+set. Bull. Amer. Meteor. Soc., 94, 1553–1565, doi: 10.1175/
+BAMS-D-12-00014.1 .
+Hersbach, H., 2000: Decomposition of the continuous ranked
+probability score for ensemble prediction systems. Wea. Fore-
+casting, 15, 559–570, doi: 10.1175/1520-0434(2000)015,0559:
+DOTCRP.2.0.CO;2.
+Houtekamer, P. L., and H. L. Mitchell, 2001: A sequential en-
+semble Kalman ﬁlter for atmospheric data assimilation. Mon.
+Wea. Rev., 129, 123–137, doi:10.1175/1520-0493(2001)129,0123:
+ASEKFF.2.0.CO;2.
+APRIL 2015 S C H E U E R E R A N D H A M I L L 1333
+PDF page 14
+Jung, T., and M. Leutbecher, 2008: Scale-dependent veriﬁcation of
+ensemble forecasts. Quart. J. Roy. Meteor. Soc., 134, 973–984,
+doi:10.1002/qj.255.
+Leutbecher, M., and T. N. Palmer, 2008: Ensemble forecasting.
+J. Comput. Phys., 227, 3515–3539, doi:10.1016/j.jcp.2007.02.014.
+Lewis, J. M., 2005: Roots of ensemble forecasting. Mon. Wea. Rev.,
+133, 1865–1885, doi:10.1175/MWR2949.1.
+Matérn, B., 1986: Spatial Variation. Lecture Notes in Statistics, Vol.
+36, 2nd ed. Springer-Verlag, 151 pp.
+Pinson, P., and R. Girard, 2012: Evaluating the quality of scenarios
+of short-term wind power generation. Appl. Energy, 96, 12–20,
+doi:10.1016/j.apenergy.2011.11.004.
+——, and J. Tastu, 2013: Discrimination ability of the energy score.
+Tech. Rep., Technical University of Denmark, 16 pp.
+R o u l s t o n ,M .S . ,a n dL .A .S m i t h ,2 0 02: Evaluating probabilistic fore-
+casts using information theory.Mon. Wea. Rev., 130, 1653–1660,
+doi:10.1175/1520-0493(2002)130,1653:EPFUIT.2.0.CO;2.
+Schefzik, R., T. L. Thorarinsdottir, and T. Gneiting, 2013: Un-
+certainty quantiﬁcation in complex simulation models using
+ensemble copula coupling. Stat. Sci., 28, 616–640, doi:10.1214/
+13-STS443.
+Smith, L. A., and J. A. Hansen, 2004: Extending the limits of ensemble
+forecast veriﬁcation with the minimum spanning tree.Mon. Wea.
+Rev., 132, 1522–1528, doi: 10.1175/1520-0493(2004)132,1522:
+ETLOEF.2.0.CO;2.
+Thorarinsdottir, T. L., and T. Gneiting, 2010: Probabilistic fore-
+casts of wind speed: Ensemble model output statistics using
+heteroskedastic censored regression. J. Roy. Stat. Soc., 173A,
+371–388, doi:10.1111/j.1467-985X.2009.00616.x.
+——, M. Scheuerer, and C. Heinz, 2015: Assessing the calibration
+of high-dimensional ensemble forecasts using rank histograms.
+J. Comput. Graph. Stat., doi:10.1080/10618600.2014.977447,i n
+press.
+Wilks, D. S., 2004: The minimum sp anning tree histogram as veriﬁ-
+cation tool for multidimensional ensemble forecasts.Mon. Wea.
+Rev., 132, 1329–1340, doi: 10.1175/1520-0493(2004)132,1329:
+TMSTHA.2.0.CO;2.
+——, 2014: Multivariate ensemble Model Output Statistics using
+empirical copulas. Quart. J. Roy. Meteor. Soc., doi:10.1002/
+qj.2414, in press.
+Ziegel, J. F., and T. Gneiting, 2014: Copula calibration. Electron.
+J. Stat., 8, 2619–2638, doi:10.1214/14-EJS964.
+1334 MONTHLY WEATHER REVIEW V OLUME 143

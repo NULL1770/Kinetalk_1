@@ -1,0 +1,12 @@
+{
+  "schema": "pdf_read_preflight/1",
+  "verdict": "PASS",
+  "file": "D:\\科研\\小论文\\.architecture_build\\method_sources\\scheuerer2015.pdf",
+  "sha256": "9e88314e28a36f48e0d22d93ddec649b4395366520fd5f13d3b79a61cc8286ab",
+  "declared_page_count": 14,
+  "enumerated_page_count": 14,
+  "reader_page_count": 14,
+  "warnings": [],
+  "generated_at": "2026-09-22T03:50:58.541691+00:00",
+  "tool": "pdf_read_preflight/1.0.0"
+}

@@ -1,0 +1,8 @@
+{"kind":"deck","id":"pr/ttn68z","name":"Deck"}
+{"kind":"layout","layoutId":"63b17198-9449-4863-8386-bc59a347ec1b","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"2cc4b1f7-b691-4ddd-b88a-3d02c340ef1b","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/hpavui","slide":1,"title":"Audio encoder","textShapes":2}
+{"kind":"textbox","id":"sh/t47idcvy","slide":1,"text":"Audio encoder\n语音编码器","textPreview":"Audio encoder | 语音编码器","textChars":19,"textLines":2,"bbox":[100,100,200,100]}
+{"kind":"textbox","id":"sh/61gjixw7","slide":1,"text":"Conditional generator","textPreview":"Conditional generator","textChars":21,"textLines":1,"bbox":[420,100,200,100]}
+{"kind":"shape","id":"sh/72p0b2ds","slide":1,"bbox":[0,0,0,0]}
+{"kind":"notes","id":"nt/hpavui","slide":1,"text":""}

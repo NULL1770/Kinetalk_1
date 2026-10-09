@@ -1,0 +1,353 @@
+{"kind":"deck","id":"pr/h0gs0i","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"(a) KineTalk overview","textShapes":51}
+{"kind":"textbox","id":"sh/dofq1o7m","slide":1,"name":"element_1","text":"(a) KineTalk overview","textPreview":"(a) KineTalk overview","textChars":21,"textLines":1,"bbox":[30,15,950,35]}
+{"kind":"shape","id":"sh/547294r6","slide":1,"name":"element_2","bbox":[1224.9,34.9,0.2,0.2]}
+{"kind":"shape","id":"sh/k3yl0zql","slide":1,"name":"element_3","bbox":[1224.9,809.9,0.2,0.2]}
+{"kind":"shape","id":"sh/fytg3a14","slide":1,"name":"直接箭头连接符 698","bbox":[1225,35.1,0,774.8]}
+{"kind":"textbox","id":"sh/65g3298r","slide":1,"name":"element_4","text":"(b) Residual Motion Decoder","textPreview":"(b) Residual Motion Decoder","textChars":27,"textLines":1,"bbox":[1250,15,320,35]}
+{"kind":"shape","id":"sh/ts7md4r2","slide":1,"name":"element_5","bbox":[214,69,577,122]}
+{"kind":"shape","id":"sh/sryl4zqx","slide":1,"name":"element_6","bbox":[30,97,141,78]}
+{"kind":"textbox","id":"sh/fu94fe98","slide":1,"name":"element_7","text":"Target speech\nA","textPreview":"Target speech | A","textChars":15,"textLines":2,"bbox":[33,100,135,72]}
+{"kind":"shape","id":"sh/utg3698n","slide":1,"name":"encoder_8","bbox":[236,90,112,64]}
+{"kind":"textbox","id":"sh/wn6dc7eh","slide":1,"name":"element_9","text":"Speech\nEncoder","textPreview":"Speech | Encoder","textChars":14,"textLines":2,"bbox":[243,100,97,44]}
+{"kind":"textbox","id":"sh/hofulsf2","slide":1,"name":"element_10","text":"B₀ mapping\n(frozen)","textPreview":"B₀ mapping | (frozen)","textChars":19,"textLines":2,"bbox":[389,92,165,61]}
+{"kind":"shape","id":"sh/ul4vaxgb","slide":1,"name":"element_11","bbox":[170.9,134.9,0.2,0.2]}
+{"kind":"shape","id":"sh/vmdcj2xw","slide":1,"name":"element_12","bbox":[235.9,134.9,0.2,0.2]}
+{"kind":"shape","id":"sh/x03md4je","slide":1,"name":"直接箭头连接符 708","bbox":[171.1,135,64.8,0]}
+{"kind":"shape","id":"sh/5sfepcfe","slide":1,"name":"element_13","bbox":[347.9,120.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ipovexwn","slide":1,"name":"element_14","bbox":[388.9,120.9,0.2,0.2]}
+{"kind":"shape","id":"sh/1cjmp43m","slide":1,"name":"直接箭头连接符 711","bbox":[348.1,121,40.8,0]}
+{"kind":"shape","id":"sh/sfqdkrep","slide":1,"name":"encoder_15","bbox":[609,85,39,9]}
+{"kind":"shape","id":"sh/dgzetcfa","slide":1,"name":"encoder_16","bbox":[639,85,9,59]}
+{"kind":"shape","id":"sh/1cvuxc7e","slide":1,"name":"element_17","bbox":[609,94,30,50]}
+{"kind":"shape","id":"sh/0bmd476t","slide":1,"name":"element_18","bbox":[618.9,93.9,0.2,0.2]}
+{"kind":"shape","id":"sh/zadcv2p8","slide":1,"name":"element_19","bbox":[618.9,143.9,0.2,0.2]}
+{"kind":"shape","id":"sh/b2l4velo","slide":1,"name":"直接箭头连接符 717","bbox":[619,94.1,0,49.8]}
+{"kind":"shape","id":"sh/90ve1w7q","slide":1,"name":"element_20","bbox":[628.9,93.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ozmd8r65","slide":1,"name":"element_21","bbox":[628.9,143.9,0.2,0.2]}
+{"kind":"shape","id":"sh/7yp8ni5w","slide":1,"name":"直接箭头连接符 720","bbox":[629,94.1,0,49.8]}
+{"kind":"shape","id":"sh/mx4v6hoz","slide":1,"name":"element_22","bbox":[608.9,103.9,0.2,0.2]}
+{"kind":"shape","id":"sh/p4bu5s76","slide":1,"name":"element_23","bbox":[638.9,103.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ytw7qdof","slide":1,"name":"直接箭头连接符 723","bbox":[609.1,104,29.8,0]}
+{"kind":"shape","id":"sh/uxgjq907","slide":1,"name":"element_24","bbox":[608.9,113.9,0.2,0.2]}
+{"kind":"shape","id":"sh/vyp0je1s","slide":1,"name":"element_25","bbox":[638.9,113.9,0.2,0.2]}
+{"kind":"shape","id":"sh/lwnql8nq","slide":1,"name":"直接箭头连接符 726","bbox":[609.1,114,29.8,0]}
+{"kind":"shape","id":"sh/h072l4jy","slide":1,"name":"element_26","bbox":[608.9,123.9,0.2,0.2]}
+{"kind":"shape","id":"sh/i1gje90j","slide":1,"name":"element_27","bbox":[638.9,123.9,0.2,0.2]}
+{"kind":"shape","id":"sh/dwv2h0bi","slide":1,"name":"直接箭头连接符 729","bbox":[609.1,124,29.8,0]}
+{"kind":"shape","id":"sh/43y1gji9","slide":1,"name":"element_28","bbox":[608.9,133.9,0.2,0.2]}
+{"kind":"shape","id":"sh/54r2poju","slide":1,"name":"element_29","bbox":[638.9,133.9,0.2,0.2]}
+{"kind":"shape","id":"sh/qtkj6lcr","slide":1,"name":"直接箭头连接符 732","bbox":[609.1,134,29.8,0]}
+{"kind":"shape","id":"sh/z650ba1k","slide":1,"name":"element_30","bbox":[553.9,120.9,0.2,0.2]}
+{"kind":"shape","id":"sh/z2xgf6to","slide":1,"name":"element_31","bbox":[608.9,120.9,0.2,0.2]}
+{"kind":"shape","id":"sh/36t0b6tg","slide":1,"name":"直接箭头连接符 735","bbox":[554.1,121,54.8,0]}
+{"kind":"textbox","id":"sh/14fyhgbe","slide":1,"name":"element_32","text":"h₀","textPreview":"h₀","textChars":2,"textLines":1,"bbox":[655,120.93,92,30]}
+{"kind":"textbox","id":"sh/036h8but","slide":1,"name":"element_33","text":"Articulation","textPreview":"Articulation","textChars":12,"textLines":1,"bbox":[224,161,546,26]}
+{"kind":"shape","id":"sh/nqxgjqtk","slide":1,"name":"element_34","bbox":[469.9,91.9,0.2,0.2]}
+{"kind":"shape","id":"sh/mpozalcz","slide":1,"name":"element_35","bbox":[469.9,61.9,0.2,0.2]}
+{"kind":"shape","id":"sh/hwjitg7u","slide":1,"name":"直接箭头连接符 740","bbox":[470,62.1,0,29.8]}
+{"kind":"shape","id":"sh/or6hcvu5","slide":1,"name":"element_36","bbox":[469.9,61.9,0.2,0.2]}
+{"kind":"shape","id":"sh/buh0nqtg","slide":1,"name":"element_37","bbox":[1129.9,61.9,0.2,0.2]}
+{"kind":"shape","id":"sh/4za14vql","slide":1,"name":"直接箭头连接符 743","bbox":[470.1,62,659.8,0]}
+{"kind":"shape","id":"sh/8zqx4vq9","slide":1,"name":"element_38","bbox":[1129.9,61.9,0.2,0.2]}
+{"kind":"shape","id":"sh/t0jyd0ru","slide":1,"name":"element_39","bbox":[1129.9,555.9,0.2,0.2]}
+{"kind":"shape","id":"sh/jy10vqp0","slide":1,"name":"直接箭头连接符 746","bbox":[1130,62.1,0,493.8]}
+{"kind":"shape","id":"sh/7yhgbq9o","slide":1,"name":"element_40","bbox":[1129.9,555.9,0.2,0.2]}
+{"kind":"shape","id":"sh/kvqx0vqd","slide":1,"name":"element_41","bbox":[1106.9,555.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ni54ru9k","slide":1,"name":"直接箭头连接符 749","bbox":[1107.1,556,22.8,0]}
+{"kind":"textbox","id":"sh/yt8fyl87","slide":1,"name":"element_42","text":"B₀(C)","textPreview":"B₀(C)","textChars":5,"textLines":1,"bbox":[810,34.2,190,31]}
+{"kind":"shape","id":"sh/juhg7q9s","slide":1,"name":"element_43","bbox":[214,224,577,183]}
+{"kind":"shape","id":"sh/wr6xwbq1","slide":1,"name":"encoder_44","bbox":[236,265,112,90]}
+{"kind":"textbox","id":"sh/xsfy5grm","slide":1,"name":"element_45","text":"Audio\nEncoder","textPreview":"Audio | Encoder","textChars":13,"textLines":2,"bbox":[243,275,97,70]}
+{"kind":"textbox","id":"sh/dc7md8fe","slide":1,"name":"element_46","text":"Global Emotion","textPreview":"Global Emotion","textChars":14,"textLines":1,"bbox":[389,258,150,55]}
+{"kind":"textbox","id":"sh/cby5k3yt","slide":1,"name":"element_47","text":"Temporal Acoustic\nFeatures","textPreview":"Temporal Acoustic | Features","textChars":26,"textLines":2,"bbox":[389,337,150,48]}
+{"kind":"shape","id":"sh/ra54bix8","slide":1,"name":"element_48","bbox":[189.9,134.9,0.2,0.2]}
+{"kind":"shape","id":"sh/q9wnidgn","slide":1,"name":"element_49","bbox":[189.9,309.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ypgn6t87","slide":1,"name":"直接箭头连接符 758","bbox":[190,135.1,0,174.8]}
+{"kind":"shape","id":"sh/4ne5g3yh","slide":1,"name":"element_50","bbox":[189.9,309.9,0.2,0.2]}
+{"kind":"shape","id":"sh/3m547yxw","slide":1,"name":"element_51","bbox":[235.9,309.9,0.2,0.2]}
+{"kind":"shape","id":"sh/gjmxgreh","slide":1,"name":"直接箭头连接符 761","bbox":[190.1,310,45.8,0]}
+{"kind":"shape","id":"sh/9kr6lsfm","slide":1,"name":"element_52","bbox":[347.9,309.9,0.2,0.2]}
+{"kind":"shape","id":"sh/oji5sne1","slide":1,"name":"element_53","bbox":[366.9,309.9,0.2,0.2]}
+{"kind":"shape","id":"sh/3mdgrmx8","slide":1,"name":"直接箭头连接符 764","bbox":[348.1,310,18.8,0]}
+{"kind":"shape","id":"sh/7q1kfudo","slide":1,"name":"element_54","bbox":[366.9,309.9,0.2,0.2]}
+{"kind":"shape","id":"sh/8ra1oze9","slide":1,"name":"element_55","bbox":[366.9,284.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ypkf6xgj","slide":1,"name":"直接箭头连接符 767","bbox":[367,285.1,0,24.8]}
+{"kind":"shape","id":"sh/ylsjipw7","slide":1,"name":"element_56","bbox":[366.9,284.9,0.2,0.2]}
+{"kind":"shape","id":"sh/jm1kbuds","slide":1,"name":"element_57","bbox":[388.9,284.9,0.2,0.2]}
+{"kind":"shape","id":"sh/0jq1cvy1","slide":1,"name":"直接箭头连接符 770","bbox":[367.1,285,21.8,0]}
+{"kind":"shape","id":"sh/loj2dkvy","slide":1,"name":"element_58","bbox":[366.9,309.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ihc3u9cr","slide":1,"name":"element_59","bbox":[366.9,360.9,0.2,0.2]}
+{"kind":"shape","id":"sh/98jipkzi","slide":1,"name":"直接箭头连接符 773","bbox":[367,310.1,0,50.8]}
+{"kind":"shape","id":"sh/rehk7e50","slide":1,"name":"element_60","bbox":[366.9,360.9,0.2,0.2]}
+{"kind":"shape","id":"sh/qd8jy94v","slide":1,"name":"element_61","bbox":[388.9,360.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ml8je5gr","slide":1,"name":"直接箭头连接符 776","bbox":[367.1,361,21.8,0]}
+{"kind":"shape","id":"sh/cfa10jml","slide":1,"name":"encoder_62","bbox":[589,254,42,9]}
+{"kind":"shape","id":"sh/3ahk3u54","slide":1,"name":"encoder_63","bbox":[622,254,9,42]}
+{"kind":"shape","id":"sh/298ju94j","slide":1,"name":"element_64","bbox":[589,263,33,33]}
+{"kind":"shape","id":"sh/pcz254na","slide":1,"name":"element_65","bbox":[599.9,262.9,0.2,0.2]}
+{"kind":"shape","id":"sh/4bq1wzmp","slide":1,"name":"element_66","bbox":[599.9,295.9,0.2,0.2]}
+{"kind":"shape","id":"sh/vad4bepo","slide":1,"name":"直接箭头连接符 782","bbox":[600,263.1,0,32.8]}
+{"kind":"shape","id":"sh/u5ojqpon","slide":1,"name":"element_67","bbox":[610.9,262.9,0.2,0.2]}
+{"kind":"shape","id":"sh/kbmh0v25","slide":1,"name":"element_68","bbox":[610.9,295.9,0.2,0.2]}
+{"kind":"shape","id":"sh/mlknep87","slide":1,"name":"直接箭头连接符 785","bbox":[611,263.1,0,32.8]}
+{"kind":"shape","id":"sh/ip4zyl4f","slide":1,"name":"element_69","bbox":[588.9,273.9,0.2,0.2]}
+{"kind":"shape","id":"sh/jadg7ql0","slide":1,"name":"element_70","bbox":[621.9,273.9,0.2,0.2]}
+{"kind":"shape","id":"sh/t4f6lo72","slide":1,"name":"直接箭头连接符 788","bbox":[589.1,274,32.8,0]}
+{"kind":"shape","id":"sh/tgfyd032","slide":1,"name":"element_71","bbox":[588.9,284.9,0.2,0.2]}
+{"kind":"shape","id":"sh/6d4z25kb","slide":1,"name":"element_72","bbox":[621.9,284.9,0.2,0.2]}
+{"kind":"shape","id":"sh/p0jqdsra","slide":1,"name":"直接箭头连接符 791","bbox":[589.1,285,32.8,0]}
+{"kind":"shape","id":"sh/8j2xsbmd","slide":1,"name":"element_73","bbox":[538.9,284.9,0.2,0.2]}
+{"kind":"shape","id":"sh/9kby1g3i","slide":1,"name":"element_74","bbox":[588.9,284.9,0.2,0.2]}
+{"kind":"shape","id":"sh/q1srmxsv","slide":1,"name":"直接箭头连接符 794","bbox":[539.1,285,49.8,0]}
+{"kind":"textbox","id":"sh/jitg36dg","slide":1,"name":"element_75","text":"gₐ","textPreview":"gₐ","textChars":2,"textLines":1,"bbox":[638,275,129,38]}
+{"kind":"shape","id":"sh/kj2hcbel","slide":1,"name":"element_76","bbox":[591,338,16,39]}
+{"kind":"shape","id":"sh/l4by5wv6","slide":1,"name":"element_77","bbox":[601,346,16,39]}
+{"kind":"shape","id":"sh/654ze1wr","slide":1,"name":"element_78","bbox":[611,354,16,39]}
+{"kind":"shape","id":"sh/76dg76dc","slide":1,"name":"element_79","bbox":[538.9,360.9,0.2,0.2]}
+{"kind":"shape","id":"sh/87mhgbex","slide":1,"name":"element_80","bbox":[590.9,360.9,0.2,0.2]}
+{"kind":"shape","id":"sh/l8zux8bi","slide":1,"name":"直接箭头连接符 801","bbox":[539.1,361,51.8,0]}
+{"kind":"textbox","id":"sh/m90f2hwn","slide":1,"name":"element_81","text":"uₐ","textPreview":"uₐ","textChars":2,"textLines":1,"bbox":[642,362,115,31]}
+{"kind":"textbox","id":"sh/na9gvmd8","slide":1,"name":"element_82","text":"Emotion","textPreview":"Emotion","textChars":7,"textLines":1,"bbox":[249,231,498,24]}
+{"kind":"shape","id":"sh/pgzax4jm","slide":1,"name":"element_83","bbox":[214,443,577,184]}
+{"kind":"shape","id":"sh/ofqtoj2h","slide":1,"name":"element_84","bbox":[30,451,142,108]}
+{"kind":"textbox","id":"sh/3ehsve1w","slide":1,"name":"element_85","text":"Neutral reference\naudio + motion\n{Aᵣ, Mᵣ}","textPreview":"Neutral reference | audio + motion | {Aᵣ, Mᵣ}","textChars":41,"textLines":3,"bbox":[33,454,136,102]}
+{"kind":"textbox","id":"sh/2d8rm9kb","slide":1,"name":"element_86","text":"Reference\nMotion","textPreview":"Reference | Motion","textChars":16,"textLines":2,"bbox":[236,478,133,89]}
+{"kind":"shape","id":"sh/dkja1ojy","slide":1,"name":"encoder_87","bbox":[401,478,115,89]}
+{"kind":"textbox","id":"sh/cjatsj2d","slide":1,"name":"element_88","text":"Indentity\nEncoder","textPreview":"Indentity | Encoder","textChars":17,"textLines":2,"bbox":[408,488,100,69]}
+{"kind":"textbox","id":"sh/bi1sze1s","slide":1,"name":"element_89","text":"Motion\nPooling","textPreview":"Motion | Pooling","textChars":14,"textLines":2,"bbox":[551,492,83,61]}
+{"kind":"shape","id":"sh/qhsbq9k7","slide":1,"name":"encoder_90","bbox":[678,483,39,9]}
+{"kind":"shape","id":"sh/tofapkju","slide":1,"name":"encoder_91","bbox":[708,483,9,59]}
+{"kind":"shape","id":"sh/sn69gf29","slide":1,"name":"element_92","bbox":[678,492,30,50]}
+{"kind":"shape","id":"sh/kratwza5","slide":1,"name":"element_93","bbox":[687.9,491.9,0.2,0.2]}
+{"kind":"shape","id":"sh/lsja54ra","slide":1,"name":"element_94","bbox":[687.9,541.9,0.2,0.2]}
+{"kind":"shape","id":"sh/jip0b654","slide":1,"name":"直接箭头连接符 816","bbox":[688,492.1,0,49.8]}
+{"kind":"shape","id":"sh/jq1s3u9k","slide":1,"name":"element_95","bbox":[697.9,491.9,0.2,0.2]}
+{"kind":"shape","id":"sh/svut0za1","slide":1,"name":"element_96","bbox":[697.9,541.9,0.2,0.2]}
+{"kind":"shape","id":"sh/dw7i90fi","slide":1,"name":"直接箭头连接符 819","bbox":[698,492.1,0,49.8]}
+{"kind":"shape","id":"sh/6tsbypsv","slide":1,"name":"element_97","bbox":[677.9,501.9,0.2,0.2]}
+{"kind":"shape","id":"sh/7u1s7u9g","slide":1,"name":"element_98","bbox":[707.9,501.9,0.2,0.2]}
+{"kind":"shape","id":"sh/qtgjylgr","slide":1,"name":"直接箭头连接符 822","bbox":[678.1,502,29.8,0]}
+{"kind":"shape","id":"sh/hk3adori","slide":1,"name":"element_99","bbox":[677.9,511.9,0.2,0.2]}
+{"kind":"shape","id":"sh/repw3it0","slide":1,"name":"element_100","bbox":[707.9,511.9,0.2,0.2]}
+{"kind":"shape","id":"sh/3qp03qxg","slide":1,"name":"直接箭头连接符 825","bbox":[678.1,512,29.8,0]}
+{"kind":"shape","id":"sh/dg7e5sbq","slide":1,"name":"element_101","bbox":[677.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/cfydcnu5","slide":1,"name":"element_102","bbox":[707.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/g3e1sbyp","slide":1,"name":"直接箭头连接符 828","bbox":[678.1,522,29.8,0]}
+{"kind":"shape","id":"sh/2pwv6tc3","slide":1,"name":"element_103","bbox":[677.9,531.9,0.2,0.2]}
+{"kind":"shape","id":"sh/psne18bu","slide":1,"name":"element_104","bbox":[707.9,531.9,0.2,0.2]}
+{"kind":"shape","id":"sh/sbux4ret","slide":1,"name":"直接箭头连接符 831","bbox":[678.1,532,29.8,0]}
+{"kind":"textbox","id":"sh/nm9wb2ts","slide":1,"name":"element_105","text":"z_id","textPreview":"z_id","textChars":4,"textLines":1,"bbox":[650,553,107,35]}
+{"kind":"shape","id":"sh/ml0v2xcn","slide":1,"name":"element_106","bbox":[171.9,509.9,0.2,0.2]}
+{"kind":"shape","id":"sh/atgz6h8r","slide":1,"name":"element_107","bbox":[235.9,509.9,0.2,0.2]}
+{"kind":"shape","id":"sh/k7ux07eh","slide":1,"name":"直接箭头连接符 835","bbox":[172.1,510,63.8,0]}
+{"kind":"shape","id":"sh/wvyh8rqx","slide":1,"name":"element_108","bbox":[368.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/xw7i1w7i","slide":1,"name":"element_109","bbox":[400.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/v21g32d0","slide":1,"name":"直接箭头连接符 838","bbox":[369.1,522,31.8,0]}
+{"kind":"shape","id":"sh/n65gvmp0","slide":1,"name":"element_110","bbox":[515.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/8reh4rql","slide":1,"name":"element_111","bbox":[550.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/9w3u18zm","slide":1,"name":"直接箭头连接符 841","bbox":[516.1,522,34.8,0]}
+{"kind":"shape","id":"sh/610ze18z","slide":1,"name":"element_112","bbox":[633.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/729076pk","slide":1,"name":"element_113","bbox":[677.9,521.9,0.2,0.2]}
+{"kind":"shape","id":"sh/epsb2tgz","slide":1,"name":"直接箭头连接符 844","bbox":[634.1,522,43.8,0]}
+{"kind":"textbox","id":"sh/gv214fa1","slide":1,"name":"element_114","text":"Personalized Motion","textPreview":"Personalized Motion","textChars":19,"textLines":1,"bbox":[231,595,544,23]}
+{"kind":"shape","id":"sh/futkva9g","slide":1,"name":"encoder_115","bbox":[922,225,154,181]}
+{"kind":"textbox","id":"sh/utkj25sv","slide":1,"name":"element_116","text":"Residual flow\ndecoder Fθ","textPreview":"Residual flow | decoder Fθ","textChars":24,"textLines":2,"bbox":[929,235,139,161]}
+{"kind":"shape","id":"sh/tsb2t0rq","slide":1,"name":"element_117","bbox":[647.9,117.9,0.2,0.2]}
+{"kind":"shape","id":"sh/sri10va5","slide":1,"name":"element_118","bbox":[836.9,117.9,0.2,0.2]}
+{"kind":"shape","id":"sh/h8za1kf6","slide":1,"name":"直接箭头连接符 850","bbox":[648.1,118,188.8,0]}
+{"kind":"shape","id":"sh/6p0jylsz","slide":1,"name":"element_119","bbox":[836.9,117.9,0.2,0.2]}
+{"kind":"shape","id":"sh/dov254ru","slide":1,"name":"element_120","bbox":[836.9,243.9,0.2,0.2]}
+{"kind":"shape","id":"sh/4vq9czex","slide":1,"name":"直接箭头连接符 853","bbox":[837,118.1,0,125.8]}
+{"kind":"shape","id":"sh/w3edon2h","slide":1,"name":"element_121","bbox":[836.9,243.9,0.2,0.2]}
+{"kind":"shape","id":"sh/x4nexs32","slide":1,"name":"element_122","bbox":[921.9,243.9,0.2,0.2]}
+{"kind":"shape","id":"sh/3uhs3uxc","slide":1,"name":"直接箭头连接符 856","bbox":[837.1,244,84.8,0]}
+{"kind":"shape","id":"sh/v25wv2lc","slide":1,"name":"element_123","bbox":[627.9,278.9,0.2,0.2]}
+{"kind":"shape","id":"sh/8zudknml","slide":1,"name":"element_124","bbox":[860.9,278.9,0.2,0.2]}
+{"kind":"shape","id":"sh/1knyhs3q","slide":1,"name":"直接箭头连接符 859","bbox":[644.77,279,216.13,0]}
+{"kind":"shape","id":"sh/mdcvid4f","slide":1,"name":"element_125","bbox":[860.9,278.9,0.2,0.2]}
+{"kind":"shape","id":"sh/nelcril0","slide":1,"name":"element_126","bbox":[860.9,292.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ehcf6x4z","slide":1,"name":"直接箭头连接符 862","bbox":[861,279.1,0,13.8]}
+{"kind":"shape","id":"sh/lc3up83u","slide":1,"name":"element_127","bbox":[860.9,292.9,0.2,0.2]}
+{"kind":"shape","id":"sh/361wzy5w","slide":1,"name":"element_128","bbox":[921.9,292.9,0.2,0.2]}
+{"kind":"shape","id":"sh/nm5gj2lw","slide":1,"name":"直接箭头连接符 865","bbox":[861.1,293,60.8,0]}
+{"kind":"shape","id":"sh/p8je18n2","slide":1,"name":"element_129","bbox":[635.9,359.9,0.2,0.2]}
+{"kind":"shape","id":"sh/o7ad836h","slide":1,"name":"element_130","bbox":[888.9,359.9,0.2,0.2]}
+{"kind":"shape","id":"sh/wbyhgrmd","slide":1,"name":"直接箭头连接符 868","bbox":[636.1,360,252.8,0]}
+{"kind":"shape","id":"sh/q9cfadon","slide":1,"name":"element_131","bbox":[888.9,359.9,0.2,0.2]}
+{"kind":"shape","id":"sh/dc3e5sny","slide":1,"name":"element_132","bbox":[888.9,339.9,0.2,0.2]}
+{"kind":"shape","id":"sh/gzqdcj21","slide":1,"name":"直接箭头连接符 871","bbox":[889,340.1,0,19.8]}
+{"kind":"shape","id":"sh/zylw7i54","slide":1,"name":"element_133","bbox":[888.9,339.9,0.2,0.2]}
+{"kind":"shape","id":"sh/yxcfexoj","slide":1,"name":"element_134","bbox":[921.9,339.9,0.2,0.2]}
+{"kind":"shape","id":"sh/3m1wny1c","slide":1,"name":"直接箭头连接符 874","bbox":[889.1,340,32.8,0]}
+{"kind":"shape","id":"sh/7m10vml8","slide":1,"name":"element_135","bbox":[716.9,514.9,0.2,0.2]}
+{"kind":"shape","id":"sh/8nah4r2t","slide":1,"name":"element_136","bbox":[836.9,514.9,0.2,0.2]}
+{"kind":"shape","id":"sh/qpsvitk3","slide":1,"name":"直接箭头连接符 877","bbox":[717.1,515,119.8,0]}
+{"kind":"shape","id":"sh/upcz61kz","slide":1,"name":"element_137","bbox":[836.9,514.9,0.2,0.2]}
+{"kind":"shape","id":"sh/val0zmlk","slide":1,"name":"element_138","bbox":[836.9,387.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ah8re5oj","slide":1,"name":"直接箭头连接符 880","bbox":[837,388.1,0,126.8]}
+{"kind":"shape","id":"sh/hc3i1wja","slide":1,"name":"element_139","bbox":[836.9,387.9,0.2,0.2]}
+{"kind":"shape","id":"sh/idcja1kv","slide":1,"name":"element_140","bbox":[921.9,387.9,0.2,0.2]}
+{"kind":"shape","id":"sh/zm1sba50","slide":1,"name":"直接箭头连接符 883","bbox":[837.1,388,84.8,0]}
+{"kind":"textbox","id":"sh/t872t0ni","slide":1,"name":"element_141","text":"ε","textPreview":"ε","textChars":1,"textLines":1,"bbox":[889,160,221,31]}
+{"kind":"shape","id":"sh/s7yl0vmx","slide":1,"name":"element_142","bbox":[998.9,194.9,0.2,0.2]}
+{"kind":"shape","id":"sh/r65krq5s","slide":1,"name":"element_143","bbox":[998.9,224.9,0.2,0.2]}
+{"kind":"shape","id":"sh/7a1sfu5w","slide":1,"name":"直接箭头连接符 887","bbox":[999,195.1,0,29.8]}
+{"kind":"shape","id":"sh/1c72xk3u","slide":1,"name":"encoder_144","bbox":[980,442,39,9]}
+{"kind":"shape","id":"sh/0byl4fm9","slide":1,"name":"encoder_145","bbox":[1010,442,9,59]}
+{"kind":"shape","id":"sh/fapkvalo","slide":1,"name":"element_146","bbox":[980,451,30,50]}
+{"kind":"shape","id":"sh/e9g32543","slide":1,"name":"element_147","bbox":[989.9,450.9,0.2,0.2]}
+{"kind":"shape","id":"sh/p0rm1k3q","slide":1,"name":"element_148","bbox":[989.9,500.9,0.2,0.2]}
+{"kind":"shape","id":"sh/wba98f2t","slide":1,"name":"直接箭头连接符 893","bbox":[990,451.1,0,49.8]}
+{"kind":"shape","id":"sh/pgnqdgn6","slide":1,"name":"element_149","bbox":[999.9,450.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ofepkb6l","slide":1,"name":"element_150","bbox":[999.9,500.9,0.2,0.2]}
+{"kind":"shape","id":"sh/vq18zal8","slide":1,"name":"直接箭头连接符 896","bbox":[1000,451.1,0,49.8]}
+{"kind":"shape","id":"sh/2tc7i1of","slide":1,"name":"element_151","bbox":[979.9,460.9,0.2,0.2]}
+{"kind":"shape","id":"sh/dknqhgn2","slide":1,"name":"element_152","bbox":[1009.9,460.9,0.2,0.2]}
+{"kind":"shape","id":"sh/et07qlc3","slide":1,"name":"直接箭头连接符 899","bbox":[980.1,461,29.8,0]}
+{"kind":"shape","id":"sh/bi58f65c","slide":1,"name":"element_153","bbox":[979.9,470.9,0.2,0.2]}
+{"kind":"shape","id":"sh/qhw7mlor","slide":1,"name":"element_154","bbox":[1009.9,470.9,0.2,0.2]}
+{"kind":"shape","id":"sh/1wrql0bu","slide":1,"name":"直接箭头连接符 902","bbox":[980.1,471,29.8,0]}
+{"kind":"shape","id":"sh/0nypsv6t","slide":1,"name":"element_155","bbox":[979.9,480.9,0.2,0.2]}
+{"kind":"shape","id":"sh/it8nmx4b","slide":1,"name":"element_156","bbox":[1009.9,480.9,0.2,0.2]}
+{"kind":"shape","id":"sh/oj2pwful","slide":1,"name":"直接箭头连接符 905","bbox":[980.1,481,29.8,0]}
+{"kind":"shape","id":"sh/kva5onmh","slide":1,"name":"element_157","bbox":[979.9,490.9,0.2,0.2]}
+{"kind":"shape","id":"sh/5wjmhs32","slide":1,"name":"element_158","bbox":[1009.9,490.9,0.2,0.2]}
+{"kind":"shape","id":"sh/bmt8ratw","slide":1,"name":"直接箭头连接符 908","bbox":[980.1,491,29.8,0]}
+{"kind":"shape","id":"sh/7y14j2ls","slide":1,"name":"element_159","bbox":[998.9,405.9,0.2,0.2]}
+{"kind":"shape","id":"sh/sza5s7md","slide":1,"name":"element_160","bbox":[998.9,441.9,0.2,0.2]}
+{"kind":"shape","id":"sh/jedsfed8","slide":1,"name":"直接箭头连接符 911","bbox":[999,406.1,0,35.8]}
+{"kind":"textbox","id":"sh/ulsnuh4j","slide":1,"name":"element_161","text":"r̂ [T,52]","textPreview":"r̂ [T,52]","textChars":9,"textLines":1,"bbox":[1030,454,70,33]}
+{"kind":"textbox","id":"sh/fm14nml4","slide":1,"name":"element_162","text":"Non-mouth\nmask S","textPreview":"Non-mouth | mask S","textChars":16,"textLines":2,"bbox":[922,529,113,55]}
+{"kind":"shape","id":"sh/bql4bm1w","slide":1,"name":"element_163","bbox":[998.9,500.9,0.2,0.2]}
+{"kind":"shape","id":"sh/qpc3ihkr","slide":1,"name":"element_164","bbox":[998.9,528.9,0.2,0.2]}
+{"kind":"shape","id":"sh/6horq9wj","slide":1,"name":"直接箭头连接符 916","bbox":[999,501.1,0,27.8]}
+{"kind":"textbox","id":"sh/crulkr2h","slide":1,"name":"operator_165","text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[1076,541,31,31]}
+{"kind":"shape","id":"sh/3m147210","slide":1,"name":"element_166","bbox":[1034.9,555.9,0.2,0.2]}
+{"kind":"shape","id":"sh/21s3exkf","slide":1,"name":"element_167","bbox":[1075.9,555.9,0.2,0.2]}
+{"kind":"shape","id":"sh/1snu1c3i","slide":1,"name":"直接箭头连接符 920","bbox":[1035.1,556,40.8,0]}
+{"kind":"textbox","id":"sh/onulg72l","slide":1,"name":"element_168","text":"Identity offset\nb_id","textPreview":"Identity offset | b_id","textChars":20,"textLines":2,"bbox":[833,587,201,53]}
+{"kind":"shape","id":"sh/fy143214","slide":1,"name":"element_169","bbox":[716.9,530.9,0.2,0.2]}
+{"kind":"shape","id":"sh/uxs3axkj","slide":1,"name":"element_170","bbox":[808.9,530.9,0.2,0.2]}
+{"kind":"shape","id":"sh/pg7u5c3e","slide":1,"name":"直接箭头连接符 924","bbox":[717.1,531,91.8,0]}
+{"kind":"shape","id":"sh/lsfax4vq","slide":1,"name":"element_171","bbox":[808.9,530.9,0.2,0.2]}
+{"kind":"shape","id":"sh/yp4rmpwz","slide":1,"name":"element_172","bbox":[808.9,612.9,0.2,0.2]}
+{"kind":"shape","id":"sh/4jutknmp","slide":1,"name":"直接箭头连接符 927","bbox":[809,531.1,0,81.8]}
+{"kind":"shape","id":"sh/8v69sju1","slide":1,"name":"element_173","bbox":[808.9,612.9,0.2,0.2]}
+{"kind":"shape","id":"sh/twfa1ovm","slide":1,"name":"element_174","bbox":[832.9,612.9,0.2,0.2]}
+{"kind":"shape","id":"sh/6p47m5sj","slide":1,"name":"直接箭头连接符 930","bbox":[809.1,613,23.8,0]}
+{"kind":"shape","id":"sh/7uxszedg","slide":1,"name":"element_175","bbox":[1033.9,612.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ozm9gfex","slide":1,"name":"element_176","bbox":[1090.9,612.9,0.2,0.2]}
+{"kind":"shape","id":"sh/jmtoba9s","slide":1,"name":"直接箭头连接符 933","bbox":[1034.1,613,56.8,0]}
+{"kind":"shape","id":"sh/1sra54zy","slide":1,"name":"element_177","bbox":[1090.9,612.9,0.2,0.2]}
+{"kind":"shape","id":"sh/grytcjid","slide":1,"name":"element_178","bbox":[1090.9,571.9,0.2,0.2]}
+{"kind":"shape","id":"sh/kn25kfad","slide":1,"name":"直接箭头连接符 936","bbox":[1091,572.1,0,40.8]}
+{"kind":"textbox","id":"sh/epgba907","slide":1,"name":"element_179","text":"Reference\ncalibration","textPreview":"Reference | calibration","textChars":21,"textLines":2,"bbox":[832,644,203,40]}
+{"kind":"shape","id":"sh/to7a14zm","slide":1,"name":"element_180","bbox":[1090.9,571.9,0.2,0.2]}
+{"kind":"shape","id":"sh/s3y98zih","slide":1,"name":"element_181","bbox":[1194.9,571.9,0.2,0.2]}
+{"kind":"shape","id":"sh/b6dsby5g","slide":1,"name":"直接箭头连接符 940","bbox":[1091.1,572,103.8,0]}
+{"kind":"shape","id":"sh/61gr6p0b","slide":1,"name":"element_182","bbox":[1194.9,571.9,0.2,0.2]}
+{"kind":"shape","id":"sh/507axkzq","slide":1,"name":"element_183","bbox":[1194.9,672.9,0.2,0.2]}
+{"kind":"shape","id":"sh/21kre9oz","slide":1,"name":"直接箭头连接符 943","bbox":[1195,572.1,0,100.8]}
+{"kind":"shape","id":"sh/u5c7elg3","slide":1,"name":"element_184","bbox":[1194.9,672.9,0.2,0.2]}
+{"kind":"shape","id":"sh/v6l87qxo","slide":1,"name":"element_185","bbox":[1074.9,672.9,0.2,0.2]}
+{"kind":"shape","id":"sh/p4va9ona","slide":1,"name":"直接箭头连接符 946","bbox":[1075.1,673,119.8,0]}
+{"kind":"shape","id":"sh/h8nq90fe","slide":1,"name":"element_186","bbox":[1074.9,672.9,0.2,0.2]}
+{"kind":"shape","id":"sh/m1c7algr","slide":1,"name":"element_187","bbox":[1074.9,695.9,0.2,0.2]}
+{"kind":"shape","id":"sh/xszu9c7q","slide":1,"name":"直接箭头连接符 949","bbox":[1075,673.1,0,22.8]}
+{"kind":"shape","id":"sh/83upcvyx","slide":1,"name":"element_188","bbox":[909,701,87,98]}
+{"kind":"textbox","id":"sh/943q50fi","slide":1,"name":"element_189","text":"Frame 1\n(insert photo)","textPreview":"Frame 1 | (insert photo)","textChars":22,"textLines":2,"bbox":[912,704,81,92]}
+{"kind":"shape","id":"sh/yds761gv","slide":1,"name":"element_190","bbox":[1009,701,87,98]}
+{"kind":"textbox","id":"sh/ze1oz6xg","slide":1,"name":"element_191","text":"Frame 2\n(insert photo)","textPreview":"Frame 2 | (insert photo)","textChars":22,"textLines":2,"bbox":[1012,704,81,92]}
+{"kind":"shape","id":"sh/36xwri9w","slide":1,"name":"element_192","bbox":[1109,701,87,98]}
+{"kind":"textbox","id":"sh/25ovidsb","slide":1,"name":"element_193","text":"Frame 3\n(insert photo)","textPreview":"Frame 3 | (insert photo)","textChars":22,"textLines":2,"bbox":[1112,704,81,92]}
+{"kind":"textbox","id":"sh/p8fetsr2","slide":1,"name":"element_194","text":"ARKit52 facial sequence","textPreview":"ARKit52 facial sequence","textChars":23,"textLines":1,"bbox":[906,802,288,28]}
+{"kind":"shape","id":"sh/476dknah","slide":1,"name":"element_195","bbox":[30,670,760,150]}
+{"kind":"textbox","id":"sh/ruxwvi9s","slide":1,"name":"element_196","text":"Emotion Alignment (training only)","textPreview":"Emotion Alignment (training only)","textChars":33,"textLines":1,"bbox":[46,674,722,28]}
+{"kind":"textbox","id":"sh/qtovmdsn","slide":1,"name":"element_197","text":"Motion Sequence","textPreview":"Motion Sequence","textChars":15,"textLines":1,"bbox":[49,723,190,56]}
+{"kind":"shape","id":"sh/dwzexsry","slide":1,"name":"encoder_198","bbox":[270,714,133,76]}
+{"kind":"textbox","id":"sh/cv6donad","slide":1,"name":"element_199","text":"Motion Emotion\nEncoder","textPreview":"Motion Emotion | Encoder","textChars":22,"textLines":2,"bbox":[277,724,118,56]}
+{"kind":"shape","id":"sh/7ydcjy9o","slide":1,"name":"encoder_200","bbox":[440,719,42,9]}
+{"kind":"shape","id":"sh/6d4vats3","slide":1,"name":"encoder_201","bbox":[473,719,9,42]}
+{"kind":"shape","id":"sh/wjitkzq1","slide":1,"name":"element_202","bbox":[440,728,33,33]}
+{"kind":"shape","id":"sh/x4rat47m","slide":1,"name":"element_203","bbox":[450.9,727.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ah0bip8v","slide":1,"name":"element_204","bbox":[450.9,760.9,0.2,0.2]}
+{"kind":"shape","id":"sh/obudw7y1","slide":1,"name":"直接箭头连接符 967","bbox":[451,728.1,0,32.8]}
+{"kind":"shape","id":"sh/8fitgfq5","slide":1,"name":"element_205","bbox":[461.9,727.9,0.2,0.2]}
+{"kind":"shape","id":"sh/9grapk7a","slide":1,"name":"element_206","bbox":[461.9,760.9,0.2,0.2]}
+{"kind":"shape","id":"sh/y5wfml0j","slide":1,"name":"直接箭头连接符 970","bbox":[462,728.1,0,32.8]}
+{"kind":"shape","id":"sh/ne9snapk","slide":1,"name":"element_207","bbox":[439.9,738.9,0.2,0.2]}
+{"kind":"shape","id":"sh/sb2tsjq9","slide":1,"name":"element_208","bbox":[472.9,738.9,0.2,0.2]}
+{"kind":"shape","id":"sh/7upgzqh0","slide":1,"name":"直接箭头连接符 973","bbox":[440.1,739,32.8,0]}
+{"kind":"shape","id":"sh/1cf6lgzy","slide":1,"name":"element_209","bbox":[439.9,749.9,0.2,0.2]}
+{"kind":"shape","id":"sh/0bm5svyd","slide":1,"name":"element_210","bbox":[472.9,749.9,0.2,0.2]}
+{"kind":"shape","id":"sh/8vyhsvil","slide":1,"name":"直接箭头连接符 976","bbox":[440.1,750,32.8,0]}
+{"kind":"textbox","id":"sh/e94nqlgn","slide":1,"name":"element_211","text":"g_m","textPreview":"g_m","textChars":3,"textLines":1,"bbox":[429,780,70,29]}
+{"kind":"textbox","id":"sh/pgf6p0za","slide":1,"name":"element_212","text":"MSE(gₐ, sg(gₘ))\n(global semantics)","textPreview":"MSE(gₐ, sg(gₘ)) | (global semantics)","textChars":34,"textLines":2,"bbox":[526,729,122,47]}
+{"kind":"shape","id":"sh/of6pwvyp","slide":1,"name":"encoder_213","bbox":[703,719,42,9]}
+{"kind":"shape","id":"sh/nexonqh4","slide":1,"name":"encoder_214","bbox":[736,719,9,42]}
+{"kind":"shape","id":"sh/2do7ulgj","slide":1,"name":"element_215","bbox":[703,728,33,33]}
+{"kind":"shape","id":"sh/5kv6dwzq","slide":1,"name":"element_216","bbox":[713.9,727.9,0.2,0.2]}
+{"kind":"shape","id":"sh/4j25kbil","slide":1,"name":"element_217","bbox":[713.9,760.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ze1ova5s","slide":1,"name":"直接箭头连接符 984","bbox":[714,728.1,0,32.8]}
+{"kind":"shape","id":"sh/vq94n2xo","slide":1,"name":"element_218","bbox":[724.9,727.9,0.2,0.2]}
+{"kind":"shape","id":"sh/wrilw7e9","slide":1,"name":"element_219","bbox":[724.9,760.9,0.2,0.2]}
+{"kind":"shape","id":"sh/eh8nqlo3","slide":1,"name":"直接箭头连接符 987","bbox":[725,728.1,0,32.8]}
+{"kind":"shape","id":"sh/itk3yhwf","slide":1,"name":"element_220","bbox":[702.9,738.9,0.2,0.2]}
+{"kind":"shape","id":"sh/jet4rmx0","slide":1,"name":"element_221","bbox":[735.9,738.9,0.2,0.2]}
+{"kind":"shape","id":"sh/wbe9wj6l","slide":1,"name":"直接箭头连接符 990","bbox":[703.1,739,32.8,0]}
+{"kind":"shape","id":"sh/5gbmtwfq","slide":1,"name":"element_222","bbox":[702.9,749.9,0.2,0.2]}
+{"kind":"shape","id":"sh/yxg3mdgv","slide":1,"name":"element_223","bbox":[735.9,749.9,0.2,0.2]}
+{"kind":"shape","id":"sh/507qt872","slide":1,"name":"直接箭头连接符 993","bbox":[703.1,750,32.8,0]}
+{"kind":"textbox","id":"sh/43qp4zux","slide":1,"name":"element_224","text":"gₐ","textPreview":"gₐ","textChars":2,"textLines":1,"bbox":[693,780,70,29]}
+{"kind":"shape","id":"sh/54zqx4vi","slide":1,"name":"element_225","bbox":[238.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/i18729cr","slide":1,"name":"element_226","bbox":[269.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/lk3qh47y","slide":1,"name":"直接箭头连接符 997","bbox":[239.1,751,30.8,0]}
+{"kind":"shape","id":"sh/srqp8jut","slide":1,"name":"element_227","bbox":[402.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/tsjq1ove","slide":1,"name":"element_228","bbox":[439.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/psryhonu","slide":1,"name":"直接箭头连接符 1000","bbox":[403.1,751,36.8,0]}
+{"kind":"shape","id":"sh/r6h8zed8","slide":1,"name":"element_229","bbox":[478.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/8b6pwfup","slide":1,"name":"element_230","bbox":[525.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/cv2hs3m5","slide":1,"name":"直接箭头连接符 1003","bbox":[479.1,751,46.8,0]}
+{"kind":"shape","id":"sh/bqlsbixs","slide":1,"name":"element_231","bbox":[702.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/qpcb2dw7","slide":1,"name":"element_232","bbox":[647.9,750.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ru90jy50","slide":1,"name":"直接箭头连接符 1006","bbox":[648.1,751,54.8,0]}
+{"kind":"textbox","id":"sh/crut4ned","slide":1,"name":"element_233","text":"Hctx = Pₕ(h₀) + Pᵤ(uₐ)\ng = P_g(gₐ) + P_z(z_id) + P_τ(τ)","textPreview":"Hctx = Pₕ(h₀) + Pᵤ(uₐ) | g = P_g(gₐ) + P_z(z_id) + P_τ(τ)","textChars":55,"textLines":2,"bbox":[1257,66,313,59]}
+{"kind":"textbox","id":"sh/3mls7ixg","slide":1,"name":"element_234","text":"Noisy residual","textPreview":"Noisy residual","textChars":14,"textLines":1,"bbox":[1278,147,271,44]}
+{"kind":"shape","id":"sh/2lcbydwb","slide":1,"name":"element_235","bbox":[1251,214,319,332]}
+{"kind":"textbox","id":"sh/po3a9sfm","slide":1,"name":"element_236","text":"AdaLN + Self-Attention","textPreview":"AdaLN + Self-Attention","textChars":22,"textLines":1,"bbox":[1280,240,262,46]}
+{"kind":"textbox","id":"sh/onut0ne1","slide":1,"name":"element_237","text":"Global modulation\ngₐ + z_id + τ","textPreview":"Global modulation | gₐ + z_id + τ","textChars":31,"textLines":2,"bbox":[1280,312,262,46]}
+{"kind":"shape","id":"sh/fy1s3yxk","slide":1,"name":"element_238","bbox":[1410.9,285.9,0.2,0.2]}
+{"kind":"shape","id":"sh/exsrutwz","slide":1,"name":"element_239","bbox":[1410.9,311.9,0.2,0.2]}
+{"kind":"shape","id":"sh/mp4jixon","slide":1,"name":"直接箭头连接符 1014","bbox":[1411,286.1,0,25.8]}
+{"kind":"textbox","id":"sh/ju1cfyhc","slide":1,"name":"element_240","text":"AdaLN + Cross-Attention","textPreview":"AdaLN + Cross-Attention","textChars":23,"textLines":1,"bbox":[1280,384,262,46]}
+{"kind":"shape","id":"sh/4vat83ix","slide":1,"name":"element_241","bbox":[1410.9,357.9,0.2,0.2]}
+{"kind":"shape","id":"sh/5wjuh8zi","slide":1,"name":"element_242","bbox":[1410.9,383.9,0.2,0.2]}
+{"kind":"shape","id":"sh/elkjexob","slide":1,"name":"直接箭头连接符 1018","bbox":[1411,358.1,0,25.8]}
+{"kind":"textbox","id":"sh/ry1cjiho","slide":1,"name":"element_243","text":"AdaLN + Feed Forward","textPreview":"AdaLN + Feed Forward","textChars":20,"textLines":1,"bbox":[1280,456,262,46]}
+{"kind":"shape","id":"sh/szatcni9","slide":1,"name":"element_244","bbox":[1410.9,429.9,0.2,0.2]}
+{"kind":"shape","id":"sh/tk3ul8ze","slide":1,"name":"element_245","bbox":[1410.9,455.9,0.2,0.2]}
+{"kind":"shape","id":"sh/pkb21sru","slide":1,"name":"直接箭头连接符 1022","bbox":[1411,430.1,0,25.8]}
+{"kind":"shape","id":"sh/fmlcnihk","slide":1,"name":"element_246","bbox":[1410.9,190.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ps76tgny","slide":1,"name":"element_247","bbox":[1410.9,239.9,0.2,0.2]}
+{"kind":"shape","id":"sh/cnmlw7al","slide":1,"name":"直接箭头连接符 1025","bbox":[1411,191.1,0,48.8]}
+{"kind":"textbox","id":"sh/nqpor65s","slide":1,"name":"element_248","text":"× N blocks · gated residuals","textPreview":"× N blocks · gated residuals","textChars":28,"textLines":1,"bbox":[1258,514,303,24]}
+{"kind":"textbox","id":"sh/2pgny1on","slide":1,"name":"element_249","text":"Temporal attention","textPreview":"Temporal attention","textChars":18,"textLines":1,"bbox":[1275,363,260,19]}
+{"kind":"textbox","id":"sh/xw76xgna","slide":1,"name":"element_250","text":"Output AdaLN + Linear","textPreview":"Output AdaLN + Linear","textChars":21,"textLines":1,"bbox":[1280,573,262,44]}
+{"kind":"shape","id":"sh/cvy54b6p","slide":1,"name":"element_251","bbox":[1410.9,501.9,0.2,0.2]}
+{"kind":"shape","id":"sh/bupovq54","slide":1,"name":"element_252","bbox":[1410.9,572.9,0.2,0.2]}
+{"kind":"shape","id":"sh/nuhwbqxk","slide":1,"name":"直接箭头连接符 1031","bbox":[1411,502.1,0,70.8]}
+{"kind":"textbox","id":"sh/l0r610n6","slide":1,"name":"element_253","text":"Velocity field","textPreview":"Velocity field","textChars":14,"textLines":1,"bbox":[1324,622,174,27]}
+{"kind":"textbox","id":"sh/kzi58v6l","slide":1,"name":"element_254","text":"Flow integration\nε → r̂","textPreview":"Flow integration | ε → r̂","textChars":23,"textLines":2,"bbox":[1280,662,262,49]}
+{"kind":"shape","id":"sh/gf290zqt","slide":1,"name":"element_255","bbox":[1410.9,647.9,0.2,0.2]}
+{"kind":"shape","id":"sh/hgvqt47e","slide":1,"name":"element_256","bbox":[1410.9,661.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ah8fm5gv","slide":1,"name":"直接箭头连接符 1036","bbox":[1411,648.1,0,13.8]}
+{"kind":"textbox","id":"sh/vet8rup8","slide":1,"name":"element_257","text":"Residual facial\nmotion","textPreview":"Residual facial | motion","textChars":22,"textLines":2,"bbox":[1263,720,295,57]}
+{"kind":"textbox","id":"sh/8r2pwfqx","slide":1,"name":"element_258","text":"Mouth protection","textPreview":"Mouth protection","textChars":16,"textLines":1,"bbox":[1263,789,295,39]}
+{"kind":"shape","id":"sh/tsbqpk7i","slide":1,"name":"element_259","bbox":[29.9,840.9,0.2,0.2]}
+{"kind":"shape","id":"sh/6pk7up8r","slide":1,"name":"element_260","bbox":[1569.9,840.9,0.2,0.2]}
+{"kind":"shape","id":"sh/ehczi90f","slide":1,"name":"直接箭头连接符 1041","bbox":[30.1,841,1539.8,0]}
+{"kind":"textbox","id":"sh/snm98j61","slide":1,"name":"element_261","text":"Figure 1. KineTalk separates articulation, personalized motion, and emotion, then synthesizes residual facial motion with a conditional flow decoder.","textPreview":"Figure 1. KineTalk separates articulation, personalized motion, and emotion, then synthesizes residual facial motion with a conditional f...","textChars":149,"textLines":1,"bbox":[30,853,1540,33]}
+{"kind":"notes","id":"nt/y90nupkv","slide":1,"text":"KineTalk uses a frozen articulation base for speech-synchronized mouth motion, a neutral reference encoder for personalized motion, and an audio emotion encoder that produces global emotion and temporal acoustic features. A motion emotion encoder is used only during training for emotion alignment. The conditional residual motion decoder combines articulation features, personalized motion, emotion, temporal acoustic context, and random noise to synthesize ARKit52 facial animation. The main path excludes the legacy Stage5 upper-flow branch and does not require a target motion sequence or emotion label at inference."}

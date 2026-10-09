@@ -1,0 +1,564 @@
+{"kind":"deck","id":"pr/dqkfwy","name":"Deck"}
+{"kind":"layout","layoutId":"498eee41-05e3-4530-8713-3e40a4e72a89","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"ed39082f-46c3-4000-8b86-781402befdad","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/ngkdqb","slide":1,"title":"KineTalk: reference-conditioned facial animation","textShapes":42}
+{"kind":"textbox","id":"sh/rad4fqxo","slide":1,"name":"shape_1","text":"KineTalk: reference-conditioned facial animation","textPreview":"KineTalk: reference-conditioned facial animation","textChars":48,"textLines":1,"bbox":[42,20,1185,48]}
+{"kind":"textbox","id":"sh/sbml8ve9","slide":1,"name":"shape_2","text":"Protected Stage4 architecture","textPreview":"Protected Stage4 architecture","textChars":29,"textLines":1,"bbox":[1050,30,508,30]}
+{"kind":"shape","id":"sh/tcvmh0fe","slide":1,"name":"region_3","bbox":[40,88,1520,224]}
+{"kind":"textbox","id":"sh/i543ilwr","slide":1,"name":"shape_4","text":"(a) Neutral reference enrollment","textPreview":"(a) Neutral reference enrollment","textChars":32,"textLines":1,"bbox":[58,96,1484,30]}
+{"kind":"textbox","id":"sh/j6d4bqxc","slide":1,"name":"module_5","text":"Reference audio","textPreview":"Reference audio","textChars":15,"textLines":1,"bbox":[62,139,170,53]}
+{"kind":"shape","id":"sh/47ml4bex","slide":1,"name":"replace_with_real_frame_6","bbox":[62,209,170,65]}
+{"kind":"textbox","id":"sh/58vmdgfi","slide":1,"name":"shape_7","text":"Neutral motion\nreference frames","textPreview":"Neutral motion | reference frames","textChars":31,"textLines":2,"bbox":[67,217.5,160,48]}
+{"kind":"textbox","id":"sh/21one5wb","slide":1,"name":"module_8","text":"Shared B₀","textPreview":"Shared B₀","textChars":9,"textLines":1,"bbox":[270,139,175,53]}
+{"kind":"textbox","id":"sh/32x4naxw","slide":1,"name":"operator_9","text":"−","textPreview":"−","textChars":1,"textLines":1,"bbox":[475,160,42,42]}
+{"kind":"shape","id":"sh/7q98vehw","slide":1,"name":"shape_10","bbox":[231.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/6p0rm90b","slide":1,"name":"shape_11","bbox":[269.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tsraxozm","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/8ri9oji1","slide":1,"name":"shape_12","bbox":[444.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ve9szyhs","slide":1,"name":"shape_13","bbox":[460.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ut0rqt07","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/hgba1ozy","slide":1,"name":"shape_14","bbox":[460.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/gf29sjid","slide":1,"name":"shape_15","bbox":[460.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3its3yho","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ihkrut0j","slide":1,"name":"shape_16","bbox":[460.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ed4bmxkr","slide":1,"name":"shape_17","bbox":[474.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/fexcv21w","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/0f6do72h","slide":1,"name":"shape_18","bbox":[231.8,240.8,0.4,0.4]}
+{"kind":"shape","id":"sh/1gfuxcj2","slide":1,"name":"shape_19","bbox":[495.8,240.8,0.4,0.4]}
+{"kind":"shape","id":"sh/q94bixkf","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/radcri10","slide":1,"name":"shape_20","bbox":[495.8,240.8,0.4,0.4]}
+{"kind":"shape","id":"sh/sbmtkn2l","slide":1,"name":"shape_21","bbox":[495.8,201.8,0.4,0.4]}
+{"kind":"shape","id":"sh/dcvutsj6","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/a58vuh0j","slide":1,"name":"shape_22","text":"paired utterance","textPreview":"paired utterance","textChars":16,"textLines":1,"bbox":[273,208,171,28]}
+{"kind":"textbox","id":"sh/b6hc3m14","slide":1,"name":"module_23","text":"Reference residual\nRʳ = Mʳ − B₀(Cʳ)","textPreview":"Reference residual | Rʳ = Mʳ − B₀(Cʳ)","textChars":35,"textLines":2,"bbox":[555,147,218,83]}
+{"kind":"shape","id":"sh/l0jetg3m","slide":1,"name":"shape_24","bbox":[516.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/kzax0b21","slide":1,"name":"shape_25","bbox":[554.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/jy1wr6lg","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ydsfyl4v","slide":1,"name":"module_26","text":"Statistics + encoder\nMulti-reference pooling","textPreview":"Statistics + encoder | Multi-reference pooling","textChars":44,"textLines":2,"bbox":[812,147,208,83]}
+{"kind":"shape","id":"sh/xczepg3a","slide":1,"name":"shape_27","bbox":[772.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/wbqxwbmp","slide":1,"name":"shape_28","bbox":[811.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/bahwn6l4","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/a98fu14z","slide":1,"name":"module_29","text":"Execution code\nS_id","textPreview":"Execution code | S_id","textChars":19,"textLines":2,"bbox":[1060,147,172,83]}
+{"kind":"shape","id":"sh/h83y103e","slide":1,"name":"shape_30","bbox":[1019.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/g7ux8v29","slide":1,"name":"shape_31","bbox":[1059.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/obi5sv2p","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/pcr6103a","slide":1,"name":"module_32","text":"Static offset P_id\nMouth calibration","textPreview":"Static offset P_id | Mouth calibration","textChars":36,"textLines":2,"bbox":[1280,147,251,83]}
+{"kind":"shape","id":"sh/290nq5kj","slide":1,"name":"shape_33","bbox":[1231.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/na9ozql4","slide":1,"name":"shape_34","bbox":[1279.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cfi5wf21","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/xgb65k36","slide":1,"name":"shape_35","bbox":[915.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ad0nu5kv","slide":1,"name":"shape_36","bbox":[915.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/be9o3alg","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/k3250f2x","slide":1,"name":"shape_37","bbox":[915.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/l4b69k3i","slide":1,"name":"shape_38","bbox":[1404.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/vyd8ze5k","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ux4rqt4z","slide":1,"name":"shape_39","bbox":[1404.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/h0fq1onq","slide":1,"name":"shape_40","bbox":[1404.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/wz69sjm5","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/7ad8ve5o","slide":1,"name":"shape_41","text":"reference mean for calibration","textPreview":"reference mean for calibration","textChars":30,"textLines":1,"bbox":[996,245,364,23]}
+{"kind":"textbox","id":"sh/m947m943","slide":1,"name":"shape_42","text":"Enrollment is reusable across target utterances","textPreview":"Enrollment is reusable across target utterances","textChars":47,"textLines":1,"bbox":[557,271,460,25]}
+{"kind":"textbox","id":"sh/9wvqxone","slide":1,"name":"shape_43","text":"(b) Speech-driven synthesis","textPreview":"(b) Speech-driven synthesis","textChars":27,"textLines":1,"bbox":[57,329,760,35]}
+{"kind":"textbox","id":"sh/8vm9ojm9","slide":1,"name":"module_44","text":"Driving speech\nA","textPreview":"Driving speech | A","textChars":16,"textLines":2,"bbox":[60,471,173,91]}
+{"kind":"textbox","id":"sh/r6x87y5s","slide":1,"name":"module_45","text":"Acoustic features\nContent + affect","textPreview":"Acoustic features | Content + affect","textChars":34,"textLines":2,"bbox":[285,395,190,86]}
+{"kind":"textbox","id":"sh/65oryd47","slide":1,"name":"module_46","text":"Audio affect\nstudent","textPreview":"Audio affect | student","textChars":20,"textLines":2,"bbox":[530,395,190,86]}
+{"kind":"textbox","id":"sh/2lsbqxof","slide":1,"name":"module_47","text":"E_g   I_g   L_t\nAffect conditions","textPreview":"E_g   I_g   L_t | Affect conditions","textChars":33,"textLines":2,"bbox":[766,395,185,86]}
+{"kind":"shape","id":"sh/3m1cz2p0","slide":1,"name":"shape_48","bbox":[232.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/onats76l","slide":1,"name":"shape_49","bbox":[258.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/poju1c76","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/qpsbuhor","slide":1,"name":"shape_50","bbox":[258.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/bqlc3mpc","slide":1,"name":"shape_51","bbox":[258.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/crutwr6h","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ds3u5w72","slide":1,"name":"shape_52","bbox":[258.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/6t8bido7","slide":1,"name":"shape_53","bbox":[284.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ruhsrips","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/t076dkvm","slide":1,"name":"shape_54","bbox":[474.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/8zy5kfu1","slide":1,"name":"shape_55","bbox":[529.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/7ypobadg","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/6xgni5cv","slide":1,"name":"shape_56","bbox":[719.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hor6h4vi","slide":1,"name":"shape_57","bbox":[765.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/gni5ozud","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/vmpofuds","slide":1,"name":"module_58","text":"Content features\nC","textPreview":"Content features | C","textChars":18,"textLines":2,"bbox":[285,572,190,75]}
+{"kind":"textbox","id":"sh/u1gnmpc7","slide":1,"name":"module_59","text":"Articulation base\nB₀  ·  frozen","textPreview":"Articulation base | B₀  ·  frozen","textChars":31,"textLines":2,"bbox":[530,572,190,75]}
+{"kind":"shape","id":"sh/xsnm50ve","slide":1,"name":"shape_60","bbox":[258.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/wre5cvut","slide":1,"name":"shape_61","bbox":[258.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4fa1wzid","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/pgjip4zy","slide":1,"name":"shape_62","bbox":[258.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/2dsjup07","slide":1,"name":"shape_63","bbox":[284.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3e10nuhs","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/gbq1sfih","slide":1,"name":"shape_64","bbox":[474.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hcjilkzm","slide":1,"name":"shape_65","bbox":[529.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/up8jqp0b","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/fqh0jahw","slide":1,"name":"module_66","text":"Conditional\nexpression generator\nResidual DiT","textPreview":"Conditional | expression generator | Residual DiT","textChars":45,"textLines":3,"bbox":[1000,417,205,159]}
+{"kind":"shape","id":"sh/07u14jil","slide":1,"name":"shape_67","bbox":[950.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/1832xoz6","slide":1,"name":"shape_68","bbox":[974.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/vepcj25k","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/adgvahoz","slide":1,"name":"shape_69","bbox":[974.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hgrulcna","slide":1,"name":"shape_70","bbox":[974.8,476.8,0.4,0.4]}
+{"kind":"shape","id":"sh/wfydc765","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ji9cnm5g","slide":1,"name":"shape_71","bbox":[974.8,476.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ih0vehov","slide":1,"name":"shape_72","bbox":[999.8,476.8,0.4,0.4]}
+{"kind":"shape","id":"sh/5krupwnm","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/4jidgr61","slide":1,"name":"shape_73","bbox":[1145.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/zm5cbi5c","slide":1,"name":"shape_74","bbox":[1145.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ylwb2xor","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/3qdcnypg","slide":1,"name":"shape_75","bbox":[1145.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ip4vutob","slide":1,"name":"shape_76","bbox":[1101.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/5svep87m","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/4rmdg361","slide":1,"name":"shape_77","bbox":[1101.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/vmdcjepk","slide":1,"name":"shape_78","bbox":[1101.8,416.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ul4vq9oz","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/hovulo7q","slide":1,"name":"shape_79","text":"S_id","textPreview":"S_id","textChars":4,"textLines":1,"bbox":[1124,328,76,25]}
+{"kind":"shape","id":"sh/gnmdsj65","slide":1,"name":"shape_80","bbox":[719.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/fixwvipo","slide":1,"name":"shape_81","bbox":[821.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ehovmdoj","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/w3i9gfml","slide":1,"name":"shape_82","bbox":[821.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/x4rapkn6","slide":1,"name":"shape_83","bbox":[821.8,547.8,0.4,0.4]}
+{"kind":"shape","id":"sh/a1gre54v","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/b29sna5g","slide":1,"name":"shape_84","bbox":[821.8,547.8,0.4,0.4]}
+{"kind":"shape","id":"sh/kritkfmx","slide":1,"name":"shape_85","bbox":[999.8,547.8,0.4,0.4]}
+{"kind":"shape","id":"sh/lsratkni","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/yp0bi54r","slide":1,"name":"shape_86","text":"Hidden states H₀","textPreview":"Hidden states H₀","textChars":16,"textLines":1,"bbox":[832,548,150,31]}
+{"kind":"textbox","id":"sh/jq9sra5c","slide":1,"name":"module_87","text":"z ∼ N","textPreview":"z ∼ N","textChars":5,"textLines":1,"bbox":[967,333,92,45]}
+{"kind":"shape","id":"sh/8v2tozmt","slide":1,"name":"shape_88","bbox":[1012.8,377.8,0.4,0.4]}
+{"kind":"shape","id":"sh/twbax4ne","slide":1,"name":"shape_89","bbox":[1012.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hc7ahkfi","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/gby98zex","slide":1,"name":"shape_90","bbox":[1012.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/fapsfuxs","slide":1,"name":"shape_91","bbox":[1029.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/upgr6pw7","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/pgral4fu","slide":1,"name":"shape_92","bbox":[1029.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4fytcze9","slide":1,"name":"shape_93","bbox":[1029.8,416.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3epsjuxo","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/2dgrapw3","slide":1,"name":"module_94","text":"Fixed\nmask\nS_exp","textPreview":"Fixed | mask | S_exp","textChars":16,"textLines":3,"bbox":[1244,454,106,87]}
+{"kind":"shape","id":"sh/5kna90fa","slide":1,"name":"shape_95","bbox":[1204.8,496.8,0.4,0.4]}
+{"kind":"shape","id":"sh/kje90fe5","slide":1,"name":"shape_96","bbox":[1243.8,496.8,0.4,0.4]}
+{"kind":"shape","id":"sh/adsfuh8r","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/be1gnm9w","slide":1,"name":"shape_97","text":"R","textPreview":"R","textChars":1,"textLines":1,"bbox":[1204,459,40,25]}
+{"kind":"textbox","id":"sh/wfaxwrqh","slide":1,"name":"operator_98","text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[1370,479,46,46]}
+{"kind":"shape","id":"sh/xgjypcr2","slide":1,"name":"shape_99","bbox":[1349.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/yhszyh8n","slide":1,"name":"shape_100","bbox":[1369.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ji1grm98","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/kjah0rqt","slide":1,"name":"shape_101","bbox":[1471.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/l43ytwre","slide":1,"name":"shape_102","bbox":[1471.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/el8fmx8j","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/fmhgf294","slide":1,"name":"shape_103","bbox":[1471.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/f29wje1s","slide":1,"name":"shape_104","bbox":[1392.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/uh0vqtk7","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/h4relojy","slide":1,"name":"shape_105","bbox":[1392.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/g3idsj2d","slide":1,"name":"shape_106","bbox":[1392.8,478.8,0.4,0.4]}
+{"kind":"shape","id":"sh/369wny1o","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/250vutk3","slide":1,"name":"shape_107","text":"P_id","textPreview":"P_id","textChars":4,"textLines":1,"bbox":[1396,387,143,30]}
+{"kind":"shape","id":"sh/p8bep8ju","slide":1,"name":"shape_108","bbox":[624.8,646.8,0.4,0.4]}
+{"kind":"shape","id":"sh/47idw3i9","slide":1,"name":"shape_109","bbox":[624.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ratwry10","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/q9kfyd0f","slide":1,"name":"shape_110","bbox":[624.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ozmd83yd","slide":1,"name":"shape_111","bbox":[1392.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/90vuh8zy","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/mdkv6dgn","slide":1,"name":"shape_112","bbox":[1392.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/netcfihs","slide":1,"name":"shape_113","bbox":[1392.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/0b2d43yh","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/1cbud8z2","slide":1,"name":"shape_114","text":"Articulation sequence B₀(C)","textPreview":"Articulation sequence B₀(C)","textChars":27,"textLines":1,"bbox":[938,652,265,27]}
+{"kind":"shape","id":"sh/e9kv2tgb","slide":1,"name":"replace_with_real_frame_115","bbox":[1440,456,112,144]}
+{"kind":"textbox","id":"sh/zatcbyhw","slide":1,"name":"shape_116","text":"Avatar\nframes","textPreview":"Avatar | frames","textChars":13,"textLines":2,"bbox":[1445,504,102,48]}
+{"kind":"shape","id":"sh/c7id0jy5","slide":1,"name":"shape_117","bbox":[1415.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/d8bu9ozq","slide":1,"name":"shape_118","bbox":[1439.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tsj2h0ni","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/sra1ovmx","slide":1,"name":"shape_119","text":"ARKit52","textPreview":"ARKit52","textChars":7,"textLines":1,"bbox":[1419,418,147,28]}
+{"kind":"textbox","id":"sh/7qhkfq5c","slide":1,"name":"shape_120","text":"R_mouth/jaw = 0","textPreview":"R_mouth/jaw = 0","textChars":15,"textLines":1,"bbox":[1000,589,372,33]}
+{"kind":"textbox","id":"sh/6p8jml4r","slide":1,"name":"shape_121","text":"M̂ = B₀(C) + P_id + S_exp ⊙ R","textPreview":"M̂ = B₀(C) + P_id + S_exp ⊙ R","textChars":29,"textLines":1,"bbox":[45,674,460,32]}
+{"kind":"shape","id":"sh/5oz2dgn6","slide":1,"name":"region_122","bbox":[40,731,1520,132]}
+{"kind":"textbox","id":"sh/knq1kbm1","slide":1,"name":"shape_123","text":"(c) Motion-guided affect learning · training only","textPreview":"(c) Motion-guided affect learning · training only","textChars":49,"textLines":1,"bbox":[58,739,1484,30]}
+{"kind":"textbox","id":"sh/jmhkb65g","slide":1,"name":"module_124","text":"M − B₀(C) − P_id","textPreview":"M − B₀(C) − P_id","textChars":16,"textLines":1,"bbox":[61,784,292,57]}
+{"kind":"textbox","id":"sh/il8ji1ov","slide":1,"name":"module_125","text":"Motion affect teacher","textPreview":"Motion affect teacher","textChars":21,"textLines":1,"bbox":[391,784,246,57]}
+{"kind":"textbox","id":"sh/pk32pknq","slide":1,"name":"module_126","text":"E_gᴹ","textPreview":"E_gᴹ","textChars":4,"textLines":1,"bbox":[677,784,137,57]}
+{"kind":"textbox","id":"sh/4julwfm5","slide":1,"name":"module_127","text":"Global feature alignment","textPreview":"Global feature alignment","textChars":24,"textLines":1,"bbox":[861,784,267,57]}
+{"kind":"textbox","id":"sh/m54zqxkn","slide":1,"name":"module_128","text":"E_gᴬ","textPreview":"E_gᴬ","textChars":4,"textLines":1,"bbox":[1172,784,137,57]}
+{"kind":"textbox","id":"sh/n6dgj2l8","slide":1,"name":"module_129","text":"Audio student","textPreview":"Audio student","textChars":13,"textLines":1,"bbox":[1350,784,188,57]}
+{"kind":"shape","id":"sh/876hs72t","slide":1,"name":"shape_130","bbox":[352.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/9sfylc3y","slide":1,"name":"shape_131","bbox":[390.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/e14zmx4b","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/z2dgf2lw","slide":1,"name":"shape_132","bbox":[636.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/03mho7mh","slide":1,"name":"shape_133","bbox":[676.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/14vyhc32","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ixozy1kv","slide":1,"name":"shape_134","bbox":[813.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/jyx0rmlg","slide":1,"name":"shape_135","bbox":[860.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/redgbmdk","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/6dkz2hcz","slide":1,"name":"shape_136","bbox":[1171.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tgvydwva","slide":1,"name":"shape_137","bbox":[1127.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/sfmh4ru5","slide":1,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/jqtg7md8","slide":1,"name":"shape_138","bbox":[1349.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ipkzyhcn","slide":1,"name":"shape_139","bbox":[1308.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/5cby9cve","slide":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/4r2h0rut","slide":1,"name":"shape_140","text":"Solid: synthesis / enrollment     Dashed: training supervision     Screenshot boxes: replace with real frames","textPreview":"Solid: synthesis / enrollment     Dashed: training supervision     Screenshot boxes: replace with real frames","textChars":109,"textLines":1,"bbox":[44,869,1400,24]}
+{"kind":"notes","id":"nt/ngkdqb","slide":1,"text":"Source snapshot: 2026-09-22. D:/实验室项目/新实验/kinetalk_b0_residual_train/kinetalk_b0/models/neutral_affect.py:53,337,429; scripts/train_full_staged.py:394,404,496,552; docs/CURRENT_SYSTEM_20260921.md. Figure depicts the mouth-protected v10 / Stage4 route. It is an implementation diagram, not a claim that identity, emotion, lip sync and dynamics have all passed a unified evaluation. B0 is trained in articulation stage and frozen thereafter. Identity describes motion execution, not geometric face identity. Only global representation distillation is drawn; no claim of full low-rate control distillation. Motion targets and labels are training-only.\nCaption: KineTalk overview. Independent neutral audio-motion pairs provide an execution representation and a time-constant offset. The audio student and frozen articulation base condition an expression generator. A fixed non-mouth support mask protects the articulation sequence. Motion-derived affect supervises the global audio representation during training. E_g: global affect; I_g: clip intensity; L_t: local condition. The native-region gain experiment is intentionally separate. Screenshot placeholders are author-requested, not missing generated content."}
+{"kind":"slide","id":"sl/6dniqj","slide":2,"title":"KineTalk：参考条件下的语音驱动面部动画","textShapes":42}
+{"kind":"textbox","id":"sh/udcrixwb","slide":2,"name":"shape_141","text":"KineTalk：参考条件下的语音驱动面部动画","textPreview":"KineTalk：参考条件下的语音驱动面部动画","textChars":23,"textLines":1,"bbox":[42,20,1185,48]}
+{"kind":"textbox","id":"sh/hgnadcf2","slide":2,"name":"shape_142","text":"口部保护版 Stage4 架构","textPreview":"口部保护版 Stage4 架构","textChars":15,"textLines":1,"bbox":[1050,30,508,30]}
+{"kind":"shape","id":"sh/gfe9k7eh","slide":2,"name":"region_143","bbox":[40,88,1520,224]}
+{"kind":"textbox","id":"sh/325sfmxs","slide":2,"name":"shape_144","text":"(a) 多句中性参考登记","textPreview":"(a) 多句中性参考登记","textChars":12,"textLines":1,"bbox":[58,96,1484,30]}
+{"kind":"textbox","id":"sh/i1wrmhw7","slide":2,"name":"module_145","text":"参考语音","textPreview":"参考语音","textChars":4,"textLines":1,"bbox":[62,139,170,53]}
+{"kind":"shape","id":"sh/54nahcfy","slide":2,"name":"replace_with_real_frame_146","bbox":[62,209,170,65]}
+{"kind":"textbox","id":"sh/43e9o7ed","slide":2,"name":"shape_147","text":"中性参考动作\n真实帧待补","textPreview":"中性参考动作 | 真实帧待补","textChars":12,"textLines":2,"bbox":[67,217.5,160,48]}
+{"kind":"textbox","id":"sh/j6183ixo","slide":2,"name":"module_148","text":"共享发音基座 B₀","textPreview":"共享发音基座 B₀","textChars":9,"textLines":1,"bbox":[270,139,175,53]}
+{"kind":"textbox","id":"sh/y5sradw3","slide":2,"name":"operator_149","text":"−","textPreview":"−","textChars":1,"textLines":1,"bbox":[475,160,42,42]}
+{"kind":"shape","id":"sh/0jytkrul","slide":2,"name":"shape_150","bbox":[231.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/1k7utwbq","slide":2,"name":"shape_151","bbox":[269.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/exgbihcf","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/fipcrmt0","slide":2,"name":"shape_152","bbox":[444.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/onidobuh","slide":2,"name":"shape_153","bbox":[460.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/poruxwb2","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/2l0vm1cb","slide":2,"name":"shape_154","bbox":[460.8,164.8,0.4,0.4]}
+{"kind":"shape","id":"sh/nm9cv6tw","slide":2,"name":"shape_155","bbox":[460.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4retc7ud","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/5snulcvy","slide":2,"name":"shape_156","bbox":[460.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/5ofap8nm","slide":2,"name":"shape_157","bbox":[474.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/kn69g3m1","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/jmxsny5g","slide":2,"name":"shape_158","bbox":[231.8,240.8,0.4,0.4]}
+{"kind":"shape","id":"sh/iloret4v","slide":2,"name":"shape_159","bbox":[495.8,240.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tczat8ni","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/sbq9k3mx","slide":2,"name":"shape_160","bbox":[495.8,240.8,0.4,0.4]}
+{"kind":"shape","id":"sh/7qhsry5s","slide":2,"name":"shape_161","bbox":[495.8,201.8,0.4,0.4]}
+{"kind":"shape","id":"sh/6p8rid47","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/hgzaxsnu","slide":2,"name":"shape_162","text":"语音与动作配对","textPreview":"语音与动作配对","textChars":7,"textLines":1,"bbox":[273,208,171,28]}
+{"kind":"textbox","id":"sh/gfqtonm9","slide":2,"name":"module_163","text":"参考动作残差\nRʳ = Mʳ − B₀(Cʳ)","textPreview":"参考动作残差 | Rʳ = Mʳ − B₀(Cʳ)","textChars":23,"textLines":2,"bbox":[555,147,218,83]}
+{"kind":"shape","id":"sh/ep0f2lgf","slide":2,"name":"shape_164","bbox":[516.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/fa9gvqh0","slide":2,"name":"shape_165","bbox":[554.8,180.8,0.4,0.4]}
+{"kind":"shape","id":"sh/0bix4vyl","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/1cryx0z6","slide":2,"name":"module_166","text":"残差统计与共享编码\n多参考聚合","textPreview":"残差统计与共享编码 | 多参考聚合","textChars":15,"textLines":2,"bbox":[812,147,208,83]}
+{"kind":"shape","id":"sh/2dkf65gb","slide":2,"name":"shape_167","bbox":[772.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/netgzqhw","slide":2,"name":"shape_168","bbox":[811.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/of2h8vyh","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/9gby10z2","slide":2,"name":"module_169","text":"个体执行表征\nS_id","textPreview":"个体执行表征 | S_id","textChars":11,"textLines":2,"bbox":[1060,147,172,83]}
+{"kind":"shape","id":"sh/ahkza5gn","slide":2,"name":"shape_170","bbox":[1019.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/bitg3ah8","slide":2,"name":"shape_171","bbox":[1059.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/jypgna9c","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ixgfu58r","slide":2,"name":"module_172","text":"静态个体偏移 P_id\n参考口部校准","textPreview":"静态个体偏移 P_id | 参考口部校准","textChars":18,"textLines":2,"bbox":[1280,147,251,83]}
+{"kind":"shape","id":"sh/50rypkri","slide":2,"name":"shape_173","bbox":[1231.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/kzixwfqx","slide":2,"name":"shape_174","bbox":[1279.8,187.8,0.4,0.4]}
+{"kind":"shape","id":"sh/729gra98","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/610fy58n","slide":2,"name":"shape_175","bbox":[915.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/t4rytkre","slide":2,"name":"shape_176","bbox":[915.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/s3ix0fqt","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/n65gfq94","slide":2,"name":"shape_177","bbox":[915.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/m5wfml8j","slide":2,"name":"shape_178","bbox":[1404.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cbudgr6h","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/dc3upw72","slide":2,"name":"shape_179","bbox":[1404.8,266.8,0.4,0.4]}
+{"kind":"shape","id":"sh/q9cvehob","slide":2,"name":"shape_180","bbox":[1404.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ralcnmpw","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/47ads765","slide":2,"name":"shape_181","text":"由参考均值构造静态口部偏移","textPreview":"由参考均值构造静态口部偏移","textChars":13,"textLines":1,"bbox":[996,245,364,23]}
+{"kind":"textbox","id":"sh/p8julc7q","slide":2,"name":"shape_182","text":"登记结果可跨目标语句复用","textPreview":"登记结果可跨目标语句复用","textChars":12,"textLines":1,"bbox":[557,271,460,25]}
+{"kind":"textbox","id":"sh/25svqxof","slide":2,"name":"shape_183","text":"(b) 语音驱动的面部动画合成","textPreview":"(b) 语音驱动的面部动画合成","textChars":15,"textLines":1,"bbox":[57,329,760,35]}
+{"kind":"textbox","id":"sh/361cj2p0","slide":2,"name":"module_184","text":"目标语音\nA","textPreview":"目标语音 | A","textChars":6,"textLines":2,"bbox":[60,471,173,91]}
+{"kind":"textbox","id":"sh/o3edob6p","slide":2,"name":"module_185","text":"声学特征\n内容与情感特征","textPreview":"声学特征 | 内容与情感特征","textChars":12,"textLines":2,"bbox":[285,395,190,86]}
+{"kind":"textbox","id":"sh/94nexg7a","slide":2,"name":"module_186","text":"音频情感\n学生网络","textPreview":"音频情感 | 学生网络","textChars":9,"textLines":2,"bbox":[530,395,190,86]}
+{"kind":"textbox","id":"sh/h0juhwze","slide":2,"name":"module_187","text":"E_g   I_g   L_t\n全局与局部条件","textPreview":"E_g   I_g   L_t | 全局与局部条件","textChars":23,"textLines":2,"bbox":[766,395,185,86]}
+{"kind":"shape","id":"sh/wzad8byt","slide":2,"name":"shape_188","bbox":[232.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/vy1cf6h8","slide":2,"name":"shape_189","bbox":[258.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/axsv61gn","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/9wjudwz2","slide":2,"name":"shape_190","bbox":[258.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/8vad4ryh","slide":2,"name":"shape_191","bbox":[258.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/nuhcbmhc","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/mt8v2hgr","slide":2,"name":"shape_192","bbox":[258.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/lszu9cz6","slide":2,"name":"shape_193","bbox":[284.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/0rqt0ryl","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ql4juts7","slide":2,"name":"shape_194","bbox":[474.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/rmd0nyts","slide":2,"name":"shape_195","bbox":[529.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cnm1w3ad","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/dovipoby","slide":2,"name":"shape_196","bbox":[719.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/2xkjq9sv","slide":2,"name":"shape_197","bbox":[765.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3yd0jetg","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/4zm1sja1","slide":2,"name":"module_198","text":"语音内容特征\nC","textPreview":"语音内容特征 | C","textChars":8,"textLines":2,"bbox":[285,572,190,75]}
+{"kind":"textbox","id":"sh/pkvilobm","slide":2,"name":"module_199","text":"发音基座 B₀\n表达阶段冻结","textPreview":"发音基座 B₀ | 表达阶段冻结","textChars":14,"textLines":2,"bbox":[530,572,190,75]}
+{"kind":"shape","id":"sh/utkjm9sz","slide":2,"name":"shape_200","bbox":[258.8,515.8,0.4,0.4]}
+{"kind":"shape","id":"sh/fut0fetk","slide":2,"name":"shape_201","bbox":[258.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/juxkj6to","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ito3q1c3","slide":2,"name":"shape_202","bbox":[258.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/5wz2lgbu","slide":2,"name":"shape_203","bbox":[284.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4v6lsbu9","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/vqxkf6ts","slide":2,"name":"shape_204","bbox":[474.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/u5ojm1c7","slide":2,"name":"shape_205","bbox":[529.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hsf2hgbi","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/wr6lobud","slide":2,"name":"module_206","text":"条件表达生成器\nResidual DiT\n系数残差生成","textPreview":"条件表达生成器 | Residual DiT | 系数残差生成","textChars":27,"textLines":3,"bbox":[1000,417,205,159]}
+{"kind":"shape","id":"sh/fmhkrqtw","slide":2,"name":"shape_207","bbox":[950.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/el83ylcb","slide":2,"name":"shape_208","bbox":[974.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cvi9w36h","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/dwrq58n2","slide":2,"name":"shape_209","bbox":[974.8,437.8,0.4,0.4]}
+{"kind":"shape","id":"sh/qt0rator","slide":2,"name":"shape_210","bbox":[974.8,476.8,0.4,0.4]}
+{"kind":"shape","id":"sh/bu983y5w","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/0zi9036t","slide":2,"name":"shape_211","bbox":[974.8,476.8,0.4,0.4]}
+{"kind":"shape","id":"sh/lkbq98ne","slide":2,"name":"shape_212","bbox":[999.8,476.8,0.4,0.4]}
+{"kind":"shape","id":"sh/yx0ryton","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/zy987y58","slide":2,"name":"shape_213","bbox":[1145.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/8n294n6p","slide":2,"name":"shape_214","bbox":[1145.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/9obadsna","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ihs3e5on","slide":2,"name":"shape_215","bbox":[1145.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ji1k7a58","slide":2,"name":"shape_216","bbox":[1101.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4jalgvmt","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/5k3290ny","slide":2,"name":"shape_217","bbox":[1101.8,347.8,0.4,0.4]}
+{"kind":"shape","id":"sh/6lc3i54j","slide":2,"name":"shape_218","bbox":[1101.8,416.8,0.4,0.4]}
+{"kind":"shape","id":"sh/rml4ba54","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/s7ulkfmp","slide":2,"name":"shape_219","text":"S_id","textPreview":"S_id","textChars":4,"textLines":1,"bbox":[1124,328,76,25]}
+{"kind":"shape","id":"sh/t83mdkna","slide":2,"name":"shape_220","bbox":[719.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/e9c3mp4v","slide":2,"name":"shape_221","bbox":[821.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/fal4fu5g","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/p4765o7i","slide":2,"name":"shape_222","bbox":[821.8,608.8,0.4,0.4]}
+{"kind":"shape","id":"sh/o3y5cj6x","slide":2,"name":"shape_223","bbox":[821.8,547.8,0.4,0.4]}
+{"kind":"shape","id":"sh/325o3epc","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/21wna9or","slide":2,"name":"shape_224","bbox":[821.8,547.8,0.4,0.4]}
+{"kind":"shape","id":"sh/x8769o7e","slide":2,"name":"shape_225","bbox":[999.8,547.8,0.4,0.4]}
+{"kind":"shape","id":"sh/c7y5gj6t","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/b6po7epo","slide":2,"name":"shape_226","text":"内容隐状态 H₀","textPreview":"内容隐状态 H₀","textChars":8,"textLines":1,"bbox":[832,548,150,31]}
+{"kind":"textbox","id":"sh/q5gneto3","slide":2,"name":"module_227","text":"z ∼ N","textPreview":"z ∼ N","textChars":5,"textLines":1,"bbox":[967,333,92,45]}
+{"kind":"shape","id":"sh/lcr6d87q","slide":2,"name":"shape_228","bbox":[1012.8,377.8,0.4,0.4]}
+{"kind":"shape","id":"sh/kbipk365","slide":2,"name":"shape_229","bbox":[1012.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4rqhwbid","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/5sji5gjy","slide":2,"name":"shape_230","bbox":[1012.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ip8zu10n","slide":2,"name":"shape_231","bbox":[1029.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/jqhg361s","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/sfah0bip","slide":2,"name":"shape_232","bbox":[1029.8,398.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tgji9gja","slide":2,"name":"shape_233","bbox":[1029.8,416.8,0.4,0.4]}
+{"kind":"shape","id":"sh/6tszy10j","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ru107614","slide":2,"name":"module_234","text":"非口部\n硬约束\nS_exp","textPreview":"非口部 | 硬约束 | S_exp","textChars":13,"textLines":3,"bbox":[1244,454,106,87]}
+{"kind":"shape","id":"sh/8j6hori5","slide":2,"name":"shape_235","bbox":[1204.8,496.8,0.4,0.4]}
+{"kind":"shape","id":"sh/9kfyxwjq","slide":2,"name":"shape_236","bbox":[1243.8,496.8,0.4,0.4]}
+{"kind":"shape","id":"sh/be5k3ul8","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/qdwjupk3","slide":2,"name":"shape_237","text":"R","textPreview":"R","textChars":1,"textLines":1,"bbox":[1204,459,40,25]}
+{"kind":"textbox","id":"sh/dgn25k3e","slide":2,"name":"operator_238","text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[1370,479,46,46]}
+{"kind":"shape","id":"sh/cfelwz2t","slide":2,"name":"shape_239","bbox":[1349.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3alkzalc","slide":2,"name":"shape_240","bbox":[1369.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/29cjq5kr","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/pcn21k3i","slide":2,"name":"shape_241","bbox":[1471.8,229.8,0.4,0.4]}
+{"kind":"shape","id":"sh/obe1sf2x","slide":2,"name":"shape_242","bbox":[1471.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/fmlkval0","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/elcjm5kv","slide":2,"name":"shape_243","bbox":[1471.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/utwn6tgf","slide":2,"name":"shape_244","bbox":[1392.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/vu5ozyh0","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/gve583y5","slide":2,"name":"shape_245","bbox":[1392.8,372.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hwn618zq","slide":2,"name":"shape_246","bbox":[1392.8,478.8,0.4,0.4]}
+{"kind":"shape","id":"sh/6pcn2tg3","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/7q5ovyho","slide":2,"name":"shape_247","text":"P_id","textPreview":"P_id","textChars":4,"textLines":1,"bbox":[1396,387,143,30]}
+{"kind":"shape","id":"sh/8re543y9","slide":2,"name":"shape_248","bbox":[624.8,646.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tsn6x8zu","slide":2,"name":"shape_249","bbox":[624.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ylcny9g7","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/jmlorehs","slide":2,"name":"shape_250","bbox":[624.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/1gbqxcja","slide":2,"name":"shape_251","bbox":[1392.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/0fi94rip","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/fe98vm14","slide":2,"name":"shape_252","bbox":[1392.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ed0r2h0j","slide":2,"name":"shape_253","bbox":[1392.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/dcrqtcjy","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/sbi907id","slide":2,"name":"shape_254","text":"发音序列 B₀(C)","textPreview":"发音序列 B₀(C)","textChars":10,"textLines":1,"bbox":[938,652,265,27]}
+{"kind":"shape","id":"sh/rq98r218","slide":2,"name":"replace_with_real_frame_255","bbox":[1440,456,112,144]}
+{"kind":"textbox","id":"sh/qp0ryx0n","slide":2,"name":"shape_256","text":"生成头像\n真实帧待补","textPreview":"生成头像 | 真实帧待补","textChars":10,"textLines":2,"bbox":[1445,504,102,48]}
+{"kind":"shape","id":"sh/5o7qpsj2","slide":2,"name":"shape_257","bbox":[1415.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4ny9w7ih","slide":2,"name":"shape_258","bbox":[1439.8,501.8,0.4,0.4]}
+{"kind":"shape","id":"sh/g3mhsrup","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/h4vi1wva","slide":2,"name":"shape_259","text":"ARKit52","textPreview":"ARKit52","textChars":7,"textLines":1,"bbox":[1419,418,147,28]}
+{"kind":"textbox","id":"sh/uh4zq1cj","slide":2,"name":"shape_260","text":"R_mouth/jaw = 0","textPreview":"R_mouth/jaw = 0","textChars":15,"textLines":1,"bbox":[1000,589,372,33]}
+{"kind":"textbox","id":"sh/v2d0zmd4","slide":2,"name":"shape_261","text":"M̂ = B₀(C) + P_id + S_exp ⊙ R","textPreview":"M̂ = B₀(C) + P_id + S_exp ⊙ R","textChars":29,"textLines":1,"bbox":[45,674,460,32]}
+{"kind":"shape","id":"sh/8f2horud","slide":2,"name":"region_262","bbox":[40,731,1520,132]}
+{"kind":"textbox","id":"sh/tgvixwvy","slide":2,"name":"shape_263","text":"(c) 动作引导的情感学习（仅训练期）","textPreview":"(c) 动作引导的情感学习（仅训练期）","textChars":19,"textLines":1,"bbox":[58,739,1484,30]}
+{"kind":"textbox","id":"sh/6dkzmhcn","slide":2,"name":"module_264","text":"M − B₀(C) − P_id","textPreview":"M − B₀(C) − P_id","textChars":16,"textLines":1,"bbox":[61,784,292,57]}
+{"kind":"textbox","id":"sh/7et0vmds","slide":2,"name":"module_265","text":"动作情感教师","textPreview":"动作情感教师","textChars":6,"textLines":1,"bbox":[391,784,246,57]}
+{"kind":"textbox","id":"sh/sb610bux","slide":2,"name":"module_266","text":"E_gᴹ","textPreview":"E_gᴹ","textChars":4,"textLines":1,"bbox":[677,784,137,57]}
+{"kind":"textbox","id":"sh/dcfi9gv2","slide":2,"name":"module_267","text":"全局情感表征对齐","textPreview":"全局情感表征对齐","textChars":8,"textLines":1,"bbox":[861,784,267,57]}
+{"kind":"textbox","id":"sh/n6hkzaxk","slide":2,"name":"module_268","text":"E_gᴬ","textPreview":"E_gᴬ","textChars":4,"textLines":1,"bbox":[1172,784,137,57]}
+{"kind":"textbox","id":"sh/2583qpwz","slide":2,"name":"module_269","text":"音频学生","textPreview":"音频学生","textChars":4,"textLines":1,"bbox":[1350,784,188,57]}
+{"kind":"shape","id":"sh/psj21kfa","slide":2,"name":"shape_270","bbox":[352.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/o7alsfe5","slide":2,"name":"shape_271","bbox":[390.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/bu1k3uxg","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ats3upwv","slide":2,"name":"shape_272","bbox":[636.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/xwjm54fm","slide":2,"name":"shape_273","bbox":[676.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cvalwze1","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ryxkrqxc","slide":2,"name":"shape_274","bbox":[813.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/qxo3ilwr","slide":2,"name":"shape_275","bbox":[860.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/up4b29kr","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/fqdsvelc","slide":2,"name":"shape_276","bbox":[1171.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/grmt4j2x","slide":2,"name":"shape_277","bbox":[1127.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hsvaxo3i","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/2d4b69kn","slide":2,"name":"shape_278","bbox":[1349.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3exsze18","slide":2,"name":"shape_279","bbox":[1308.8,811.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4f6t8j2t","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/pgfa1oje","slide":2,"name":"shape_280","text":"实线：登记与合成路径    虚线：训练监督    截图框：后续替换为真实画面","textPreview":"实线：登记与合成路径    虚线：训练监督    截图框：后续替换为真实画面","textChars":38,"textLines":1,"bbox":[44,869,1400,24]}
+{"kind":"notes","id":"nt/6dniqj","slide":2,"text":"Source snapshot: 2026-09-22. D:/实验室项目/新实验/kinetalk_b0_residual_train/kinetalk_b0/models/neutral_affect.py:53,337,429; scripts/train_full_staged.py:394,404,496,552; docs/CURRENT_SYSTEM_20260921.md. Figure depicts the mouth-protected v10 / Stage4 route. It is an implementation diagram, not a claim that identity, emotion, lip sync and dynamics have all passed a unified evaluation. B0 is trained in articulation stage and frozen thereafter. Identity describes motion execution, not geometric face identity. Only global representation distillation is drawn; no claim of full low-rate control distillation. Motion targets and labels are training-only.\nCaption: KineTalk overview. Independent neutral audio-motion pairs provide an execution representation and a time-constant offset. The audio student and frozen articulation base condition an expression generator. A fixed non-mouth support mask protects the articulation sequence. Motion-derived affect supervises the global audio representation during training. E_g: global affect; I_g: clip intensity; L_t: local condition. The native-region gain experiment is intentionally separate. Screenshot placeholders are author-requested, not missing generated content."}
+{"kind":"slide","id":"sl/psq8up","slide":3,"title":"KineTalk: reference conditioning and output protection","textShapes":27}
+{"kind":"textbox","id":"sh/50zyl83e","slide":3,"name":"shape_281","text":"KineTalk: reference conditioning and output protection","textPreview":"KineTalk: reference conditioning and output protection","textChars":54,"textLines":1,"bbox":[42,20,1185,48]}
+{"kind":"textbox","id":"sh/id8fad4n","slide":3,"name":"shape_282","text":"Methods detail","textPreview":"Methods detail","textChars":14,"textLines":1,"bbox":[1050,30,508,30]}
+{"kind":"shape","id":"sh/3ehgjil8","slide":3,"name":"region_283","bbox":[40,92,726,676]}
+{"kind":"textbox","id":"sh/s3qxgnm5","slide":3,"name":"shape_284","text":"(a) Reference residual conditioning","textPreview":"(a) Reference residual conditioning","textChars":35,"textLines":1,"bbox":[58,100,690,30]}
+{"kind":"shape","id":"sh/d4jyps3a","slide":3,"name":"region_285","bbox":[791,92,769,676]}
+{"kind":"textbox","id":"sh/q18fed4z","slide":3,"name":"shape_286","text":"(b) Protected coefficient composition","textPreview":"(b) Protected coefficient composition","textChars":37,"textLines":1,"bbox":[809,100,733,30]}
+{"kind":"shape","id":"sh/r2hgnilk","slide":3,"name":"replace_with_real_frame_287","bbox":[66,159,147,112]}
+{"kind":"textbox","id":"sh/07axk7m1","slide":3,"name":"shape_288","text":"Neutral motion\nMʳ","textPreview":"Neutral motion | Mʳ","textChars":17,"textLines":2,"bbox":[71,191,137,48]}
+{"kind":"textbox","id":"sh/18jyts3m","slide":3,"name":"module_289","text":"Paired audio\nAʳ","textPreview":"Paired audio | Aʳ","textChars":15,"textLines":2,"bbox":[65,314,148,65]}
+{"kind":"textbox","id":"sh/94vm1wn6","slide":3,"name":"module_290","text":"Shared B₀","textPreview":"Shared B₀","textChars":9,"textLines":1,"bbox":[269,314,180,65]}
+{"kind":"shape","id":"sh/83m58bml","slide":3,"name":"shape_291","bbox":[212.8,345.8,0.4,0.4]}
+{"kind":"shape","id":"sh/72d4z650","slide":3,"name":"shape_292","bbox":[268.8,345.8,0.4,0.4]}
+{"kind":"shape","id":"sh/m14n614f","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/hsvm5gn2","slide":3,"name":"operator_293","text":"−","textPreview":"−","textChars":1,"textLines":1,"bbox":[489,238,50,50]}
+{"kind":"shape","id":"sh/grm5cbmh","slide":3,"name":"shape_294","bbox":[212.8,214.8,0.4,0.4]}
+{"kind":"shape","id":"sh/v6d4365c","slide":3,"name":"shape_295","bbox":[513.8,214.8,0.4,0.4]}
+{"kind":"shape","id":"sh/u54na14r","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/xwbmtcny","slide":3,"name":"shape_296","bbox":[513.8,214.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cv2l076d","slide":3,"name":"shape_297","bbox":[513.8,237.8,0.4,0.4]}
+{"kind":"shape","id":"sh/or6dwbil","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/psze5gz6","slide":3,"name":"shape_298","bbox":[448.8,345.8,0.4,0.4]}
+{"kind":"shape","id":"sh/2povu10f","slide":3,"name":"shape_299","bbox":[513.8,345.8,0.4,0.4]}
+{"kind":"shape","id":"sh/nqxw36h0","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/cvqd0vih","slide":3,"name":"shape_300","bbox":[513.8,345.8,0.4,0.4]}
+{"kind":"shape","id":"sh/xwze90z2","slide":3,"name":"shape_301","bbox":[513.8,287.8,0.4,0.4]}
+{"kind":"shape","id":"sh/at8vyl0b","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/buhw7qhw","slide":3,"name":"module_302","text":"Residual Rʳ","textPreview":"Residual Rʳ","textChars":11,"textLines":1,"bbox":[575,233,161,63]}
+{"kind":"shape","id":"sh/kjqx4vyt","slide":3,"name":"shape_303","bbox":[538.8,262.8,0.4,0.4]}
+{"kind":"shape","id":"sh/lkjed0ze","slide":3,"name":"shape_304","bbox":[574.8,262.8,0.4,0.4]}
+{"kind":"shape","id":"sh/velg3u1g","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/udczupkv","slide":3,"name":"module_305","text":"Masked statistics\nmean / std","textPreview":"Masked statistics | mean / std","textChars":28,"textLines":2,"bbox":[563,391,184,89]}
+{"kind":"shape","id":"sh/hg3y54jm","slide":3,"name":"shape_306","bbox":[654.8,295.8,0.4,0.4]}
+{"kind":"shape","id":"sh/gfuhwzi1","slide":3,"name":"shape_307","bbox":[654.8,390.8,0.4,0.4]}
+{"kind":"shape","id":"sh/7q1gzu14","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/6pszqpkj","slide":3,"name":"module_308","text":"Shared encoder\nper reference","textPreview":"Shared encoder | per reference","textChars":28,"textLines":2,"bbox":[316,391,195,89]}
+{"kind":"shape","id":"sh/tc3y14ja","slide":3,"name":"shape_309","bbox":[562.8,435.8,0.4,0.4]}
+{"kind":"shape","id":"sh/8buhsz2p","slide":3,"name":"shape_310","bbox":[510.8,435.8,0.4,0.4]}
+{"kind":"shape","id":"sh/rm50be1o","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/qlwz2903","slide":3,"name":"module_311","text":"Average across\nindependent clips","textPreview":"Average across | independent clips","textChars":32,"textLines":2,"bbox":[66,391,197,89]}
+{"kind":"shape","id":"sh/etc36dg7","slide":3,"name":"shape_312","bbox":[315.8,435.8,0.4,0.4]}
+{"kind":"shape","id":"sh/zulkzixs","slide":3,"name":"shape_313","bbox":[262.8,435.8,0.4,0.4]}
+{"kind":"shape","id":"sh/0vul8nyd","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/1w321sfy","slide":3,"name":"module_314","text":"Execution code\nS_id","textPreview":"Execution code | S_id","textChars":19,"textLines":2,"bbox":[76,541,177,71]}
+{"kind":"shape","id":"sh/qpsj2tgb","slide":3,"name":"shape_315","bbox":[163.8,479.8,0.4,0.4]}
+{"kind":"shape","id":"sh/rqlkvyxw","slide":3,"name":"shape_316","bbox":[163.8,540.8,0.4,0.4]}
+{"kind":"shape","id":"sh/crul43y1","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ds32x8fm","slide":3,"name":"module_317","text":"Bounded bias\nhead","textPreview":"Bounded bias | head","textChars":17,"textLines":2,"bbox":[316,541,195,71]}
+{"kind":"shape","id":"sh/alw3exgf","slide":3,"name":"shape_318","bbox":[252.8,576.8,0.4,0.4]}
+{"kind":"shape","id":"sh/bm5k72x0","slide":3,"name":"shape_319","bbox":[315.8,576.8,0.4,0.4]}
+{"kind":"shape","id":"sh/lg76xwz2","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/kfy54rih","slide":3,"name":"module_320","text":"Static offset\nP_id","textPreview":"Static offset | P_id","textChars":18,"textLines":2,"bbox":[563,541,184,71]}
+{"kind":"shape","id":"sh/jepovmhw","slide":3,"name":"shape_321","bbox":[510.8,576.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ytgn2h0r","slide":3,"name":"shape_322","bbox":[562.8,576.8,0.4,0.4]}
+{"kind":"shape","id":"sh/xs7mtwz6","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/wry50ril","slide":3,"name":"module_323","text":"Fixed mouth calibration","textPreview":"Fixed mouth calibration","textChars":23,"textLines":1,"bbox":[310,653,250,64]}
+{"kind":"shape","id":"sh/bqp4rmh0","slide":3,"name":"shape_324","bbox":[654.8,479.8,0.4,0.4]}
+{"kind":"shape","id":"sh/apgnyh0f","slide":3,"name":"shape_325","bbox":[754.8,479.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hob65gza","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/gni5cbip","slide":3,"name":"shape_326","bbox":[754.8,479.8,0.4,0.4]}
+{"kind":"shape","id":"sh/03ahojad","slide":3,"name":"shape_327","bbox":[754.8,734.8,0.4,0.4]}
+{"kind":"shape","id":"sh/14jyxoby","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/e1szm9s7","slide":3,"name":"shape_328","bbox":[754.8,734.8,0.4,0.4]}
+{"kind":"shape","id":"sh/z21gvets","slide":3,"name":"shape_329","bbox":[434.8,734.8,0.4,0.4]}
+{"kind":"shape","id":"sh/czahkza1","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/d0jyt4bm","slide":3,"name":"shape_330","bbox":[434.8,734.8,0.4,0.4]}
+{"kind":"shape","id":"sh/qx8zi9sv","slide":3,"name":"shape_331","bbox":[434.8,716.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ry1gretg","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/4bqxgza5","slide":3,"name":"shape_332","bbox":[559.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/pwzyp4bq","slide":3,"name":"shape_333","bbox":[654.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/76x0zudc","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/65ozqpwr","slide":3,"name":"shape_334","bbox":[654.8,684.8,0.4,0.4]}
+{"kind":"shape","id":"sh/t8zi14vi","slide":3,"name":"shape_335","bbox":[654.8,611.8,0.4,0.4]}
+{"kind":"shape","id":"sh/s7qhszex","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/fuh03udo","slide":3,"name":"shape_336","text":"Cross-reference\nlearning","textPreview":"Cross-reference | learning","textChars":24,"textLines":2,"bbox":[66,642,203,80]}
+{"kind":"textbox","id":"sh/u98zu9w3","slide":3,"name":"shape_337","text":"M̂ = B₀(C) + P_id + S_exp ⊙ R","textPreview":"M̂ = B₀(C) + P_id + S_exp ⊙ R","textChars":29,"textLines":1,"bbox":[819,151,712,46]}
+{"kind":"textbox","id":"sh/hwzi54ve","slide":3,"name":"module_338","text":"Articulation output\nB₀(C)","textPreview":"Articulation output | B₀(C)","textChars":25,"textLines":2,"bbox":[824,227,254,85]}
+{"kind":"textbox","id":"sh/gvqhwzet","slide":3,"name":"module_339","text":"Time-constant offset\nP_id","textPreview":"Time-constant offset | P_id","textChars":25,"textLines":2,"bbox":[824,348,254,85]}
+{"kind":"textbox","id":"sh/3y107edk","slide":3,"name":"module_340","text":"Generated expression\nR","textPreview":"Generated expression | R","textChars":22,"textLines":2,"bbox":[824,482,254,85]}
+{"kind":"textbox","id":"sh/2x8zy9wz","slide":3,"name":"module_341","text":"Non-mouth\nsupport mask","textPreview":"Non-mouth | support mask","textChars":22,"textLines":2,"bbox":[1143,482,158,85]}
+{"kind":"shape","id":"sh/ql832ds3","slide":3,"name":"shape_342","bbox":[1077.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/bmhkvi9o","slide":3,"name":"shape_343","bbox":[1142.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/c7ql43a9","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/d8zmx8ru","slide":3,"name":"operator_344","text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[1388,367,56,56]}
+{"kind":"shape","id":"sh/y9836dsf","slide":3,"name":"shape_345","bbox":[1077.8,267.8,0.4,0.4]}
+{"kind":"shape","id":"sh/zah4zi90","slide":3,"name":"shape_346","bbox":[1415.8,267.8,0.4,0.4]}
+{"kind":"shape","id":"sh/0bql8nal","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/lczm1sr6","slide":3,"name":"shape_347","bbox":[1415.8,267.8,0.4,0.4]}
+{"kind":"shape","id":"sh/mds3axsb","slide":3,"name":"shape_348","bbox":[1415.8,366.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ne14329w","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/x836twbe","slide":3,"name":"shape_349","bbox":[1077.8,389.8,0.4,0.4]}
+{"kind":"shape","id":"sh/w7u50rut","slide":3,"name":"shape_350","bbox":[1387.8,389.8,0.4,0.4]}
+{"kind":"shape","id":"sh/v6lormt8","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/a5cnyhcn","slide":3,"name":"shape_351","bbox":[1300.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/5wn6xwba","slide":3,"name":"shape_352","bbox":[1415.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/kbup4rup","slide":3,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/jalovmt4","slide":3,"name":"shape_353","bbox":[1415.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/i9cn21cj","slide":3,"name":"shape_354","bbox":[1415.8,422.8,0.4,0.4]}
+{"kind":"shape","id":"sh/t0n61gb6","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/szep8bu1","slide":3,"name":"module_355","text":"ARKit52 output","textPreview":"ARKit52 output","textChars":14,"textLines":1,"bbox":[1344,608,165,66]}
+{"kind":"shape","id":"sh/5k3m5gjm","slide":3,"name":"shape_356","bbox":[1415.8,524.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4julwbih","slide":3,"name":"shape_357","bbox":[1415.8,607.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3il4361w","slide":3,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ixc3u10b","slide":3,"name":"shape_358","text":"M̂_mouth(t) = B₀,mouth(t) + P_id,mouth","textPreview":"M̂_mouth(t) = B₀,mouth(t) + P_id,mouth","textChars":38,"textLines":1,"bbox":[817,607,500,57]}
+{"kind":"textbox","id":"sh/donm90jy","slide":3,"name":"shape_359","text":"Δₜ M̂_mouth = Δₜ B₀,mouth","textPreview":"Δₜ M̂_mouth = Δₜ B₀,mouth","textChars":25,"textLines":1,"bbox":[817,681,694,53]}
+{"kind":"textbox","id":"sh/snul0vid","slide":3,"name":"shape_360","text":"The reference branch captures motion execution. Static calibration changes the enrolled offset.\nThe fixed expression mask preserves the temporal changes of the articulation output.","textPreview":"The reference branch captures motion execution. Static calibration changes the enrolled offset. | The fixed expression mask preserves the...","textChars":180,"textLines":2,"bbox":[44,793,1510,62]}
+{"kind":"notes","id":"nt/psq8up","slide":3,"text":"Source snapshot: 2026-09-22. D:/实验室项目/新实验/kinetalk_b0_residual_train/kinetalk_b0/models/neutral_affect.py:53,337,429; scripts/train_full_staged.py:394,404,496,552; docs/CURRENT_SYSTEM_20260921.md. Figure depicts the mouth-protected v10 / Stage4 route. It is an implementation diagram, not a claim that identity, emotion, lip sync and dynamics have all passed a unified evaluation. B0 is trained in articulation stage and frozen thereafter. Identity describes motion execution, not geometric face identity. Only global representation distillation is drawn; no claim of full low-rate control distillation. Motion targets and labels are training-only.\nDetail figure: Identity encoder computes masked mean/std per reference and averages valid reference codes. Mouth calibration is fixed affine calibration of enrollment neutral residual mean. It does not scale B0 frame trajectories. Δt identity holds on valid supported coefficients before display-time clipping. Cross-reference identity learning uses independent neutral sets.\nSource neutral_affect.py:53–106,337–366,429–443; scripts/train_full_staged.py:520–540."}
+{"kind":"slide","id":"sl/ajkivp","slide":4,"title":"Regional activity modulation","textShapes":21}
+{"kind":"textbox","id":"sh/1sjepgry","slide":4,"name":"shape_361","text":"Regional activity modulation","textPreview":"Regional activity modulation","textChars":28,"textLines":1,"bbox":[42,20,1185,48]}
+{"kind":"textbox","id":"sh/ep8fel87","slide":4,"name":"shape_362","text":"Current experimental branch","textPreview":"Current experimental branch","textChars":27,"textLines":1,"bbox":[1050,30,508,30]}
+{"kind":"textbox","id":"sh/fqhwn69s","slide":4,"name":"shape_363","text":"Native regional activity v2 · amplitude control over a frozen motion carrier","textPreview":"Native regional activity v2 · amplitude control over a frozen motion carrier","textChars":76,"textLines":1,"bbox":[43,75,1490,43]}
+{"kind":"shape","id":"sh/ovaxkvq9","slide":4,"name":"region_364","bbox":[40,143,1520,226]}
+{"kind":"textbox","id":"sh/pwjyt0ru","slide":4,"name":"shape_365","text":"(a) Frozen motion carrier","textPreview":"(a) Frozen motion carrier","textChars":25,"textLines":1,"bbox":[58,151,1484,30]}
+{"kind":"textbox","id":"sh/2tsfil83","slide":4,"name":"module_366","text":"Frozen Stage4\nARKit52 prior","textPreview":"Frozen Stage4 | ARKit52 prior","textChars":27,"textLines":2,"bbox":[70,214,241,100]}
+{"kind":"textbox","id":"sh/nu1wrq9o","slide":4,"name":"module_367","text":"Select upper9\nbrow + squint / wide","textPreview":"Select upper9 | brow + squint / wide","textChars":34,"textLines":2,"bbox":[380,214,251,100]}
+{"kind":"textbox","id":"sh/4z6x8ra5","slide":4,"name":"module_368","text":"5-frame smoothing\nwithin valid segments","textPreview":"5-frame smoothing | within valid segments","textChars":39,"textLines":2,"bbox":[702,214,274,100]}
+{"kind":"textbox","id":"sh/50zehwrq","slide":4,"name":"module_369","text":"Remove segment mean\nCentered carrier Q(t)","textPreview":"Remove segment mean | Centered carrier Q(t)","textChars":41,"textLines":2,"bbox":[1048,214,266,100]}
+{"kind":"shape","id":"sh/583mx432","slide":4,"name":"shape_370","bbox":[310.8,263.8,0.4,0.4]}
+{"kind":"shape","id":"sh/47ulozmh","slide":4,"name":"shape_371","bbox":[379.8,263.8,0.4,0.4]}
+{"kind":"shape","id":"sh/j6l4vulc","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ilc3mp4r","slide":4,"name":"shape_372","bbox":[630.8,263.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tcnm143e","slide":4,"name":"shape_373","bbox":[701.8,263.8,0.4,0.4]}
+{"kind":"shape","id":"sh/sbelszmt","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ra54zel8","slide":4,"name":"shape_374","bbox":[975.8,263.8,0.4,0.4]}
+{"kind":"shape","id":"sh/69c3q94n","slide":4,"name":"shape_375","bbox":[1047.8,263.8,0.4,0.4]}
+{"kind":"shape","id":"sh/1gnm5o3a","slide":4,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/gfe5wjmp","slide":4,"name":"module_376","text":"Mean μ","textPreview":"Mean μ","textChars":6,"textLines":1,"bbox":[1375,228,156,72]}
+{"kind":"shape","id":"sh/0jm5sna1","slide":4,"name":"shape_377","bbox":[1180.8,213.8,0.4,0.4]}
+{"kind":"shape","id":"sh/lkv61sbm","slide":4,"name":"shape_378","bbox":[1180.8,189.8,0.4,0.4]}
+{"kind":"shape","id":"sh/yh4nqxsv","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/zidozitg","slide":4,"name":"shape_379","bbox":[1180.8,189.8,0.4,0.4]}
+{"kind":"shape","id":"sh/8n6pw7ax","slide":4,"name":"shape_380","bbox":[1452.8,189.8,0.4,0.4]}
+{"kind":"shape","id":"sh/98f65cbi","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ml47uxs7","slide":4,"name":"shape_381","bbox":[1452.8,189.8,0.4,0.4]}
+{"kind":"shape","id":"sh/nmxo32ts","slide":4,"name":"shape_382","bbox":[1452.8,227.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4r25k3ut","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/pcb6t8be","slide":4,"name":"region_383","bbox":[40,405,1520,297]}
+{"kind":"textbox","id":"sh/7618z6dw","slide":4,"name":"shape_384","text":"(b) Audio activity and bounded gain","textPreview":"(b) Audio activity and bounded gain","textChars":35,"textLines":1,"bbox":[58,413,1484,30]}
+{"kind":"textbox","id":"sh/65srq1cb","slide":4,"name":"module_385","text":"Audio features\n1540D / 25 fps","textPreview":"Audio features | 1540D / 25 fps","textChars":29,"textLines":2,"bbox":[70,479,241,103]}
+{"kind":"textbox","id":"sh/t8ja1gv2","slide":4,"name":"module_386","text":"Regional activity\npredictor","textPreview":"Regional activity | predictor","textChars":27,"textLines":2,"bbox":[380,479,251,103]}
+{"kind":"textbox","id":"sh/s7a9sbuh","slide":4,"name":"module_387","text":"Brow / eye envelope\nâ(t) ∈ R²₊","textPreview":"Brow / eye envelope | â(t) ∈ R²₊","textChars":30,"textLines":2,"bbox":[702,479,274,103]}
+{"kind":"textbox","id":"sh/j2h8v6d0","slide":4,"name":"module_388","text":"Bounded gain\ng = clip(â / a_Q)","textPreview":"Bounded gain | g = clip(â / a_Q)","textChars":30,"textLines":2,"bbox":[1048,479,266,103]}
+{"kind":"shape","id":"sh/ih8rm1cf","slide":4,"name":"shape_389","bbox":[310.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/54zqxgvq","slide":4,"name":"shape_390","bbox":[379.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/k3q9obu5","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/veh8rmdo","slide":4,"name":"shape_391","bbox":[630.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/adorihc3","slide":4,"name":"shape_392","bbox":[701.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/qlsv2psn","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/bm1cvu98","slide":4,"name":"shape_393","bbox":[975.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cnad4zqt","slide":4,"name":"shape_394","bbox":[1047.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/dojux4re","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/2h8vypsr","slide":4,"name":"shape_395","bbox":[1180.8,313.8,0.4,0.4]}
+{"kind":"shape","id":"sh/3ihcra9c","slide":4,"name":"shape_396","bbox":[1180.8,478.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ojqd0fax","slide":4,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/pkjutkr2","slide":4,"name":"shape_397","text":"Carrier activity a_Q","textPreview":"Carrier activity a_Q","textChars":20,"textLines":1,"bbox":[1194,367,168,29]}
+{"kind":"textbox","id":"sh/et8vu5sf","slide":4,"name":"module_398","text":"Scale Q(t)\nRecenter\nAdd μ","textPreview":"Scale Q(t) | Recenter | Add μ","textChars":25,"textLines":3,"bbox":[1375,479,156,103]}
+{"kind":"shape","id":"sh/fuhcna90","slide":4,"name":"shape_399","bbox":[1313.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/hk76pcfu","slide":4,"name":"shape_400","bbox":[1374.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/gjypg7y9","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/vipon2xo","slide":4,"name":"shape_401","bbox":[1452.8,299.8,0.4,0.4]}
+{"kind":"shape","id":"sh/uhg7exgj","slide":4,"name":"shape_402","bbox":[1452.8,478.8,0.4,0.4]}
+{"kind":"shape","id":"sh/tg76lsfy","slide":4,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/8vepcnyd","slide":4,"name":"shape_403","text":"Ŷ_upper = μ + center[g(t) ⊙ Q(t)]","textPreview":"Ŷ_upper = μ + center[g(t) ⊙ Q(t)]","textChars":33,"textLines":1,"bbox":[70,617,964,48]}
+{"kind":"shape","id":"sh/7u5ojixs","slide":4,"name":"shape_404","bbox":[1530.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/6tw7adg7","slide":4,"name":"shape_405","bbox":[1542.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/lsn6hsfm","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/kre58ny1","slide":4,"name":"shape_406","bbox":[1542.8,529.8,0.4,0.4]}
+{"kind":"shape","id":"sh/cvipon6x","slide":4,"name":"shape_407","bbox":[1542.8,747.8,0.4,0.4]}
+{"kind":"shape","id":"sh/xwr6xsni","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/q9g7mdo7","slide":4,"name":"shape_408","bbox":[1542.8,747.8,0.4,0.4]}
+{"kind":"shape","id":"sh/ba9ovi5c","slide":4,"name":"shape_409","bbox":[1259.8,747.8,0.4,0.4]}
+{"kind":"shape","id":"sh/o7ypk361","slide":4,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/p876t8nm","slide":4,"name":"module_410","text":"Copy other 43 channels","textPreview":"Copy other 43 channels","textChars":22,"textLines":1,"bbox":[1021,719,239,68]}
+{"kind":"textbox","id":"sh/25g7idov","slide":4,"name":"shape_411","text":"Gain range [0.25, 2.5]     Blink and gaze remain in the copied channels","textPreview":"Gain range [0.25, 2.5]     Blink and gaze remain in the copied channels","textChars":71,"textLines":1,"bbox":[44,747,900,45]}
+{"kind":"textbox","id":"sh/36pori5g","slide":4,"name":"module_412","text":"ARKit52 candidate","textPreview":"ARKit52 candidate","textChars":17,"textLines":1,"bbox":[1310,800,224,61]}
+{"kind":"shape","id":"sh/832pw765","slide":4,"name":"shape_413","bbox":[1139.8,786.8,0.4,0.4]}
+{"kind":"shape","id":"sh/94bq5cnq","slide":4,"name":"shape_414","bbox":[1139.8,830.8,0.4,0.4]}
+{"kind":"shape","id":"sh/jydsv6ps","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ix4rm187","slide":4,"name":"shape_415","bbox":[1139.8,830.8,0.4,0.4]}
+{"kind":"shape","id":"sh/50faxg7y","slide":4,"name":"shape_416","bbox":[1309.8,830.8,0.4,0.4]}
+{"kind":"shape","id":"sh/4zm9obqd","slide":4,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/rmxsz6p4","slide":4,"name":"shape_417","text":"Audio timing validation remains open. This branch is separate from the main architecture.","textPreview":"Audio timing validation remains open. This branch is separate from the main architecture.","textChars":89,"textLines":1,"bbox":[44,817,1197,43]}
+{"kind":"notes","id":"nt/ajkivp","slide":4,"text":"This slide records a separate experimental branch, not a validated paper contribution. Source: D:/实验室项目/新实验/kinetalk_b0_residual_train/docs/NATIVE_REGIONAL_DYNAMICS_20260922.md; kinetalk_b0/models/audio_regional_envelope.py and temporal_motion_carrier.py. Targets are five-frame-smoothed RMS activity of clip-centered upper9. The carrier is the triangle-smoothed Stage4 prior with segment means restored. Bounded gain changes existing shape amplitude and cannot create absent events. Non-upper43 are copied bitwise. Raw coefficients may fall outside [0,1]; display clipping does not preserve their mean. Training targets and masks are not inference conditions. No extra stochastic micro-motion or new zero-DC flow is included. This candidate has not passed the complete audio timing gate."}

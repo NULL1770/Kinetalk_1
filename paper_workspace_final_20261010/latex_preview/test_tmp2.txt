@@ -1,0 +1,4 @@
+abc
+\begin{equation}
+x
+\end{equation}
