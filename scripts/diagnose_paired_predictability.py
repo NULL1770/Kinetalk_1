@@ -24,6 +24,18 @@ FEATURES = ('u', 'hidden', 'audio', 'base', 'conditional')
 COMPONENTS = ('expression_difference', 'neutral_base_error', 'total_residual')
 
 
+def conditional_features(base, emotion, intensity):
+    """Explicit receiving-side features; requires no query label or motion."""
+    if base.ndim != 3 or base.shape[-1] != 52 or emotion.shape != (len(base), 8) or intensity.shape != (len(base), 4):
+        raise ValueError('Conditional feature dimensions differ')
+    for value in (emotion, intensity):
+        if not torch.isfinite(value).all() or (value < 0).any() or not torch.allclose(value.sum(-1), torch.ones_like(value[:, 0]), atol=1e-6):
+            raise ValueError('Finite normalized probabilities required')
+    return torch.cat((base,
+        (base[..., None, :]*emotion[:, None, :, None]).flatten(-2),
+        (base[..., None, :]*intensity[:, None, :, None]).flatten(-2)), -1)
+
+
 def coordinate_targets(motion, neutral, base, mask):
     if motion.shape != neutral.shape or motion.shape != base.shape or motion.shape != mask.shape:
         raise ValueError('Coordinate/mask shape mismatch')
@@ -181,8 +193,10 @@ def run(a):
     cache_base(data, base, device, {'train':canonical, 'validation':[]})
     capture = {}
     hook = model.prior.encoder.register_forward_hook(lambda m, inp, h: capture.update(h=h))
+    feature_dims = [('base',52), ('conditional',676)] if a.feature_set == 'conditional' else [
+        ('u',cfg.local_dim), ('hidden',cfg.hidden), ('audio',772), ('base',52)]
     probes = {(kind, feat):ChannelRidge(dim, device=device)
-              for kind in KINDS for feat, dim in [('u',cfg.local_dim), ('hidden',cfg.hidden), ('audio',772), ('base',52), ('conditional',676)]}
+              for kind in KINDS for feat, dim in feature_dims}
     weights, energies, summaries, arrays, metadata = {}, {}, {}, {}, []
     checked = False
     for role, indices in chosen.items():
@@ -203,20 +217,18 @@ def run(a):
                 # frozen B0 content base and audio-predicted clip emotion /
                 # intensity probabilities. No query labels, GT motion or
                 # content feature enters the audio prior/student.
-                with torch.no_grad():
+                if a.feature_set == 'conditional':
                     emotion_prob = torch.softmax(model.emotion_head(p['g_mean']), -1)
                     intensity_prob = torch.softmax(model.intensity_head(p['g_mean']), -1)
-                base = features['base']
-                features['conditional'] = torch.cat(
-                    (base,
-                     base[..., None, :].expand(-1, -1, 8, -1).mul(emotion_prob[:, None, :, None]).flatten(-2),
-                     base[..., None, :].expand(-1, -1, 4, -1).mul(intensity_prob[:, None, :, None]).flatten(-2)), -1)
+                    features['conditional'] = conditional_features(features['base'], emotion_prob, intensity_prob)
                 torch.testing.assert_close(features['hidden'] @ model.prior.local_head.weight[:cfg.local_dim].T,
                                            u, rtol=1e-4, atol=1e-5)
                 if not checked:
                     corrupted = b['audio_features'].clone(); corrupted[..., :768] = float('nan')
-                    _, other_u = model.conditions(model.audio_prior(corrupted, b['valid']), b['valid'])
+                    other_p = model.audio_prior(corrupted, b['valid'])
+                    _, other_u = model.conditions(other_p, b['valid'])
                     torch.testing.assert_close(other_u, u, rtol=0, atol=0)
+                    torch.testing.assert_close(other_p['g_mean'], p['g_mean'], rtol=0, atol=0)
                     checked = True
                 for key, probe in probes.items():
                     kind, feat = key
@@ -257,12 +269,12 @@ def run(a):
     np.savez_compressed(out/'linear_fit.npz', **fit)
     write(out/'clips.json', metadata)
     write(out/'pair_artifacts.json', {cid:targets[cid][4] for cid in sorted(targets)})
-    report = dict(schema='phase54_paired_dynamics_predictability_v1', selected_counts={k:len(v) for k,v in chosen.items()},
+    report = dict(schema='paired_dynamics_predictability_v2', feature_set=a.feature_set, selected_counts={k:len(v) for k,v in chosen.items()},
         smoke=a.smoke, ridge=.001, summaries=summaries, checkpoint_sha256=sha(a.checkpoint), binding_sha256=sha(a.binding),
         safe_manifest_sha256=sha(manifest), data_manifest_sha256=binding['data_manifest_sha256'],
         source_sha256=sha(__file__), frozen_parent_exact=True, frozen_neutral_exact=True, content_nan_isolation=True,
         hidden_u_mapping_verified=True, test_loaded=False, validation_queries_used=False, neural_training_performed=False,
-        diagnostic_linear_fit=True, components=COMPONENTS, features=FEATURES, kinds=KINDS,
+        diagnostic_linear_fit=True, components=COMPONENTS, features=[f for f,d in feature_dims], kinds=KINDS,
         limits=['Imperfect aligned neutral includes alignment differences; targets are not pure emotion GT.',
                 'Input capacities differ. Linear association does not prove leakage, independence or neural learnability.',
                 'Per-clip channel centering uses observed target support for diagnosis, not a new inference path.',
@@ -279,6 +291,7 @@ if __name__ == '__main__':
     for name in ('binding', 'checkpoint', 'safe-root', 'output'):
         parser.add_argument('--'+name, required=True)
     parser.add_argument('--device', default='cuda')
+    parser.add_argument('--feature-set', choices=('original','conditional'), default='original')
     parser.add_argument('--smoke', action='store_true')
     args = parser.parse_args()
     try:

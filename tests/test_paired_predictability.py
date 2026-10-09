@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import torch
 from scripts.diagnose_paired_predictability import (
-    ChannelRidge, coordinate_targets, score, summarize, views)
+    ChannelRidge, coordinate_targets, score, summarize, views, conditional_features)
 
 
 def fixture():
@@ -114,16 +114,32 @@ def test_normalized_summary_does_not_inflate_constant_channels():
     assert r['train_energy_normalized_mse']==1 and r['normalized_active_channels']==50
 
 
-def test_receiver_conditional_feature_has_expected_width_and_no_label_input():
-    base = torch.randn(2, 7, 52)
-    emotion = torch.softmax(torch.randn(2, 8), -1)
-    intensity = torch.softmax(torch.randn(2, 4), -1)
-    feature = torch.cat((base,
-        base[..., None, :].expand(-1, -1, 8, -1).mul(emotion[:, None, :, None]).flatten(-2),
-        base[..., None, :].expand(-1, -1, 4, -1).mul(intensity[:, None, :, None]).flatten(-2)), -1)
-    assert feature.shape == (2, 7, 676)
-    # Changing labels cannot change this receiver-side diagnostic feature.
-    torch.testing.assert_close(feature, feature.clone())
+def test_conditional_probe_detects_opposite_amplitude_responses_on_new_sequences():
+    # Identical base sequence for two conditions, opposite signed response.
+    # An unconditional linear predictor must fail; interaction must generalize.
+    torch.set_num_threads(2)
+    e=torch.eye(8,dtype=torch.float64)[:2];v=torch.eye(4,dtype=torch.float64)[:2]
+    train=torch.zeros(2,8,52,dtype=torch.float64)
+    train[:,:,0]=torch.arange(8,dtype=torch.float64)
+    held=train.flip(1)*.4
+    mask=torch.ones(2,8,1,dtype=torch.bool);times=torch.arange(8,dtype=torch.float64)[None].expand(2,-1)*.04
+    def target(x):return (x[:,:,:1]*torch.tensor([1.,-1.])[:,None,None])[...,None].expand(-1,-1,-1,3)
+    scores=[]
+    for a,b in [(train,held),(conditional_features(train,e,v),conditional_features(held,e,v))]:
+        fit=ChannelRidge(a.shape[-1],channels=1);fit.add(a,target(train),mask,times,'centered')
+        w,_=fit.solve();error,zero,_=score(b,target(held),mask,times,'centered',w)
+        scores.append(float(error.mean()/zero.mean()))
+    assert scores[0]>.99 and scores[1]<1e-5
+
+
+def test_conditional_probabilities_validated_and_one_hot_activates_only_correct_block():
+    b=torch.randn(1,4,52);e=torch.eye(8)[3:4];v=torch.eye(4)[2:3]
+    f=conditional_features(b,e,v)
+    torch.testing.assert_close(f[:,:,:52],b)
+    torch.testing.assert_close(f[:,:,52+3*52:52+4*52],b)
+    assert f[:,:,52:52+3*52].count_nonzero()==0
+    for bad in (e*2, e*float('nan')):
+        with pytest.raises(ValueError,match='probabilities'):conditional_features(b,bad,v)
 
 
 @pytest.mark.parametrize('case',['bad_time','nan_observed','wrong_mask'])
