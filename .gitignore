@@ -80,3 +80,6 @@ Thumbs.db
 /docs/research_20261007/searches/*.html
 /docs/research_20261007/evidence/*_excerpts.txt
 /docs/research_20261007/evidence/claim_ledger.json
+
+# SHA-verified recoverable checkpoint archives (large binaries)
+/final_experiment/artifact_archive/

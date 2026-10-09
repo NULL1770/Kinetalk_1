@@ -1,3 +1,13 @@
+# Current recovery: Phase51 complete; full evaluation ACTIVE (2026-10-09)
+
+Both eight-epoch runs completed: temporal SHA b8bde2389ac9dd47bc8b3aa30a34009454dc1ef62f09a9f0ea17a6849af6d03a; statistics SHA a4d735a72f599cb1b2115d8d9ea1340abc02fa69be14f58500c620a8f30bf6ec. All original preflight/formal artifacts locally SHAverified. Do not relaunch training.
+
+Full unchanged evaluator active at /root/kinetalk_phase51_evaluation_20261009, worker PID1752; temporal then statistics, full1367, native/raw+clip/fourprobes and frozen GT/B0 checks. Latest temporal672/1367. No full metric improvement established. Candidate-compatible style audit and all-eight-emotion videos pending; no Phase47 correction may be reused on Phase51 coordinates. Archive258fa40 pushed before audit extension. Next optimization depends on actual geometry, dynamics and same/different-person reference results.
+
+Storage:13 obsolete smoke/restart last.pt originals backed up under final_experiment/artifact_archive/phase51_obsolete_last_20261009 and SHAverified before deletion;419898829bytes reclaimed. Root706MB free before evaluation, data93MB. Never repeat archive deletion. Current finals/data/probes/rig untouched. Private operational helpers remain ignored. Third-party/voca_reference untouched.
+
+Earlier notes below are historical and superseded where conflicting.
+
 # Current recovery: Phase51 formal training ACTIVE (2026-10-09)
 
 Most recent update 2026-10-09 01:46:48 China time: temporal COMPLETE8epochs/5456updates, final SHA b8bde2389ac9dd47bc8b3aa30a34009454dc1ef62f09a9f0ea17a6849af6d03a. All8original formal members/25,969,729bytes locally SHAverified in diagnostics/phase51_reference_response_v2_20261009/formal_temporal. Statistics process has started automatically; process alive=True, state={'status': 'training', 'epoch': 1, 'step': 201, 'batch': 201, 'seconds_per_update': 0.14747205421106138, 'loss': 0.6499613523483276, 'grad_norm': 1.2907689809799194, 'position': 0.619025707244873, 'velocity': 0.0618712417781353}. Allow approximately20-30minutes for remaining training and internal checks, not full evaluation/render. Temporal final TRAINloss .322069,internal-speaker prior_position .471731,sentence .430171: no gain demonstrated on these normalized diagnostics. Full1367 metrics/style swaps/eight-emotion renders NOT queued, require subsequent dispatch/storage. Definition and records were pushed at f2c5ee4,remote independently verified; direct TLS works after relay timeouts. No model code changed or experiment restarted during this recovery.
