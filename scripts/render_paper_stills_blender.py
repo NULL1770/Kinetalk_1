@@ -30,7 +30,12 @@ def main():
     scene.view_settings.view_transform='Standard';scene.view_settings.look='None'
     scene.view_settings.exposure=-1.2;scene.view_settings.gamma=1
     scene.world=bpy.data.worlds.new('PaperWorld');scene.world.use_nodes=True
-    bg=scene.world.node_tree.nodes['Background'];bg.inputs['Color'].default_value=(.92,.94,.96,1);bg.inputs['Strength'].default_value=.55
+    # Node labels are localized in some Blender installations; use the stable
+    # node type instead of assuming the English display name.
+    bg=next((node for node in scene.world.node_tree.nodes if node.type=='BACKGROUND'),None)
+    if bg is None:
+        bg=scene.world.node_tree.nodes.new('ShaderNodeBackground')
+    bg.inputs['Color'].default_value=(.92,.94,.96,1);bg.inputs['Strength'].default_value=.55
     obj=prototype.copy();obj.data=prototype.data.copy();scene.collection.objects.link(obj)
     obj.animation_data_clear();obj.data.shape_keys.animation_data_clear();obj.location=(0,0,-.02)
     obj.hide_viewport=False;obj.hide_render=False;obj.hide_set(False)
