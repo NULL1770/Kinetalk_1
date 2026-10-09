@@ -1,0 +1,75 @@
+{
+  "recorded_utc": "2026-10-09T15:01:29.249225+00:00",
+  "scope": "targeted primary-source verification and synthesis; no new experiment or independent multi-agent review",
+  "sources": {
+    "Mimic": {
+      "source_url": "https://export.arxiv.org/pdf/2312.10877",
+      "files": [
+        {
+          "path": "docs/research_20261007/papers/mimic_export.pdf",
+          "sha256": "c728d57d821b3d7297a8d3c1a37d7b422bb09114464265dd2b61c733abc598a2",
+          "bytes": 2378130
+        },
+        {
+          "path": "docs/research_20261007/fulltext/mimic_export.txt",
+          "sha256": "60eb637d7215d27506c40ea0c7fe1a7ac44f6116a2ba64ffe406a3abc4079776",
+          "bytes": 41943
+        }
+      ],
+      "locators": [
+        "Quantitative Evaluation / Metrics",
+        "Latent Space Visualization / Figure 4",
+        "Style Manipulation / Figure 5",
+        "User Study / Table 3",
+        "Ablation / Table 4"
+      ],
+      "claim_status": "original_cached_text_reread",
+      "pdf_page_anchors_used": false
+    },
+    "DiffPoseTalk": {
+      "source_url": "https://export.arxiv.org/pdf/2310.00434",
+      "files": [
+        {
+          "path": "docs/research_20261007/papers/diffposetalk_export.pdf",
+          "sha256": "69e8a0eeb7ef5b2c78010b70d964e0eaeaae652c233cdb09e331565c161d7203",
+          "bytes": 9042011
+        },
+        {
+          "path": "docs/research_20261007/fulltext/diffposetalk_export.txt",
+          "sha256": "53ac9dd58e623f834f18cc2ec09764f98c7b5d936d7e69d561ac77dcad9931b6",
+          "bytes": 51018
+        }
+      ],
+      "locators": [
+        "3.3.1 Speaking Style Encoder",
+        "3.3.2 Training Strategy",
+        "4.3 Quantitative Evaluation / MOD",
+        "4.4-4.5 Style Sim / w/o SSE"
+      ],
+      "claim_status": "original_cached_text_reread",
+      "pdf_page_anchors_used": false
+    },
+    "FaceDiffuser": {
+      "receipt": "docs/research_20261007/evidence/facediffuser_phase50_source.json",
+      "receipt_sha256": "10ec5edcd047e99fd583839dbbeb547b11c00e84d2e3191d3a3cc40dd906b2ba",
+      "locators": [
+        "3",
+        "4.1",
+        "6.1-6.3",
+        "Figures 5 and 6"
+      ],
+      "claim_status": "original_cached_sections_reread"
+    },
+    "DESTalker": {
+      "doi": "10.1002/cav.70127",
+      "receipt": "docs/research_20261007/evidence/destalker_style_recheck_20261009/receipt.json",
+      "claim_status": "metadata_abstract_only_fulltext_unverified",
+      "prohibited_inferences": [
+        "exact style metrics",
+        "style t-SNE",
+        "mouth masking",
+        "reference stability experiments"
+      ]
+    }
+  }
+}
