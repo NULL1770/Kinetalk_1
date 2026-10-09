@@ -2,7 +2,7 @@ import copy
 import numpy as np
 import pytest
 from kinetalk_b0.neutral_amplitude import (
-    KNOTS, CHANNELS, SCHEMA, NeutralAmplitudeFit, apply_calibration, basis, held_gate, measures)
+    KNOTS, CHANNELS, SCHEMA, NeutralAmplitudeFit, apply_calibration, basis, jaw_basis, held_gate, measures)
 
 
 def sample(n=80, offset=0.):
@@ -62,7 +62,16 @@ def test_no_difference_across_time_gap():
     f = NeutralAmplitudeFit(); f.add(x, y, m, t, provenance=provenance(0))
     a = basis(x[:, CHANNELS]); d = np.diff(a, axis=0)
     keep = np.ones(79, bool); keep[39] = False
-    expected = np.einsum('tck,tcl->ckl', d[keep], d[keep])/keep.sum()
+    jaw = CHANNELS.index(17)
+    open_frame = x[:, 17] >= .05
+    support = keep.copy(); support &= open_frame[1:] & open_frame[:-1]
+    jb = jaw_basis(x[:, 17])
+    d[~keep] = 0.
+    d[:, jaw] = np.where((open_frame[1:] & open_frame[:-1])[:, None], np.diff(jb, axis=0), 0.)
+    counts = np.full(27, keep.sum(), dtype=float)
+    counts[jaw] = max(1, support.sum())
+    expected = np.einsum('tck,tcl->ckl', d, d)/counts[:, None, None]
+    expected[jaw] = np.einsum('tk,tl->kl', d[support, jaw], d[support, jaw]) / max(1, support.sum())
     np.testing.assert_allclose(f.xx[1], expected, rtol=1e-12, atol=1e-12)
     # Measurement must obey the same gap, including a large target jump.
     y[40:] += 5.
@@ -102,13 +111,26 @@ def test_duplicate_clip_and_absent_channel():
 def test_identity_state_roundtrip_and_reject_invalid():
     state = dict(schema=SCHEMA, channels=list(CHANNELS), knots=KNOTS.tolist(),
         residuals=np.zeros((27, 9)).tolist(), development_used_for_fit=False,
-        test_used_for_fit=False, input='frozen_neutral_B0_only')
+        test_used_for_fit=False, input='frozen_neutral_B0_only', jaw_channel=17,
+        closure_threshold=.05, jaw_closed_branch='identity')
     x = sample()[0]
     np.testing.assert_array_equal(apply_calibration(x, state), x)
     for change in (dict(test_used_for_fit=True), dict(input='audio'),
             dict(residuals=np.ones((27, 9)).tolist())):
-        with pytest.raises(ValueError):
-            apply_calibration(x, state|change)
+            with pytest.raises(ValueError):
+                apply_calibration(x, state|change)
+
+
+def test_jaw_closed_branch_is_event_preserving():
+    state = fit_sample()
+    x, _, _, _ = sample(n=120)
+    x[:, 17] = np.linspace(0., .8, len(x))
+    out = apply_calibration(x, state)
+    np.testing.assert_array_equal(out[x[:, 17] < .05, 17], x[x[:, 17] < .05, 17])
+    np.testing.assert_array_equal(out[x[:, 17] == .05, 17], x[x[:, 17] == .05, 17])
+    assert np.all(out[x[:, 17] >= .05, 17] >= .05-1e-12)
+    np.testing.assert_array_equal(out[:, :14], x[:, :14])
+    np.testing.assert_array_equal(out[:, 41:], x[:, 41:])
 
 
 def test_gate_requires_all_held_subsets_and_both_views():

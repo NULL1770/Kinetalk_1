@@ -9,8 +9,10 @@ import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, minimize
 
 CHANNELS = tuple(range(14, 41))
+JAW_CHANNEL = 17
+CLOSURE_THRESHOLD = 0.05
 KNOTS = np.linspace(0., 1., 9)
-SCHEMA = 'neutral_monotone_amplitude_v1'
+SCHEMA = 'neutral_monotone_amplitude_v2_event_preserving'
 
 
 def basis(x):
@@ -23,6 +25,13 @@ def basis(x):
     w = u-left
     eye = np.eye(len(KNOTS))
     return eye[left]*(1-w[..., None])+eye[left+1]*w[..., None]
+
+
+def jaw_basis(x):
+    """Basis for the open-jaw branch, whose origin is the closure threshold."""
+    x = np.asarray(x, dtype=np.float64)
+    z = (x-CLOSURE_THRESHOLD)/(1.-CLOSURE_THRESHOLD)
+    return basis(z)
 
 
 def observed(x, y, mask, times):
@@ -62,9 +71,22 @@ class NeutralAmplitudeFit:
             raise ValueError('Duplicate clip would alter fit weights')
         x, y, mask, adjacent = observed(x, y, mask, times)
         a, residual = basis(x[:, CHANNELS]), (y-x)[:, CHANNELS]
+        # The jaw is fitted only on its open branch.  Its closed branch is
+        # deliberately left out so a receiving calibration cannot create or
+        # remove a closure event.  The open-branch map is anchored at 0.05.
+        jaw = CHANNELS.index(JAW_CHANNEL)
+        open_frame = mask[:, JAW_CHANNEL] & (x[:, JAW_CHANNEL] >= CLOSURE_THRESHOLD)
+        a[:, jaw] = 0.
+        a[open_frame, jaw] = jaw_basis(x[open_frame, JAW_CHANNEL])
         for view, (design, target, support) in enumerate((
             (a, residual, mask[:, CHANNELS]),
             (np.diff(a, axis=0), np.diff(residual, axis=0), adjacent[:, CHANNELS]))):
+            if view == 0:
+                support = support.copy()
+                support[:, jaw] &= open_frame
+            else:
+                support = support.copy()
+                support[:, jaw] &= open_frame[1:] & open_frame[:-1]
             n = support.sum(0)
             w = support / np.maximum(n, 1)
             self.xx[view] += np.einsum('tck,tcl,tc->ckl', design, design, w)
@@ -87,22 +109,39 @@ class NeutralAmplitudeFit:
         residuals, receipts = [], []
         for c in range(len(CHANNELS)):
             a, b = gram[c]+ridge*np.eye(9), cross[c]
+            baseline = KNOTS
+            if CHANNELS[c] == JAW_CHANNEL:
+                baseline = CLOSURE_THRESHOLD + (1.-CLOSURE_THRESHOLD)*KNOTS
+            fit_lower, fit_upper = -baseline.copy(), 1.-baseline.copy()
+            if CHANNELS[c] == JAW_CHANNEL:
+                # The first knot is the exact closure boundary.  Without
+                # this explicit anchor, a fitted residual at the first knot
+                # would change the event threshold while remaining monotone.
+                fit_lower[0] = fit_upper[0] = 0.
             fit = minimize(lambda d: float(d@a@d-2*d@b), np.zeros(9),
                 jac=lambda d: 2*(a@d-b), method='SLSQP',
-                constraints=constraint, bounds=Bounds(lower, upper),
+                constraints=LinearConstraint(difference, -np.diff(baseline), np.inf),
+                bounds=Bounds(fit_lower, fit_upper),
                 options={'ftol': 1e-12, 'maxiter': 200})
-            if not fit.success or np.diff(KNOTS+fit.x).min() < -1e-8:
+            if not fit.success or np.diff(baseline+fit.x).min() < -1e-8:
                 raise RuntimeError('Constrained fit failed: '+fit.message)
             # Remove only numerical constraint error; endpoints remain exact.
-            values = np.maximum.accumulate(np.clip(KNOTS+fit.x, 0., 1.))
+            values = np.maximum.accumulate(np.clip(baseline+fit.x, 0., 1.))
             values[0], values[-1] = 0., 1.
-            residuals.append(values-KNOTS)
+            if CHANNELS[c] == JAW_CHANNEL:
+                values[0] = CLOSURE_THRESHOLD
+                values[-1] = 1.
+                residuals.append(values-baseline)
+            else:
+                residuals.append(values-KNOTS)
             receipts.append(dict(iterations=int(fit.nit), objective_change=float(fit.fun)))
         return dict(schema=SCHEMA, channels=list(CHANNELS), knots=KNOTS.tolist(),
             residuals=np.stack(residuals).tolist(), ridge=.001, displacement_weight=.5,
             count=self.count.tolist(), fit_rows=self.rows, solver=receipts,
             development_used_for_fit=False, test_used_for_fit=False,
-            input='frozen_neutral_B0_only', endpoints='identity', tails='identity')
+            input='frozen_neutral_B0_only', endpoints='identity', tails='identity',
+            jaw_channel=JAW_CHANNEL, closure_threshold=CLOSURE_THRESHOLD,
+            jaw_closed_branch='identity')
 
 
 def apply_calibration(x, fit):
@@ -113,16 +152,31 @@ def apply_calibration(x, fit):
             or fit.get('knots') != KNOTS.tolist()
             or fit.get('development_used_for_fit') is not False
             or fit.get('test_used_for_fit') is not False
-            or fit.get('input') != 'frozen_neutral_B0_only'):
+            or fit.get('input') != 'frozen_neutral_B0_only'
+            or fit.get('jaw_channel') != JAW_CHANNEL
+            or fit.get('closure_threshold') != CLOSURE_THRESHOLD
+            or fit.get('jaw_closed_branch') != 'identity'):
         raise ValueError('Expected bound TRAIN neutral-only candidate')
     residuals = np.asarray(fit['residuals'], dtype=np.float64)
     if (residuals.shape != (27, 9) or not np.isfinite(residuals).all()
-            or np.any(residuals[:, [0, -1]] != 0)
-            or np.min(np.diff(KNOTS+residuals, axis=-1)) < -1e-10):
+            or np.any(residuals[:, [0, -1]] != 0)):
         raise ValueError('Invalid monotone calibration')
+    jaw = CHANNELS.index(JAW_CHANNEL)
+    jaw_baseline = CLOSURE_THRESHOLD + (1.-CLOSURE_THRESHOLD)*KNOTS
+    base = np.broadcast_to(KNOTS, residuals.shape).copy()
+    base[jaw] = jaw_baseline
+    if np.min(np.diff(base+residuals, axis=-1)) < -1e-10:
+        raise ValueError('Invalid monotone calibration')
+    if np.min(np.diff(jaw_baseline+residuals[jaw], axis=-1)) < -1e-10:
+        raise ValueError('Invalid event-preserving jaw calibration')
     out = x.copy()
+    design = basis(x[..., CHANNELS])
+    design[..., jaw, :] = 0.
+    open_frame = x[..., JAW_CHANNEL] >= CLOSURE_THRESHOLD
+    design[..., jaw, :] = np.where(
+        open_frame[..., None], jaw_basis(x[..., JAW_CHANNEL]), 0.)
     out[..., CHANNELS] = x[..., CHANNELS] + np.einsum(
-        '...ck,ck->...c', basis(x[..., CHANNELS]), residuals)
+        '...ck,ck->...c', design, residuals)
     return out
 
 
