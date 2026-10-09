@@ -6,4 +6,6 @@ This is a bounded diagnostic, not a new model. The feature is 676D: normalized, 
 
 Fit and held sets, safe native masks, paired targets, fixed ridge=.001, equal clip/channel weighting, centered trajectories, adjacent25fps displacement, TRAIN-only normalization, and no sealed data are identical to Phase54. Compare against the already archived `base52`, `u16`, `hidden128`, and `audio772` probes. No feature sweep, no arbitrary amplitude gain, no decoder loss, no student loss, and no checkpoint promotion.
 
+The additional conditional arrays are bounded by a 48 MiB diagnostic artifact cap; no raw audio or motion export is added.
+
 Interpretation: a held improvement of conditional over B0 and audio probes would support an interaction-capacity bottleneck in the receiver; it would not prove content/emotion causality. No improvement means this simple interaction is insufficient and the target/alignment or nonlinear receiver must be investigated separately. The diagnostic cannot by itself justify adding B0 features to the audio student.

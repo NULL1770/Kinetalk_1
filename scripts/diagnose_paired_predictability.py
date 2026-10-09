@@ -270,7 +270,7 @@ def run(a):
                 'This audit does not change generated motion or any full-development model metric.'])
     write(out/'report.json', report)
     size = sum(p.stat().st_size for p in out.iterdir() if p.is_file())
-    assert size < 32*2**20, size
+    assert size < 48*2**20, size
     write(out/'state.json', dict(status='complete', report_sha256=sha(out/'report.json'), bytes=size, test_loaded=False))
 
 
