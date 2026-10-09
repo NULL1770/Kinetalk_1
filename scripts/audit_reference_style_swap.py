@@ -16,6 +16,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from kinetalk_b0.models.static_expression import StaticExpressionCorrection,receiver_features
+from kinetalk_b0.models.expression_response import ExpressionResponse,ResponseConfig
 from scripts.train_expression_response import (configure,load_runtime,cache_base,reference_batch,
     audit_data,development_fold,state_digest,sha,write)
 from scripts.refine_expression_prior import restore_model
@@ -139,8 +140,39 @@ def refs_for(data,b,device,sid):
 def compute(model,correction,b,p,refs):
     s=model.encode_style(refs)['code']
     parent=model.decode(b['b0'],p,s,b['valid'])
+    if correction is None:
+        return {'candidate':parent},s
     latent=correction(parent,receiver_features(model,p,s,refs,'latent'),b['valid'],model.scales)
     return {'parent':parent,'latent':latent},s
+
+
+def load_receiver(a,binding,device):
+    """Restore an explicitly SHA-bound candidate OR the original corrected pair."""
+    if a.candidate:
+        if not a.candidate_curves or a.correction or a.parent_curves or a.latent_curves:
+            raise ValueError('Candidate audit cannot reuse parent curves or correction')
+        spec=binding['style_audit']['candidate_checkpoint']
+        assert sha(a.candidate)==spec['sha256']
+        ck=torch.load(a.candidate,map_location=device,weights_only=False)
+        assert not ck['test_loaded']
+        assert ck['parent_checkpoint_sha256']==binding['parent_checkpoint']['sha256']
+        model=ExpressionResponse(ResponseConfig(**ck['config']),ck['model']['feature_mean'],
+            ck['model']['feature_std'],ck['model']['scales']).to(device)
+        model.load_state_dict(ck['model'],strict=True)
+        return model,None,{'candidate':a.candidate_curves}
+    if not all((a.correction,a.parent_curves,a.latent_curves)) or a.candidate_curves:
+        raise ValueError('Legacy audit requires correction and both baseline curves')
+    model,_=restore_model(binding,device)
+    assert sha(a.correction)==binding['style_audit']['correction']['sha256']
+    ck=torch.load(a.correction,map_location=device,weights_only=False)
+    assert ck['mode']=='latent' and ck['parent_checkpoint_sha256']==binding['parent_checkpoint']['sha256']
+    assert ck['data_manifest_sha256']==binding['data_manifest_sha256'] and not ck['test_loaded']
+    correction=StaticExpressionCorrection('latent',**ck['state']).to(device).eval().requires_grad_(False)
+    return model,correction,{'parent':a.parent_curves,'latent':a.latent_curves}
+
+
+def audit_digest(model,base,correction):
+    return state_digest(model),state_digest(base.stage1),state_digest(correction) if correction is not None else None
 
 @torch.no_grad()
 def run(a):
@@ -150,12 +182,8 @@ def run(a):
     binding=json.loads(Path(a.binding).read_text(encoding='utf-8-sig'))
     for name,digest in binding['source_files'].items():
         assert sha(Path(__file__).resolve().parents[1]/name)==digest,name
-    model,_=restore_model(binding,device);model.eval().requires_grad_(False)
-    assert sha(a.correction)==binding['style_audit']['correction']['sha256']
-    ck=torch.load(a.correction,map_location=device,weights_only=False)
-    assert ck['mode']=='latent' and ck['parent_checkpoint_sha256']==binding['parent_checkpoint']['sha256']
-    assert ck['data_manifest_sha256']==binding['data_manifest_sha256'] and not ck['test_loaded']
-    correction=StaticExpressionCorrection('latent',**ck['state']).to(device).eval().requires_grad_(False)
+    model,correction,curve_paths=load_receiver(a,binding,device)
+    model.eval().requires_grad_(False)
     data,base=load_runtime(binding,device);q=data['splits']['validation']
     audit=audit_data(data,development_fold(data['splits']['train'],data['fit_sids']))
     people=sorted(data['dev_sids']);assert len(people)==3
@@ -176,15 +204,15 @@ def run(a):
     # order; subset/reordered caching can change reduction widths and create
     # needless false failures in the bit-exact gate.
     cache_base(data,base,device,{'train':[],'validation':list(range(len(q['valid'])))})
-    before=(state_digest(model),state_digest(base.stage1),state_digest(correction))
+    before=audit_digest(model,base,correction)
     saved={}
-    for method,path in [('parent',a.parent_curves),('latent',a.latent_curves)]:
+    for method,path in curve_paths.items():
         assert sha(path)==binding['style_audit']['baseline_curves'][method]['sha256']
         z=torch.load(path,map_location='cpu',weights_only=False)
         assert z['clip_id']==q['clip_id'] and not z['test_loaded'];saved[method]=z['predictions']
-    n=len(q['valid']);methods=('parent','latent');policies=('raw','clip_all')
-    pred_stats=np.zeros((2,2,n,3,4,52));gt_stats=np.zeros((n,4,52))
-    changes={};maximum={'parent':0.,'latent':0.,'base':0.};display={};style_rows=[]
+    n=len(q['valid']);methods=tuple(curve_paths);policies=('raw','clip_all')
+    pred_stats=np.zeros((len(methods),2,n,3,4,52));gt_stats=np.zeros((n,4,52))
+    changes={};maximum={k:0. for k in (*methods,'base')};display={};style_rows=[]
     display_lookup={cid:name for name,cid in binding['display_clips'].items()}
     processed=0;chosen=set(ids)
     for batch_ids in canonical_batches(n,ids):
@@ -205,8 +233,9 @@ def run(a):
             ch=b['channel_mask'][j].cpu().numpy();tm=b['times'][j,:length].cpu().numpy()
             gt=b['motion'][j,:length].cpu().numpy();sid=int(q['speaker_id'][i]);sindex=people.index(sid)
             gt_stats[i]=summary(gt,v,ch,tm)
-            torch.testing.assert_close(b['b0'][j,:length].cpu(),saved['parent'][i]['neutral_b0'],rtol=0,atol=0)
-            maximum['base']=max(maximum['base'],float((b['b0'][j,:length].cpu()-saved['parent'][i]['neutral_b0']).abs().max()))
+            old_base=saved[methods[0]][i]['neutral_b0']
+            torch.testing.assert_close(b['b0'][j,:length].cpu(),old_base,rtol=0,atol=0)
+            maximum['base']=max(maximum['base'],float((b['b0'][j,:length].cpu()-old_base).abs().max()))
             for m,method in enumerate(methods):
                 actual=normal[method][j,:length].cpu();old=saved[method][i]['prior_mean']
                 maximum[method]=max(maximum[method],float((actual-old).abs().max()))
@@ -266,9 +295,11 @@ def run(a):
         values=[{k:v for k,v in r.items() if k not in keys} for r in records]
         return aggregate(values) if values else {}
     names=data['config']['data']['emotion_classes']
-    report=dict(schema='phase48_frozen_style_audit_v1',test_loaded=False,training_performed=False,
+    report=dict(schema='frozen_style_audit_v2',test_loaded=False,training_performed=False,
         default_replaced=False,smoke=a.smoke,clips=len(ids),parent_checkpoint_sha256=binding['parent_checkpoint']['sha256'],
-        correction_sha256=sha(a.correction),source_sha256=sha(__file__),data_manifest_sha256=binding['data_manifest_sha256'],
+        candidate_checkpoint_sha256=sha(a.candidate) if a.candidate else None,
+        correction_sha256=sha(a.correction) if correction is not None else None,
+        source_sha256=sha(__file__),data_manifest_sha256=binding['data_manifest_sha256'],
         frozen_state_exact=True,baseline_replay_max_abs=maximum,reference_metadata=refs_meta,style_code=style_rows,
         cross_speaker_style_code=cross_codes,
         baseline_curves=binding['style_audit']['baseline_curves'],
@@ -286,7 +317,7 @@ def run(a):
             'Motion correlation/lag are not independent content recognition.',
             'Matched targets and development evidence are evaluation only, not deployment inputs or supervised training.',
             'Three development identities and this trained model do not prove general identity transfer.'])
-    assert before==(state_digest(model),state_digest(base.stage1),state_digest(correction))
+    assert before==audit_digest(model,base,correction)
     np.savez_compressed(out/'native_statistics.npz',predictions=pred_stats[:,:,ids],gt=gt_stats[ids],indices=np.asarray(ids),
         methods=np.asarray(methods),policies=np.asarray(policies),stats=np.asarray(STATS),target_speaker_ids=np.asarray(people))
     # Preserve every pair in a compact lossless artifact on the nearly full host.
@@ -299,8 +330,9 @@ def run(a):
     print(json.dumps(dict(complete=True,clips=len(ids),matched_pairs=len(pairs),maximum=maximum,render_inputs=len(display))),flush=True)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--binding',required=True);p.add_argument('--correction',required=True)
-    p.add_argument('--parent-curves',required=True);p.add_argument('--latent-curves',required=True)
+    p=argparse.ArgumentParser();p.add_argument('--binding',required=True);p.add_argument('--correction')
+    p.add_argument('--parent-curves');p.add_argument('--latent-curves')
+    p.add_argument('--candidate');p.add_argument('--candidate-curves')
     p.add_argument('--output',required=True);p.add_argument('--device',default='cuda');p.add_argument('--smoke',action='store_true')
     a=p.parse_args()
     try:run(a)

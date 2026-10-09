@@ -55,3 +55,32 @@ def test_timing_diagnostic_detects_native_shift_and_does_not_retime():
     same=change(x,x,v,ch,t);shift=change(x,y,v,ch,t)
     assert same['jaw_best_lag_frames']==0 and shift['jaw_best_lag_frames']==2
     assert same['mouth/centered_delta_rms']==0
+
+
+@pytest.mark.parametrize('mode',['temporal','statistics'])
+def test_candidate_restore_replays_own_checkpoint_without_parent_or_correction(tmp_path,mode):
+    import torch
+    from types import SimpleNamespace
+    from tests.test_reference_response import fixture
+    from scripts.audit_reference_style_swap import load_receiver,compute
+    from scripts.train_expression_response import sha
+    _,model,b,refs=fixture(mode);model.eval().requires_grad_(False)
+    path=tmp_path/'final.pt'
+    torch.save(dict(model=model.state_dict(),config=model.checkpoint_config(),
+        parent_checkpoint_sha256='parent',test_loaded=False),path)
+    binding=dict(parent_checkpoint={'sha256':'parent'},
+        style_audit={'candidate_checkpoint':{'sha256':sha(path)}})
+    args=SimpleNamespace(candidate=path,candidate_curves='own_curves.pt',
+        correction=None,parent_curves=None,latent_curves=None)
+    restored,correction,curves=load_receiver(args,binding,'cpu')
+    restored.eval().requires_grad_(False)
+    with torch.no_grad():
+        p=model.audio_prior(b['audio_features'],b['valid'])
+        y,_=compute(restored,correction,b,p,refs)
+        assert tuple(y)==('candidate',) and correction is None
+        assert curves=={'candidate':'own_curves.pt'}
+        torch.testing.assert_close(y['candidate'],model.predict(b['audio_features'],b['b0'],b['valid'],refs),rtol=0,atol=0)
+    args.correction='forbidden_old_correction.pt'
+    with pytest.raises(ValueError,match='cannot reuse'):load_receiver(args,binding,'cpu')
+    args.correction=None;binding['style_audit']['candidate_checkpoint']['sha256']='wrong'
+    with pytest.raises(AssertionError):load_receiver(args,binding,'cpu')
