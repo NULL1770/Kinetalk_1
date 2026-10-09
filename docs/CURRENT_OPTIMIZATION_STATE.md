@@ -1,4 +1,4 @@
-# Current: Phase64 preparation (2026-10-10)
+# Current: Phase64 training (2026-10-10)
 
 Read docs/PHASE64_BOUNDED_RESIDUAL_PLAN.md first after compaction.
 
@@ -9,3 +9,6 @@ Phase64 adds only 4212 zero-initialized bounded residual-gain parameters, gain [
 SSH reachable,4090 idle. Four completed Phase63 redundant remote artifacts were SHA-verified against local originals then removed; weights seed47/final.pt retained. Receipt .codex-finalizer/phase64_archive_receipt.json; root free233369600 bytes. Never delete unverified data or third_party/voca_reference.
 
 CREMA-D location pending user reply; MEAD main training continues. See Phase64 plan for dataset evidence and correct usage without neutral pairs. No sealed/test read. Per-change Git upload remains required. Current render/images/figures are actual Phase53 or rejected63, not Phase64.
+
+Latest override: Phase64 worker5447 active, observed epoch1step601, .119sec/update;120GPU smoke passed ratio .891971. Implementation17457cc pushed and independently verified. Local collector6380 queued full download/replay/24videos plus25-person curves; two-hour bound, no remote restart. Check .codex-finalizer/phase64_status.py and local_queue_state before any new dispatch. 46local checks; remote full preflight passed. Source snapshots remain immutable even if local plotting/docs change later.
+CREMA-D FOUND: /root/autodl-tmp/kinetalk_data/processed/native_affect_style_v4_refmask (train5797/72people,val723/9people). 3D coefficients exist;83D old audio cache needs compatible772 sidecars. Do not claim absent/unusable solely for lacking paired neutral. This run remains MEAD-only; plan documents next cross-domain use and unknown intensity -1. Test untouched.

@@ -30,7 +30,7 @@ W/b 全零初始化，候选初始输出逐值等同 Phase53。仅训练 4212 �
 
 ## 25 人风格验证
 
-20 训练见过人物用 held sentences，2 内部未见人物用 speaker-dev，3 外部 development 人物；不读取 sealed/test。每人每情感按 clip SHA 固定选1条（最多200条），固定源音频/B0/g/u，切换全部25人的独立neutral参考，并比较同人 A/B。Phase53 与候选同时评估，不能只展示变化量。
+20 训练见过人物用 held sentences，2 内部未见人物用 speaker-dev，3 外部 development 人物；不读取 sealed/test。每人每情感固定选1条（最多200条）：已有八情感展示片段优先，其余按 clip SHA 选择，固定源音频/B0/g/u，切换全部25人的独立neutral参考，并比较同人 A/B。Phase53 与候选同时评估，不能只展示变化量。
 
 报告同人稳定/跨人差异、闭口变化、centered/velocity correlation、jaw lag、四冻结probe的换风格情感标签变化、精确相同 sentence/emotion/intensity 的目标统计方向；不做跨人逐帧 GT 误差。分开报告 seen/unseen，以及逐人结果。25人不是25个完全未见人。新增8情感多人物曲线和可渲染输入；标准8情感主对比与8风格视频自动排队。
 
@@ -47,3 +47,14 @@ W/b 全零初始化，候选初始输出逐值等同 Phase53。仅训练 4212 �
 本轮继续以 MEAD 作为有动作监督的主数据。CREMA-D 若只有音频/视频、没有可靠3D拟合，不可直接用于动作误差指标或B0/风格监督；若已有合格拟合，即使没有neutral-emotion配对，也可另做native表达监督/外部测试，前提是匹配rig、时间戳、mask及独立数据划分。当前路径未定位，已询问用户；不因为时间紧便把未核实数据混入主训练。audio-only外部情感泛化也需单独标注，不能当第二个3D benchmark。
 
 原文与抽取文件已在项目研究档案中，未重新检索/下载整批文献。
+
+
+## 运行更新（2026-10-10）
+
+实现 `17457cc7aa899287424876e679fce417f856c29c` 已推送并独立 ls-remote 核实。远端 `/root/kinetalk_phase64_bounded_residual_20261010`，worker5447；GPU smoke120步 loss .363296→.324050（ratio .891971），冻结/B0/HuBERT隔离均通过。正式训练已观察epoch1step601，约 .119秒/步。每轮682步，固定8轮5456步。smoke损失不代表开发指标。
+
+本地collector6380有限2小时等待远端，随后SHA备份/指标重放/表格/普通8+风格8+多人物风格8视频。状态 diagnostics/phase64_bounded_residual_20261010/local_queue_state.json；日志 .codex-finalizer/phase64_collect*.log。未完成前禁止重复dispatch；原checkpoint/optimizer/RNG支持精确恢复。恢复时先查进程与状态。
+
+CREMA-D扩展搜索推翻了早期“没有发现数据”的范围性结论：已找到7422音频、7328coeffs_final；native_affect_style_v4_refmask 下 train5797条72人、val723条9人，六情感，neutral每人至少10条。仅检查train/val，未读test。12个固定样本SHA/原生25fps/51通道/finite通过，不等同全量拟合质量通过。原生content768非零；audio83为mel80+prosody3，缺当前验证过的emotion2vec768+prosody4特征。原始库存见本轮cremad_inventory.json。
+
+决定：本轮主实验不混合CREMA-D，以免把receiver改动与数据域变化混淆。CREMA-D可用于下一独立跨域生成测试，先按原772提取配方生成sidecar并核验音频时钟、rig/channel、独立neutral参考；native情感动作与neutral参考训练不要求中性配对，但冻结B0的中性目标不能用非中性GT替代。未知强度-1必须保留未知，不能填0。当前CREMA数据还不能作为第二个已完成benchmark写进论文。
