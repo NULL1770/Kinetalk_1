@@ -2,7 +2,9 @@
 
 ## Latest: read this first
 
-本轮用户要求先理清风格定义、论文依据和证据，不再盲目改网络。优先读 [STYLE_EVIDENCE_PROTOCOL_20261009.md](STYLE_EVIDENCE_PROTOCOL_20261009.md)：风格为独立neutral参考驱动、跨语句复用的人物动作倾向；同人稳定≠不同句子/情感曲线相同。FaceDiffuser Fig5换人物热图、Fig6随机采样曲线不能混称；Mimic的参考风格/SCS/LDD/插值图更贴近本项目。DESTalker全文未核实（本次403/arXiv与仓库无条目），不能推定其风格指标/t-SNE/嘴部遮蔽。Phase53仅支持部分稳定/目标方向，跨人闭口分歧32.45%仍需内容验证；无新模型/新训练/新截图。后续主图为固定驱动的同人A/B+跨人嘴唇距离/眉部曲线，以及目标GT条件统计+距离分布；八情感作完整补充。可选真实优势截图，但必须共同时间/seed/渲染、标注selected，并保留全量指标/视频，不能由选帧证明整体SOTA。
+本轮用户要求先理清风格定义、论文依据和证据，不再盲目改网络。优先读 [STYLE_EVIDENCE_PROTOCOL_20261009.md](STYLE_EVIDENCE_PROTOCOL_20261009.md)：风格为独立neutral参考驱动、跨语句复用的人物动作倾向；同人稳定≠不同句子/情感曲线相同。FaceDiffuser Fig5换人物热图、Fig6随机曲线不能混称；Mimic的参考风格/SCS/LDD/插值图更贴近本项目。DESTalker全文未核实（本次403/arXiv与仓库无条目），不能推定其风格指标/t-SNE/嘴部遮蔽。Phase53仅支持部分稳定/目标方向，跨人闭口分歧32.45%仍需内容验证；无新模型/新训练/新截图。后续主图为固定驱动的同人A/B+跨人嘴唇距离/眉部曲线，以及目标GT条件统计+距离分布；八情感作完整补充。可选真实优势截图，但必须共同时间/seed/渲染、标注selected，并保留全量指标/视频，不能由选帧证明整体SOTA。
+
+本轮后续已完成：SSH恢复后Phase63从epoch4/step2728精确续训到epoch8/5456，collector完成1367评估、2026匹配风格审计和16视频。候选整体指标变差，未推广；按透明共同时间协议生成02a/02b精选案例和84张透明/白底单图，详见 [SELECTED_EXAMPLES_20261009.md](SELECTED_EXAMPLES_20261009.md)。
 
 IMPORTANT latestSSH11473 connectionrefused：lastverifiedPhase63 epoch4step2147，当前远端训练状态未知，不继续宣称active或保证ETA。原collector51592因未捕获SSH错误退出，原failure/lock/errorlog保留；已修复boundedwait的SSH重连处理并启动新的collector139204，等待状态waiting_ssh，不自动重启远端训练。已向用户请求确认/重启SSH。恢复后先查12910及子进程/complete.json/last.pt，仍活跃则只观察；被重启中断则按原绑定与optimizer checkpoint --resume继续未完成8轮，不新建变体、不重复smoke/完整实验。先确认Git与source/parent/neutral hashes。当前正式模型及身份图仍是Phase53。Collector新日志phase63_collect_resume*.log，旧错误保留phase63_collect_error.log/collector_initial_failure.json/collector_failed_51592.lock。
 
