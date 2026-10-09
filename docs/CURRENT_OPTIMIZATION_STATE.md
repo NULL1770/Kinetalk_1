@@ -1,9 +1,9 @@
-# Current: paper references complete; Phase58 implementation validated locally (2026-10-09)
+# Current: paper references complete; Phase58 full fit running (2026-10-09)
 
 Read PHASE58_NEUTRAL_AMPLITUDE_PLAN.md. Prechange eea349a pushed. New same-frame
 monotone neutral-amplitude candidate (nine fixed knots per27mouth channels,
 identity endpoints/tails); only native-neutral/approved-pair TRAIN targets.
-11 local tests and script compile pass; remote smoke/full fit not launched yet.
+11 local + 11 remote tests and 24-clip smoke pass technical checks. Code12caf7e pushed. Worker1604 at /root/kinetalk_phase58_neutral_amplitude_20261009 is fitting/scoring all3298selected neutral targets. Smoke quality gate is false (tiny fit), not a main-model promotion.
 No main receiver/student/B0 changes. Joint held position/range/closure/timing
 gates precede any integration. SSH restored; GPU idle. Six completed Phase52/53
 last.pt files65,711,262bytes SHA archived locally then removed remotely; finals
