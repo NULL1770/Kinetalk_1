@@ -4,7 +4,7 @@ Original temporal style control versus a compact posture/response descriptor.
 No query motion enters deployment; no reconstruction gradient enters the prior.
 """
 from __future__ import annotations
-import argparse,json,sys,time,shutil
+import argparse,json,sys,time,shutil,hashlib
 from dataclasses import replace
 from pathlib import Path
 import numpy as np
@@ -72,6 +72,50 @@ def frozen_digests(model):
     return {name:state_digest(getattr(model,name)) for name in ('prior','posterior','emotion_head','intensity_head')}
 
 
+def protected_receiver_digest(model):
+    """Receiver tensors except explicit style columns and posture bias."""
+    width=model.cfg.global_dim+model.cfg.local_dim;h=hashlib.sha256()
+    for name,value in sorted(model.decoder.state_dict().items()):
+        if name.startswith('bias.'):continue
+        if name.startswith('modulations.') and name.endswith('.weight'):value=value[:,:width]
+        h.update(name.encode());h.update(value.detach().cpu().contiguous().numpy().tobytes())
+    return h.hexdigest()
+
+
+def reference_optimizer(model,scope,lr):
+    if scope=='joint':
+        params=freeze_expression(model)
+        return params,torch.optim.AdamW(params,lr=lr,weight_decay=.01)
+    if scope!='style_only':raise ValueError('Unknown receiver training scope')
+    model.eval().requires_grad_(False);model.zero_grad(set_to_none=True)
+    model.style.requires_grad_(True);model.decoder.bias.requires_grad_(True)
+    style=list(model.style.parameters())+list(model.decoder.bias.parameters())
+    columns=[]
+    for mod in model.decoder.modulations:
+        mod.weight.requires_grad_(True);columns.append(mod.weight)
+    # AdamW decays the whole Parameter even when part of its gradient is zero.
+    # Disable decay on mixed matrices and mask gradients BEFORE clipping.
+    opt=torch.optim.AdamW([{'params':style,'weight_decay':.01},
+        {'params':columns,'weight_decay':0.}],lr=lr)
+    return style+columns,opt
+
+
+def mask_reference_gradients(model,scope):
+    if scope!='style_only':return
+    width=model.cfg.global_dim+model.cfg.local_dim
+    for mod in model.decoder.modulations:
+        if mod.weight.grad is not None:mod.weight.grad[:,:width]=0.
+
+
+def verify_protected_moments(model,opt):
+    width=model.cfg.global_dim+model.cfg.local_dim
+    for mod in model.decoder.modulations:
+        for name in ('exp_avg','exp_avg_sq','max_exp_avg_sq'):
+            value=opt.state.get(mod.weight,{}).get(name)
+            if value is not None and torch.count_nonzero(value[:,:width]):
+                raise ValueError('Frozen modulation columns have optimizer momentum')
+
+
 def objective(model,b,refs):
     with torch.no_grad():p=model.audio_prior(b['audio_features'],b['valid'])
     s=model.encode_style(refs)['code']
@@ -104,17 +148,24 @@ def train(a):
     cache_base(data,base,device,{'train':canonical,'validation':[]})
     parent,ck=restore_model(binding,device);neutral=state_digest(base.stage1)
     assert neutral==ck['neutral_digest']
-    model=candidate(parent,a.mode);params=freeze_expression(model);frozen=frozen_digests(model)
+    model=candidate(parent,a.mode);params,opt=reference_optimizer(model,a.scope,a.lr)
+    frozen=frozen_digests(model)
+    protected=protected_receiver_digest(model) if a.scope=='style_only' else None
     budget=inherited_budget(ck)
-    opt=torch.optim.AdamW(params,lr=a.lr,weight_decay=.01)
     order_rng=torch.Generator().manual_seed(a.seed+51000)
     ref_rng=torch.Generator().manual_seed(a.seed+52000)
     protocol=dict(schema='phase51_diverse_neutral_reference_v1',mode=a.mode,
-        args={k:v for k,v in vars(a).items() if k!='resume'},binding_sha256=sha(a.binding),
+        args=dict({k:v for k,v in vars(a).items() if k!='resume'},
+            reference_training='diverse_neutral_two',matching='reference_'+a.scope),binding_sha256=sha(a.binding),
         data=audit,neutral_support_counts={str(k):len(v) for k,v in pools.items()},
         support_policy='TRAIN-fit neutral only; same actor; exclude query clip AND sentence; two without replacement',
         initial_model_digest=state_digest(model),frozen_digests=frozen,neutral_digest=neutral,
-        config=model.checkpoint_config(),trainable_parameters=sum(p.numel() for p in params),
+        config=model.checkpoint_config(),optimizer_parameter_elements=sum(p.numel() for p in params),
+        trainable_parameters=sum(p.numel() for p in params)-(sum(m.weight.shape[0]*(model.cfg.global_dim+model.cfg.local_dim)
+            for m in model.decoder.modulations) if a.scope=='style_only' else 0),
+        trainable_module='style_encoder+posture_bias+style_modulation_columns' if a.scope=='style_only' else 'style_encoder+full_decoder',
+        reconstruction_passes_per_update=1,protected_receiver_digest=protected,
+        modulation_weight_decay=0. if a.scope=='style_only' else .01,
         loss='original position + .5 adjacent displacement; p_mean; no new loss',
         oracle_limit='Inherited motion posterior not recalibrated to changed style; not a selection metric',
         test_loaded=False,external_validation_used=False,**budget)
@@ -129,6 +180,9 @@ def train(a):
         if device.type=='cuda':torch.cuda.set_rng_state_all([x.cpu() for x in z['cuda_rng']])
         start,step,history=z['epoch'],z['step'],z['history']
         assert frozen_digests(model)==frozen
+        if protected is not None:
+            assert z['protected_receiver_digest']==protected_receiver_digest(model)==protected
+            verify_protected_moments(model,opt)
     else:
         write(out/'protocol.json',protocol);write(out/'fold.json',fold)
     losses=[];began=time.time()
@@ -144,7 +198,8 @@ def train(a):
             refs=sampled_references(q,pairs,device)
             opt.zero_grad(set_to_none=True);loss,parts=objective(model,b,refs)
             if not torch.isfinite(loss):raise FloatingPointError('Nonfinite reference objective')
-            loss.backward();norm=torch.nn.utils.clip_grad_norm_(params,1.,error_if_nonfinite=True)
+            loss.backward();mask_reference_gradients(model,a.scope)
+            norm=torch.nn.utils.clip_grad_norm_(params,1.,error_if_nonfinite=True)
             assert all(p.grad is None for n,p in model.named_parameters() if not n.startswith(('style.','decoder.')))
             assert all(p.grad is None for p in base.stage1.parameters())
             opt.step();step+=1
@@ -167,11 +222,15 @@ def train(a):
             audio=b['audio_features'].clone();audio[...,:768]=float('nan')
             torch.testing.assert_close(original,model.predict(audio,b['b0'],b['valid'],refs),rtol=0,atol=0)
         assert frozen_digests(model)==frozen and state_digest(base.stage1)==neutral
+        if protected is not None:
+            assert protected_receiver_digest(model)==protected
+            verify_protected_moments(model,opt)
         history.append(entry)
         state=dict(model=model.state_dict(),config=model.checkpoint_config(),reference_training='diverse_neutral_two',
             epoch=epoch+1,step=step,history=history,optimizer=opt.state_dict(),order_rng=order_rng.get_state(),
             ref_rng=ref_rng.get_state(),torch_rng=torch.get_rng_state(),cuda_rng=torch.cuda.get_rng_state_all() if device.type=='cuda' else [],
             neutral_digest=neutral,binding_sha256=sha(a.binding),frozen_digests=frozen,
+            protected_receiver_digest=protected,receiver_training_scope=a.scope,
             parent_checkpoint_sha256=binding['parent_checkpoint']['sha256'],test_loaded=False,**budget)
         save(out/'last.pt',state);write(out/'history.json',history)
         eta=max(0,a.epochs-epoch-1)*np.mean([h['seconds'] for h in history[-3:]])
@@ -183,7 +242,8 @@ def train(a):
         first,last=float(np.mean(losses[:10])),float(np.mean(losses[-10:]))
         passed=len(losses)==a.smoke_steps and last<.9*first
         write(out/'smoke.json',dict(passed=passed,first10=first,last10=last,ratio=last/first,updates=step,
-            frozen_expression_exact=True,neutral_exact=True,hubert_nan_isolated=True,seconds=time.time()-began,test_loaded=False))
+            frozen_expression_exact=True,neutral_exact=True,hubert_nan_isolated=True,
+            protected_receiver_exact=True if protected is not None else None,seconds=time.time()-began,test_loaded=False))
         if not passed:raise RuntimeError('Reference learnability smoke failed')
     write(out/'complete.json',dict(status='complete',final_sha256=sha(out/'final.pt'),epochs=state['epoch'],updates=step,test_loaded=False,**budget))
     write(out/'state.json',dict(status='training_complete',epochs=state['epoch'],updates=step,test_loaded=False))
@@ -192,6 +252,7 @@ def train(a):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--binding',required=True);p.add_argument('--output',required=True)
     p.add_argument('--mode',choices=('temporal','statistics'),required=True);p.add_argument('--device',default='cuda')
+    p.add_argument('--scope',choices=('joint','style_only'),default='joint')
     p.add_argument('--seed',type=int,default=47);p.add_argument('--epochs',type=int,default=8)
     p.add_argument('--batch-size',type=int,default=16);p.add_argument('--lr',type=float,default=1e-4)
     p.add_argument('--smoke',action='store_true');p.add_argument('--smoke-steps',type=int,default=120);p.add_argument('--resume',action='store_true')

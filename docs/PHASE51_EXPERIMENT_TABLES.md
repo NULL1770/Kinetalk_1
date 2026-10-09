@@ -110,8 +110,8 @@ Phase47为冻结Phase45-u加TRAIN监督拟合的clip常量接收器；parent che
 | Phase46-deploy | learned | True | two_aggregate | receiver_deploy | 10903 | 24 | 16368 | 5456 | 0 | 0 | 0 | 1 | 10903 | decoder | 1 | 0.842696 | 0.39155 | 3.26148 | 0.491785 | 0.135853 | 0.705703 | 0.634531 | 0.731927 | 0.667015 |
 | Phase47-latent | learned | True | two_aggregate | static_response_latent | 10903 | 24 | 16368 | 0 | 1 | 10903 | 5044 | 1 | 10903 | clip_constant_response | 0 | 0.82516 | 0.38386 | 3.27687 | 0.489966 | 0.151821 | 0.719825 | 0.664336 | 0.744721 | 0.677342 |
 | Phase47-reference | learned | True | two_aggregate | static_response_reference | 10903 | 24 | 16368 | 0 | 1 | 10903 | 29380 | 1 | 10903 | clip_constant_response | 0 | 0.857411 | 0.407056 | 3.47699 | 0.48983 | 0.151904 | 0.554851 | 0.52642 | 0.607931 | 0.564679 |
-| Phase51-temporal | learned | True | single | joint_kl | 10903 | 24 | 16368 | 5456 | 0 | 0 | 0 | 1 | 10903 | see_source_protocol | see_source_protocol | 0.859197 | 0.416775 | 3.45108 | 0.488077 | 0.145985 | 0.734619 | 0.67898 | 0.752099 | 0.697458 |
-| Phase51-statistics | learned | True | single | joint_kl | 10903 | 24 | 16368 | 5456 | 0 | 0 | 0 | 1 | 10903 | see_source_protocol | see_source_protocol | 0.809449 | 0.393823 | 3.38657 | 0.468724 | 0.126797 | 0.712325 | 0.70864 | 0.759333 | 0.713463 |
+| Phase51-temporal | learned | True | diverse_neutral_two | reference_joint | 10903 | 24 | 16368 | 5456 | 0 | 0 | 0 | 1 | 10903 | style_encoder+full_decoder | 1 | 0.859197 | 0.416775 | 3.45108 | 0.488077 | 0.145985 | 0.734619 | 0.67898 | 0.752099 | 0.697458 |
+| Phase51-statistics | learned | True | diverse_neutral_two | reference_joint | 10903 | 24 | 16368 | 5456 | 0 | 0 | 0 | 1 | 10903 | style_encoder+full_decoder | 1 | 0.809449 | 0.393823 | 3.38657 | 0.468724 | 0.126797 | 0.712325 | 0.70864 | 0.759333 | 0.713463 |
 
 ## table5_inference_interventions
 
@@ -727,5 +727,5 @@ Phase47为冻结Phase45-u加TRAIN监督拟合的clip常量接收器；parent che
 | Phase46-deploy | neutral B0 + audio expression + independent reference | 10903 | 24 | 16368 | 8 | 5456 | 0 | 0 | 0 | 1 | 10903 | decoder | 1 | receiver_deploy | 47 | prior mean |
 | Phase47-latent | neutral B0 + audio expression + independent reference | 10903 | 24 | 16368 | 0 | 0 | 1 | 10903 | 5044 | 1 | 10903 | clip_constant_response | 0 | static_response_latent | 47 | prior mean |
 | Phase47-reference | neutral B0 + audio expression + independent reference | 10903 | 24 | 16368 | 0 | 0 | 1 | 10903 | 29380 | 1 | 10903 | clip_constant_response | 0 | static_response_reference | 47 | prior mean |
-| Phase51-temporal | neutral B0 + audio expression + independent reference | 10903 | 24 | 16368 | 8 | 5456 | 0 | 0 | 0 | 1 | 10903 | see_source_protocol | see_source_protocol | joint_kl | 47 | prior mean |
-| Phase51-statistics | neutral B0 + audio expression + independent reference | 10903 | 24 | 16368 | 8 | 5456 | 0 | 0 | 0 | 1 | 10903 | see_source_protocol | see_source_protocol | joint_kl | 47 | prior mean |
+| Phase51-temporal | neutral B0 + audio expression + independent reference | 10903 | 24 | 16368 | 8 | 5456 | 0 | 0 | 0 | 1 | 10903 | style_encoder+full_decoder | 1 | reference_joint | 47 | prior mean |
+| Phase51-statistics | neutral B0 + audio expression + independent reference | 10903 | 24 | 16368 | 8 | 5456 | 0 | 0 | 0 | 1 | 10903 | style_encoder+full_decoder | 1 | reference_joint | 47 | prior mean |

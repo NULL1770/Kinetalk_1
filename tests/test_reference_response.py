@@ -84,3 +84,45 @@ def test_support_selection_excludes_target_sentence_identity_and_internal_holds(
         assert all(q['sentence_id'][j]!=q['sentence_id'][i] and q['speaker_id'][j]==q['speaker_id'][i] and j not in [4,9] for j in p)
     rng.set_state(state);assert torch.equal(pairs,choose_supports(q,pool,[0,5],rng))
     with pytest.raises(ValueError,match='independent'):choose_supports(q,{0:[0,1,2]},[0],rng)
+
+
+def test_style_only_optimizer_preserves_receiver_through_steps_and_resume():
+    import copy
+    from scripts.train_reference_response import (reference_optimizer,mask_reference_gradients,
+        protected_receiver_digest,verify_protected_moments)
+    _,m,b,r=fixture();params,opt=reference_optimizer(m,'style_only',1e-3)
+    frozen=protected_receiver_digest(m);expression=frozen_digests(m)
+    initial={n:p.detach().clone() for n,p in m.named_parameters()}
+    def step(model,optimizer,parameters):
+        optimizer.zero_grad(set_to_none=True);loss,_=objective(model,b,r);loss.backward()
+        mask_reference_gradients(model,'style_only')
+        for mod in model.decoder.modulations:assert not mod.weight.grad[:,:12].count_nonzero()
+        torch.nn.utils.clip_grad_norm_(parameters,1.,error_if_nonfinite=True);optimizer.step()
+        verify_protected_moments(model,optimizer)
+        assert protected_receiver_digest(model)==frozen and frozen_digests(model)==expression
+    for _ in range(3):step(m,opt,params)
+    assert any(not torch.equal(p,initial[n]) for n,p in m.named_parameters() if n.startswith('style.'))
+    assert any(mod.weight[:,12:].abs().sum()>0 for mod in m.decoder.modulations)
+    assert not torch.equal(m.decoder.bias.weight,initial['decoder.bias.weight'])
+    m.eval()
+    with torch.no_grad():
+        y=m.predict(b['audio_features'],b['b0'],b['valid'],r)
+        other={k:v.flip(0) for k,v in r.items()}
+        assert (y-m.predict(b['audio_features'],b['b0'],b['valid'],other)).abs().max()>1e-6
+    _,restored,_,_=fixture();rp,ro=reference_optimizer(restored,'style_only',1e-3)
+    restored.load_state_dict(m.state_dict());ro.load_state_dict(copy.deepcopy(opt.state_dict()))
+    step(m,opt,params);step(restored,ro,rp)
+    for name,value in m.state_dict().items():torch.testing.assert_close(value,restored.state_dict()[name],rtol=0,atol=0)
+    # A stale/foreign optimizer must not silently alter a frozen column.
+    ro.state[restored.decoder.modulations[0].weight]['exp_avg'][0,0]=1.
+    with pytest.raises(ValueError,match='momentum'):verify_protected_moments(restored,ro)
+
+
+def test_joint_optimizer_retains_original_trainable_scope():
+    from scripts.train_reference_response import reference_optimizer,mask_reference_gradients
+    _,m,b,r=fixture();params,opt=reference_optimizer(m,'joint',1e-3)
+    loss,_=objective(m,b,r);loss.backward()
+    before=m.decoder.input.weight.detach().clone()
+    mask_reference_gradients(m,'joint');opt.step()
+    assert not torch.equal(before,m.decoder.input.weight)
+    assert all(g['weight_decay']==.01 for g in opt.param_groups)

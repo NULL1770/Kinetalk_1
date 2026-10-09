@@ -37,7 +37,15 @@ def verified_report(root):
     complete=read(root/'seed47/complete.json')
     assert report['checkpoint_sha256']==complete['final_sha256']==sha(root/'seed47/final.pt')
     assert report['clips']==1367 and report['test_loaded'] is False
-    return evaluation,report,read(root/'binding.json'),read(root/'seed47/protocol.json')
+    protocol=read(root/'seed47/protocol.json')
+    if protocol.get('schema')=='phase51_diverse_neutral_reference_v1':
+        # Old Phase51 protocols describe supports/scope outside args. Derive
+        # table labels from that immutable protocol, without changing originals.
+        scope=protocol['args'].get('scope','joint')
+        protocol=dict(protocol,args=dict(protocol['args'],reference_training='diverse_neutral_two',matching='reference_'+scope))
+        protocol.setdefault('trainable_module','style_encoder+full_decoder')
+        protocol.setdefault('reconstruction_passes_per_update',1)
+    return evaluation,report,read(root/'binding.json'),protocol
 
 def canonical(metrics):
     d=dict(metrics)

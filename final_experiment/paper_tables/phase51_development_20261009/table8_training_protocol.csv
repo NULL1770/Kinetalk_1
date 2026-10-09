@@ -18,5 +18,5 @@ Phase46-mixed,neutral B0 + audio expression + independent reference,10903,24,163
 Phase46-deploy,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,decoder,1,receiver_deploy,47,prior mean
 Phase47-latent,neutral B0 + audio expression + independent reference,10903,24,16368,0,0,1,10903,5044,1,10903,clip_constant_response,0,static_response_latent,47,prior mean
 Phase47-reference,neutral B0 + audio expression + independent reference,10903,24,16368,0,0,1,10903,29380,1,10903,clip_constant_response,0,static_response_reference,47,prior mean
-Phase51-temporal,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,see_source_protocol,see_source_protocol,joint_kl,47,prior mean
-Phase51-statistics,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,see_source_protocol,see_source_protocol,joint_kl,47,prior mean
+Phase51-temporal,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+full_decoder,1,reference_joint,47,prior mean
+Phase51-statistics,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+full_decoder,1,reference_joint,47,prior mean
