@@ -27,9 +27,9 @@ Phase53实际配置是 prior_variance=learned、center_local=true、reference_en
 |Phase45局部均值校准|固定fit10903，对既有teacher u目标做固定ridge解析拟合|只校准p已有局部均值头；Phase53继承该u检查点，不能写成完全未做解析训练|
 |Phase53参考适配|同一fit10903；620条fit neutral支持、20人；每query抽取2条同人独立支持并排除query clip/句子；部署独立enrollment每人2条|两组各固定8轮5456更新，batch16，lr1e-4，seed47；p/q及尺度冻结。style-only只更新参考相关参数；joint另外更新响应decoder；静态posture/offset只有neutral query提供梯度，动态style仍由各情感query监督|
 |开发评估|原1367条、3位留出身份；2026个匹配句子/情感/强度的跨人有向风格对|不反传；raw+clip，四个冻结整段动作probe，原生时序、几何及固定视频。不是sealed test|
-|Phase54当前诊断|优质配对TRAIN-fit2024、内部身份281、句子278|仅固定线性探针，所有神经模型冻结；不是新模型训练，不改变生成指标|
+|Phase54–57已完成诊断|优质配对TRAIN-fit2024、内部身份281、句子278|坐标可预测性、接收端交互、目标敏感性及局部表达描述检查；所有神经模型冻结，不改变生成指标|
 
-原始posterior重建和detach-prior重建对student的直接梯度均为零。KL会将teacher学到的分布信息传给student，所以“没有直接内容输入”不等于已证明内容完全解耦。Phase54正检查GT−alignedneutral、alignedneutral−B0和总残差的动态可预测性，不能先假定teacher污染已证实。
+原始posterior重建和detach-prior重建对student的直接梯度均为零。KL会将teacher学到的分布信息传给student，所以“没有直接内容输入”不等于已证明内容完全解耦。Phase54–57已检查配对坐标及局部描述：held动态预测整体较弱，不支持把平滑后的配对差分直接替换教师目标。这不证明现有teacher污染，也不证明非线性音频预测不可能；实际posterior依然使用native GT−B0。
 
 ## 风格应怎样写进论文
 
