@@ -1,4 +1,4 @@
-# Current: Phase53/54/55 closed; no new model training (2026-10-09)
+# Current: Phase56 complete; no new model training (2026-10-09)
 
 Read PHASE53_RESULTS.md for latest actual generated metrics; PHASE54_RESULTS.md and PHASE55_RESULTS.md for subsequent diagnostic evidence. CURRENT_MODEL_AND_TRAINING.md now matches actual Phase53 config; old Phase39flow description is archived. Do not rerun completed workers.
 
@@ -19,3 +19,11 @@ Do not add failed676Dinteraction or simply widenu. Pairdifferenceisnot pureemoti
 NeutralB0frozen;772Daffect/prosodyonly;no studentmotionreconstructiongradient;nativeobservation/event/channelmasks/rawclip/fourfrozenprobes;sealeduntouched;Gitbeforeimplementation. Style=reference-driven motiontendencies onsharedrig,not facialshapeidentity. PAPER_FIGURE_REQUIREMENTS.md defersfinalfigureproduction. Unrelatedthird_party/voca_reference untouched.
 
 SSH ignored credential-bearing helper .codex-finalizer/immutable_transfer.py: import connect/command/transfer/upload/sha, neverprintwholefile. Lastrootfree107212800bytes;check/archivalbeforeanytraining.13oldlast.pt alreadySHAarchived/deleted;don'trepeatcleanup. GitSSHrelay currentlyunreliable; direct git -c http.proxy= -c http.sslBackend=openssl -c http.version=HTTP/1.1 push succeeded (TLS staysverified). Phase53original112files345162906bytes/preflight208files/finalarchive15files backed locally. Allsource/artifacts local final_experiment/evaluation/diagnostics/phaseXX_...; no relaunch of existing receipts.
+
+## Phase56 COMPLETE (latest)
+Read PHASE56_RESULTS.md and PHASE56_TARGET_SENSITIVITY_PLAN.md. Code1378447 pushed;33local/remote tests,24clipsmoke/full2583 complete. Remote /root/kinetalk_phase56_target_sensitivity_20261009 PID2361 finished;do not relaunch. CPU only, no modelupdates/B0predictions/queryaudio/developmentinference/sealed.
+Report SHAac424e3017b0e69642071381508ced588538e6ffa7e04497c4117c1215195f9f;206originalfiles10764854bytes SHAexact;193sourcebindings. Pair/eventhashes exactPhase54. Counts/physicalexpressionenergy replay2583x3regions againstPhase50, maxdiff4.17e-17; original_physical_replay_v2.json. Original slowlocalNPZreplay interrupted, cachedarrayrepeatcomplete. All2583MFCCstrictalternatefiles unavailable;fixed±1neutralframe stress test is NOT actualalignmenterror/noisefraction.
+
+TRAINmouth safe nativecoverage53.53%; strict5framewindow retains41.10%ofsafe (=23.03%fullnative),11frames11.14%ofsafe (=6.66%fullnative). Upper5/11cover94.82%/87.79%ofsafe. Mean native mouthshift displacementerror/signal .4547/.6031/.4876 fit/speaker/sentence;5frame .2227/.3935/.2334 butdifferentcoverage. Morestrict wholeclipgate not uniformlylesssensitive; do notdropclasses/masks. No universalsmoothing/newloss chosen. Currentteacher usesGT-B0, NOTdirectGT-alignedneutral: audit ofproposedpairedtargets doesnotproveexistingteachercontamination.
+
+Derivedallgroup/compactCSV in final_experiment/paper_tables/phase56_target_audit_20261009;paperreadyasdescriptiveprotocolmaterialonly. Actualgeneratedmetrics/videos remainPhase53. No activejobs. Next:demonstratepredictabilityofstableemotion/expressivedescriptors underavailablemask beforeteacherobjectivechange; retainnativeGT+independentneutralrefs and contenttiming atreceiver. Do notrerun37/39named4state, widen-u or676Dinteraction. Useralreadyauthorizesoptimization,no inventedapprovalgate.

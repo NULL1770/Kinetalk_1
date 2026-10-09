@@ -1,0 +1,7 @@
+# Phase56 safe-pair target sensitivity tables
+
+Descriptive TRAIN/internal-held diagnostics, not generated model results or baseline rankings. Full206original artifacts and per-clip results remain in evaluation/diagnostics/phase56_target_sensitivity_20261009. Report SHAac424e3017b0e69642071381508ced588538e6ffa7e04497c4117c1215195f9f.
+
+Fixed windows1/5/11frames; only complete observed native25fps support. Full native coverage includes original observation/event masks; coverage_of_native is relative to those original valid frames. Clip-equal supported-channel means. Centered energy comparisons use matching support. Shift compares fixed±1-frame neutral targets against unshifted expression differences; this is a stress test, not measured alignment error or empirical noise fraction. Ratios use squared coefficient errors and corresponding unperturbed signal energy. Null for absent/near-zero denominators; report n and median alongside mean. Moving average and residual are nonorthogonal, not spectral fractions.
+
+All-group CSV retains original fold, emotion, original whole-clip event gate and fixed disjoint path/event-agreement bins. Sample selection already used these quality signals; no causal or independent quality validation claims. All2583 alternate MFCC strict artifacts unavailable. No new training target, weights, thresholds or smoothing parameter selected from these tables. No neural model training or validation/test fitting.
