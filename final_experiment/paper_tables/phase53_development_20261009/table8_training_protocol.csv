@@ -1,0 +1,25 @@
+﻿method,scope,fit_clips,parent_epochs,parent_updates,epochs,updates,analytic_fit_passes,analytic_fit_clips,fitted_coefficients,inherited_analytic_fit_passes,inherited_analytic_fit_clips,trainable_module,reconstruction_passes_per_update,matching,train_seed,draws
+VOCA-core (shared audio/ARKit),shared-audio ARKit adaptation,12536,,,80,,,,,,,,,,42,1
+FaceFormer (shared audio/ARKit),shared-audio ARKit adaptation,12536,,,100,,,,,,,,,,42,1
+EmoTalk-core (shared audio/ARKit),shared-audio ARKit adaptation,12536,,,80,,,,,,,,,,42,1
+FaceDiffuser (frozen KineTalk conditions/ARKit),shared-audio ARKit adaptation,12536,,,100,,,,,,,,,,42,3
+Phase41,neutral B0 + audio expression + independent reference,10903,0,0,24,16368,0,0,0,0,0,see_source_protocol,see_source_protocol,joint_kl,47,prior mean
+Phase42,neutral B0 + audio expression + independent reference,10903,0,0,24,16368,0,0,0,0,0,see_source_protocol,see_source_protocol,joint_kl,47,prior mean
+Phase43-a,neutral B0 + audio expression + independent reference,10903,0,0,24,16368,0,0,0,0,0,see_source_protocol,see_source_protocol,joint_kl,47,prior mean
+Phase43-b,neutral B0 + audio expression + independent reference,10903,0,0,24,16368,0,0,0,0,0,see_source_protocol,see_source_protocol,joint_kl,47,prior mean
+Phase43-ab,neutral B0 + audio expression + independent reference,10903,0,0,24,16368,0,0,0,0,0,see_source_protocol,see_source_protocol,joint_kl,47,prior mean
+Phase44-a_kl,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,0,0,see_source_protocol,see_source_protocol,kl,47,prior mean
+Phase44-a_mean,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,0,0,see_source_protocol,see_source_protocol,mean_scale,47,prior mean
+Phase44-b_mean,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,0,0,see_source_protocol,see_source_protocol,mean_scale,47,prior mean
+Phase45-g,neutral B0 + audio expression + independent reference,10903,24,16368,0,0,1,10903,4128,0,0,see_source_protocol,see_source_protocol,analytic_ridge_g,47,prior mean
+Phase45-u,neutral B0 + audio expression + independent reference,10903,24,16368,0,0,1,10903,2048,0,0,see_source_protocol,see_source_protocol,analytic_ridge_u,47,prior mean
+Phase45-gu,neutral B0 + audio expression + independent reference,10903,24,16368,0,0,1,10903,6176,0,0,see_source_protocol,see_source_protocol,analytic_ridge_gu,47,prior mean
+Phase46-mixed,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,decoder,2,receiver_mixed,47,prior mean
+Phase46-deploy,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,decoder,1,receiver_deploy,47,prior mean
+Phase47-latent,neutral B0 + audio expression + independent reference,10903,24,16368,0,0,1,10903,5044,1,10903,clip_constant_response,0,static_response_latent,47,prior mean
+Phase47-reference,neutral B0 + audio expression + independent reference,10903,24,16368,0,0,1,10903,29380,1,10903,clip_constant_response,0,static_response_reference,47,prior mean
+Phase51-temporal,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+full_decoder,1,reference_joint,47,prior mean
+Phase51-statistics,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+full_decoder,1,reference_joint,47,prior mean
+Phase52-style-only,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+posture_bias+style_modulation_columns,1,reference_style_only,47,prior mean
+Phase53-style_only,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+posture_bias+style_modulation_columns,1,reference_style_only,47,prior mean
+Phase53-joint,neutral B0 + audio expression + independent reference,10903,24,16368,8,5456,0,0,0,1,10903,style_encoder+full_decoder,1,reference_joint,47,prior mean
