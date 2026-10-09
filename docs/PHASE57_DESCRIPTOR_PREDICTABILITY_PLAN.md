@@ -1,0 +1,15 @@
+# Phase57: supported expression descriptors
+
+2026-10-09. Pre-change archive 799c190 is pushed. This completes the target feasibility question left by Phase56, without a new generator or another full development evaluation.
+
+Use the identical approved 2024 TRAIN-fit / 281 internal-speaker / 278 internal-sentence clips and original teacher/event hashes. No external development queries or sealed test. Freeze the Phase45-u parent inherited by Phase53, neutral B0 and all neural parameters. B0 is loaded only for observation support/hash; no B0 predictions enter this audit.
+
+Targets are per-channel five-frame signed mean and population standard deviation of query motion minus aligned neutral. Use exactly the fully observed native windows from Phase56; no padding, bridging event gaps or enlarging masks. Five frames is a bounded feasibility choice following the coverage audit, not a claim that 200 ms is the correct emotion timescale. Within-clip centering removes constant posture from both features and targets. A constant per-clip prediction is consequently the zero temporal baseline. These are descriptive targets, not pure emotion or framewise emotion ground truth.
+
+Compare existing u16, prior hidden128, normalized affect audio772 and prosody4. Apply the same five-frame mean to each feature using audio-valid native frames. Neither HuBERT content, B0 output, speaker labels, query motion nor emotion/intensity labels are predictors. Existing encoder/global semantics remain frozen. One clip-equal per-channel ridge with fixed strength .001 and TRAIN-only RMS scaling, no sweep or checkpoint selection. This measures linear recoverability, not the limit of nonlinear students.
+
+On every fold report full supported forward errors, zero baseline, absolute target energies, valid counts and per-emotion rows. Also compare forward versus full-native-index reversed feature sequences on exactly their common valid support; never compress gaps, reorder the target, or fit reverse features. Control results test sensitivity to temporal ordering, not causal disentanglement. Channels with fewer than two supported centers do not count as temporal targets.
+
+Meaningful checks: target window agreement with independent brute-force math; missing frames/channels and native discontinuities; constant-bias invariance; reverse control keeps native slots and intersects masks; analytically learnable time-varying envelope beats zero/reverse on separate clips; TRAIN-only fit leaves frozen coefficients and held data isolated; input content-NaN check; parent and B0 exact hashes. Reuse existing ridge numerical tests.
+
+One 24-clip smoke and one full run; outputs bounded to 32 MiB, no copied neural checkpoint or new videos. Preserve source/pair/report hashes and per-clip errors. If neither held fold shows usable temporal prediction over zero/reverse, reject this descriptor replacement; do not add a smoothing loss or repeat named-state/wider-u designs. If useful evidence exists, design the smallest targeted teacher/student change and validate final mouth timing, style and expression jointly. A diagnostic improvement is never a generated-motion improvement.
