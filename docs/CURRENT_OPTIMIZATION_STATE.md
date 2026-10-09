@@ -1,4 +1,14 @@
-# Current: paper references complete; Phase57 complete; no active training (2026-10-09)
+# Current: paper references complete; Phase58 implementation validated locally (2026-10-09)
+
+Read PHASE58_NEUTRAL_AMPLITUDE_PLAN.md. Prechange eea349a pushed. New same-frame
+monotone neutral-amplitude candidate (nine fixed knots per27mouth channels,
+identity endpoints/tails); only native-neutral/approved-pair TRAIN targets.
+11 local tests and script compile pass; remote smoke/full fit not launched yet.
+No main receiver/student/B0 changes. Joint held position/range/closure/timing
+gates precede any integration. SSH restored; GPU idle. Six completed Phase52/53
+last.pt files65,711,262bytes SHA archived locally then removed remotely; finals
+unchanged, rootfree118,325,248bytes. Archive receipt under
+final_experiment/artifact_archive/phase58_completed_last_20261009.
 
 Four requested reference types are complete: seven figures in PNG/PDF/SVG and90transparent+90white1024-square stills under final_experiment/evaluation/paper_reference_20261009. Read PAPER_REFERENCE_FIGURES_20261009.md for captions/provenance/limits. Data exports SHAverified; one joint motion t-SNE with all1367clips/domain, no seed search. Seven-method8emotion+fixed4time panels include adapted FaceDiffuser fixedseed42. GT-native timestamps shared per method; no word boundaries invented. Reference-style/architecture/teaser matchPhase53. Finalteaser squareproportions and final7method panels visuallychecked. Figures show actual mismatches; no new generator gain. Next optimization design pending; don't relaunchPhase54–57.
 
