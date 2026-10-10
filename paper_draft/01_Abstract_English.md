@@ -1,3 +1,5 @@
+> Historical draft; this abstract does not describe the current KineTalk model. The current Chinese manuscript is listed in README_当前稿件.md. English revision is pending.
+
 # ARFTalk: Articulation-Aware Residual Flow Matching for Expressive Speech-Driven 3D Facial Animation
 
 ## Abstract

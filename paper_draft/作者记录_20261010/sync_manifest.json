@@ -1,0 +1,149 @@
+{
+  "date": "2026-10-10",
+  "source_root": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\paper_draft",
+  "destination_root": "D:\\科研\\小论文",
+  "copied_files": 35,
+  "all_sha256_match": true,
+  "records": [
+    {
+      "path": "00_会议信息与分节写作计划.md",
+      "sha256": "e99e64777feedf888b915e03c204403a5c9313dece9e848a9c920de8e71e8321"
+    },
+    {
+      "path": "00_摘要_写作核对.md",
+      "sha256": "4886404a7bd8717afd7d7eb46dde95fff75861dd390e1831ae5726c4cc09e3c0"
+    },
+    {
+      "path": "01_Abstract_English.md",
+      "sha256": "49e4f49295b9a8bd1d92e8701293bed56d5e5750dc12a0221f86a71df8bf089e"
+    },
+    {
+      "path": "01_引言_中文版.md",
+      "sha256": "6a078844a8fd09127c93736a1404f4715bd5eaef33731c5a702c0d96fe923779"
+    },
+    {
+      "path": "01_引言_写作核对.md",
+      "sha256": "f3d387e17eda4c6a34d954e375e51dcdce4e57de09b6ba664d3440605d76153e"
+    },
+    {
+      "path": "01_摘要_中文版.md",
+      "sha256": "9819ed059057e34dd4bc391bdd046b807f6e3026b205601ba079373d01e2a34d"
+    },
+    {
+      "path": "02_相关工作_中文版.md",
+      "sha256": "8037dc1e36e6022aef6077c0ba9dfda99147acacaa03de4c853c0a2f04492651"
+    },
+    {
+      "path": "02_相关工作_写作核对.md",
+      "sha256": "1fc2064676d946b9cbd0bd73210c69d3b23fc99ef9e31f417de1285f7d176101"
+    },
+    {
+      "path": "02_贡献定位与引言结构分析.md",
+      "sha256": "eaf75274dbbccf33eafd81b358ff3b81ac0e7a264de72aff076eed96414fe00a"
+    },
+    {
+      "path": "03_后续章节写作核对.md",
+      "sha256": "d23594589905a745bc6ff00ce261429b0c03f4e7952c77c6f996afe25e671f28"
+    },
+    {
+      "path": "03_方法_中文版.md",
+      "sha256": "3796416b98029983896b929588e01579fbcb60bbacf056c15c616644ac056f01"
+    },
+    {
+      "path": "03_方法代码核对_20260922.md",
+      "sha256": "8410d2ca58fb3ab650dd82d9ddc5b24d0a808dc5b0ce3f2dbcdf049f5b4ccc11"
+    },
+    {
+      "path": "04_实验_中文版.md",
+      "sha256": "b0eaae3a5c2c96b72b203a25dfca10403bb12eae2e424a1a24c6f67d0d545e2e"
+    },
+    {
+      "path": "05_讨论与结论_中文版.md",
+      "sha256": "fa74261240a9dfe5210192d72e85a41e7061df3cd35ca74f7b466c94652da00b"
+    },
+    {
+      "path": "06_会议与EmoTalk核对_20260922.md",
+      "sha256": "a15a0a4c8f5c22e2f7f00f0ea8052c58f2702b4946c476acd5aef38dba8f1139"
+    },
+    {
+      "path": "06_附录_中文版.md",
+      "sha256": "36ff60979798dfe642f6af2fd97b1482c689909a31cded632ef48d567541c70d"
+    },
+    {
+      "path": "07_正式实验补全协议.md",
+      "sha256": "afe214ceb5c59bf76d119321afb5b957e00c0ba669c1f19184fc742d4982483d"
+    },
+    {
+      "path": "08_方法实验改写记录_20260923.md",
+      "sha256": "be256bcf29544269a6321498350fc4916037f65cbbc0cc70a5a68dca2d9a1270"
+    },
+    {
+      "path": "README_当前稿件.md",
+      "sha256": "7bee1bca4d721b908025ecbac880cea76f309b636f87e3568ead5870959a35b4"
+    },
+    {
+      "path": "related_work_references.bib",
+      "sha256": "8e88564a6445a5f3f4fef8a951db3f71b8dac42cc7830412ca4f930814f70af8"
+    },
+    {
+      "path": "论文_当前中文版.md",
+      "sha256": "4918f469a9716b4c3dc308a371163e20f21ae30425a53ae9877fe96827b4abec"
+    },
+    {
+      "path": "作者记录_20261010/validation.json",
+      "sha256": "00f139fa573b5210192a56ebea29f0a18849e1ad972485be065e2b2d341c5afa"
+    },
+    {
+      "path": "作者记录_20261010/修订核对与证据.md",
+      "sha256": "f108e042f01068a7df366c8266aaa040ae1e657ca764e95c208375577fbc6803"
+    },
+    {
+      "path": "作者记录_20261010/原文学习与章节提纲.md",
+      "sha256": "8fc2508742abfdb88abb1c916bc787565a2316984c294e5024625aae41df02a0"
+    },
+    {
+      "path": "作者记录_20261010/tables/dynamics.csv",
+      "sha256": "7ffd49e31bd048aa2b0610c6eac90db544d643f1187037139e721047f1f6f844"
+    },
+    {
+      "path": "作者记录_20261010/tables/emotion_breakdown.csv",
+      "sha256": "20f1974ebb364bd8c71bed05cff2092350ba1cb4986ad80342dfeffd690adf71"
+    },
+    {
+      "path": "作者记录_20261010/tables/geometry.csv",
+      "sha256": "78179ace1a1039776d5c2920517b8c261b1e05a00e8d8830bc7a7ab5b1a98fec"
+    },
+    {
+      "path": "作者记录_20261010/tables/interventions.csv",
+      "sha256": "23590faf2b8724a1c65b8f1c5550f988ac496171003715a58064746dd7e1adb9"
+    },
+    {
+      "path": "作者记录_20261010/tables/provenance.json",
+      "sha256": "3b537c66c5609d56bb19f98a865a5ab86ca3dc422eb4337dac0feff2cc176f94"
+    },
+    {
+      "path": "作者记录_20261010/tables/reference_ablation.csv",
+      "sha256": "5f5cd10c484047b1a56a1baec83b28ed7c4b2777a9a285f0963c9724bf65e774"
+    },
+    {
+      "path": "作者记录_20261010/tables/scope_ablation.csv",
+      "sha256": "47677cc0bc6570daafc79672d3bf019a26965d5dee5c408c4d1ca11109c73640"
+    },
+    {
+      "path": "作者记录_20261010/tables/semantics.csv",
+      "sha256": "ee3aec27529f45e36dd135ae00506d02566576fa7e07c85591d4d189558bbb2d"
+    },
+    {
+      "path": "作者记录_20261010/tables/style_stability.csv",
+      "sha256": "55957c34d31651e37ccffb8593d92000a4e214ee829168dfbc8fb08adfa9706a"
+    },
+    {
+      "path": "作者记录_20261010/tables/style_target.csv",
+      "sha256": "9e1a6ab66d878e0c681b75fb550833eb1ae30a70d5a2b5d0cd6ca3b711cdc7a9"
+    },
+    {
+      "path": "作者记录_20261010/tables/supplementary_geometry.csv",
+      "sha256": "3faa033cbdc5b80d965eecfd7a4b73b4135d44e0d1b13bd8ae26d9ec9989dba0"
+    }
+  ]
+}

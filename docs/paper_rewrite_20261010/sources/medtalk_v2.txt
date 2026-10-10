@@ -1,0 +1,2455 @@
+MEDTalk: Multimodal Controlled 3D Facial Animation with Dynamic Emotions by Disentangled Embedding
+Report GitHub Issue
+×
+Title:
+Content selection saved. Describe the issue below:
+Description:
+Submit without GitHub
+Submit in GitHub
+arXiv is now an independent nonprofit!
+Learn more
+×
+Back to arXiv
+Why HTML?
+Report Issue
+Back to Abstract
+Download PDF
+Abstract
+Introduction
+Related Work
+Audio-driven 3D Facial Animation
+Emotional Talking Head
+Multimodal Guided Generation
+Methods
+Overview
+Disentangled Embedding Space
+Dynamic Emotional Facial Animation
+Audio Content Mapping
+Fusion Intensity Modeling
+Multimodal Guided Animation
+Data Collection
+Training
+Experiments
+Experimental Settings
+Datasets
+Implementation Details
+Baseline Methods
+Quantitative Evaluation
+Qualitative Evaluation
+Disentangled Embedding Space
+Visual Comparison
+Multimodal Guided Generation
+User Study
+Ablation Study
+Discussion
+Conclusion
+References
+License: CC BY 4.0
+arXiv:2507.06071v2 [cs.CV] 13 Jul 2025
+MEDTalk: Multimodal Controlled 3D Facial Animation with Dynamic Emotions by Disentangled Embedding
+Chang Liu
+Ye Pan
+†
+†
+thanks:
+Corresponding Author
+Chenyang Ding
+Susanto Rahardja
+Xiaokang Yang
+Abstract
+Audio-driven emotional 3D facial animation aims to generate synchronized lip movements and vivid facial expressions. However, most existing approaches focus on static and predefined emotion labels, limiting their diversity and naturalness. To address these challenges, we propose
+MEDTalk
+, a novel framework for fine-grained and dynamic emotional talking head generation. Our approach first disentangles content and emotion embedding spaces from motion sequences using a carefully designed cross-reconstruction process, enabling independent control over lip movements and facial expressions. Beyond conventional audio-driven lip synchronization, we integrate audio and speech text, predicting frame-wise intensity variations and dynamically adjusting static emotion features to generate realistic emotional expressions. Furthermore, to enhance control and personalization, we incorporate multimodal inputs—including text descriptions and reference expression images—to guide the generation of user-specified facial expressions. With MetaHuman as the priority, our generated results can be conveniently integrated into the industrial production pipeline.
+1
+Shanghai Jiao Tong University
+2
+Singapore Institute of Technology
+{frenkiedejong, whitneypanye, chenyangding, xkyang}@sjtu.edu.cn, susantorahardja@ieee.org
+Introduction
+3D talking head generation aims to synthesize realistic facial animations from speech or text inputs and has become a significant research area in computer graphics and artificial intelligence. This technology has broad applications in virtual assistants, digital avatars, gaming, and education
+(
+Korban and Li 2022
+;
+Al Farsi et al. 2021
+)
+, enhancing human-computer interaction through lifelike digital characters. Compared to traditional manual animation, which is time-consuming and labor-intensive, data-driven approaches significantly improve efficiency while producing expressive and natural facial animations.
+Figure 1:
+Results of MEDTalk. Given an input speech, MEDTalk produces expressive facial movements based on emotion labels, reference images, or text descriptions, with natural emotional transitions.
+Early studies
+(
+Edwards et al. 2016
+;
+Pham, Cheung, and Pavlovic 2017
+;
+Pham, Wang, and Pavlovic 2018
+;
+Zhou et al. 2018
+;
+Cudeiro et al. 2019
+;
+Richard et al. 2021
+)
+primarily focused on lip synchronization while neglecting movements in other facial regions, leading to unnatural animations. Recent methods have introduced emotion control by incorporating emotion or intensity labels
+(
+Fan et al. 2022
+;
+Pan et al. 2023
+;
+Liu et al. 2024
+)
+, enhancing the expressiveness of facial animations. However, label-based approaches impose a fixed emotional state throughout the animation, limiting diversity and expressiveness. Some studies
+(
+Peng et al. 2023b
+;
+Kim et al. 2024
+)
+try to extract emotion features from the input audio to improve the diversity of facial expressions. However, emotional features are not fully represented in audio, reflected in inaccurate predictions. We argue that high-quality facial animation relies on two key components: lip synchronization and emotional expressiveness. Lip movements must align precisely with speech audio, while emotional expressions should exhibit both diversity and dynamic micro-expressions to enhance realism.
+To address these issues, we propose
+MEDTalk
+:
+M
+ultimodal Controlled 3D Facial Animation with Dynamic
+E
+motions by
+D
+isentang-led Embedding, as shown in Fig.
+1
+. Our framework disentangles emotion and content features through self-supervised training on motion sequences, enabling independent control of lip synchronization and facial expressions. Apart from precise control over lip synchronization, MEDTalk also supports multiple input modalities, including conventional emotion labels, textual descriptions, and reference images, allowing for fully controllable expression generation. Additionally, we employ cross-attention to integrate features of audio and spoken text, predicting frame-wise emotion intensity to get dynamic emotion features. This approach enables the generation of highly accurate lip-synced facial animations with fine-grained, controllable, and dynamically evolving emotions.
+Our key contributions are as follows:
+•
+We introduce MEDTalk, an emotional 3D talking head framework that generates facial animation with fine-grained and multimodal-guided emotion states.
+•
+We propose a novel paradigm that disentangles content and emotion through self-supervised training, enabling independent control of lip and facial expressions.
+•
+We integrate audio and speech text to predict frame-wise emotional intensity without requiring frame-wise annotations, generating dynamic emotional facial animation.
+•
+We introduce multimodal guidance, overcoming the limitations of predefined labels in previous studies and enabling user control, improving diversity in facial animation.
+Related Work
+Audio-driven 3D Facial Animation
+The goal of audio-driven talking head generation is to animate a target character based on an audio clip while ensuring accurate lip synchronization. With the advancement of deep learning, various model architectures have been utilized to generate expressive and realistic 3D facial animations.
+Early works
+(
+Pham, Wang, and Pavlovic 2018
+;
+Cudeiro et al. 2019
+)
+primarily focused on obtaining realistic, speaker-independent lip shapes from mel spectrograms using convolutional neural networks (CNNs). Transformer-based approaches, such as FaceFormer
+(
+Fan et al. 2022
+)
+, leveraged wav2vec2.0
+(
+Baevski et al. 2020
+)
+for audio feature extraction and synthesized continuous motion via autoregressive modeling, improving lip synchronization accuracy.
+CodeTalker
+(
+Xing et al. 2023
+)
+employed a VQ-VAE framework, treating facial animation generation as a discrete code query task, enhancing robustness.
+VividTalker
+(
+Zhao et al. 2023
+)
+further refined this approach by encoding head pose and mouth motion into separate discrete latent spaces, using audio features for autoregressive motion prediction.
+Meanwhile, SelfTalk
+(
+Peng et al. 2023a
+)
+introduced a self-supervised framework that aligns generated lip shapes with corresponding speech text, incorporating text-audio consistency as additional supervision.
+Recent methods
+(
+Chen et al. 2023
+;
+Stan, Haque, and Yumak 2023
+;
+Sun et al. 2024b
+)
+have explored the diffusion model
+(
+Ho, Jain, and Abbeel 2020
+)
+, leveraging its generative diversity to enhance realism and motion diversity in talking head generation
+Despite these advancements, most existing methods primarily focus on audio-synchronized lip movements while neglecting expressive variations in other facial regions. As a result, generated animations often appear rigid and emotionless. In contrast, our approach, MEDTalk, allows for expressive and natural facial animations with fine-grained emotional variations.
+Emotional Talking Head
+Emotional talking head generation incorporates emotional information, either manually controlled or extracted from audio, to produce facial animations with expressive emotional features.
+Some works apply predefined emotion labels to control the generated facial expression, such as EMOTE
+(
+Daněček et al. 2023
+)
+, EmoFace
+(
+Liu et al. 2024
+)
+, and FlowVQTalker
+(
+Tan, Ji, and Pan 2024a
+)
+.
+Some works have explored extracting emotion features from audio to improve expressiveness
+(
+Ji et al. 2021
+;
+Peng et al. 2023b
+;
+Tan, Ji, and Pan 2023
+)
+. They applied cross-reconstruction to separate emotional cues from speech.
+DEEPTalk
+(
+Kim et al. 2024
+)
+constructed a joint feature space for audio and expressions, connecting the emotional features between them.
+AVI-Talking
+(
+Sun et al. 2024a
+)
+utilized a large language model (LLM) to analyze emotion features in speech.
+Despite these advancements, most existing methods rely on static emotion features, resulting facial animations that lack variation. To address this, DEITalk
+(
+Shen et al. 2024
+)
+combined emotion labels with dynamically estimated emotion intensities derived from a speech-expression joint space. However, the predicted intensity lacked supervision and was heavily correlated with input audio. In contrast, our approach leverages both audio and textual modalities to predict dynamic emotional intensity in a supervised manner, enhancing the stability of generated emotional variations.
+Multimodal Guided Generation
+Integrating multimodal information into generative models remains a key focus in Artificial Intelligence-Generated Content (AIGC). In talking head generation, combining diverse data sources such as text and visual cues enables realistic and expressive facial animations.
+Aligned Multi-modal Emotion encoder
+(
+Xu et al. 2023
+)
+embeds text, image, and audio in a unified space. Leveraging the rich semantic priors of CLIP, this method allows for multimodal guidance in facial expression generation.
+EAT
+(
+Gan et al. 2023
+)
+proposed an adaptive Emotional Deformation Network, which generates emotion-compliant talking heads based on either emotional labels or text descriptions.
+Recent studies
+(
+Ma et al. 2023a
+;
+Zhong et al. 2024
+;
+Zhao et al. 2024
+;
+Tan et al. 2025b
+;
+Tan, Ji, and Pan 2024b
+;
+Tan et al. 2024
+;
+Tan et al. 2025a
+)
+have explored one-shot talking head generation using text descriptions or reference expression images. By extracting the talking style of multimodal guidance through a carefully designed feature encoder, or a CLIP-based style encoder
+(
+Radford et al. 2021
+)
+, these methods utilized textual or visual inputs indicating desired speaking styles, enabling realistic talking head synthesis without requiring reference videos.
+PMMTalk
+(
+Han et al. 2024
+)
+integrates an off-the-shelf talking head generation method with speech recognition, extracting visual and textual cues from speech. It aligns audio, image, and text features at the temporal and semantic levels to guide generation.
+MMHead
+(
+Wu et al. 2024
+)
+extends this approach to text-guided 3D head animation, supporting text-to-3D facial motion generation by hierarchical text annotation.
+Building on these advancements, our method enables text descriptions or reference images to guide facial expression synthesis, generating nuanced expressions beyond those achievable with emotion labels alone.
+Figure 2:
+Illustration of MEDTalk. (a) The overall architecture of MEDTalk. It integrates audio, text, and multimodal guidance to generate expressive facial animations. (b) The Cross-Modality Fusion (CMF) module, which effectively combines audio and text features. (c) Intensity adjustment. The norm of emotion embedding is modulated based on the predicted emotion intensity.
+Methods
+Overview
+We proposed MEDTalk, which generates facial animations with dynamic and diverse emotions guided by multimodal inputs and accurate synchronization with audio. The overall structure is illustrated in Fig.
+2
+. Our novel generation architecture consists of three key components: disentangled content and emotional latent space, audio-driven dynamic emotional facial expression generation, and multimodal guided stylized expression generation. By integrating these components, MEDTalk achieves separate control over lip shape and emotional expression, while supporting precise facial animation guided by multimodal inputs.
+Let
+𝑨
+1
+:
+T
+=
+(
+a
+1
+,
+…
+,
+a
+T
+)
+\bm{A}_{1:T}=(a_{1},...,a_{T})
+be a sequence of input speech snippets with each
+a
+t
+∈
+ℝ
+D
+a_{t}\in\mathbb{R}^{D}
+containing D sampled audio, and let
+R
+1
+:
+T
+=
+(
+r
+1
+,
+…
+,
+r
+T
+)
+R_{1:T}=(r_{1},...,r_{T})
+, where
+r
+t
+∈
+ℝ
+174
+r_{t}\in\mathbb{R}^{174}
+is a sequence of MetaHuman controller rig. For emotion guidance, let
+𝑮
+∈
+{
+g
+l
+​
+a
+​
+b
+​
+e
+​
+l
+,
+g
+i
+​
+m
+​
+a
+​
+g
+​
+e
+,
+g
+t
+​
+e
+​
+x
+​
+t
+}
+\bm{G}\in\{g^{label},g^{image},g^{text}\}
+be the user-controllable guidance, which can be either an emotion label, a reference image, or a text description. Our goal is to take the audio and emotion guidance as inputs and predict the emotional facial rig sequence
+𝑹
+^
+1
+:
+T
+=
+(
+r
+^
+1
+,
+…
+,
+r
+^
+T
+)
+\hat{\bm{R}}_{1:T}=(\hat{r}_{1},...,\hat{r}_{T})
+that aligns with the input speech. The end-to-end procedure can be written as:
+𝑹
+^
+1
+:
+T
+=
+M
+E
+D
+T
+a
+l
+k
+(
+𝑨
+1
+:
+T
+,
+𝑮
+)
+\hat{\bm{R}}_{1:T}=MEDTalk(\bm{A}_{1:T},\bm{G})
+(1)
+While multiple modalities can be used for emotion guidance, other model components remain shared across different modalities, ensuring consistency and efficiency in generation.
+Disentangled Embedding Space
+Some prior studies
+(
+Ji et al. 2021
+;
+Peng et al. 2023b
+;
+Nocentini, Ferrari, and Berretti 2024
+)
+have attempted to separate content and emotion features from speech signals, allowing direct emotion extraction from speech for facial animation generation. However, since emotion representation in speech is inherently incomplete, even state-of-the-art speech emotion recognition (SER) models
+(
+Chen et al. 2022
+;
+Ma et al. 2023b
+;
+Tang et al. 2023
+;
+Radford et al. 2023
+;
+Chen et al. 2024
+;
+Team et al. 2024
+;
+Fu et al. 2025
+)
+fail to achieve fully accurate predictions. This uncertainty makes emotion extraction from speech unreliable for precise avatar generation applications.
+Therefore, we adopt a self-reconstruction approach using facial motion, rather than speech, to separate content and emotion features. Compared to audio-based disentanglement, our method offers three key advantages:
+1.
+Facial motion directly expresses emotional expressions, avoiding the need for complex many-to-many audio-expression mappings. The effectiveness of the separation can be directly validated by reconstruction.
+2.
+Cross-training requires perfectly aligned sequences of equal length with the same content but different emotions. In audio, collecting such data is challenging, and Dynamic Time Warping (DTW)
+(
+Müller 2007
+)
+is required for sequence alignment, which could introduce distortions. In contrast, we can generate aligned sequences by applying identical speech content with different emotion labels.
+3.
+After training, freezing the motion decoder allows features from different modalities to be mapped into a unified embedding space. This simplifies multimodal control and ensures consistent emotion representation across modalities.
+Figure 3:
+Illustration of our disentanglement strategy using self-supervised learning, which can effectively decouple content and emotion features.
+To obtain data for cross-reconstruction training, we leverage EmoFace
+(
+Liu et al. 2024
+)
+, a pre-trained model that takes audio and emotion labels as inputs and predicts facial animation. Specifically, we generate speech samples with seven emotions to create a large-scale dataset. It enables flexible content-emotion pairing during training.
+Through our experiments, we found that mutual information minimization, such as Gradient Reversal Layer (GRL)
+(
+Ganin and Lempitsky 2015
+)
+and vCLUB
+(
+Cheng et al. 2020
+)
+used in voice conversion tasks
+(
+Yang et al. 2022
+;
+Williams et al. 2021
+)
+, was insufficient for effective content-emotion separation, leading to suboptimal generation quality. In contrast, we draw inspiration from
+(
+Ge et al. 2020
+)
+and adopt a novel training scheme, as illustrated in Fig.
+3
+, achieving high-quality feature disentanglement.
+Specifically, our decoupling network employs two encoders,
+E
+e
+E_{e}
+and
+E
+c
+E_{c}
+, to extract emotion and content features from the input motion sequence. These features are concatenated and passed through a decoder
+D
+D
+, which reconstructs the facial animation sequence. Let
+𝑹
+e
+,
+c
+\bm{R}_{e,c}
+denote the input motion sequence with emotion
+e
+e
+and content
+c
+c
+. To enforce disentanglement, we introduce a self-supervised feature exchange strategy, consisting of three key phases:
+1.
+Self-reconstruction
+: Ensures the accuracy of the reconstructed motion sequence. We reconstruct the motion itself:
+𝑹
+^
+e
+,
+c
+=
+D
+⁡
+(
+E
+e
+​
+(
+𝑹
+e
+,
+c
+)
+,
+E
+c
+​
+(
+𝑹
+e
+,
+c
+)
+)
+\hat{\bm{R}}_{e,c}=D(E_{e}(\bm{R}_{e,c}),E_{c}(\bm{R}_{e,c}))
+(2)
+2.
+Overlap exchange
+: Encourages embeddings of the same attribute to be close in feature space. Given two sequences with the same content (or emotion), we swap the corresponding feature representations:
+{
+𝑹
+^
+e
+​
+1
+,
+c
+=
+D
+⁡
+(
+E
+e
+​
+(
+𝑹
+e
+​
+1
+,
+c
+)
+,
+E
+c
+​
+(
+𝑹
+e
+​
+2
+,
+c
+)
+)
+𝑹
+^
+e
+​
+2
+,
+c
+=
+D
+⁡
+(
+E
+e
+​
+(
+𝑹
+e
+​
+2
+,
+c
+)
+,
+E
+c
+​
+(
+𝑹
+e
+​
+1
+,
+c
+)
+)
+\begin{cases}\hat{\bm{R}}_{e1,c}=D(E_{e}(\bm{R}_{e1,c}),E_{c}(\bm{R}_{e2,c}))\\
+\hat{\bm{R}}_{e2,c}=D(E_{e}(\bm{R}_{e2,c}),E_{c}(\bm{R}_{e1,c}))\end{cases}
+(3)
+3.
+Cycle exchange
+: Prevents feature loss by ensuring consistency through repeated cross-reconstruction. Given an arbitrary set of motion sequences, we perform two rounds of cross-reconstruction:
+{
+𝑹
+^
+e
+​
+1
+,
+c
+​
+2
+=
+D
+⁡
+(
+E
+e
+​
+(
+𝑹
+e
+​
+1
+,
+c
+​
+1
+)
+,
+E
+c
+​
+(
+𝑹
+e
+​
+2
+,
+c
+​
+2
+)
+)
+𝑹
+^
+e
+​
+2
+,
+c
+​
+1
+=
+D
+⁡
+(
+E
+e
+​
+(
+𝑹
+e
+​
+2
+,
+c
+​
+2
+)
+,
+E
+c
+​
+(
+𝑹
+e
+​
+1
+,
+c
+​
+1
+)
+)
+𝑹
+^
+e
+​
+1
+,
+c
+​
+1
+=
+D
+⁡
+(
+E
+e
+​
+(
+𝑹
+^
+e
+​
+1
+,
+c
+​
+2
+)
+,
+E
+c
+​
+(
+𝑹
+^
+e
+​
+2
+,
+c
+​
+1
+)
+)
+𝑹
+^
+e
+​
+2
+,
+c
+​
+2
+=
+D
+⁡
+(
+E
+e
+​
+(
+𝑹
+^
+e
+​
+2
+,
+c
+​
+1
+)
+,
+E
+c
+​
+(
+𝑹
+^
+e
+​
+1
+,
+c
+​
+2
+)
+)
+\begin{cases}\hat{\bm{R}}_{e1,c2}=D(E_{e}(\bm{R}_{e1,c1}),E_{c}(\bm{R}_{e2,c2}))\\
+\hat{\bm{R}}_{e2,c1}=D(E_{e}(\bm{R}_{e2,c2}),E_{c}(\bm{R}_{e1,c1}))\\
+\hat{\bm{R}}_{e1,c1}=D(E_{e}(\hat{\bm{R}}_{e1,c2}),E_{c}(\hat{\bm{R}}_{e2,c1}))\\
+\hat{\bm{R}}_{e2,c2}=D(E_{e}(\hat{\bm{R}}_{e2,c1}),E_{c}(\hat{\bm{R}}_{e1,c2}))\end{cases}
+(4)
+Training is supervised solely by the reconstruction loss
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
+\mathcal{L}_{recon}
+, which is the
+ℓ
+2
+\ell_{2}
+error of the reconstructed sequences.
+Once the content-emotion embedding spaces are effectively disentangled, we freeze the encoders and the decoder. This enables seamless mapping of features from other modalities into the corresponding embedding space, ensuring flexible and accurate facial animation generation.
+Dynamic Emotional Facial Animation
+In this section, we introduce an approach for generating emotional facial animations with dynamic intensity using audio and emotion labels as inputs. The model is illustrated in Fig.
+2
+(a) and comprises two primary modules: Audio Content Mapping (ACM) and Fusion Intensity Modeling (FIM), responsible for mapping content and emotion features, respectively. The extracted features are concatenated and fed into the frozen decoder, generating dynamic emotional facial animations. Formally, the process can be expressed as:
+𝑹
+^
+1
+:
+T
+=
+D
+(
+F
+I
+M
+(
+𝑨
+1
+:
+T
+)
+,
+A
+C
+M
+(
+𝑨
+1
+:
+T
+)
+)
+\hat{\bm{R}}_{1:T}=D(FIM(\bm{A}_{1:T}),ACM(\bm{A}_{1:T}))
+(5)
+Audio Content Mapping
+Prior studies
+(
+Peng et al. 2023b
+;
+Liu et al. 2024
+)
+have demonstrated that wav2vec2.0
+(
+Baevski et al. 2020
+)
+effectively extracts lip-related features from input audio
+𝑨
+1
+:
+T
+\bm{A}_{1:T}
+. Consequently, we extract audio content features via wav2vec2.0 and a lightweight mapping network. Our approach achieves perfect lip-sync with fast inference, making it practical for real-time applications.
+During training, the predicted audio content embeddings, combined with the emotion embeddings generated by the frozen emotion encoder, are used as inputs to the frozen decoder to predict facial expressions. In addition to the reconstruction loss
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
+\mathcal{L}_{recon}
+, we introduce a similarity loss
+ℒ
+s
+​
+i
+​
+m
+\mathcal{L}_{sim}
+, which measures the cosine similarity of content embedding from the audio and motion:
+ℒ
+s
+​
+i
+​
+m
+=
+1
+−
+c
+o
+s
+(
+E
+c
+(
+𝑹
+1
+:
+T
+)
+,
+A
+C
+M
+(
+𝑨
+1
+:
+T
+)
+)
+\mathcal{L}_{sim}=1-cos(E_{c}(\bm{R}_{1:T}),ACM(\bm{A}_{1:T}))
+(6)
+ℒ
+A
+​
+C
+​
+M
+=
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
++
+λ
+s
+​
+i
+​
+m
+​
+ℒ
+s
+​
+i
+​
+m
+\mathcal{L}_{ACM}=\mathcal{L}_{recon}+\lambda_{sim}\mathcal{L}_{sim}
+(7)
+Fusion Intensity Modeling
+We utilize seven emotional labels to control the emotions of the generated expressions. However, it lacks dynamic emotional changes in the generated expression as a single label guides the entire clip. To address this limitation, we integrate audio and speech text features to predict frame-wise emotional intensity, thereby enabling the generation of emotional expressions with dynamic intensity.
+Since manually annotating frame-wise emotional intensity is impractical, we derive intensity labels from the motion sequence. Specifically, emotional intensity is primarily reflected in the upper face and overall lip shape. We select specific controller rigs and compute their L1-norm as the pseudo-intensity.
+I
+n
+t
+(
+𝑹
+1
+:
+T
+)
+=
+(
+∥
+r
+1
+S
+i
+​
+n
+​
+t
+∥
+1
+,
+…
+,
+∥
+r
+T
+S
+i
+​
+n
+​
+t
+∥
+1
+)
+Int(\bm{R}_{1:T})=\left(\|r_{1}^{S_{int}}\|_{1},...,\|r_{T}^{S_{int}}\|_{1}\right)
+(8)
+where
+S
+i
+​
+n
+​
+t
+S_{int}
+is the set of controllers selected to represent emotion intensity. Fig.
+4
+illustrates how the intensity fluctuates with the audio and speech text.
+Figure 4:
+Visualization of intensity fluctuation with audio, where intensity increases when words with strong emotional semantics are detected.
+To predict frame-wise emotional intensity, we leverage both prosodic and semantic information. Precisely, we extract frame-wise emotion-related features
+𝑯
+a
+​
+u
+​
+d
+​
+i
+​
+o
+\bm{H}_{audio}
+from audio using emotion2vec
+(
+Ma et al. 2023b
+)
+, avoiding explicit emotion recognition. As for speech text, we utilize Whisper
+(
+Radford et al. 2023
+)
+to transcribe audio into text and encode using a pre-trained RoBERTa-based model
+(
+Cui et al. 2020
+)
+, obtaining text embeddings
+𝑯
+t
+​
+e
+​
+x
+​
+t
+\bm{H}_{text}
+. These two modalities are integrated through the Cross-Modality Fusion (CMF) module, which employs cross-attention to predict frame-wise intensity
+𝑰
+^
+1
+:
+T
+\hat{\bm{I}}_{1:T}
+, as depicted in Fig.
+2
+(b).
+The emotion embedding
+f
+l
+​
+a
+​
+b
+​
+e
+​
+l
+f^{label}
+is adjusted using the predicted frame-wise intensity. To ensure that emotion features remain discretely distributed and their spatial location reflects emotional intensity, we define the norm of the emotion feature as the emotion intensity. We obtain dynamic emotion features
+𝑭
+~
+1
+:
+T
+l
+​
+a
+​
+b
+​
+e
+​
+l
+=
+(
+f
+~
+1
+l
+​
+a
+​
+b
+​
+e
+​
+l
+,
+…
+,
+f
+~
+T
+l
+​
+a
+​
+b
+​
+e
+​
+l
+)
+\tilde{\bm{F}}^{label}_{1:T}=(\tilde{f}^{label}_{1},...,\tilde{f}^{label}_{T})
+by adjusting the norm frame by frame, as illustrated in Fig.
+2
+(c). These adjusted features are mapped into the frozen emotion embedding space via the fusion encoder
+E
+f
+​
+u
+​
+s
+​
+e
+E_{fuse}
+. Formally, the emotion feature adjustment for frame
+t
+t
+can be denoted as follows:
+f
+~
+t
+l
+​
+a
+​
+b
+​
+e
+​
+l
+=
+I
+^
+t
+‖
+f
+l
+​
+a
+​
+b
+​
+e
+​
+l
+‖
+​
+f
+l
+​
+a
+​
+b
+​
+e
+​
+l
+\tilde{f}^{label}_{t}=\frac{\hat{I}_{t}}{\left\|f^{label}\right\|}f^{label}
+(9)
+During training, the facial animation is generated by combining content features from the ACM module with the emotion embedding from the FIM module. The total loss function comprises three components: reconstruction loss
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
+\mathcal{L}_{recon}
+, similarity loss
+ℒ
+s
+​
+i
+​
+m
+\mathcal{L}_{sim}
+between the prediction and the original emotion embedding, and intensity prediction loss
+ℒ
+i
+​
+n
+​
+t
+\mathcal{L}_{int}
+.
+ℒ
+s
+​
+i
+​
+m
+=
+1
+−
+c
+o
+s
+(
+E
+e
+(
+𝑹
+1
+:
+T
+)
+,
+E
+f
+​
+u
+​
+s
+​
+e
+(
+𝑭
+~
+1
+:
+T
+l
+​
+a
+​
+b
+​
+e
+​
+l
+)
+)
+\mathcal{L}_{sim}=1-cos(E_{e}(\bm{R}_{1:T}),E_{fuse}(\tilde{\bm{F}}^{label}_{1:T}))
+(10)
+ℒ
+i
+​
+n
+​
+t
+=
+∥
+I
+n
+t
+(
+R
+^
+1
+:
+T
+)
+−
+I
+n
+t
+(
+R
+1
+:
+T
+)
+∥
+2
+\mathcal{L}_{int}=\|Int(\hat{R}_{1:T})-Int(R_{1:T})\|_{2}
+(11)
+ℒ
+F
+​
+I
+​
+M
+=
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
++
+λ
+s
+​
+i
+​
+m
+​
+ℒ
+s
+​
+i
+​
+m
++
+λ
+i
+​
+n
+​
+t
+​
+ℒ
+i
+​
+n
+​
+t
+\mathcal{L}_{FIM}=\mathcal{L}_{recon}+\lambda_{sim}\mathcal{L}_{sim}+\lambda_{int}\mathcal{L}_{int}
+(12)
+By incorporating user-controllable emotion labels along with audio and text features, our approach enables precise generation of facial animations with dynamic emotional expressions.
+Multimodal Guided Animation
+While introducing dynamic emotional intensity allows for emotional fluctuations in facial animations, the overall expressiveness remains constrained by the predefined set of seven emotion labels. To enable fully user-controllable facial emotion features, we incorporate text descriptions and reference facial images as optional guidance, overcoming the limitations of predefined emotion labels.
+Data Collection
+To guide expression generation, we collect reference images and corresponding text descriptions from a 2D talking head dataset, RAVDESS
+(
+Livingstone and Russo 2018
+)
+. Specifically, Mediapipe
+(
+Lugaresi et al. 2019
+)
+is employed to extract blendshape coefficients for each frame. Then, we select the frame with the highest emotional intensity as the reference image. To obtain a text description of the facial expression, we employ Google Gemini 2.0 Flash Thinking
+(
+Google 2025
+)
+, which provides a natural language interpretation of the selected frame.
+Training
+Given CLIP’s
+(
+Radford et al. 2021
+)
+robust text and image encoding capabilities, we freeze the CLIP text encoder
+E
+t
+​
+e
+​
+x
+​
+t
+E_{text}
+and image encoder
+E
+i
+​
+m
+​
+a
+​
+g
+​
+e
+E_{image}
+. To align these features with the emotion label embedding space, we introduce projection networks
+P
+t
+​
+e
+​
+x
+​
+t
+P_{text}
+and
+P
+i
+​
+m
+​
+a
+​
+g
+​
+e
+P_{image}
+to map the encoded features to latent features
+f
+t
+​
+e
+​
+x
+​
+t
+f^{text}
+and
+f
+i
+​
+m
+​
+a
+​
+g
+​
+e
+f^{image}
+, which have the same dimension as
+f
+l
+​
+a
+​
+b
+​
+e
+​
+l
+f^{label}
+. In the multimodal guided generation mode, these multimodal embeddings replace the emotion label embeddings, while the rest of the model remains unchanged.
+To maintain consistency between guided emotion features and motion-based emotion features, we train the model by freezing all components except
+P
+t
+​
+e
+​
+x
+​
+t
+P_{text}
+,
+P
+i
+​
+m
+​
+a
+​
+g
+​
+e
+P_{image}
+, and the fusion encoder
+E
+f
+​
+u
+​
+s
+​
+e
+E_{fuse}
+. The loss function includes reconstruction loss
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
+\mathcal{L}_{recon}
+and similarity loss
+ℒ
+s
+​
+i
+​
+m
+\mathcal{L}_{sim}
+, ensuring alignment between the guided emotion features and the generated motion, as shown below.
+ℒ
+s
+​
+i
+​
+m
+=
+1
+−
+c
+o
+s
+(
+E
+e
+(
+𝐑
+1
+:
+T
+)
+,
+E
+f
+​
+u
+​
+s
+​
+e
+(
+𝐅
+~
+g
+1
+:
+T
+)
+)
+\begin{split}\mathcal{L}_{sim}=1-cos(E_{e}(\mathbf{R}_{1:T}),E_{fuse}(\tilde{\mathbf{F}}^{g}_{1:T}))\end{split}
+(13)
+ℒ
+C
+​
+L
+​
+I
+​
+P
+=
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
++
+λ
+s
+​
+i
+​
+m
+​
+ℒ
+s
+​
+i
+​
+m
+\mathcal{L}_{CLIP}=\mathcal{L}_{recon}+\lambda_{sim}\mathcal{L}_{sim}
+(14)
+where the emotion guidance modal
+g
+∈
+{
+t
+​
+e
+​
+x
+​
+t
+,
+i
+​
+m
+​
+a
+​
+g
+​
+e
+}
+g\in\{text,image\}
+can be either text or image.
+By incorporating text descriptions and reference images, our method enables fully controllable expression generation. Combined with separate content and emotion embedding spaces, this approach produces vivid, audio-synchronized facial animations with dynamically adjustable and user-directed emotional expressions.
+Experiments
+Experimental Settings
+Datasets
+Due to the limited availability of publicly accessible MetaHuman controller rig datasets, we utilize the dataset introduced by EmoFace
+(
+Liu et al. 2024
+)
+for training audio-driven expression generation. This dataset includes short-sentence utterances across seven emotional categories.
+For multimodal guided animation, we employ RAVDESS
+(
+Livingstone and Russo 2018
+)
+. Though EmoTalk
+(
+Peng et al. 2023b
+)
+has extracted its blendshape coefficients for each frame, they cannot be directly used for training. We utilized Unreal Engine’s Live Link Plugin to convert the blendshape coefficients into MetaHuman controller values to bridge this gap.
+Implementation Details
+For loss computation, we employ the Mean Square Error (MSE) to measure the difference between the predicted 174-dim rig parameters and ground truth values, defining the reconstruction loss
+ℒ
+r
+​
+e
+​
+c
+​
+o
+​
+n
+\mathcal{L}_{recon}
+. The weights of other weight items are shared during training, with
+λ
+s
+​
+i
+​
+m
+=
+0.1
+\lambda_{sim}=0.1
+,
+λ
+i
+​
+n
+​
+t
+=
+0.1
+\lambda_{int}=0.1
+.
+Unlike fully end-to-end training approaches, our method adopts a sequential training strategy, where the following components are trained separately: cross-reconstruction, audio content mapping, fusion intensity modeling, and multimodal guided generation. While in the cross-reconstruction stage, self-reconstruction, overlap exchange, and cycle exchange are also trained in order. All training phases utilize the Adam optimizer with a StepLR scheduler (drop rate
+r
+=
+10
+r=10
+). The learning rate
+η
+\eta
+and decay rate
+d
+d
+differ for different training phases. In cross-reconstruction learning,
+η
+=
+0.0001
+\eta=0.0001
+,
+d
+=
+0.995
+d=0.995
+, while
+η
+=
+0.001
+\eta=0.001
+,
+d
+=
+0.9
+d=0.9
+in other training phases. As the model is designed to be very lightweight, the four training stages can be finished by a single NVIDIA RTX 3090 within 1 hour.
+Baseline Methods
+We compare our MEDTalk with some publicly available audio-driven 3D talking-head animation models, namely FaceFormer
+(
+Fan et al. 2022
+)
+, EmoTalk
+(
+Peng et al. 2023b
+)
+, EmoFace
+(
+Liu et al. 2024
+)
+, DiffPoseTalk
+(
+Sun et al. 2024b
+)
+. As these models were trained on different datasets, we adjusted the output dimension to 174 to match our dataset and modified the style code to align with the embedding for different emotion labels. Each of the modified models was retrained on the same dataset until convergence and evaluated under identical test conditions.
+Quantitative Evaluation
+To evaluate the accuracy of generated animation, we propose metrics Mean Lip Error (MLE) and Mean Emotion Error (MEE) inspired by Lip Vertex Error and Emotion Vertex Error
+(
+Fan et al. 2022
+;
+Richard et al. 2021
+;
+Peng et al. 2023b
+)
+. We calculate the average
+ℓ
+1
+\ell_{1}
+error between the predicted and the ground truth lip and emotion region values.
+Additionally, to evaluate the dynamic characteristics of facial expressions, we introduce Emotion Intensity Error (EIE) and Upper-Face Rig Deviation (FRD). EIE computes the
+ℓ
+1
+\ell_{1}
+error between the predicted and ground truth emotion intensity per frame. FRD
+(
+Pan et al. 2025
+)
+quantifies the diversity of upper-face animations by comparing the average standard deviation between predicted and real animations. The evaluation metrics are defined as:
+𝐌𝐋𝐄
+⁡
+(
+𝑹
+^
+,
+𝑹
+)
+=
+‖
+𝑹
+^
+S
+l
+​
+i
+​
+p
+−
+𝑹
+S
+l
+​
+i
+​
+p
+‖
+1
+\mathbf{MLE}(\hat{\bm{R}},\bm{R})=\|\hat{\bm{R}}^{S_{lip}}-\bm{R}^{S_{lip}}\|_{1}
+(15)
+𝐌𝐄𝐄
+⁡
+(
+𝑹
+^
+,
+𝑹
+)
+=
+‖
+𝑹
+^
+S
+e
+​
+m
+​
+o
+−
+𝑹
+S
+e
+​
+m
+​
+o
+‖
+1
+\mathbf{MEE}(\hat{\bm{R}},\bm{R})=\|\hat{\bm{R}}^{S_{emo}}-\bm{R}^{S_{emo}}\|_{1}
+(16)
+𝐄𝐈𝐄
+⁡
+(
+𝑹
+^
+,
+𝑹
+)
+=
+‖
+I
+​
+n
+​
+t
+​
+(
+𝑹
+^
+)
+−
+I
+​
+n
+​
+t
+​
+(
+𝑹
+)
+‖
+1
+\mathbf{EIE}(\hat{\bm{R}},\bm{R})=\|Int(\hat{\bm{R}})-Int(\bm{R})\|_{1}
+(17)
+𝐅𝐑𝐃
+⁡
+(
+𝑹
+^
+,
+𝑹
+)
+=
+1
+‖
+S
+u
+​
+p
+‖
+​
+∑
+j
+∈
+S
+u
+​
+p
+(
+s
+​
+t
+​
+d
+​
+(
+𝑹
+j
+)
+−
+s
+​
+t
+​
+d
+​
+(
+𝑹
+^
+j
+)
+)
+\mathbf{FRD}(\hat{\bm{R}},\bm{R})=\frac{1}{\left\|S_{up}\right\|}\sum_{j\in S_{up}}(std(\bm{R}^{j})-std(\hat{\bm{R}}^{j}))
+(18)
+where
+𝑹
+\bm{R}
+and
+𝑹
+^
+\hat{\bm{R}}
+represents ground truth and predicted controller rig sequences.
+S
+l
+​
+i
+​
+p
+,
+S
+e
+​
+m
+​
+o
+,
+S
+u
+​
+p
+S_{lip},S_{emo},S_{up}
+are sets of controllers selected to represent lip movement, emotion, and upper face.
+s
+​
+t
+​
+d
+​
+(
+⋅
+)
+std(\cdot)
+represents the calculation of standard deviation.
+Table 1:
+Quantitative evaluation results. Best performance in
+bold
+, and the second best underlined.
+Methods
+MLE
+↓
+\downarrow
+MEE
+↓
+\downarrow
+EIE
+↓
+\downarrow
+FRD
+↓
+\downarrow
+FaceFormer
+0.00662
+0.00952
+0.69221
+0.00618
+EmoTalk
+0.00756
+0.02303
+0.92046
+0.00116
+EmoFace
+0.00651
+0.02072
+0.88574
+0.00507
+DiffPoseTalk
+0.01525
+0.01664
+0.89151
+0.00075
+Ours
+0.00596
+0.00906
+0.79055
+0.00289
+The quantitative evaluation of MEDTalk and baseline models is presented in Tab.
+1
+. The results indicate that MEDTalk consistently outperforms competing methods. MLE and MEE results demonstrate superior accuracy in lip shape and upper-face expressions, indicating that our disentangled content-emotion embedding space enables high-quality expressive facial animation with a lightweight model. EIE results show that MEDTalk achieves the second-best performance in accurately capturing emotional intensity dynamics, following FaceFormer. FRD results indicate that while MEDTalk slightly underperforms DiffPoseTalk (benefits from the diffusion model) and EmoTalk (incorporates a post-processing refinement step), it surpasses other baseline methods in expression diversity. Overall, the quantitative evaluation demonstrates that MEDTalk achieves state-of-the-art performance in terms of accuracy, expressiveness, and diversity of facial animation generation.
+Qualitative Evaluation
+Disentangled Embedding Space
+Figure 5:
+Disentangled Embedding Spaces.
+Figure 6:
+Swapping emotion embedding alters the emotional expression, with the lip shapes unaffected.
+We employ T-SNE to visualize the content and emotion embedding spaces based on emotional labels, as shown in Fig.
+5
+. It demonstrates that distinct emotional categories are significantly separated in the emotion embedding space, whereas they remain indistinguishable in the content embedding space. Furthermore, we conduct cross-reconstruction by swapping the emotion embeddings of two entirely unrelated motion samples. As shown in Fig.
+6
+, the results indicate that modifying the emotion embeddings effectively alters the generated facial expressions while exerting minimal influence on lip shape.
+Visual Comparison
+We compare MEDTalk with baseline models under the ”angry” and ”disgust” labels across different spoken utterances. The results presented in Fig.
+7
+demonstrate that, while most methods generate natural lip movements, inconsistencies with the corresponding audio input may occur. In particular, except for MEDTalk, the lip shapes produced by other methods exhibit discrepancies, highlighting the advantages of our disentangled content and emotion embedding spaces. It enables independent control over lip shape and facial expressions, thereby mitigating mutual interference and enhancing overall accuracy.
+Figure 7:
+Qualitative comparison of facial movements generated by different methods under the ”angry” (left) and ”disgusted” (right) emotions, with annotated spoken words.
+Multimodal Guided Generation
+To further evaluate MEDTalk, we conduct multimodal guided generation in the RAVDESS test set. As illustrated in Fig.
+8
+, the results generated exhibit a strong alignment with the inputs provided, achieving accurate and controllable emotional expression. Given that existing works adopt similar approaches for integrating multimodal guidance into talking head animation, our analysis focuses specifically on the performance of MEDTalk in this context.
+Figure 8:
+Results of multimodal guidance. Given reference images or text descriptions, MEDTalk generates facial animations that accurately reflect the specified speaking style.
+User Study
+We recruited a total of 42 participants with an average age of 20.5 years, ranging from 18 to 26 years old; 27 were male. All participants were unaware of the study objectives. A total of 10 audio clips from the test set were randomly selected for evaluation. Using the five methods and the ground truth, we generated animations for each clip, resulting in 60 video samples. The clips were presented to each participant in a randomized order. The participants rated each clip according to the accuracy of lip synchronization, emotional expressiveness, and overall facial animation quality. Ratings were given on a five-point Likert scale (1 = very poor, 5 = very good). The detailed results, summarized in Tab.
+2
+, indicate that MEDTalk outperforms other methods in all three metrics. This demonstrates the effectiveness of our proposed framework in generating more realistic and expressive facial animations.
+Table 2:
+Average rating with 95% confidence interval
+Methods
+Lip-sync
+Emotion Acc
+Vividness
+FaceFormer
+3.26
+±
+0.09
+3.26\pm 0.09
+3.97
+±
+0.07
+3.97\pm 0.07
+2.99
+±
+0.24
+2.99\pm 0.24
+EmoTalk
+3.62
+±
+0.14
+3.62\pm 0.14
+3.13
+±
+0.11
+3.13\pm 0.11
+3.35
+±
+0.18
+3.35\pm 0.18
+EmoFace
+3.88
+±
+0.11
+3.88\pm 0.11
+4.08
+±
+0.07
+4.08\pm 0.07
+3.42
+±
+0.19
+3.42\pm 0.19
+DiffPoseTalk
+3.25
+±
+0.23
+3.25\pm 0.23
+3.68
+±
+0.09
+3.68\pm 0.09
+3.69
+±
+0.22
+3.69\pm 0.22
+Ours
+4.02
+±
+0.14
+4.02\pm 0.14
+4.13
+±
+0.09
+4.13\pm 0.09
+3.76
+±
+0.18
+3.76\pm 0.18
+GT
+4.42
+±
+0.07
+4.42\pm 0.07
+4.39
+±
+0.06
+4.39\pm 0.06
+4.12
+±
+0.14
+4.12\pm 0.14
+Ablation Study
+We further conduct ablation experiments to assess the effectiveness of each introduced component. The evaluation results are presented in Tab.
+3
+. In general, the experiment settings and corresponding analyses are summarized as:
+(a) w/o overlap:
+We exclude the overlap exchange in the disentanglement training. As a result, the accuracy of the generated expression animation has dropped significantly, indicating that overlap exchange plays an important role in the decoupling process.
+(b) w/o cycle:
+We exclude the cycle exchange in the disentanglement training. In this case, the accuracy of generated expressions also decreases, but smaller than (a). This indicates that the cycle exchange serves more as a regularization mechanism for models that already exhibit disentangling capability
+(c) w/o disentangle:
+We train the model using audio-rig pairs in an end-to-end manner, which results in substantial increases in MLE, EIE, and FRD.
+(d) w/o intensity:
+We use static emotion label embedding across the entire audio clip, which results in reduced accuracy and vividness in upper-face animations
+(e) w/o text:
+We omit the textual input when predicting the intensity of emotion, which leads to noticeable deterioration, underscoring the necessity of incorporating both audio and text for dynamic emotion modeling
+Table 3:
+Ablation study for key components
+Methods
+MLE
+↓
+\downarrow
+MEE
+↓
+\downarrow
+EIE
+↓
+\downarrow
+FRD
+↓
+\downarrow
+w/o overlap
+0.01026
+0.01112
+0.90941
+0.00134
+w/o cycle
+0.00704
+0.00934
+0.82254
+0.00832
+w/o disentangle
+0.00628
+0.00861
+0.83728
+0.00825
+w/o intensity
+0.00665
+0.01142
+0.86488
+0.00753
+w/o text
+0.00630
+0.00965
+0.83899
+0.00757
+Full model
+0.00596
+0.00906
+0.79055
+0.00289
+Discussion
+Despite the effectiveness of MEDTalk in generating vivid and expressive facial animations, certain limitations remain. First, after freezing the disentangled content and emotion latent spaces during the initial training stage, the generalization of lip shape generation is constrained by the diversity of the training data. This limitation becomes particularly evident in multilingual scenarios, where incorrect lip shapes may occur. Future work will focus on expanding the dataset with more diverse linguistic samples to enhance the generalizability of the disentangled representations.
+Moreover, while our current multimodal guidance mechanism effectively controls emotional embeddings, it does not extend to individual facial movements such as smiling or yawning. Future research will explore more comprehensive multimodal control strategies.
+Leveraging the multi-character adaptation capabilities of Unreal Engine’s MetaHuman, the rig parameters generated by MEDTalk can be seamlessly integrated into various avatars without additional adjustments. In fields such as virtual character animation and film production, our approach facilitates rapid generation of audio-synchronized lip movements. Furthermore, through multimodal expression control, our method allows animators and content creators to generate expressive animations by providing simple textual descriptions or reference images.
+Conclusion
+In this work, we introduce MEDTalk, a novel audio-driven 3D facial animation framework that enables precise, independent control over lip movements and facial expressions by disentangling content and emotion embeddings. Our approach enhances expressiveness by dynamically extracting emotion intensity from both audio and spoken text, allowing for more fluid and natural emotional transitions. Instead of relying on predefined emotion labels, MEDTalk supports multimodal input, enabling users to guide emotions through textual or visual cues. Our method captures subtle micro-expressions, enriching the realism and vividness of facial animations. Extensive experiments demonstrate that MEDTalk surpasses baseline models in lip synchronization, emotional expressiveness, and overall animation quality, offering a versatile and effective solution for controllable 3D talking head animation.
+References
+Al Farsi et al. (2021)
+Al Farsi, G.; Yusof, A. b. M.; Romli, A.; Tawafak, R. M.; Malik, S. I.; Jabbar, J.; and Bin Rsuli, M. E. 2021.
+A Review of Virtual Reality Applications in an Educational Domain.
+International Journal of Interactive Mobile Technologies
+, 15(22).
+Baevski et al. (2020)
+Baevski, A.; Zhou, Y.; Mohamed, A.; and Auli, M. 2020.
+wav2vec 2.0: A framework for self-supervised learning of speech representations.
+Advances in neural information processing systems
+, 33: 12449–12460.
+Chen et al. (2024)
+Chen, K.; Gou, Y.; Huang, R.; Liu, Z.; Tan, D.; Xu, J.; Wang, C.; Zhu, Y.; Zeng, Y.; Yang, K.; et al. 2024.
+Emova: Empowering language models to see, hear and speak with vivid emotions.
+arXiv preprint arXiv:2409.18042
+.
+Chen et al. (2023)
+Chen, P.; Wei, X.; Lu, M.; Zhu, Y.; Yao, N.; Xiao, X.; and Chen, H. 2023.
+Diffusiontalker: Personalization and acceleration for speech-driven 3d face diffuser.
+arXiv preprint arXiv:2311.16565
+.
+Chen et al. (2022)
+Chen, S.; Wang, C.; Chen, Z.; Wu, Y.; Liu, S.; Chen, Z.; Li, J.; Kanda, N.; Yoshioka, T.; Xiao, X.; et al. 2022.
+Wavlm: Large-scale self-supervised pre-training for full stack speech processing.
+IEEE Journal of Selected Topics in Signal Processing
+, 16(6): 1505–1518.
+Cheng et al. (2020)
+Cheng, P.; Hao, W.; Dai, S.; Liu, J.; Gan, Z.; and Carin, L. 2020.
+Club: A contrastive log-ratio upper bound of mutual information.
+In
+International conference on machine learning
+, 1779–1788. PMLR.
+Cudeiro et al. (2019)
+Cudeiro, D.; Bolkart, T.; Laidlaw, C.; Ranjan, A.; and Black, M. J. 2019.
+Capture, learning, and synthesis of 3D speaking styles.
+In
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition
+, 10101–10111.
+Cui et al. (2020)
+Cui, Y.; Che, W.; Liu, T.; Qin, B.; Wang, S.; and Hu, G. 2020.
+Revisiting pre-trained models for Chinese natural language processing.
+arXiv preprint arXiv:2004.13922
+.
+Daněček et al. (2023)
+Daněček, R.; Chhatre, K.; Tripathi, S.; Wen, Y.; Black, M.; and Bolkart, T. 2023.
+Emotional speech-driven animation with content-emotion disentanglement.
+In
+SIGGRAPH Asia 2023 Conference Papers
+, 1–13.
+Edwards et al. (2016)
+Edwards, P.; Landreth, C.; Fiume, E.; and Singh, K. 2016.
+Jali: an animator-centric viseme model for expressive lip synchronization.
+ACM Transactions on graphics (TOG)
+, 35(4): 1–11.
+Fan et al. (2022)
+Fan, Y.; Lin, Z.; Saito, J.; Wang, W.; and Komura, T. 2022.
+Faceformer: Speech-driven 3d facial animation with transformers.
+In
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition
+, 18770–18780.
+Fu et al. (2025)
+Fu, C.; Lin, H.; Wang, X.; Zhang, Y.-F.; Shen, Y.; Liu, X.; Cao, H.; Long, Z.; Gao, H.; Li, K.; et al. 2025.
+Vita-1.5: Towards gpt-4o level real-time vision and speech interaction.
+arXiv preprint arXiv:2501.01957
+.
+Gan et al. (2023)
+Gan, Y.; Yang, Z.; Yue, X.; Sun, L.; and Yang, Y. 2023.
+Efficient emotional adaptation for audio-driven talking-head generation.
+In
+Proceedings of the IEEE/CVF International Conference on Computer Vision
+, 22634–22645.
+Ganin and Lempitsky (2015)
+Ganin, Y.; and Lempitsky, V. 2015.
+Unsupervised domain adaptation by backpropagation.
+In
+International conference on machine learning
+, 1180–1189. PMLR.
+Ge et al. (2020)
+Ge, Y.; Abu-El-Haija, S.; Xin, G.; and Itti, L. 2020.
+Zero-shot synthesis with group-supervised learning.
+arXiv preprint arXiv:2009.06586
+.
+Google (2025)
+Google. 2025.
+Gemini AI.
+Accessed: 2025-03-19.
+Han et al. (2024)
+Han, T.; Gui, S.; Huang, Y.; Li, B.; Liu, L.; Zhou, B.; Jiang, N.; Lu, Q.; Zhi, R.; Liang, Y.; et al. 2024.
+PMMTalk
+:
+:
+Speech-Driven 3D Facial Animation from Complementary Pseudo Multi-modal Features.
+IEEE Transactions on Multimedia
+.
+Ho, Jain, and Abbeel (2020)
+Ho, J.; Jain, A.; and Abbeel, P. 2020.
+Denoising diffusion probabilistic models.
+Advances in neural information processing systems
+, 33: 6840–6851.
+Ji et al. (2021)
+Ji, X.; Zhou, H.; Wang, K.; Wu, W.; Loy, C. C.; Cao, X.; and Xu, F. 2021.
+Audio-driven emotional video portraits.
+In
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition
+, 14080–14089.
+Kim et al. (2024)
+Kim, J.; Cho, J.; Park, J.; Hwang, S.; Kim, D. E.; Kim, G.; and Yu, Y. 2024.
+DEEPTalk: Dynamic Emotion Embedding for Probabilistic Speech-Driven 3D Face Animation.
+arXiv preprint arXiv:2408.06010
+.
+Korban and Li (2022)
+Korban, M.; and Li, X. 2022.
+A survey on applications of digital human avatars toward virtual co-presence.
+arXiv preprint arXiv:2201.04168
+.
+Liu et al. (2024)
+Liu, C.; Lin, Q.; Zeng, Z.; and Pan, Y. 2024.
+EmoFace: Audio-driven emotional 3D face animation.
+In
+2024 IEEE Conference Virtual Reality and 3D User Interfaces (VR)
+, 387–397. IEEE.
+Livingstone and Russo (2018)
+Livingstone, S. R.; and Russo, F. A. 2018.
+The Ryerson Audio-Visual Database of Emotional Speech and Song (RAVDESS): A dynamic, multimodal set of facial and vocal expressions in North American English.
+PloS one
+, 13(5): e0196391.
+Lugaresi et al. (2019)
+Lugaresi, C.; Tang, J.; Nash, H.; McClanahan, C.; Uboweja, E.; Hays, M.; Zhang, F.; Chang, C.-L.; Yong, M. G.; Lee, J.; et al. 2019.
+Mediapipe: A framework for building perception pipelines.
+arXiv preprint arXiv:1906.08172
+.
+Ma et al. (2023a)
+Ma, Y.; Wang, S.; Ding, Y.; Ma, B.; Lv, T.; Fan, C.; Hu, Z.; Deng, Z.; and Yu, X. 2023a.
+Talkclip: Talking head generation with text-guided expressive speaking styles.
+arXiv preprint arXiv:2304.00334
+.
+Ma et al. (2023b)
+Ma, Z.; Zheng, Z.; Ye, J.; Li, J.; Gao, Z.; Zhang, S.; and Chen, X. 2023b.
+emotion2vec: Self-supervised pre-training for speech emotion representation.
+arXiv preprint arXiv:2312.15185
+.
+Müller (2007)
+Müller, M. 2007.
+Dynamic time warping.
+Information retrieval for music and motion
+, 69–84.
+Nocentini, Ferrari, and Berretti (2024)
+Nocentini, F.; Ferrari, C.; and Berretti, S. 2024.
+EmoVOCA: Speech-Driven Emotional 3D Talking Heads.
+arXiv preprint arXiv:2403.12886
+.
+Pan et al. (2025)
+Pan, Y.; Liu, C.; Xu, S.; Tan, S.; and Yang, J. 2025.
+VASA-Rig: Audio-Driven 3D Facial Animation with ‘Live’Mood Dynamics in Virtual Reality.
+IEEE Transactions on Visualization and Computer Graphics
+.
+Pan et al. (2023)
+Pan, Y.; Zhang, R.; Cheng, S.; Tan, S.; Ding, Y.; Mitchell, K.; and Yang, X. 2023.
+Emotional voice puppetry.
+IEEE Transactions on Visualization and Computer Graphics
+, 29(5): 2527–2535.
+Peng et al. (2023a)
+Peng, Z.; Luo, Y.; Shi, Y.; Xu, H.; Zhu, X.; Liu, H.; He, J.; and Fan, Z. 2023a.
+Selftalk: A self-supervised commutative training diagram to comprehend 3d talking faces.
+In
+Proceedings of the 31st ACM International Conference on Multimedia
+, 5292–5301.
+Peng et al. (2023b)
+Peng, Z.; Wu, H.; Song, Z.; Xu, H.; Zhu, X.; He, J.; Liu, H.; and Fan, Z. 2023b.
+Emotalk: Speech-driven emotional disentanglement for 3d face animation.
+In
+Proceedings of the IEEE/CVF international conference on computer vision
+, 20687–20697.
+Pham, Cheung, and Pavlovic (2017)
+Pham, H. X.; Cheung, S.; and Pavlovic, V. 2017.
+Speech-driven 3D facial animation with implicit emotional awareness: A deep learning approach.
+In
+Proceedings of the IEEE conference on computer vision and pattern recognition workshops
+, 80–88.
+Pham, Wang, and Pavlovic (2018)
+Pham, H. X.; Wang, Y.; and Pavlovic, V. 2018.
+End-to-end learning for 3d facial animation from speech.
+In
+Proceedings of the 20th ACM International Conference on Multimodal Interaction
+, 361–365.
+Radford et al. (2021)
+Radford, A.; Kim, J. W.; Hallacy, C.; Ramesh, A.; Goh, G.; Agarwal, S.; Sastry, G.; Askell, A.; Mishkin, P.; Clark, J.; et al. 2021.
+Learning transferable visual models from natural language supervision.
+In
+International conference on machine learning
+, 8748–8763. PmLR.
+Radford et al. (2023)
+Radford, A.; Kim, J. W.; Xu, T.; Brockman, G.; McLeavey, C.; and Sutskever, I. 2023.
+Robust speech recognition via large-scale weak supervision.
+In
+International conference on machine learning
+, 28492–28518. PMLR.
+Richard et al. (2021)
+Richard, A.; Zollhöfer, M.; Wen, Y.; De la Torre, F.; and Sheikh, Y. 2021.
+Meshtalk: 3d face animation from speech using cross-modality disentanglement.
+In
+Proceedings of the IEEE/CVF international conference on computer vision
+, 1173–1182.
+Shen et al. (2024)
+Shen, K.; Xia, H.; Geng, G.; Geng, G.; Xia, S.; and Ding, Z. 2024.
+DEITalk: Speech-Driven 3D Facial Animation with Dynamic Emotional Intensity Modeling.
+In
+Proceedings of the 32nd ACM International Conference on Multimedia
+, 10506–10514.
+Stan, Haque, and Yumak (2023)
+Stan, S.; Haque, K. I.; and Yumak, Z. 2023.
+Facediffuser: Speech-driven 3d facial animation synthesis using diffusion.
+In
+Proceedings of the 16th ACM SIGGRAPH Conference on Motion, Interaction and Games
+, 1–11.
+Sun et al. (2024a)
+Sun, Y.; Chu, W.; Zhou, H.; Wang, K.; and Koike, H. 2024a.
+AVI-Talking: Learning Audio-Visual Instructions for Expressive 3D Talking Face Generation.
+IEEE Access
+.
+Sun et al. (2024b)
+Sun, Z.; Lv, T.; Ye, S.; Lin, M.; Sheng, J.; Wen, Y.-H.; Yu, M.; and Liu, Y.-j. 2024b.
+Diffposetalk: Speech-driven stylistic 3d facial animation and head pose generation via diffusion models.
+ACM Transactions on Graphics (TOG)
+, 43(4): 1–9.
+Tan et al. (2025a)
+Tan, S.; Gong, B.; Ji, B.; and Pan, Y. 2025a.
+FixTalk: Taming Identity Leakage for High-Quality Talking Head Generation in Extreme Cases.
+In
+Proceedings of the IEEE/CVF International Conference on Computer Vision
+.
+Tan et al. (2025b)
+Tan, S.; Ji, B.; Bi, M.; and Pan, Y. 2025b.
+Edtalk: Efficient disentanglement for emotional talking head synthesis.
+In
+European Conference on Computer Vision
+, 398–416. Springer.
+Tan et al. (2024)
+Tan, S.; Ji, B.; Ding, Y.; and Pan, Y. 2024.
+Say anything with any style.
+In
+Proceedings of the AAAI Conference on Artificial Intelligence
+, volume 38, 5088–5096.
+Tan, Ji, and Pan (2023)
+Tan, S.; Ji, B.; and Pan, Y. 2023.
+Emmn: Emotional motion memory network for audio-driven emotional talking face generation.
+In
+Proceedings of the IEEE/CVF International Conference on Computer Vision
+, 22146–22156.
+Tan, Ji, and Pan (2024a)
+Tan, S.; Ji, B.; and Pan, Y. 2024a.
+FlowVQTalker: High-Quality Emotional Talking Face Generation through Normalizing Flow and Quantization.
+In
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition
+, 26317–26327.
+Tan, Ji, and Pan (2024b)
+Tan, S.; Ji, B.; and Pan, Y. 2024b.
+Style2Talker: High-Resolution Talking Head Generation with Emotion Style and Art Style.
+In
+Proceedings of the AAAI Conference on Artificial Intelligence
+, volume 38, 5079–5087.
+Tang et al. (2023)
+Tang, C.; Yu, W.; Sun, G.; Chen, X.; Tan, T.; Li, W.; Lu, L.; Ma, Z.; and Zhang, C. 2023.
+Salmonn: Towards generic hearing abilities for large language models.
+arXiv preprint arXiv:2310.13289
+.
+Team et al. (2024)
+Team, G.; Georgiev, P.; Lei, V. I.; Burnell, R.; Bai, L.; Gulati, A.; Tanzer, G.; Vincent, D.; Pan, Z.; Wang, S.; et al. 2024.
+Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context.
+arXiv preprint arXiv:2403.05530
+.
+Williams et al. (2021)
+Williams, J.; Zhao, Y.; Cooper, E.; and Yamagishi, J. 2021.
+Learning disentangled phone and speaker representations in a semi-supervised vq-vae paradigm.
+In
+ICASSP 2021-2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)
+, 7053–7057. IEEE.
+Wu et al. (2024)
+Wu, S.; Li, Y.; Yan, Y.; Duan, H.; Liu, Z.; and Zhai, G. 2024.
+MMHead: Towards Fine-grained Multi-modal 3D Facial Animation.
+In
+Proceedings of the 32nd ACM International Conference on Multimedia
+, 7966–7975.
+Xing et al. (2023)
+Xing, J.; Xia, M.; Zhang, Y.; Cun, X.; Wang, J.; and Wong, T.-T. 2023.
+Codetalker: Speech-driven 3d facial animation with discrete motion prior.
+In
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition
+, 12780–12790.
+Xu et al. (2023)
+Xu, C.; Zhu, J.; Zhang, J.; Han, Y.; Chu, W.; Tai, Y.; Wang, C.; Xie, Z.; and Liu, Y. 2023.
+High-fidelity generalized emotional talking face generation with multi-modal emotion space learning.
+In
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition
+, 6609–6619.
+Yang et al. (2022)
+Yang, S.; Tantrawenith, M.; Zhuang, H.; Wu, Z.; Sun, A.; Wang, J.; Cheng, N.; Tang, H.; Zhao, X.; Wang, J.; et al. 2022.
+Speech representation disentanglement with adversarial mutual information learning for one-shot voice conversion.
+arXiv preprint arXiv:2208.08757
+.
+Zhao et al. (2024)
+Zhao, Q.; Long, P.; Zhang, Q.; Qin, D.; Liang, H.; Zhang, L.; Zhang, Y.; Yu, J.; and Xu, L. 2024.
+Media2face: Co-speech facial animation generation with multi-modality guidance.
+In
+ACM SIGGRAPH 2024 conference papers
+, 1–13.
+Zhao et al. (2023)
+Zhao, W.; Wang, Y.; He, T.; Yin, L.; Lin, J.; and Jin, X. 2023.
+Breathing Life into Faces: Speech-driven 3D Facial Animation with Natural Head Pose and Detailed Shape.
+arXiv preprint arXiv:2310.20240
+.
+Zhong et al. (2024)
+Zhong, Y.; Wei, H.; Yang, P.; and Wang, Z. 2024.
+Expclip: Bridging text and facial expressions via semantic alignment.
+In
+Proceedings of the AAAI Conference on Artificial Intelligence
+, volume 38, 7614–7622.
+Zhou et al. (2018)
+Zhou, Y.; Xu, Z.; Landreth, C.; Kalogerakis, E.; Maji, S.; and Singh, K. 2018.
+Visemenet: Audio-driven animator-centric speech animation.
+ACM Transactions on Graphics (ToG)
+, 37(4): 1–10.
+Experimental support, please
+view the build logs
+for errors. Generated by
+L
+A
+T
+E
+xml
+.
+Instructions for reporting errors
+We are continuing to improve HTML versions of papers, and your feedback helps enhance accessibility and mobile
+      support. To report errors in the HTML that will help us improve conversion and rendering, choose any of the
+      methods listed below:
+Click the "Report Issue"
+(
+)
+button, located in the page header.
+Tip:
+You can select the relevant text first, to include it in your report.
+Our team has already identified
+the following issues
+. We appreciate your time reviewing and reporting rendering errors we
+      may not have found yet. Your efforts will help us improve the HTML versions for all readers, because disability
+      should not be a barrier to accessing research. Thank you for your continued support in championing open access for
+      all.
+Have a free development cycle? Help support accessibility at arXiv! Our collaborators at LaTeXML maintain a
+list of packages that need conversion
+, and welcome
+developer contributions
+.
+We gratefully acknowledge support from
+        our
+major funders
+,
+member institutions
+,
+,
+        and all contributors.
+About
+·
+Help
+·
+Contact
+·
+Subscribe
+·
+Copyright
+·
+Privacy
+·
+Accessibility
+·
+Operational Status
+(opens in new tab)
+Major funding support from
