@@ -1,0 +1,16 @@
+{
+  "schema": "github_experiment_archive_receipt_v1",
+  "repository": "https://github.com/NULL1770/Kinetalk_1",
+  "branch": "codex/experiment-snapshot-20260918",
+  "experiment_commit": "9926188f54a8795db8dd91004d0c9a2768a49e8f",
+  "push_success": true,
+  "remote_ref_verified_with_ls_remote": true,
+  "files_in_experiment_commit": 255,
+  "contains": ["v2/v3/v4/v5 source", "training/evaluation/data processing scripts", "tests", "matched pilot JSON evidence", "all policies and sampling seeds CSV tables", "protocols and negative-result review", "angry/happy audio comparison videos and render receipts"],
+  "weights": "Preserved locally and on server, referenced by SHA receipts; excluded from Git.",
+  "raw_data": "Excluded from Git.",
+  "training_finished": true,
+  "promotion": false,
+  "test_loaded": false,
+  "validation_tests_passed": 30
+}
