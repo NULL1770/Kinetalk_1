@@ -1,0 +1,29 @@
+{
+  "schema": "kinetalk_current_model_v1",
+  "selected_model": "v5_matched_control",
+  "selected_by": "user_requested_rollback",
+  "model_family": "KineTalkV4Model",
+  "checkpoint_sha256": "372dbc2a23913743cb67452bf6f5756e3be195f81c468f2a1f972afbb79c9add",
+  "binding_sha256": "d30f10075b704c4cb228629549820056c952533fa5c4507666ab8640a1fa6087",
+  "source_manifest_sha256": "cd345bd9a44f8553df92e5b79b60680144a834b4b46a183e0bf85e68c337be14",
+  "model_source_sha256": {
+    "kinetalk_v4/unified_model_v4.py": "d219ea99cf149724263ac1e1ba1d18cdafaf69a5ca269f695904d1e3333f1796",
+    "kinetalk_v4/acoustic_geometry.py": "78f3959e4aa7a90d5858454dc5222ba988fd7265eb4b9cc77e45dfc9b75dad06",
+    "kinetalk_v4/state_posture.py": "f9c78cd2fd33ac78e81d7607f3ecbbd9d3319ecda087f729c9a384e008a8a5bd",
+    "kinetalk_v2/unified_model.py": "1af06da48a55c5cec9a82906534ab1bc8ec99c44b433933e0acf78c05f15dc90",
+    "kinetalk_b0/models/expression_response.py": "8fdd19b99c452b3097d373e20dd0426eaa8e81879cb43d690658a9944a3b73d7"
+  },
+  "generation": "frozen B0 + one joint 52D residual + rig projection",
+  "separate_articulation_emotion_residual_heads": false,
+  "single_reference": true,
+  "teacher_guidance_mode": "none",
+  "inference_event_mode": "sample",
+  "v6_status": "stopped_and_rejected",
+  "training_status": "idle",
+  "paper_ready": false,
+  "test_loaded": false,
+  "checkpoint": "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+  "source_root": "/root/kinetalk_v5_20261012_dual",
+  "binding": "/root/kinetalk_v5_20261011/binding.json",
+  "binding_location": "remote"
+}

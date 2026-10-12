@@ -1,2 +1,5 @@
 # Preserve exact bytes in SHA-bound frozen diagnostic evidence.
 /final_experiment/evaluation/diagnostics/phase31_neutral_role_20261006/** -text
+
+# Preserve original bytes of SHA-bound v6 development evidence.
+/docs/v6_factor_paths_20261012/evidence/** -text

@@ -1,0 +1,153 @@
+{
+  "schema": "v6_completed_stage_collection_v1",
+  "files": [
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/runs/direct_seed47/complete.json",
+      "local": "runs/direct_seed47/complete.json",
+      "bytes": 4110,
+      "sha256": "5483bc88cd53424ce9a7a262669d794b4e7ea36579cfb4efc081c0f2bb708bbb"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/runs/direct_seed47/final.pt",
+      "local": "runs/direct_seed47/final.pt",
+      "bytes": 8872850,
+      "sha256": "41e83c9f21e8420d9912e3f2ae8ebe1c85b8d1bd3c0ffa0a705bf40136669095"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/runs/direct_seed47/history.json",
+      "local": "runs/direct_seed47/history.json",
+      "bytes": 418005,
+      "sha256": "c4bdc970e387e2e646b662450c9889dc3714490b1c5469b7bbf738dc7903fad1"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/runs/direct_seed47/protocol.json",
+      "local": "runs/direct_seed47/protocol.json",
+      "bytes": 3183,
+      "sha256": "38b841c529a1b3092980dc0be58e53fdaeeea3451db1dde7f716cf59f5dcef9d"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/complete.json",
+      "local": "evaluations/direct_seed47_full1367/complete.json",
+      "bytes": 126,
+      "sha256": "0cee300d825744bee14920b9490835eb8abbfe863ffb8d223bfc74195ba5cd84"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "bytes": 58536,
+      "sha256": "ad8cc0e06104e63e26073dc98570bcc4773304352decf8c738d6f25e37c1f108"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "bytes": 33034,
+      "sha256": "573ee39fe6c2ac73c1965d1fbc118af1507f2c5c0e0ab38831177b8669d4b4f9"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "bytes": 53766,
+      "sha256": "0f7998e8b156fb5d9d0e67d69854809f206a29a79210a1cebd61ef73e62474c2"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "bytes": 54323,
+      "sha256": "383eaeab684202c91eb092d0afb5034954b5f343ca8759bdbafdc042d8851a4a"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "bytes": 72805,
+      "sha256": "73113d8b1c2bacfa6677fbdeb50c332688b2c2e7f71a1def8d6b4cf3cfab3921"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "bytes": 71334,
+      "sha256": "503a30769b0dd0b7542032d963e47ce118a7e67ccbee21e1781fd93f3e906a2b"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "bytes": 110999,
+      "sha256": "4b8ee355237af93a66c9aa937bd0c9a47c7de388805ed1695ee2f9c3eebd3755"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "local": "evaluations/direct_seed47_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "bytes": 52404,
+      "sha256": "8a25dc35b66e304eceb13f2efdb0c63031bd2ba54e3e2174424f17ccfecef995"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_full1367/report.json",
+      "local": "evaluations/direct_seed47_full1367/report.json",
+      "bytes": 165396,
+      "sha256": "16d1cdfe73ce7d72701f3189e67feac6a577592554bd19a738419da929317a59"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_dynamics128/complete.json",
+      "local": "evaluations/direct_seed47_dynamics128/complete.json",
+      "bytes": 182,
+      "sha256": "76116be58991eb7f2884d915d4ee223772aea2ae5c34004f4dc816c8b18edf6e"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_dynamics128/per_clip.json",
+      "local": "evaluations/direct_seed47_dynamics128/per_clip.json",
+      "bytes": 846659,
+      "sha256": "964fcd22449c40d9f0496f51d3219bc01388d8b5b4381c58335b711ba81aaa4f"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_dynamics128/report.json",
+      "local": "evaluations/direct_seed47_dynamics128/report.json",
+      "bytes": 88810,
+      "sha256": "e8863dffff95fcb0c786ac29f3a16d4a6e45e63e883979f958d0c573d2fcf10d"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_controls32/41e83c9f21e8.json",
+      "local": "evaluations/direct_seed47_controls32/41e83c9f21e8.json",
+      "bytes": 6376940,
+      "sha256": "20ac6e999703ba8f701a4ef1bd4ff3ea81e9753859e5b88eb111a82ef7716d18"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_controls32/complete.json",
+      "local": "evaluations/direct_seed47_controls32/complete.json",
+      "bytes": 61,
+      "sha256": "2066db91125b571cb620d037f21a3f6391abe318f45f95b59c612f7d71a03927"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_geometry128/41e83c9f21e8.json",
+      "local": "evaluations/direct_seed47_geometry128/41e83c9f21e8.json",
+      "bytes": 940498,
+      "sha256": "bb27dce63668ea10df329fca538f23140aa86dfd25af975e64c6b87189064eb6"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_geometry128/complete.json",
+      "local": "evaluations/direct_seed47_geometry128/complete.json",
+      "bytes": 86,
+      "sha256": "964293d03eeac73cab54b49f62e5aa2c2eb0a8affa6668c9d27e34bbe9f84dbe"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_style64/41e83c9f21e8.json",
+      "local": "evaluations/direct_seed47_style64/41e83c9f21e8.json",
+      "bytes": 694555,
+      "sha256": "e022a5ce20244155807a7bb3765334ac74c2d0b73d2627101716693bc4ca27e1"
+    },
+    {
+      "remote": "/root/kinetalk_v6_20261012_paths/evaluations/direct_seed47_style64/complete.json",
+      "local": "evaluations/direct_seed47_style64/complete.json",
+      "bytes": 93,
+      "sha256": "0b88b9fc42b4385d71f59bcdc61bef7ae93f2112e60270efc4d65a3c9b5cb4e2"
+    }
+  ],
+  "queue_status": "running",
+  "completed_jobs": [
+    "direct_seed47",
+    "direct_seed47_full1367",
+    "direct_seed47_dynamics128",
+    "direct_seed47_controls32",
+    "direct_seed47_geometry128",
+    "direct_seed47_style64"
+  ],
+  "test_loaded": false
+}

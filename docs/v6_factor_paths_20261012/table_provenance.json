@@ -1,0 +1,27 @@
+{
+  "schema": "v6_completed_fixed_final_tables_v1",
+  "completed_arms": [
+    "direct_seed47"
+  ],
+  "source_sha256": {
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_full1367\\report.json": "16d1cdfe73ce7d72701f3189e67feac6a577592554bd19a738419da929317a59",
+    "docs\\v5_optimization_20261011\\dual_evidence\\evaluations\\control_full1367\\report.json": "41180d73d12f83311aa0c5bbf7f90901e6c013cb8bff42bd50c5e2b23dfc9c60",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_dynamics128\\complete.json": "76116be58991eb7f2884d915d4ee223772aea2ae5c34004f4dc816c8b18edf6e",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_dynamics128\\per_clip.json": "964fcd22449c40d9f0496f51d3219bc01388d8b5b4381c58335b711ba81aaa4f",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_dynamics128\\report.json": "e8863dffff95fcb0c786ac29f3a16d4a6e45e63e883979f958d0c573d2fcf10d",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_geometry128\\41e83c9f21e8.json": "bb27dce63668ea10df329fca538f23140aa86dfd25af975e64c6b87189064eb6",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_geometry128\\complete.json": "964293d03eeac73cab54b49f62e5aa2c2eb0a8affa6668c9d27e34bbe9f84dbe",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_style64\\41e83c9f21e8.json": "e022a5ce20244155807a7bb3765334ac74c2d0b73d2627101716693bc4ca27e1",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_style64\\complete.json": "0b88b9fc42b4385d71f59bcdc61bef7ae93f2112e60270efc4d65a3c9b5cb4e2",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_controls32\\41e83c9f21e8.json": "20ac6e999703ba8f701a4ef1bd4ff3ea81e9753859e5b88eb111a82ef7716d18",
+    "docs\\v6_factor_paths_20261012\\evidence\\evaluations\\direct_seed47_controls32\\complete.json": "2066db91125b571cb620d037f21a3f6391abe318f45f95b59c612f7d71a03927"
+  },
+  "test_loaded": false,
+  "promotion": false,
+  "limits": [
+    "v6 new decoder trained768 updates; v5 comparator continues an older jointly trained decoder256 updates. Cross-family differences are descriptive.",
+    "Phase53 train budget/reference count differs; report one-reference Phase53 separately.",
+    "No checkpoint selection or model promotion; incomplete arms omitted and recorded.",
+    "Whole-clip motion probes and shared weak event parser are auxiliary evidence, not psychological temporal truth."
+  ]
+}

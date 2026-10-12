@@ -1,0 +1,71 @@
+{
+  "schema": "v6_native_fixed_clip_review_v1",
+  "test_loaded": false,
+  "promotion": false,
+  "videos": {
+    "angry": {
+      "video": "D:\\\u5b9e\u9a8c\u5ba4\u9879\u76ee\\\u65b0\u5b9e\u9a8c\\kinetalk_b0_residual_train\\artifacts\\v6_direct_review_20261012\\angry_render\\comparison.mp4",
+      "sha256": "e69b5c30220b11dc3fdd078c7dbb1839168b171eb1e4f87893c98f0fd76e4f01",
+      "frames": 82,
+      "fps": 25,
+      "full_decode": true,
+      "rig_error": 0,
+      "native_start_seconds": 0.04,
+      "audio_sha256": "a078a496462509ea378d9d7da90f8421d86038fe802991f87e5b4a25b57c5531",
+      "source_hashes": [
+        "1c873d5f0f90540167c28c13ed131ae311970c650c2d8dbb27d9ed698ea78049",
+        "ad8cc0e06104e63e26073dc98570bcc4773304352decf8c738d6f25e37c1f108"
+      ],
+      "input_sha256": "3ed9114d68e6d54591ac811ec48d2c137d2875a7fc42a904767fa6101b55382f",
+      "mode_names": [
+        "GT",
+        "B0",
+        "Phase53",
+        "V5 control",
+        "direct seed47"
+      ],
+      "checkpoint_sha256": {
+        "direct_seed47": "41e83c9f21e8420d9912e3f2ae8ebe1c85b8d1bd3c0ffa0a705bf40136669095"
+      },
+      "inspection_frames": [
+        0,
+        20,
+        40,
+        61,
+        81
+      ]
+    },
+    "happy": {
+      "video": "D:\\\u5b9e\u9a8c\u5ba4\u9879\u76ee\\\u65b0\u5b9e\u9a8c\\kinetalk_b0_residual_train\\artifacts\\v6_direct_review_20261012\\happy_render\\comparison.mp4",
+      "sha256": "681fff9681c6711b47bfe717725ebbcdf9efdc7992e75ef6c1cd6e9c1a82d47c",
+      "frames": 103,
+      "fps": 25,
+      "full_decode": true,
+      "rig_error": 0,
+      "native_start_seconds": 0.04,
+      "audio_sha256": "66bf8d9c60a34e33e803fd69d431ead609e17b8aea82b7950080af7a5f171bc4",
+      "source_hashes": [
+        "bb9137882f218a2da45a0f7a8244377453892e72c041e7306cb8b6e91ae8b8c3",
+        "73113d8b1c2bacfa6677fbdeb50c332688b2c2e7f71a1def8d6b4cf3cfab3921"
+      ],
+      "input_sha256": "57af796ac2ec66da2fe2cfcf886413d4073783659cb616730897c9ab49ad1d39",
+      "mode_names": [
+        "GT",
+        "B0",
+        "Phase53",
+        "V5 control",
+        "direct seed47"
+      ],
+      "checkpoint_sha256": {
+        "direct_seed47": "41e83c9f21e8420d9912e3f2ae8ebe1c85b8d1bd3c0ffa0a705bf40136669095"
+      },
+      "inspection_frames": [
+        0,
+        26,
+        51,
+        76,
+        102
+      ]
+    }
+  }
+}

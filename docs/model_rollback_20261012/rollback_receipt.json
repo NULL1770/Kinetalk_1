@@ -1,0 +1,47 @@
+{
+  "schema": "joint_model_rollback_receipt_v1",
+  "status": "applied",
+  "time": 1791815753.7703938,
+  "selected_model": "v5_matched_control",
+  "checkpoint_sha256": "372dbc2a23913743cb67452bf6f5756e3be195f81c468f2a1f972afbb79c9add",
+  "selection_path": "/root/kinetalk_current_selection/current_model.json",
+  "selection_sha256": "79bd1a92eefd5315efcaf676f2ba9d7062f0b330219be7f130b38ff5ee004c85",
+  "loader_sha256": "0ba524b918c1650d9de307b100001767e2978b996ff44c1c33f062aef0f05eca",
+  "strict_load": true,
+  "real_inference_checks": [
+    {
+      "clip": "mead_M025_angry_L3_005",
+      "valid_frames": 82,
+      "motion_shape": [
+        1,
+        83,
+        52
+      ],
+      "finite": true,
+      "reference_count": 1,
+      "query_motion_passed_to_predict": false,
+      "teacher_called": false,
+      "mode": "sample",
+      "seed": 95
+    },
+    {
+      "clip": "mead_M025_happy_L3_005",
+      "valid_frames": 103,
+      "motion_shape": [
+        1,
+        105,
+        52
+      ],
+      "finite": true,
+      "reference_count": 1,
+      "query_motion_passed_to_predict": false,
+      "teacher_called": false,
+      "mode": "sample",
+      "seed": 95
+    }
+  ],
+  "model_unchanged": true,
+  "training_started": false,
+  "v6_status": "stopped",
+  "test_loaded": false
+}
