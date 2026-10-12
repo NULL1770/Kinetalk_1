@@ -1,0 +1,40 @@
+{
+  "schema": "kinetalk_lip_intervals_v2.1",
+  "pair_count": 12,
+  "jacobian_rank": 12,
+  "jacobian_singular_values_mm": [
+    169.6068878173828,
+    14.733612060546875,
+    11.018994331359863,
+    5.483672618865967,
+    2.2539377212524414,
+    2.1144063472747803,
+    0.8862798810005188,
+    0.7886335849761963,
+    0.6295213103294373,
+    0.3424426019191742,
+    0.13645757734775543,
+    0.05818476527929306
+  ],
+  "jacobian_rank_at_0p01_mm": 12,
+  "jacobian_finite": true,
+  "rest_gap_finite": true,
+  "pairs_unique": true,
+  "pair_distance_max_mm": 1.4720931649208069,
+  "rest_gap_range_mm": [
+    0.8999109268188477,
+    6.999850273132324
+  ],
+  "asset_sha256": "f06afa7a3e82594b30a06d8cd49e5c87ac858cc0a845743f0a98feb0f2ec499b",
+  "rig_sha256_matches_provenance": true,
+  "affine_geometry_max_error_mm": 8.869171164249678e-05,
+  "jawOpen_gap_derivative_range_mm": [
+    18.606901168823242,
+    41.80979919433594
+  ],
+  "geometry_plot": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\final_experiment\\rig\\lip_constraints_v2_20261010_geometry.png",
+  "provisional": true,
+  "physiological_contact_claim": false,
+  "data_dependent_calibration": false,
+  "status": "PASS_GEOMETRY_ONLY"
+}

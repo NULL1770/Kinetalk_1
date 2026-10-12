@@ -1,0 +1,40 @@
+{
+  "schema": "kinetalk_lip_intervals_v2.1",
+  "source_blend": "D:\\实验室项目\\模型修正\\male_arkit_head.blend",
+  "source_blend_sha256": "58816334fac2bc7f2b8551c392bbb01ef7589caf33f9219e163595492f6f52a7",
+  "rig": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\final_experiment\\rig\\fixed_arkit_rig_20260923.npz",
+  "rig_sha256": "0e20cb2f4b7cad6b06a1f755eac269969815b4e66c00670fc0a2a8743ac3dcad",
+  "object": "body",
+  "blender": "4.3.0",
+  "coordinate_unit": "millimetres",
+  "selected_vertices": 632,
+  "pair_count": 12,
+  "jacobian_rank": 12,
+  "candidates_upper": 95,
+  "candidates_lower": 72,
+  "ambiguous_candidates": 0,
+  "pair_selection": "unique greedy nearest XY in inner/middle named skin groups; central mouth only; fixed before motion data",
+  "args": {
+    "rig": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\final_experiment\\rig\\fixed_arkit_rig_20260923.npz",
+    "output": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\final_experiment\\rig\\lip_constraints_v2_20261010.npz",
+    "blend": null,
+    "blender": "D:\\3d_engine\\blender-4.3.0-windows-x64\\blender.exe",
+    "object": "body",
+    "max_pairs": 12,
+    "min_group_weight": 0.25,
+    "max_xy_distance_mm": 2.5,
+    "central_width_fraction": 0.6,
+    "skip_audit": false
+  },
+  "observation": "signed world-Z upper minus lower vertex separation; rest gap + J @ ARKit52",
+  "status": "provisional_geometry_observation_not_physiological_contact",
+  "phoneme_alignment_available": false,
+  "train_tolerance_calibration_available": false,
+  "limitations": [
+    "Named skin weights do not define an independently validated collision surface.",
+    "No p/b/m phase timings or contact labels have been extracted.",
+    "Intervals require independent closure/release evidence and TRAIN-only fitted tolerances.",
+    "Shape-key rest geometry excludes armature, subdivision and other modifiers."
+  ],
+  "output_sha256": "f06afa7a3e82594b30a06d8cd49e5c87ac858cc0a845743f0a98feb0f2ec499b"
+}

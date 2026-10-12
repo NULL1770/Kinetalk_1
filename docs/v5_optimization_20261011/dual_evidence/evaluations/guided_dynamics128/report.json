@@ -1,0 +1,2701 @@
+{
+  "schema": "v4-dynamics-validation-diagnostic-v1",
+  "scope": "descriptive_development_only",
+  "validation_universe": 1367,
+  "candidate_model_family": "DualTimescaleKineTalkV5",
+  "legacy_candidate_keys": "v4_sample/v4_modal refer to supplied candidate, including v5",
+  "clips": 128,
+  "selected_indices": [
+    409,
+    45,
+    155,
+    207,
+    253,
+    322,
+    495,
+    577,
+    869,
+    635,
+    694,
+    711,
+    806,
+    827,
+    894,
+    949,
+    1256,
+    1012,
+    1050,
+    1122,
+    1151,
+    1204,
+    1278,
+    1331,
+    424,
+    8,
+    92,
+    174,
+    305,
+    401,
+    505,
+    568,
+    861,
+    632,
+    696,
+    754,
+    796,
+    814,
+    896,
+    946,
+    1261,
+    978,
+    1034,
+    1100,
+    1189,
+    1238,
+    1294,
+    1322,
+    407,
+    55,
+    104,
+    161,
+    279,
+    339,
+    510,
+    587,
+    858,
+    652,
+    684,
+    747,
+    771,
+    816,
+    903,
+    972,
+    1249,
+    1011,
+    1052,
+    1127,
+    1136,
+    1201,
+    1296,
+    1324,
+    413,
+    70,
+    126,
+    170,
+    291,
+    331,
+    514,
+    556,
+    857,
+    655,
+    693,
+    755,
+    758,
+    844,
+    909,
+    941,
+    1243,
+    1005,
+    1043,
+    1098,
+    1152,
+    1195,
+    1263,
+    1339,
+    440,
+    58,
+    140,
+    197,
+    282,
+    393,
+    486,
+    529,
+    865,
+    627,
+    689,
+    742,
+    779,
+    818,
+    891,
+    974,
+    1255,
+    1029,
+    1037,
+    1121,
+    1170,
+    1208,
+    1298,
+    1319,
+    418,
+    43,
+    110,
+    165,
+    308,
+    371,
+    507,
+    596
+  ],
+  "clip_ids": [
+    "mead_M025_neutral_L1_007",
+    "mead_M025_angry_L2_022",
+    "mead_M025_contempt_L3_027",
+    "mead_M025_disgust_L2_023",
+    "mead_M025_fear_L1_015",
+    "mead_M025_happy_L1_001",
+    "mead_M025_sad_L2_030",
+    "mead_M025_surprise_L2_030",
+    "mead_M037_neutral_L1_063",
+    "mead_M037_angry_L2_047",
+    "mead_M037_contempt_L3_034",
+    "mead_M037_disgust_L1_034",
+    "mead_M037_fear_L3_058",
+    "mead_M037_happy_L2_033",
+    "mead_M037_sad_L2_003",
+    "mead_M037_surprise_L2_032",
+    "mead_M039_neutral_L1_064",
+    "mead_M039_angry_L2_057",
+    "mead_M039_contempt_L2_019",
+    "mead_M039_disgust_L3_020",
+    "mead_M039_fear_L1_054",
+    "mead_M039_happy_L1_054",
+    "mead_M039_sad_L1_055",
+    "mead_M039_surprise_L1_053",
+    "mead_M025_neutral_L1_022",
+    "mead_M025_angry_L1_010",
+    "mead_M025_contempt_L1_016",
+    "mead_M025_disgust_L1_016",
+    "mead_M025_fear_L3_012",
+    "mead_M025_happy_L3_029",
+    "mead_M025_sad_L3_010",
+    "mead_M025_surprise_L2_019",
+    "mead_M037_neutral_L1_047",
+    "mead_M037_angry_L2_039",
+    "mead_M037_contempt_L3_036",
+    "mead_M037_disgust_L3_056",
+    "mead_M037_fear_L3_037",
+    "mead_M037_happy_L1_040",
+    "mead_M037_sad_L2_009",
+    "mead_M037_surprise_L2_002",
+    "mead_M039_neutral_L1_076",
+    "mead_M039_angry_L1_002",
+    "mead_M039_contempt_L1_019",
+    "mead_M039_disgust_L2_001",
+    "mead_M039_fear_L3_058",
+    "mead_M039_happy_L3_053",
+    "mead_M039_sad_L2_050",
+    "mead_M039_surprise_L1_037",
+    "mead_M025_neutral_L1_005",
+    "mead_M025_angry_L3_005",
+    "mead_M025_contempt_L1_030",
+    "mead_M025_disgust_L1_003",
+    "mead_M025_fear_L2_014",
+    "mead_M025_happy_L1_019",
+    "mead_M025_sad_L3_015",
+    "mead_M025_surprise_L3_010",
+    "mead_M037_neutral_L1_029",
+    "mead_M037_angry_L3_047",
+    "mead_M037_contempt_L2_044",
+    "mead_M037_disgust_L3_041",
+    "mead_M037_fear_L1_048",
+    "mead_M037_happy_L1_045",
+    "mead_M037_sad_L2_042",
+    "mead_M037_surprise_L3_046",
+    "mead_M039_neutral_L1_050",
+    "mead_M039_angry_L2_056",
+    "mead_M039_contempt_L2_034",
+    "mead_M039_disgust_L3_041",
+    "mead_M039_fear_L1_001",
+    "mead_M039_happy_L1_047",
+    "mead_M039_sad_L2_055",
+    "mead_M039_surprise_L1_039",
+    "mead_M025_neutral_L1_011",
+    "mead_M025_angry_L3_021",
+    "mead_M025_contempt_L2_024",
+    "mead_M025_disgust_L1_012",
+    "mead_M025_fear_L2_028",
+    "mead_M025_happy_L1_011",
+    "mead_M025_sad_L3_019",
+    "mead_M025_surprise_L2_007",
+    "mead_M037_neutral_L1_009",
+    "mead_M037_angry_L3_055",
+    "mead_M037_contempt_L3_033",
+    "mead_M037_disgust_L3_057",
+    "mead_M037_fear_L1_003",
+    "mead_M037_happy_L3_035",
+    "mead_M037_sad_L2_056",
+    "mead_M037_surprise_L1_051",
+    "mead_M039_neutral_L1_002",
+    "mead_M039_angry_L2_042",
+    "mead_M039_contempt_L1_049",
+    "mead_M039_disgust_L1_055",
+    "mead_M039_fear_L1_057",
+    "mead_M039_happy_L1_035",
+    "mead_M039_sad_L1_001",
+    "mead_M039_surprise_L2_038",
+    "mead_M025_neutral_L1_040",
+    "mead_M025_angry_L3_008",
+    "mead_M025_contempt_L3_010",
+    "mead_M025_disgust_L2_012",
+    "mead_M025_fear_L2_017",
+    "mead_M025_happy_L3_019",
+    "mead_M025_sad_L2_019",
+    "mead_M025_surprise_L1_007",
+    "mead_M037_neutral_L1_056",
+    "mead_M037_angry_L2_018",
+    "mead_M037_contempt_L3_001",
+    "mead_M037_disgust_L3_003",
+    "mead_M037_fear_L2_031",
+    "mead_M037_happy_L1_047",
+    "mead_M037_sad_L1_057",
+    "mead_M037_surprise_L3_053",
+    "mead_M039_neutral_L1_063",
+    "mead_M039_angry_L3_055",
+    "mead_M039_contempt_L1_035",
+    "mead_M039_disgust_L3_004",
+    "mead_M039_fear_L2_057",
+    "mead_M039_happy_L2_002",
+    "mead_M039_sad_L2_057",
+    "mead_M039_surprise_L1_024",
+    "mead_M025_neutral_L1_016",
+    "mead_M025_angry_L2_019",
+    "mead_M025_contempt_L2_007",
+    "mead_M025_disgust_L1_007",
+    "mead_M025_fear_L3_015",
+    "mead_M025_happy_L2_025",
+    "mead_M025_sad_L3_012",
+    "mead_M025_surprise_L3_019"
+  ],
+  "selection_seed": 47,
+  "selection_policy": "deterministic balanced round-robin speaker/emotion from validation universe",
+  "sample_seeds": [
+    47,
+    91,
+    137
+  ],
+  "batch_size": 8,
+  "seed_policy": "requested seed plus deterministic batch start; no sample selection",
+  "tolerance_frames": 2,
+  "prediction_policy": "raw coefficients, no clamp or smoothing",
+  "expression_state_axes": [
+    "smile_minus_frown",
+    "mouth_tension",
+    "brow_lift",
+    "brow_contraction",
+    "eye_open_minus_squint",
+    "cheek_nose",
+    "dimple",
+    "lip_shrug",
+    "vertical_lip_deformation",
+    "rounding"
+  ],
+  "event_groups": [
+    "eyelid_closure",
+    "brow_emphasis",
+    "cheek_nose_emphasis",
+    "lip_tension"
+  ],
+  "coefficient_regions": {
+    "eyelid_blink": [
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ],
+    "eye_open_squint": [
+      "eyeWideLeft",
+      "eyeWideRight",
+      "eyeSquintLeft",
+      "eyeSquintRight"
+    ],
+    "brow": [
+      "browDownLeft",
+      "browDownRight",
+      "browInnerUp",
+      "browOuterUpLeft",
+      "browOuterUpRight"
+    ],
+    "cheek_nose": [
+      "cheekPuff",
+      "cheekSquintLeft",
+      "cheekSquintRight",
+      "noseSneerLeft",
+      "noseSneerRight"
+    ]
+  },
+  "conditional_probability_mask": "teacher_targets.onset_valid; duration_valid at complete positive onsets; same weak-label mask as training",
+  "checkpoint_sha256": "48d60bef56ce4ab175f4efbda8af580d836634cf20af74f0e8c47b9d5d1053a0",
+  "baseline_sha256": "80a7ca69b0f868bad6361381e1ca8e4e168ca227a0548221f8efa71b42169c41",
+  "binding_sha256": "d30f10075b704c4cb228629549820056c952533fa5c4507666ab8640a1fa6087",
+  "training_protocol": {
+    "schema": "dual_timescale_mead_pilot_v1",
+    "arm": "guided",
+    "seed": 47,
+    "updates": 256,
+    "batch_size": 12,
+    "lr": 5e-05,
+    "source_checkpoint_sha256": "310fe9fa348ecb7f6210fc854f3c867dc055e470db00be1d2dc38722016df702",
+    "binding_sha256": "d30f10075b704c4cb228629549820056c952533fa5c4507666ab8640a1fa6087",
+    "source_sha256": "66e3a9ba14f18667e54553b65a9586bbd4f9cdc8d9fadb2cc4a4d813a03d9288",
+    "model_source_sha256": "c18cc6726cf4862b04fe37af912160b3b7c17eca9c441316df25e20122ead30a",
+    "fit_indices_sha256": "e6168d2c2fd4e1d2f04111abba1e01dca923596e878e1ceebabb9f18a6de9945",
+    "training_references_sha256": "8307f06b8bb0d6779541221392e14054a8a6f74084a864fc9a882a037a236917",
+    "initial_parent_parameters_sha256": "5fd239b4d67fd65af35b434d3d6425a0cc287fcc8f8df9c4c02681fdcea52697",
+    "geometry_channels": [
+      "eyeBlinkLeft",
+      "eyeLookDownLeft",
+      "eyeLookInLeft",
+      "eyeLookOutLeft",
+      "eyeLookUpLeft",
+      "eyeSquintLeft",
+      "eyeWideLeft",
+      "eyeBlinkRight",
+      "eyeLookDownRight",
+      "eyeLookInRight",
+      "eyeLookOutRight",
+      "eyeLookUpRight",
+      "eyeSquintRight",
+      "eyeWideRight",
+      "jawForward",
+      "jawLeft",
+      "jawRight",
+      "jawOpen",
+      "mouthClose",
+      "mouthFunnel",
+      "mouthPucker",
+      "mouthLeft",
+      "mouthRight",
+      "mouthSmileLeft",
+      "mouthSmileRight",
+      "mouthFrownLeft",
+      "mouthFrownRight",
+      "mouthDimpleLeft",
+      "mouthDimpleRight",
+      "mouthStretchLeft",
+      "mouthStretchRight",
+      "mouthRollLower",
+      "mouthRollUpper",
+      "mouthShrugLower",
+      "mouthShrugUpper",
+      "mouthPressLeft",
+      "mouthPressRight",
+      "mouthLowerDownLeft",
+      "mouthLowerDownRight",
+      "mouthUpperUpLeft",
+      "mouthUpperUpRight",
+      "browDownLeft",
+      "browDownRight",
+      "browInnerUp",
+      "browOuterUpLeft",
+      "browOuterUpRight",
+      "cheekPuff",
+      "cheekSquintLeft",
+      "cheekSquintRight",
+      "noseSneerLeft",
+      "noseSneerRight",
+      "tongueOut"
+    ],
+    "neutral_digest": "e4feb87256302ad8cc849f8e587729a51e7b86aa9d878c999a5af9b504ca1686",
+    "mead_fit_clips": 10903,
+    "internal_dev_clips": 128,
+    "config": {
+      "audio_dim": 772,
+      "content_dim": 128,
+      "hidden": 128,
+      "decoder_hidden": 192,
+      "state_dim": 10,
+      "style_dim": 64,
+      "geometry_dim": 4,
+      "event_groups": 4,
+      "duration_frames": [
+        2,
+        4,
+        8,
+        16,
+        32
+      ],
+      "classes": 8,
+      "intensities": 4,
+      "projector_strength": 0.5,
+      "projector_ridge": 0.0001,
+      "use_geometry": true,
+      "use_interactions": true,
+      "use_teacher": true,
+      "use_style": true,
+      "use_posture_adapter": false,
+      "teacher_guidance_mode": "none",
+      "geometry_audio_mode": "none",
+      "state_supervision_space": "raw",
+      "lowpass_kernel": 9,
+      "teacher_advantage_threshold": 1.0,
+      "envelope_weight": 0.35,
+      "factor_regularizer": 0.05,
+      "envelope_direct_weight": 0.35,
+      "confidence_weight": 0.1
+    },
+    "hdtf_enabled": false,
+    "text_enabled": false,
+    "test_loaded": false,
+    "paper_result": false,
+    "objective": "legacy complete motion/style/observed-event likelihood/sampled execution; direct posture1; rollout means.5; v5 supported-envelope and low/high adapter losses",
+    "residual_semantics": "inherited joint residual plus low/high mixed-factor adapters; no exclusive articulation/emotion claim",
+    "confidence": "TRAIN teacher-advantage fraction; uncalibrated learned score in guided arm only"
+  },
+  "evaluation_phonetic_constraints_enabled": false,
+  "test_loaded": false,
+  "observed_history_probability_diagnostic": {
+    "eyelid_closure": {
+      "onset_count": 13334,
+      "positive_onsets": 109,
+      "onset_probability_sum": 75.05391865654778,
+      "brier_sum": 104.79712059137185,
+      "binary_nll_sum": 570.1881705309233,
+      "duration_count": 97,
+      "duration_conditional_nll_sum": 109.48573700517026,
+      "brier": 0.007859391074799148,
+      "binary_nll": 0.0427619746910847,
+      "weak_onset_prevalence": 0.008174591270436479,
+      "mean_onset_probability": 0.005628762461118027,
+      "duration_conditional_nll": 1.1287189381976317
+    },
+    "brow_emphasis": {
+      "onset_count": 13334,
+      "positive_onsets": 47,
+      "onset_probability_sum": 28.55620198622201,
+      "brier_sum": 46.80094142699624,
+      "binary_nll_sum": 310.0443310085806,
+      "duration_count": 41,
+      "duration_conditional_nll_sum": 41.17326886098689,
+      "brier": 0.0035098951122691045,
+      "binary_nll": 0.02325216221753267,
+      "weak_onset_prevalence": 0.0035248237588120595,
+      "mean_onset_probability": 0.0021416080685632225,
+      "duration_conditional_nll": 1.004226069780168
+    },
+    "cheek_nose_emphasis": {
+      "onset_count": 13334,
+      "positive_onsets": 0,
+      "onset_probability_sum": 0.018195757177183962,
+      "brier_sum": 7.723428800097115e-06,
+      "binary_nll_sum": 0.01819962139062614,
+      "duration_count": 0,
+      "duration_conditional_nll_sum": 0.0,
+      "brier": 5.792281985973538e-10,
+      "binary_nll": 1.3649033591290042e-06,
+      "weak_onset_prevalence": 0.0,
+      "mean_onset_probability": 1.3646135576109166e-06,
+      "duration_conditional_nll": 0.0
+    },
+    "lip_tension": {
+      "onset_count": 13334,
+      "positive_onsets": 118,
+      "onset_probability_sum": 84.70778404010039,
+      "brier_sum": 116.15162124223612,
+      "binary_nll_sum": 649.4352644957627,
+      "duration_count": 111,
+      "duration_conditional_nll_sum": 118.61325808298378,
+      "brier": 0.008710936046365391,
+      "binary_nll": 0.048705209576703365,
+      "weak_onset_prevalence": 0.008849557522123894,
+      "mean_onset_probability": 0.006352766164699294,
+      "duration_conditional_nll": 1.0685879106575116
+    }
+  },
+  "student_expression_direction": {
+    "mean_axis_mae": 0.11193958406470002,
+    "direction_cosine_error": 0.271667451951495,
+    "axis_metrics": [
+      {
+        "axis": "smile_minus_frown",
+        "mae": 0.13848648233220665,
+        "observations": 105.171875,
+        "directional_observations": 88.3359375,
+        "nonzero_target_sign_error": 0.35633315200290955
+      },
+      {
+        "axis": "mouth_tension",
+        "mae": 0.053775260261596715,
+        "observations": 105.171875,
+        "directional_observations": 65.421875,
+        "nonzero_target_sign_error": 0.42041360779124337
+      },
+      {
+        "axis": "brow_lift",
+        "mae": 0.14957869320008504,
+        "observations": 105.171875,
+        "directional_observations": 67.2890625,
+        "nonzero_target_sign_error": 0.0543082110897907
+      },
+      {
+        "axis": "brow_contraction",
+        "mae": 0.16272412969416178,
+        "observations": 105.171875,
+        "directional_observations": 77.6328125,
+        "nonzero_target_sign_error": 0.05274421075336919
+      },
+      {
+        "axis": "eye_open_minus_squint",
+        "mae": 0.1900730769218525,
+        "observations": 105.171875,
+        "directional_observations": 104.421875,
+        "nonzero_target_sign_error": 0.12148289295867185
+      },
+      {
+        "axis": "cheek_nose",
+        "mae": 0.03236912989482743,
+        "observations": 105.171875,
+        "directional_observations": 0.0,
+        "nonzero_target_sign_error": 0.0
+      },
+      {
+        "axis": "dimple",
+        "mae": 0.05527959146701068,
+        "observations": 105.171875,
+        "directional_observations": 22.9765625,
+        "nonzero_target_sign_error": 0.3975003464179593
+      },
+      {
+        "axis": "lip_shrug",
+        "mae": 0.0661042947946583,
+        "observations": 105.171875,
+        "directional_observations": 87.875,
+        "nonzero_target_sign_error": 0.513752792806544
+      },
+      {
+        "axis": "vertical_lip_deformation",
+        "mae": 0.1584383760563389,
+        "observations": 105.171875,
+        "directional_observations": 96.984375,
+        "nonzero_target_sign_error": 0.38657826176486365
+      },
+      {
+        "axis": "rounding",
+        "mae": 0.11256680602426222,
+        "observations": 105.171875,
+        "directional_observations": 97.703125,
+        "nonzero_target_sign_error": 0.3786006179976948
+      }
+    ]
+  },
+  "seed_diversity_macro_clip": {
+    "seed_pairs": 3.0,
+    "upper_coefficient_pairwise_mae": 0.011502302205937717,
+    "schedule_active_pairwise_disagreement": 0.026825485389122872
+  },
+  "results": {
+    "GT": {
+      "regional_dynamics_macro_clip": {
+        "eyelid_blink": {
+          "within_run_population_std": 0.03920949813556435,
+          "mean_abs_velocity_per_second": 0.19655266488689724,
+          "mean_abs_acceleration_per_second2": 3.8631404064958423,
+          "observed_channel_frames": 210.34375,
+          "observed_channel_pairs": 208.34375,
+          "observed_channel_triples": 206.34375
+        },
+        "eye_open_squint": {
+          "within_run_population_std": 0.023620168010272915,
+          "mean_abs_velocity_per_second": 0.12427007756563957,
+          "mean_abs_acceleration_per_second2": 2.401940952806903,
+          "observed_channel_frames": 420.6875,
+          "observed_channel_pairs": 416.6875,
+          "observed_channel_triples": 412.6875
+        },
+        "brow": {
+          "within_run_population_std": 0.022211727806560194,
+          "mean_abs_velocity_per_second": 0.10861575294839168,
+          "mean_abs_acceleration_per_second2": 2.1657310768010847,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        },
+        "cheek_nose": {
+          "within_run_population_std": 2.2207834732465908e-05,
+          "mean_abs_velocity_per_second": 0.00013513583097194857,
+          "mean_abs_acceleration_per_second2": 0.0025226422083000294,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        }
+      },
+      "realized_event_distributions": {
+        "eyelid_closure": {
+          "complete_events": 97,
+          "complete_events_per_minute": 10.808200861684744,
+          "duration_seconds_mean": 0.2292783505154639,
+          "amplitude_mean": 0.40370943712205004
+        },
+        "brow_emphasis": {
+          "complete_events": 41,
+          "complete_events_per_minute": 4.5684147972069535,
+          "duration_seconds_mean": 0.1521951219512195,
+          "amplitude_mean": 0.06973232674162562
+        },
+        "cheek_nose_emphasis": {
+          "complete_events": 0,
+          "complete_events_per_minute": 0.0,
+          "duration_seconds_mean": null,
+          "amplitude_mean": null
+        },
+        "lip_tension": {
+          "complete_events": 111,
+          "complete_events_per_minute": 12.368147377804192,
+          "duration_seconds_mean": 0.17189189189189186,
+          "amplitude_mean": 0.08251229431983587
+        }
+      },
+      "censored_event_counts": {
+        "eyelid_closure": 25,
+        "brow_emphasis": 11,
+        "cheek_nose_emphasis": 0,
+        "lip_tension": 15
+      }
+    },
+    "phase53_default": {
+      "regional_dynamics_macro_clip": {
+        "eyelid_blink": {
+          "within_run_population_std": 0.012072208770460047,
+          "mean_abs_velocity_per_second": 0.10470677791339754,
+          "mean_abs_acceleration_per_second2": 3.4338474850604017,
+          "observed_channel_frames": 210.34375,
+          "observed_channel_pairs": 208.34375,
+          "observed_channel_triples": 206.34375
+        },
+        "eye_open_squint": {
+          "within_run_population_std": 0.011706361190164265,
+          "mean_abs_velocity_per_second": 0.09596432541243426,
+          "mean_abs_acceleration_per_second2": 3.216009123391835,
+          "observed_channel_frames": 420.6875,
+          "observed_channel_pairs": 416.6875,
+          "observed_channel_triples": 412.6875
+        },
+        "brow": {
+          "within_run_population_std": 0.019325051881439865,
+          "mean_abs_velocity_per_second": 0.1726037359437188,
+          "mean_abs_acceleration_per_second2": 5.96793273949611,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        },
+        "cheek_nose": {
+          "within_run_population_std": 1.601830576240205e-05,
+          "mean_abs_velocity_per_second": 0.00011334139297302598,
+          "mean_abs_acceleration_per_second2": 0.0030911883070396428,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        }
+      },
+      "realized_event_distributions": {
+        "eyelid_closure": {
+          "complete_events": 39,
+          "complete_events_per_minute": 4.345565294904175,
+          "duration_seconds_mean": 0.25333333333333324,
+          "amplitude_mean": 0.26086024137643665,
+          "complete_events_per_minute_abs_error": 6.462635566780569,
+          "duration_seconds_wasserstein1": 0.09318530266983875,
+          "amplitude_wasserstein1": 0.14284919574561336
+        },
+        "brow_emphasis": {
+          "complete_events": 15,
+          "complete_events_per_minute": 1.6713712672708367,
+          "duration_seconds_mean": 0.11200000000000002,
+          "amplitude_mean": 0.06450878083705902,
+          "complete_events_per_minute_abs_error": 2.897043529936117,
+          "duration_seconds_wasserstein1": 0.04019512195121951,
+          "amplitude_wasserstein1": 0.005223545904566601
+        },
+        "cheek_nose_emphasis": {
+          "complete_events": 0,
+          "complete_events_per_minute": 0.0,
+          "duration_seconds_mean": null,
+          "amplitude_mean": null,
+          "complete_events_per_minute_abs_error": 0.0,
+          "duration_seconds_wasserstein1": null,
+          "amplitude_wasserstein1": null
+        },
+        "lip_tension": {
+          "complete_events": 11,
+          "complete_events_per_minute": 1.2256722626652803,
+          "duration_seconds_mean": 0.0690909090909091,
+          "amplitude_mean": 0.06197198514233936,
+          "complete_events_per_minute_abs_error": 11.142475115138911,
+          "duration_seconds_wasserstein1": 0.10280098280098282,
+          "amplitude_wasserstein1": 0.020605389931888294
+        }
+      },
+      "censored_event_counts": {
+        "eyelid_closure": 11,
+        "brow_emphasis": 5,
+        "cheek_nose_emphasis": 0,
+        "lip_tension": 1
+      },
+      "expression_direction": {
+        "mean_axis_mae": 0.08369933689438974,
+        "direction_cosine_error": 0.1725154526348761,
+        "axis_metrics": [
+          {
+            "axis": "smile_minus_frown",
+            "mae": 0.12134540515031797,
+            "observations": 105.171875,
+            "directional_observations": 88.3359375,
+            "nonzero_target_sign_error": 0.28817390028477397
+          },
+          {
+            "axis": "mouth_tension",
+            "mae": 0.028809814847873268,
+            "observations": 105.171875,
+            "directional_observations": 65.421875,
+            "nonzero_target_sign_error": 0.3528383552372396
+          },
+          {
+            "axis": "brow_lift",
+            "mae": 0.11299025674917126,
+            "observations": 105.171875,
+            "directional_observations": 67.2890625,
+            "nonzero_target_sign_error": 0.028090739969101504
+          },
+          {
+            "axis": "brow_contraction",
+            "mae": 0.15506371949550732,
+            "observations": 105.171875,
+            "directional_observations": 77.6328125,
+            "nonzero_target_sign_error": 0.025520143658940987
+          },
+          {
+            "axis": "eye_open_minus_squint",
+            "mae": 0.15587974796779722,
+            "observations": 105.171875,
+            "directional_observations": 104.421875,
+            "nonzero_target_sign_error": 0.08148050864756912
+          },
+          {
+            "axis": "cheek_nose",
+            "mae": 2.7784112557445634e-05,
+            "observations": 105.171875,
+            "directional_observations": 0.0,
+            "nonzero_target_sign_error": 0.0
+          },
+          {
+            "axis": "dimple",
+            "mae": 0.01347792748330963,
+            "observations": 105.171875,
+            "directional_observations": 22.9765625,
+            "nonzero_target_sign_error": 0.21799294535043987
+          },
+          {
+            "axis": "lip_shrug",
+            "mae": 0.032544849887127025,
+            "observations": 105.171875,
+            "directional_observations": 87.875,
+            "nonzero_target_sign_error": 0.3750137791889657
+          },
+          {
+            "axis": "vertical_lip_deformation",
+            "mae": 0.11676105013170428,
+            "observations": 105.171875,
+            "directional_observations": 96.984375,
+            "nonzero_target_sign_error": 0.3062751826978585
+          },
+          {
+            "axis": "rounding",
+            "mae": 0.10009281311853206,
+            "observations": 105.171875,
+            "directional_observations": 97.703125,
+            "nonzero_target_sign_error": 0.39744559253656875
+          }
+        ]
+      }
+    },
+    "v4_modal": {
+      "regional_dynamics_macro_clip": {
+        "eyelid_blink": {
+          "within_run_population_std": 0.007826383708687743,
+          "mean_abs_velocity_per_second": 0.07275263106341051,
+          "mean_abs_acceleration_per_second2": 2.237559611136836,
+          "observed_channel_frames": 210.34375,
+          "observed_channel_pairs": 208.34375,
+          "observed_channel_triples": 206.34375
+        },
+        "eye_open_squint": {
+          "within_run_population_std": 0.0084120441546075,
+          "mean_abs_velocity_per_second": 0.0757273920214249,
+          "mean_abs_acceleration_per_second2": 2.3142795881234317,
+          "observed_channel_frames": 420.6875,
+          "observed_channel_pairs": 416.6875,
+          "observed_channel_triples": 412.6875
+        },
+        "brow": {
+          "within_run_population_std": 0.012501234903827292,
+          "mean_abs_velocity_per_second": 0.11455109892032067,
+          "mean_abs_acceleration_per_second2": 3.4621962994597695,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        },
+        "cheek_nose": {
+          "within_run_population_std": 2.0821894676294668e-05,
+          "mean_abs_velocity_per_second": 0.000180475610596723,
+          "mean_abs_acceleration_per_second2": 0.004903837387374091,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        }
+      },
+      "realized_event_distributions": {
+        "eyelid_closure": {
+          "complete_events": 0,
+          "complete_events_per_minute": 0.0,
+          "duration_seconds_mean": null,
+          "amplitude_mean": null,
+          "complete_events_per_minute_abs_error": 10.808200861684744,
+          "duration_seconds_wasserstein1": null,
+          "amplitude_wasserstein1": null
+        },
+        "brow_emphasis": {
+          "complete_events": 1,
+          "complete_events_per_minute": 0.11142475115138913,
+          "duration_seconds_mean": 0.08,
+          "amplitude_mean": 0.060320109128952026,
+          "complete_events_per_minute_abs_error": 4.456990046055564,
+          "duration_seconds_wasserstein1": 0.08780487804878048,
+          "amplitude_wasserstein1": 0.010686050282745826
+        },
+        "cheek_nose_emphasis": {
+          "complete_events": 0,
+          "complete_events_per_minute": 0.0,
+          "duration_seconds_mean": null,
+          "amplitude_mean": null,
+          "complete_events_per_minute_abs_error": 0.0,
+          "duration_seconds_wasserstein1": null,
+          "amplitude_wasserstein1": null
+        },
+        "lip_tension": {
+          "complete_events": 5,
+          "complete_events_per_minute": 0.5571237557569455,
+          "duration_seconds_mean": 0.10400000000000001,
+          "amplitude_mean": 0.06791983097791672,
+          "complete_events_per_minute_abs_error": 11.811023622047246,
+          "duration_seconds_wasserstein1": 0.06990990990990993,
+          "amplitude_wasserstein1": 0.015381595197024646
+        }
+      },
+      "censored_event_counts": {
+        "eyelid_closure": 0,
+        "brow_emphasis": 0,
+        "cheek_nose_emphasis": 0,
+        "lip_tension": 1
+      },
+      "expression_direction": {
+        "mean_axis_mae": 0.07868573849700555,
+        "direction_cosine_error": 0.17679790194101214,
+        "axis_metrics": [
+          {
+            "axis": "smile_minus_frown",
+            "mae": 0.11247406660770316,
+            "observations": 105.171875,
+            "directional_observations": 88.3359375,
+            "nonzero_target_sign_error": 0.2351122730799449
+          },
+          {
+            "axis": "mouth_tension",
+            "mae": 0.026059207812896598,
+            "observations": 105.171875,
+            "directional_observations": 65.421875,
+            "nonzero_target_sign_error": 0.2643364400753492
+          },
+          {
+            "axis": "brow_lift",
+            "mae": 0.10000188714351194,
+            "observations": 105.171875,
+            "directional_observations": 67.2890625,
+            "nonzero_target_sign_error": 0.026816580892926174
+          },
+          {
+            "axis": "brow_contraction",
+            "mae": 0.16619496804608522,
+            "observations": 105.171875,
+            "directional_observations": 77.6328125,
+            "nonzero_target_sign_error": 0.02100634096254942
+          },
+          {
+            "axis": "eye_open_minus_squint",
+            "mae": 0.14429379281607674,
+            "observations": 105.171875,
+            "directional_observations": 104.421875,
+            "nonzero_target_sign_error": 0.053660863030114206
+          },
+          {
+            "axis": "cheek_nose",
+            "mae": 3.498584128877717e-05,
+            "observations": 105.171875,
+            "directional_observations": 0.0,
+            "nonzero_target_sign_error": 0.0
+          },
+          {
+            "axis": "dimple",
+            "mae": 0.01230967874511946,
+            "observations": 105.171875,
+            "directional_observations": 22.9765625,
+            "nonzero_target_sign_error": 0.2746487577074873
+          },
+          {
+            "axis": "lip_shrug",
+            "mae": 0.030389311037353244,
+            "observations": 105.171875,
+            "directional_observations": 87.875,
+            "nonzero_target_sign_error": 0.3417168590095808
+          },
+          {
+            "axis": "vertical_lip_deformation",
+            "mae": 0.11206056456728467,
+            "observations": 105.171875,
+            "directional_observations": 96.984375,
+            "nonzero_target_sign_error": 0.29975791840410665
+          },
+          {
+            "axis": "rounding",
+            "mae": 0.0830389223527358,
+            "observations": 105.171875,
+            "directional_observations": 97.703125,
+            "nonzero_target_sign_error": 0.30348116071532827
+          }
+        ]
+      },
+      "schedule_execution_consistency": {
+        "eyelid_closure": {
+          "schedule_events": 0,
+          "realized_events": 0,
+          "matched_events": 0,
+          "matched_onset_abs_seconds_sum": 0,
+          "matched_duration_abs_seconds_sum": 0,
+          "matched_amplitude_abs_sum": 0,
+          "onset_precision": 0.0,
+          "onset_recall": 0.0,
+          "onset_f1": 0.0,
+          "matched_onset_abs_seconds": 0.0,
+          "matched_duration_abs_seconds": 0.0,
+          "matched_amplitude_abs": 0.0
+        },
+        "brow_emphasis": {
+          "schedule_events": 0,
+          "realized_events": 1,
+          "matched_events": 0,
+          "matched_onset_abs_seconds_sum": 0,
+          "matched_duration_abs_seconds_sum": 0,
+          "matched_amplitude_abs_sum": 0,
+          "onset_precision": 0.0,
+          "onset_recall": 0.0,
+          "onset_f1": 0.0,
+          "matched_onset_abs_seconds": 0.0,
+          "matched_duration_abs_seconds": 0.0,
+          "matched_amplitude_abs": 0.0
+        },
+        "cheek_nose_emphasis": {
+          "schedule_events": 0,
+          "realized_events": 0,
+          "matched_events": 0,
+          "matched_onset_abs_seconds_sum": 0,
+          "matched_duration_abs_seconds_sum": 0,
+          "matched_amplitude_abs_sum": 0,
+          "onset_precision": 0.0,
+          "onset_recall": 0.0,
+          "onset_f1": 0.0,
+          "matched_onset_abs_seconds": 0.0,
+          "matched_duration_abs_seconds": 0.0,
+          "matched_amplitude_abs": 0.0
+        },
+        "lip_tension": {
+          "schedule_events": 0,
+          "realized_events": 5,
+          "matched_events": 0,
+          "matched_onset_abs_seconds_sum": 0,
+          "matched_duration_abs_seconds_sum": 0,
+          "matched_amplitude_abs_sum": 0,
+          "onset_precision": 0.0,
+          "onset_recall": 0.0,
+          "onset_f1": 0.0,
+          "matched_onset_abs_seconds": 0.0,
+          "matched_duration_abs_seconds": 0.0,
+          "matched_amplitude_abs": 0.0
+        }
+      }
+    },
+    "v4_sample_seed47": {
+      "regional_dynamics_macro_clip": {
+        "eyelid_blink": {
+          "within_run_population_std": 0.021544982581267844,
+          "mean_abs_velocity_per_second": 0.12748731581432343,
+          "mean_abs_acceleration_per_second2": 3.7533925819117515,
+          "observed_channel_frames": 210.34375,
+          "observed_channel_pairs": 208.34375,
+          "observed_channel_triples": 206.34375
+        },
+        "eye_open_squint": {
+          "within_run_population_std": 0.011750358882626256,
+          "mean_abs_velocity_per_second": 0.09351818953184948,
+          "mean_abs_acceleration_per_second2": 2.8067294617366296,
+          "observed_channel_frames": 420.6875,
+          "observed_channel_pairs": 416.6875,
+          "observed_channel_triples": 412.6875
+        },
+        "brow": {
+          "within_run_population_std": 0.015414020452540141,
+          "mean_abs_velocity_per_second": 0.13430788703026703,
+          "mean_abs_acceleration_per_second2": 4.050313329692222,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        },
+        "cheek_nose": {
+          "within_run_population_std": 2.2846397204374776e-05,
+          "mean_abs_velocity_per_second": 0.0001964489007054608,
+          "mean_abs_acceleration_per_second2": 0.005319398493083268,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        }
+      },
+      "realized_event_distributions": {
+        "eyelid_closure": {
+          "complete_events": 52,
+          "complete_events_per_minute": 5.7940870598722345,
+          "duration_seconds_mean": 0.28923076923076924,
+          "amplitude_mean": 0.413443423807621,
+          "complete_events_per_minute_abs_error": 5.01411380181251,
+          "duration_seconds_wasserstein1": 0.09013481363996828,
+          "amplitude_wasserstein1": 0.04747550555229377
+        },
+        "brow_emphasis": {
+          "complete_events": 17,
+          "complete_events_per_minute": 1.8942207695736148,
+          "duration_seconds_mean": 0.17411764705882354,
+          "amplitude_mean": 0.08411536847843844,
+          "complete_events_per_minute_abs_error": 2.6741940276333387,
+          "duration_seconds_wasserstein1": 0.05153515064562411,
+          "amplitude_wasserstein1": 0.015267540544399745
+        },
+        "cheek_nose_emphasis": {
+          "complete_events": 0,
+          "complete_events_per_minute": 0.0,
+          "duration_seconds_mean": null,
+          "amplitude_mean": null,
+          "complete_events_per_minute_abs_error": 0.0,
+          "duration_seconds_wasserstein1": null,
+          "amplitude_wasserstein1": null
+        },
+        "lip_tension": {
+          "complete_events": 65,
+          "complete_events_per_minute": 7.242608824840293,
+          "duration_seconds_mean": 0.16676923076923078,
+          "amplitude_mean": 0.09408788640911762,
+          "complete_events_per_minute_abs_error": 5.125538552963899,
+          "duration_seconds_wasserstein1": 0.026777546777546794,
+          "amplitude_wasserstein1": 0.011578789885702514
+        }
+      },
+      "censored_event_counts": {
+        "eyelid_closure": 5,
+        "brow_emphasis": 3,
+        "cheek_nose_emphasis": 0,
+        "lip_tension": 2
+      },
+      "expression_direction": {
+        "mean_axis_mae": 0.07755235555593025,
+        "direction_cosine_error": 0.17434825076510338,
+        "axis_metrics": [
+          {
+            "axis": "smile_minus_frown",
+            "mae": 0.11246874021855074,
+            "observations": 105.171875,
+            "directional_observations": 88.3359375,
+            "nonzero_target_sign_error": 0.23494030422432644
+          },
+          {
+            "axis": "mouth_tension",
+            "mae": 0.025704174746646703,
+            "observations": 105.171875,
+            "directional_observations": 65.421875,
+            "nonzero_target_sign_error": 0.22764187045303957
+          },
+          {
+            "axis": "brow_lift",
+            "mae": 0.10380650744170329,
+            "observations": 105.171875,
+            "directional_observations": 67.2890625,
+            "nonzero_target_sign_error": 0.024281492223030374
+          },
+          {
+            "axis": "brow_contraction",
+            "mae": 0.16020937797760093,
+            "observations": 105.171875,
+            "directional_observations": 77.6328125,
+            "nonzero_target_sign_error": 0.021769302736901353
+          },
+          {
+            "axis": "eye_open_minus_squint",
+            "mae": 0.13960867695651735,
+            "observations": 105.171875,
+            "directional_observations": 104.421875,
+            "nonzero_target_sign_error": 0.06103843394313936
+          },
+          {
+            "axis": "cheek_nose",
+            "mae": 3.515755997350575e-05,
+            "observations": 105.171875,
+            "directional_observations": 0.0,
+            "nonzero_target_sign_error": 0.0
+          },
+          {
+            "axis": "dimple",
+            "mae": 0.012729422243635729,
+            "observations": 105.171875,
+            "directional_observations": 22.9765625,
+            "nonzero_target_sign_error": 0.2822813393008575
+          },
+          {
+            "axis": "lip_shrug",
+            "mae": 0.028381102443362304,
+            "observations": 105.171875,
+            "directional_observations": 87.875,
+            "nonzero_target_sign_error": 0.3214101711781831
+          },
+          {
+            "axis": "vertical_lip_deformation",
+            "mae": 0.11198229546294,
+            "observations": 105.171875,
+            "directional_observations": 96.984375,
+            "nonzero_target_sign_error": 0.3073267852154973
+          },
+          {
+            "axis": "rounding",
+            "mae": 0.0805981005083719,
+            "observations": 105.171875,
+            "directional_observations": 97.703125,
+            "nonzero_target_sign_error": 0.2949693613160749
+          }
+        ]
+      },
+      "schedule_execution_consistency": {
+        "eyelid_closure": {
+          "schedule_events": 71,
+          "realized_events": 52,
+          "matched_events": 50,
+          "matched_onset_abs_seconds_sum": 0.5600000000000003,
+          "matched_duration_abs_seconds_sum": 5.000000000000001,
+          "matched_amplitude_abs_sum": 3.8946317583322525,
+          "onset_precision": 0.9615384615384616,
+          "onset_recall": 0.704225352112676,
+          "onset_f1": 0.8130081300813008,
+          "matched_onset_abs_seconds": 0.011200000000000005,
+          "matched_duration_abs_seconds": 0.10000000000000002,
+          "matched_amplitude_abs": 0.07789263516664505
+        },
+        "brow_emphasis": {
+          "schedule_events": 21,
+          "realized_events": 17,
+          "matched_events": 14,
+          "matched_onset_abs_seconds_sum": 0.16000000000000011,
+          "matched_duration_abs_seconds_sum": 0.24000000000000002,
+          "matched_amplitude_abs_sum": 0.4241254925727844,
+          "onset_precision": 0.8235294117647058,
+          "onset_recall": 0.6666666666666666,
+          "onset_f1": 0.7368421052631579,
+          "matched_onset_abs_seconds": 0.011428571428571437,
+          "matched_duration_abs_seconds": 0.017142857142857144,
+          "matched_amplitude_abs": 0.030294678040913174
+        },
+        "cheek_nose_emphasis": {
+          "schedule_events": 0,
+          "realized_events": 0,
+          "matched_events": 0,
+          "matched_onset_abs_seconds_sum": 0,
+          "matched_duration_abs_seconds_sum": 0,
+          "matched_amplitude_abs_sum": 0,
+          "onset_precision": 0.0,
+          "onset_recall": 0.0,
+          "onset_f1": 0.0,
+          "matched_onset_abs_seconds": 0.0,
+          "matched_duration_abs_seconds": 0.0,
+          "matched_amplitude_abs": 0.0
+        },
+        "lip_tension": {
+          "schedule_events": 77,
+          "realized_events": 65,
+          "matched_events": 63,
+          "matched_onset_abs_seconds_sum": 0.4800000000000004,
+          "matched_duration_abs_seconds_sum": 1.04,
+          "matched_amplitude_abs_sum": 2.5077575743198395,
+          "onset_precision": 0.9692307692307692,
+          "onset_recall": 0.8181818181818182,
+          "onset_f1": 0.8873239436619719,
+          "matched_onset_abs_seconds": 0.007619047619047626,
+          "matched_duration_abs_seconds": 0.01650793650793651,
+          "matched_amplitude_abs": 0.03980567578285459
+        }
+      }
+    },
+    "v4_sample_seed91": {
+      "regional_dynamics_macro_clip": {
+        "eyelid_blink": {
+          "within_run_population_std": 0.022935291314441268,
+          "mean_abs_velocity_per_second": 0.13232065031674178,
+          "mean_abs_acceleration_per_second2": 3.842833992540876,
+          "observed_channel_frames": 210.34375,
+          "observed_channel_pairs": 208.34375,
+          "observed_channel_triples": 206.34375
+        },
+        "eye_open_squint": {
+          "within_run_population_std": 0.011836103159032331,
+          "mean_abs_velocity_per_second": 0.09369829191061377,
+          "mean_abs_acceleration_per_second2": 2.7936682036534934,
+          "observed_channel_frames": 420.6875,
+          "observed_channel_pairs": 416.6875,
+          "observed_channel_triples": 412.6875
+        },
+        "brow": {
+          "within_run_population_std": 0.01553633727517114,
+          "mean_abs_velocity_per_second": 0.13310760755405546,
+          "mean_abs_acceleration_per_second2": 3.987993426114418,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        },
+        "cheek_nose": {
+          "within_run_population_std": 2.2205521950258156e-05,
+          "mean_abs_velocity_per_second": 0.00019274082887708324,
+          "mean_abs_acceleration_per_second2": 0.005243666593844812,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        }
+      },
+      "realized_event_distributions": {
+        "eyelid_closure": {
+          "complete_events": 48,
+          "complete_events_per_minute": 5.348388055266677,
+          "duration_seconds_mean": 0.1991666666666667,
+          "amplitude_mean": 0.4424464168647925,
+          "complete_events_per_minute_abs_error": 5.459812806418067,
+          "duration_seconds_wasserstein1": 0.04078178694158077,
+          "amplitude_wasserstein1": 0.04607440074233664
+        },
+        "brow_emphasis": {
+          "complete_events": 23,
+          "complete_events_per_minute": 2.5627692764819496,
+          "duration_seconds_mean": 0.20173913043478264,
+          "amplitude_mean": 0.07972385507562886,
+          "complete_events_per_minute_abs_error": 2.005645520725004,
+          "duration_seconds_wasserstein1": 0.09204665959703073,
+          "amplitude_wasserstein1": 0.010035367107783244
+        },
+        "cheek_nose_emphasis": {
+          "complete_events": 0,
+          "complete_events_per_minute": 0.0,
+          "duration_seconds_mean": null,
+          "amplitude_mean": null,
+          "complete_events_per_minute_abs_error": 0.0,
+          "duration_seconds_wasserstein1": null,
+          "amplitude_wasserstein1": null
+        },
+        "lip_tension": {
+          "complete_events": 55,
+          "complete_events_per_minute": 6.128361313326402,
+          "duration_seconds_mean": 0.1672727272727273,
+          "amplitude_mean": 0.0903449833393097,
+          "complete_events_per_minute_abs_error": 6.23978606447779,
+          "duration_seconds_wasserstein1": 0.03355282555282557,
+          "amplitude_wasserstein1": 0.007832689019473826
+        }
+      },
+      "censored_event_counts": {
+        "eyelid_closure": 3,
+        "brow_emphasis": 3,
+        "cheek_nose_emphasis": 0,
+        "lip_tension": 5
+      },
+      "expression_direction": {
+        "mean_axis_mae": 0.07813386163209374,
+        "direction_cosine_error": 0.17672323824451075,
+        "axis_metrics": [
+          {
+            "axis": "smile_minus_frown",
+            "mae": 0.1115629319968586,
+            "observations": 105.171875,
+            "directional_observations": 88.3359375,
+            "nonzero_target_sign_error": 0.2220961059867166
+          },
+          {
+            "axis": "mouth_tension",
+            "mae": 0.026763444638054582,
+            "observations": 105.171875,
+            "directional_observations": 65.421875,
+            "nonzero_target_sign_error": 0.25048249570303327
+          },
+          {
+            "axis": "brow_lift",
+            "mae": 0.10410656064886173,
+            "observations": 105.171875,
+            "directional_observations": 67.2890625,
+            "nonzero_target_sign_error": 0.027304121199486015
+          },
+          {
+            "axis": "brow_contraction",
+            "mae": 0.16235601553655057,
+            "observations": 105.171875,
+            "directional_observations": 77.6328125,
+            "nonzero_target_sign_error": 0.020699917186569553
+          },
+          {
+            "axis": "eye_open_minus_squint",
+            "mae": 0.1402270780800085,
+            "observations": 105.171875,
+            "directional_observations": 104.421875,
+            "nonzero_target_sign_error": 0.055365561681633285
+          },
+          {
+            "axis": "cheek_nose",
+            "mae": 3.531034908590793e-05,
+            "observations": 105.171875,
+            "directional_observations": 0.0,
+            "nonzero_target_sign_error": 0.0
+          },
+          {
+            "axis": "dimple",
+            "mae": 0.012793982092636005,
+            "observations": 105.171875,
+            "directional_observations": 22.9765625,
+            "nonzero_target_sign_error": 0.28125154495349536
+          },
+          {
+            "axis": "lip_shrug",
+            "mae": 0.02891720581674984,
+            "observations": 105.171875,
+            "directional_observations": 87.875,
+            "nonzero_target_sign_error": 0.3296360821276025
+          },
+          {
+            "axis": "vertical_lip_deformation",
+            "mae": 0.11189163238337818,
+            "observations": 105.171875,
+            "directional_observations": 96.984375,
+            "nonzero_target_sign_error": 0.2931812432084345
+          },
+          {
+            "axis": "rounding",
+            "mae": 0.0826844547787534,
+            "observations": 105.171875,
+            "directional_observations": 97.703125,
+            "nonzero_target_sign_error": 0.3023511655988148
+          }
+        ]
+      },
+      "schedule_execution_consistency": {
+        "eyelid_closure": {
+          "schedule_events": 49,
+          "realized_events": 48,
+          "matched_events": 43,
+          "matched_onset_abs_seconds_sum": 0.3600000000000001,
+          "matched_duration_abs_seconds_sum": 0.8,
+          "matched_amplitude_abs_sum": 3.266551434993744,
+          "onset_precision": 0.8958333333333334,
+          "onset_recall": 0.8775510204081632,
+          "onset_f1": 0.8865979381443299,
+          "matched_onset_abs_seconds": 0.008372093023255816,
+          "matched_duration_abs_seconds": 0.018604651162790697,
+          "matched_amplitude_abs": 0.07596631244171498
+        },
+        "brow_emphasis": {
+          "schedule_events": 21,
+          "realized_events": 23,
+          "matched_events": 16,
+          "matched_onset_abs_seconds_sum": 0.28,
+          "matched_duration_abs_seconds_sum": 0.52,
+          "matched_amplitude_abs_sum": 0.460403922945261,
+          "onset_precision": 0.6956521739130435,
+          "onset_recall": 0.7619047619047619,
+          "onset_f1": 0.7272727272727273,
+          "matched_onset_abs_seconds": 0.0175,
+          "matched_duration_abs_seconds": 0.0325,
+          "matched_amplitude_abs": 0.028775245184078813
+        },
+        "cheek_nose_emphasis": {
+          "schedule_events": 0,
+          "realized_events": 0,
+          "matched_events": 0,
+          "matched_onset_abs_seconds_sum": 0,
+          "matched_duration_abs_seconds_sum": 0,
+          "matched_amplitude_abs_sum": 0,
+          "onset_precision": 0.0,
+          "onset_recall": 0.0,
+          "onset_f1": 0.0,
+          "matched_onset_abs_seconds": 0.0,
+          "matched_duration_abs_seconds": 0.0,
+          "matched_amplitude_abs": 0.0
+        },
+        "lip_tension": {
+          "schedule_events": 60,
+          "realized_events": 55,
+          "matched_events": 51,
+          "matched_onset_abs_seconds_sum": 0.3600000000000003,
+          "matched_duration_abs_seconds_sum": 1.4,
+          "matched_amplitude_abs_sum": 1.859165009111166,
+          "onset_precision": 0.9272727272727272,
+          "onset_recall": 0.85,
+          "onset_f1": 0.8869565217391304,
+          "matched_onset_abs_seconds": 0.007058823529411771,
+          "matched_duration_abs_seconds": 0.027450980392156862,
+          "matched_amplitude_abs": 0.036454215864924824
+        }
+      }
+    },
+    "v4_sample_seed137": {
+      "regional_dynamics_macro_clip": {
+        "eyelid_blink": {
+          "within_run_population_std": 0.02031169914412298,
+          "mean_abs_velocity_per_second": 0.12721835566054446,
+          "mean_abs_acceleration_per_second2": 3.77689717935429,
+          "observed_channel_frames": 210.34375,
+          "observed_channel_pairs": 208.34375,
+          "observed_channel_triples": 206.34375
+        },
+        "eye_open_squint": {
+          "within_run_population_std": 0.011386053607793187,
+          "mean_abs_velocity_per_second": 0.09253820631899937,
+          "mean_abs_acceleration_per_second2": 2.7801832133881783,
+          "observed_channel_frames": 420.6875,
+          "observed_channel_pairs": 416.6875,
+          "observed_channel_triples": 412.6875
+        },
+        "brow": {
+          "within_run_population_std": 0.015185440545905083,
+          "mean_abs_velocity_per_second": 0.13449447541264764,
+          "mean_abs_acceleration_per_second2": 4.040543477932776,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        },
+        "cheek_nose": {
+          "within_run_population_std": 2.2855554108386688e-05,
+          "mean_abs_velocity_per_second": 0.00019353012068356863,
+          "mean_abs_acceleration_per_second2": 0.005225971595656879,
+          "observed_channel_frames": 525.859375,
+          "observed_channel_pairs": 520.859375,
+          "observed_channel_triples": 515.859375
+        }
+      },
+      "realized_event_distributions": {
+        "eyelid_closure": {
+          "complete_events": 53,
+          "complete_events_per_minute": 5.905511811023623,
+          "duration_seconds_mean": 0.2233962264150943,
+          "amplitude_mean": 0.3777361298507115,
+          "complete_events_per_minute_abs_error": 4.902689050661121,
+          "duration_seconds_wasserstein1": 0.027014199572067712,
+          "amplitude_wasserstein1": 0.05528810584366589
+        },
+        "brow_emphasis": {
+          "complete_events": 26,
+          "complete_events_per_minute": 2.8970435299361172,
+          "duration_seconds_mean": 0.10307692307692308,
+          "amplitude_mean": 0.07394822887503184,
+          "complete_events_per_minute_abs_error": 1.6713712672708363,
+          "duration_seconds_wasserstein1": 0.05242026266416511,
+          "amplitude_wasserstein1": 0.00496935079094393
+        },
+        "cheek_nose_emphasis": {
+          "complete_events": 0,
+          "complete_events_per_minute": 0.0,
+          "duration_seconds_mean": null,
+          "amplitude_mean": null,
+          "complete_events_per_minute_abs_error": 0.0,
+          "duration_seconds_wasserstein1": null,
+          "amplitude_wasserstein1": null
+        },
+        "lip_tension": {
+          "complete_events": 64,
+          "complete_events_per_minute": 7.131184073688904,
+          "duration_seconds_mean": 0.23812500000000003,
+          "amplitude_mean": 0.09549546433845535,
+          "complete_events_per_minute_abs_error": 5.236963304115288,
+          "duration_seconds_wasserstein1": 0.06911599099099099,
+          "amplitude_wasserstein1": 0.012990233419685382
+        }
+      },
+      "censored_event_counts": {
+        "eyelid_closure": 5,
+        "brow_emphasis": 1,
+        "cheek_nose_emphasis": 0,
+        "lip_tension": 1
+      },
+      "expression_direction": {
+        "mean_axis_mae": 0.07755257173885458,
+        "direction_cosine_error": 0.17370449496262075,
+        "axis_metrics": [
+          {
+            "axis": "smile_minus_frown",
+            "mae": 0.11235448600268119,
+            "observations": 105.171875,
+            "directional_observations": 88.3359375,
+            "nonzero_target_sign_error": 0.2297353503480583
+          },
+          {
+            "axis": "mouth_tension",
+            "mae": 0.026104058673761428,
+            "observations": 105.171875,
+            "directional_observations": 65.421875,
+            "nonzero_target_sign_error": 0.23557173566647632
+          },
+          {
+            "axis": "brow_lift",
+            "mae": 0.10172422958748227,
+            "observations": 105.171875,
+            "directional_observations": 67.2890625,
+            "nonzero_target_sign_error": 0.023716973464409485
+          },
+          {
+            "axis": "brow_contraction",
+            "mae": 0.16189429902366564,
+            "observations": 105.171875,
+            "directional_observations": 77.6328125,
+            "nonzero_target_sign_error": 0.02992115100215586
+          },
+          {
+            "axis": "eye_open_minus_squint",
+            "mae": 0.1399100321544896,
+            "observations": 105.171875,
+            "directional_observations": 104.421875,
+            "nonzero_target_sign_error": 0.053877881551517834
+          },
+          {
+            "axis": "cheek_nose",
+            "mae": 3.633773036406244e-05,
+            "observations": 105.171875,
+            "directional_observations": 0.0,
+            "nonzero_target_sign_error": 0.0
+          },
+          {
+            "axis": "dimple",
+            "mae": 0.01258619822169179,
+            "observations": 105.171875,
+            "directional_observations": 22.9765625,
+            "nonzero_target_sign_error": 0.27499063078129826
+          },
+          {
+            "axis": "lip_shrug",
+            "mae": 0.02831856327205918,
+            "observations": 105.171875,
+            "directional_observations": 87.875,
+            "nonzero_target_sign_error": 0.32004448279439757
+          },
+          {
+            "axis": "vertical_lip_deformation",
+            "mae": 0.11179977945788169,
+            "observations": 105.171875,
+            "directional_observations": 96.984375,
+            "nonzero_target_sign_error": 0.29805821501006924
+          },
+          {
+            "axis": "rounding",
+            "mae": 0.08079773326446882,
+            "observations": 105.171875,
+            "directional_observations": 97.703125,
+            "nonzero_target_sign_error": 0.2940708467079891
+          }
+        ]
+      },
+      "schedule_execution_consistency": {
+        "eyelid_closure": {
+          "schedule_events": 58,
+          "realized_events": 53,
+          "matched_events": 51,
+          "matched_onset_abs_seconds_sum": 0.6400000000000003,
+          "matched_duration_abs_seconds_sum": 1.6400000000000001,
+          "matched_amplitude_abs_sum": 4.000620439648628,
+          "onset_precision": 0.9622641509433962,
+          "onset_recall": 0.8793103448275862,
+          "onset_f1": 0.918918918918919,
+          "matched_onset_abs_seconds": 0.012549019607843144,
+          "matched_duration_abs_seconds": 0.03215686274509804,
+          "matched_amplitude_abs": 0.07844353803232604
+        },
+        "brow_emphasis": {
+          "schedule_events": 26,
+          "realized_events": 26,
+          "matched_events": 21,
+          "matched_onset_abs_seconds_sum": 0.40000000000000013,
+          "matched_duration_abs_seconds_sum": 0.56,
+          "matched_amplitude_abs_sum": 0.3284571096301079,
+          "onset_precision": 0.8076923076923077,
+          "onset_recall": 0.8076923076923077,
+          "onset_f1": 0.8076923076923077,
+          "matched_onset_abs_seconds": 0.019047619047619053,
+          "matched_duration_abs_seconds": 0.02666666666666667,
+          "matched_amplitude_abs": 0.01564081474429085
+        },
+        "cheek_nose_emphasis": {
+          "schedule_events": 1,
+          "realized_events": 0,
+          "matched_events": 0,
+          "matched_onset_abs_seconds_sum": 0,
+          "matched_duration_abs_seconds_sum": 0,
+          "matched_amplitude_abs_sum": 0,
+          "onset_precision": 0.0,
+          "onset_recall": 0.0,
+          "onset_f1": 0.0,
+          "matched_onset_abs_seconds": 0.0,
+          "matched_duration_abs_seconds": 0.0,
+          "matched_amplitude_abs": 0.0
+        },
+        "lip_tension": {
+          "schedule_events": 77,
+          "realized_events": 64,
+          "matched_events": 58,
+          "matched_onset_abs_seconds_sum": 0.7600000000000003,
+          "matched_duration_abs_seconds_sum": 1.48,
+          "matched_amplitude_abs_sum": 1.5818651132285595,
+          "onset_precision": 0.90625,
+          "onset_recall": 0.7532467532467533,
+          "onset_f1": 0.8226950354609929,
+          "matched_onset_abs_seconds": 0.013103448275862075,
+          "matched_duration_abs_seconds": 0.025517241379310343,
+          "matched_amplitude_abs": 0.027273536434975165
+        }
+      }
+    }
+  },
+  "references": [
+    {
+      "clip_id": "mead_M025_neutral_L1_007",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_angry_L2_022",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_contempt_L3_027",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_disgust_L2_023",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_fear_L1_015",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_happy_L1_001",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_sad_L2_030",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_surprise_L2_030",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_neutral_L1_063",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_angry_L2_047",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_contempt_L3_034",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_disgust_L1_034",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_fear_L3_058",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_happy_L2_033",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_sad_L2_003",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_surprise_L2_032",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_neutral_L1_064",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_angry_L2_057",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_contempt_L2_019",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_disgust_L3_020",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_fear_L1_054",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_happy_L1_054",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_sad_L1_055",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_surprise_L1_053",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_neutral_L1_022",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_angry_L1_010",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_contempt_L1_016",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_disgust_L1_016",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_fear_L3_012",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_happy_L3_029",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_sad_L3_010",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_surprise_L2_019",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_neutral_L1_047",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_angry_L2_039",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_contempt_L3_036",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_disgust_L3_056",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_fear_L3_037",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_happy_L1_040",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_sad_L2_009",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_surprise_L2_002",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_neutral_L1_076",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_angry_L1_002",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_contempt_L1_019",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_disgust_L2_001",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_fear_L3_058",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_happy_L3_053",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_sad_L2_050",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_surprise_L1_037",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_neutral_L1_005",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_angry_L3_005",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_contempt_L1_030",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_disgust_L1_003",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_fear_L2_014",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_happy_L1_019",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_sad_L3_015",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_surprise_L3_010",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_neutral_L1_029",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_angry_L3_047",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_contempt_L2_044",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_disgust_L3_041",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_fear_L1_048",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_happy_L1_045",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_sad_L2_042",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_surprise_L3_046",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_neutral_L1_050",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_angry_L2_056",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_contempt_L2_034",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_disgust_L3_041",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_fear_L1_001",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_happy_L1_047",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_sad_L2_055",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_surprise_L1_039",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_neutral_L1_011",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_angry_L3_021",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_contempt_L2_024",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_disgust_L1_012",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_fear_L2_028",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_happy_L1_011",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_sad_L3_019",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_surprise_L2_007",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_neutral_L1_009",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_angry_L3_055",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_contempt_L3_033",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_disgust_L3_057",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_fear_L1_003",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_happy_L3_035",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_sad_L2_056",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_surprise_L1_051",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_neutral_L1_002",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_angry_L2_042",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_contempt_L1_049",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_disgust_L1_055",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_fear_L1_057",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_happy_L1_035",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_sad_L1_001",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_surprise_L2_038",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_neutral_L1_040",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_angry_L3_008",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_contempt_L3_010",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_disgust_L2_012",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_fear_L2_017",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_happy_L3_019",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_sad_L2_019",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_surprise_L1_007",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_neutral_L1_056",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_angry_L2_018",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_contempt_L3_001",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_disgust_L3_003",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_fear_L2_031",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_happy_L1_047",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_sad_L1_057",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M037_surprise_L3_053",
+      "single_reference_id": "mead_M037_neutral_L1_055",
+      "phase53_default_reference_ids": [
+        "mead_M037_neutral_L1_055",
+        "mead_M037_neutral_L1_071"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_neutral_L1_063",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_angry_L3_055",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_contempt_L1_035",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_disgust_L3_004",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_fear_L2_057",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_happy_L2_002",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_sad_L2_057",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M039_surprise_L1_024",
+      "single_reference_id": "mead_M039_neutral_L1_042",
+      "phase53_default_reference_ids": [
+        "mead_M039_neutral_L1_042",
+        "mead_M039_neutral_L1_035"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_neutral_L1_016",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_angry_L2_019",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_contempt_L2_007",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_disgust_L1_007",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_fear_L3_015",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_happy_L2_025",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_sad_L3_012",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    },
+    {
+      "clip_id": "mead_M025_surprise_L3_019",
+      "single_reference_id": "mead_M025_neutral_L1_037",
+      "phase53_default_reference_ids": [
+        "mead_M025_neutral_L1_037",
+        "mead_M025_neutral_L1_031"
+      ]
+    }
+  ],
+  "valid_seconds": 538.4799999999999,
+  "limitations": [
+    "Custom coefficient run-std/velocity/acceleration are not SubtleTalk FDD or established perceptual dynamic scores.",
+    "Motion parser thresholds/anchors are shared with training: weak pseudo labels are not an independent external dynamic or emotional ground truth.",
+    "Observed-history Brier/NLL measures conditional probability given observed past events, not teacher-free rollout likelihood or generated-motion accuracy.",
+    "No best-of-N, ground-truth event inputs, or query-motion teacher inputs enter sampled/modal generation.",
+    "Eyelid closure is a motion event, not emotional accuracy. Expression direction is an ARKit-coordinate diagnostic, not psychological VA.",
+    "Only complete within-run events enter distributions/matching; boundary events are censored. Rare-event empty Wasserstein distances are null.",
+    "Phase53 default uses its original independent reference set; v4 uses fixed first independent reference. Training budgets/architectures differ.",
+    "No phonetic constraints are supplied by this evaluator; it evaluates the current unconstrained implementation explicitly."
+  ]
+}

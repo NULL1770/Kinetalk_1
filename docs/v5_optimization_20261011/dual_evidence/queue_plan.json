@@ -1,0 +1,392 @@
+{
+  "output": "/root/kinetalk_v5_20261012_dual/queue",
+  "code_root": "/root/kinetalk_v5_20261012_dual",
+  "source_manifest": "/root/kinetalk_v5_20261012_dual/source_manifest.json",
+  "source_checkpoint_sha256": "310fe9fa348ecb7f6210fc854f3c867dc055e470db00be1d2dc38722016df702",
+  "binding_sha256": "d30f10075b704c4cb228629549820056c952533fa5c4507666ab8640a1fa6087",
+  "jobs": [
+    {
+      "name": "guided_smoke16",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/train_dual_timescale_v5.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261011/state_raw_direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/runs/guided_smoke16",
+        "--arm",
+        "guided",
+        "--updates",
+        "16",
+        "--eval-limit",
+        "16",
+        "--batch-size",
+        "12",
+        "--lr",
+        "5e-5",
+        "--seed",
+        "47"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/runs/guided_smoke16/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "control",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/train_dual_timescale_v5.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261011/state_raw_direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/runs/control",
+        "--arm",
+        "control",
+        "--updates",
+        "256",
+        "--eval-limit",
+        "128",
+        "--batch-size",
+        "12",
+        "--lr",
+        "5e-5",
+        "--seed",
+        "47"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/runs/control/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "direct",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/train_dual_timescale_v5.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261011/state_raw_direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/runs/direct",
+        "--arm",
+        "direct",
+        "--updates",
+        "256",
+        "--eval-limit",
+        "128",
+        "--batch-size",
+        "12",
+        "--lr",
+        "5e-5",
+        "--seed",
+        "47"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/runs/direct/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "guided",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/train_dual_timescale_v5.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261011/state_raw_direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/runs/guided",
+        "--arm",
+        "guided",
+        "--updates",
+        "256",
+        "--eval-limit",
+        "128",
+        "--batch-size",
+        "12",
+        "--lr",
+        "5e-5",
+        "--seed",
+        "47"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/runs/guided/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "control_full1367",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/evaluate_v5_candidate.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367",
+        "--limit",
+        "0"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "control_dynamics128",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/evaluate_v4_dynamics.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/control_dynamics128",
+        "--limit",
+        "128",
+        "--seeds",
+        "47",
+        "91",
+        "137"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/control_dynamics128/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "control_controls32",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_controls.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/control_controls32",
+        "--limit",
+        "32"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/control_controls32/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "control_geometry128",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_geometry.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/control_geometry128",
+        "--limit",
+        "128"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/control_geometry128/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "control_style64",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_style_targets.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/control_style64",
+        "--limit",
+        "64",
+        "--device",
+        "cuda"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/control_style64/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "direct_full1367",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/evaluate_v5_candidate.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367",
+        "--limit",
+        "0"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "direct_dynamics128",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/evaluate_v4_dynamics.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/direct_dynamics128",
+        "--limit",
+        "128",
+        "--seeds",
+        "47",
+        "91",
+        "137"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/direct_dynamics128/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "direct_controls32",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_controls.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/direct_controls32",
+        "--limit",
+        "32"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/direct_controls32/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "direct_geometry128",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_geometry.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/direct_geometry128",
+        "--limit",
+        "128"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/direct_geometry128/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "direct_style64",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_style_targets.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/direct/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/direct_style64",
+        "--limit",
+        "64",
+        "--device",
+        "cuda"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/direct_style64/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "guided_full1367",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/evaluate_v5_candidate.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/guided/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367",
+        "--limit",
+        "0"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "guided_dynamics128",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/evaluate_v4_dynamics.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/guided/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/guided_dynamics128",
+        "--limit",
+        "128",
+        "--seeds",
+        "47",
+        "91",
+        "137"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/guided_dynamics128/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "guided_controls32",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_controls.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/guided/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/guided_controls32",
+        "--limit",
+        "32"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/guided_controls32/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "guided_geometry128",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_geometry.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/guided/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/guided_geometry128",
+        "--limit",
+        "128"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/guided_geometry128/complete.json",
+      "timeout_seconds": 2700
+    },
+    {
+      "name": "guided_style64",
+      "argv": [
+        "/root/miniconda3/bin/python",
+        "/root/kinetalk_v5_20261012_dual/scripts/audit_v5_style_targets.py",
+        "--binding",
+        "/root/kinetalk_v5_20261011/binding.json",
+        "--checkpoint",
+        "/root/kinetalk_v5_20261012_dual/runs/guided/final.pt",
+        "--output",
+        "/root/kinetalk_v5_20261012_dual/evaluations/guided_style64",
+        "--limit",
+        "64",
+        "--device",
+        "cuda"
+      ],
+      "marker": "/root/kinetalk_v5_20261012_dual/evaluations/guided_style64/complete.json",
+      "timeout_seconds": 2700
+    }
+  ],
+  "test_loaded": false,
+  "promotion": false
+}

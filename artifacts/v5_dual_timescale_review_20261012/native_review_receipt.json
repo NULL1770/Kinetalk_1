@@ -1,0 +1,70 @@
+{
+  "schema": "dual_timescale_native_review_v1",
+  "test_loaded": false,
+  "promotion": false,
+  "videos": {
+    "angry": {
+      "video": "D:\\\u5b9e\u9a8c\u5ba4\u9879\u76ee\\\u65b0\u5b9e\u9a8c\\kinetalk_b0_residual_train\\artifacts\\v5_dual_timescale_review_20261012\\angry_render\\comparison.mp4",
+      "sha256": "07b6886d71b118f79091fa9a9dfff5a9827958324a93640794695e31b979497d",
+      "frames": 82,
+      "fps": 25,
+      "full_decode": true,
+      "rig_error": 0,
+      "source_hashes": [
+        "1c873d5f0f90540167c28c13ed131ae311970c650c2d8dbb27d9ed698ea78049",
+        "c61824cf582f714668bd9c75ec3f30401da68130e2b4a61a770a751314ef509b",
+        "1ec27c48094ec84be14f7946e2c3d500f962e46094c9054ab28849b648cc21eb"
+      ],
+      "checkpoint_hashes": {
+        "control": "372dbc2a23913743cb67452bf6f5756e3be195f81c468f2a1f972afbb79c9add",
+        "direct": "64c0cfc29a5a30ba56d6541cf581a856af9817c52f9e042ca810056582b3950e",
+        "guided": "48d60bef56ce4ab175f4efbda8af580d836634cf20af74f0e8c47b9d5d1053a0"
+      },
+      "audio_sha256": "a078a496462509ea378d9d7da90f8421d86038fe802991f87e5b4a25b57c5531",
+      "merged_sha256": "801f4a5e41eec20b7842809c00b649d79d090662dfdf7ee3531a12e9a959f241",
+      "native_start_seconds": 0.04,
+      "removed_invalid_edge_indices": [
+        0
+      ],
+      "inspection_frame_indices": [
+        0,
+        20,
+        40,
+        61,
+        81
+      ]
+    },
+    "happy": {
+      "video": "D:\\\u5b9e\u9a8c\u5ba4\u9879\u76ee\\\u65b0\u5b9e\u9a8c\\kinetalk_b0_residual_train\\artifacts\\v5_dual_timescale_review_20261012\\happy_render\\comparison.mp4",
+      "sha256": "c945d4863e595813f152d93333e389f84f6669374629398d7d238909614a8cfd",
+      "frames": 103,
+      "fps": 25,
+      "full_decode": true,
+      "rig_error": 0,
+      "source_hashes": [
+        "bb9137882f218a2da45a0f7a8244377453892e72c041e7306cb8b6e91ae8b8c3",
+        "4f06078774a21b8f5f30ef25e20dc0f16ee5c06e9b5da6fd60d52376fc483e55",
+        "fb976c551534bd796e810f14282079729b32f580194ecb2e7b9d2714e28141b2"
+      ],
+      "checkpoint_hashes": {
+        "control": "372dbc2a23913743cb67452bf6f5756e3be195f81c468f2a1f972afbb79c9add",
+        "direct": "64c0cfc29a5a30ba56d6541cf581a856af9817c52f9e042ca810056582b3950e",
+        "guided": "48d60bef56ce4ab175f4efbda8af580d836634cf20af74f0e8c47b9d5d1053a0"
+      },
+      "audio_sha256": "66bf8d9c60a34e33e803fd69d431ead609e17b8aea82b7950080af7a5f171bc4",
+      "merged_sha256": "14893028e0065b52fb990c0826632aa6916fa72bd6d9f9eada321d855938d145",
+      "native_start_seconds": 0.04,
+      "removed_invalid_edge_indices": [
+        0,
+        104
+      ],
+      "inspection_frame_indices": [
+        0,
+        26,
+        51,
+        76,
+        102
+      ]
+    }
+  }
+}

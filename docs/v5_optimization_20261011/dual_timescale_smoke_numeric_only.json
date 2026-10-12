@@ -1,0 +1,250 @@
+{
+  "schema": "v5_candidate_smoke_v1",
+  "status": "complete",
+  "updates": 16,
+  "checkpoint_sha256": "310fe9fa348ecb7f6210fc854f3c867dc055e470db00be1d2dc38722016df702",
+  "binding_sha256": "d30f10075b704c4cb228629549820056c952533fa5c4507666ab8640a1fa6087",
+  "test_loaded": false,
+  "rows": [
+    {
+      "step": 1,
+      "total": 1.4778989553451538,
+      "grad_norm": 6.994177341461182,
+      "envelope_distill": 0.036306727677583694,
+      "confidence": 0.3132617473602295,
+      "factor_regularizer": 0.0,
+      "affect_gate": 0.11920301616191864,
+      "phonetic_gate": 0.11920301616191864,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 2,
+      "total": 1.3616838455200195,
+      "grad_norm": 6.483996868133545,
+      "envelope_distill": 0.033079590648412704,
+      "confidence": 0.3121982216835022,
+      "factor_regularizer": 3.4375307222944684e-06,
+      "affect_gate": 0.11920702457427979,
+      "phonetic_gate": 0.11920702457427979,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 3,
+      "total": 1.2593002319335938,
+      "grad_norm": 6.2717719078063965,
+      "envelope_distill": 0.030394168570637703,
+      "confidence": 0.3111256957054138,
+      "factor_regularizer": 6.472483164543519e-06,
+      "affect_gate": 0.11921163648366928,
+      "phonetic_gate": 0.11921150237321854,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 4,
+      "total": 1.1661176681518555,
+      "grad_norm": 5.721512317657471,
+      "envelope_distill": 0.02816949412226677,
+      "confidence": 0.3100442886352539,
+      "factor_regularizer": 9.205313290294725e-06,
+      "affect_gate": 0.11921630054712296,
+      "phonetic_gate": 0.11921613663434982,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 5,
+      "total": 1.081738829612732,
+      "grad_norm": 5.58780574798584,
+      "envelope_distill": 0.026310864835977554,
+      "confidence": 0.3089534640312195,
+      "factor_regularizer": 1.1796135368058458e-05,
+      "affect_gate": 0.11922087520360947,
+      "phonetic_gate": 0.11922094970941544,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 6,
+      "total": 1.0040708780288696,
+      "grad_norm": 5.137002944946289,
+      "envelope_distill": 0.02474883385002613,
+      "confidence": 0.3078537881374359,
+      "factor_regularizer": 1.4321492017188575e-05,
+      "affect_gate": 0.1192256510257721,
+      "phonetic_gate": 0.1192258670926094,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 7,
+      "total": 0.9337617754936218,
+      "grad_norm": 4.584183692932129,
+      "envelope_distill": 0.023419685661792755,
+      "confidence": 0.30674469470977783,
+      "factor_regularizer": 1.6823832993395627e-05,
+      "affect_gate": 0.11923053115606308,
+      "phonetic_gate": 0.11923091113567352,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 8,
+      "total": 0.8714642524719238,
+      "grad_norm": 4.366884708404541,
+      "envelope_distill": 0.022270387038588524,
+      "confidence": 0.30562686920166016,
+      "factor_regularizer": 1.9297023754916154e-05,
+      "affect_gate": 0.11923538148403168,
+      "phonetic_gate": 0.119236059486866,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 9,
+      "total": 0.8169389367103577,
+      "grad_norm": 3.530674934387207,
+      "envelope_distill": 0.021258939057588577,
+      "confidence": 0.30450162291526794,
+      "factor_regularizer": 2.175604458898306e-05,
+      "affect_gate": 0.11924032121896744,
+      "phonetic_gate": 0.11924133449792862,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 10,
+      "total": 0.7708024978637695,
+      "grad_norm": 3.2292044162750244,
+      "envelope_distill": 0.02034960687160492,
+      "confidence": 0.30337008833885193,
+      "factor_regularizer": 2.4232851501437835e-05,
+      "affect_gate": 0.11924541741609573,
+      "phonetic_gate": 0.11924669146537781,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 11,
+      "total": 0.7320248484611511,
+      "grad_norm": 2.873404026031494,
+      "envelope_distill": 0.019507527351379395,
+      "confidence": 0.3022332191467285,
+      "factor_regularizer": 2.6745554350782186e-05,
+      "affect_gate": 0.11925064027309418,
+      "phonetic_gate": 0.11925216019153595,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 12,
+      "total": 0.6995109915733337,
+      "grad_norm": 2.251695394515991,
+      "envelope_distill": 0.018709693104028702,
+      "confidence": 0.3010915219783783,
+      "factor_regularizer": 2.928796675405465e-05,
+      "affect_gate": 0.11925583332777023,
+      "phonetic_gate": 0.11925768852233887,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 13,
+      "total": 0.6726810932159424,
+      "grad_norm": 2.4056780338287354,
+      "envelope_distill": 0.01792500726878643,
+      "confidence": 0.299945592880249,
+      "factor_regularizer": 3.1877625588094816e-05,
+      "affect_gate": 0.11926055699586868,
+      "phonetic_gate": 0.11926329135894775,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 14,
+      "total": 0.6502055525779724,
+      "grad_norm": 2.1311850547790527,
+      "envelope_distill": 0.01713147759437561,
+      "confidence": 0.29879581928253174,
+      "factor_regularizer": 3.451506927376613e-05,
+      "affect_gate": 0.11926478892564774,
+      "phonetic_gate": 0.1192689910531044,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 15,
+      "total": 0.6311382055282593,
+      "grad_norm": 1.5456807613372803,
+      "envelope_distill": 0.0163094624876976,
+      "confidence": 0.29764246940612793,
+      "factor_regularizer": 3.719397500390187e-05,
+      "affect_gate": 0.11926896125078201,
+      "phonetic_gate": 0.11927474290132523,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "step": 16,
+      "total": 0.6149349808692932,
+      "grad_norm": 1.9404350519180298,
+      "envelope_distill": 0.015449393540620804,
+      "confidence": 0.2964857816696167,
+      "factor_regularizer": 3.9898266550153494e-05,
+      "affect_gate": 0.11927338689565659,
+      "phonetic_gate": 0.11928056180477142,
+      "head_gradients": [
+        true,
+        true,
+        true
+      ]
+    }
+  ]
+}

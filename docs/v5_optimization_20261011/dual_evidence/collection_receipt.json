@@ -1,0 +1,530 @@
+{
+  "schema": "dual_timescale_collection_v1",
+  "files": [
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/queue/complete.json",
+      "local": "queue/complete.json",
+      "bytes": 16426,
+      "sha256": "6860c1af563bb381d7908d179f36b9fa65f7e423ece2e787513f334480688230"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/queue/queue_state.json",
+      "local": "queue/queue_state.json",
+      "bytes": 16426,
+      "sha256": "6860c1af563bb381d7908d179f36b9fa65f7e423ece2e787513f334480688230"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/launch_receipt.json",
+      "local": "launch_receipt.json",
+      "bytes": 435,
+      "sha256": "81c4c791eeeead6f1b52d18c169e3c6b1ccdad51e2de508d9d0830e9f538c3ff"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/source_manifest.json",
+      "local": "source_manifest.json",
+      "bytes": 37050,
+      "sha256": "cd345bd9a44f8553df92e5b79b60680144a834b4b46a183e0bf85e68c337be14"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/upload_hashes.json",
+      "local": "upload_hashes.json",
+      "bytes": 2202,
+      "sha256": "75000bd14a0656a86144b215859ba3610716a779d59ec8fb7bbdd12027b5565b"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/queue_plan.json",
+      "local": "queue_plan.json",
+      "bytes": 12620,
+      "sha256": "b819b810fa74463fca4a31b9319908d13341aff51e1c9824afa53ef17f2412bc"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/control/complete.json",
+      "local": "runs/control/complete.json",
+      "bytes": 4257,
+      "sha256": "4025803a06470ad203ee13e6262eaef1144aa41202ebfd3fdc1697c5382d58ac"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+      "local": "runs/control/final.pt",
+      "bytes": 10158154,
+      "sha256": "372dbc2a23913743cb67452bf6f5756e3be195f81c468f2a1f972afbb79c9add"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/control/history.json",
+      "local": "runs/control/history.json",
+      "bytes": 116629,
+      "sha256": "b3ecdbcb679979d5ff1d6d6d974508ff10af8d2764ce880f4fecfacd739f8de7"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/control/protocol.json",
+      "local": "runs/control/protocol.json",
+      "bytes": 3209,
+      "sha256": "5f7d17a491e28e5c0654573f25a612ae976c272fdd01d61b84ab4b16b694cf3f"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/complete.json",
+      "local": "evaluations/control_full1367/complete.json",
+      "bytes": 126,
+      "sha256": "4c82fefd47079bf4216fd196b96dddc900db93baa7e8d3e7a74ef001841367d3"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/report.json",
+      "local": "evaluations/control_full1367/report.json",
+      "bytes": 165302,
+      "sha256": "41180d73d12f83311aa0c5bbf7f90901e6c013cb8bff42bd50c5e2b23dfc9c60"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/state.json",
+      "local": "evaluations/control_full1367/state.json",
+      "bytes": 51,
+      "sha256": "618c631038724ad39e8ec704fadd84a1688fb665c362eed2ccbb03015df0e3ee"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "bytes": 58841,
+      "sha256": "1c873d5f0f90540167c28c13ed131ae311970c650c2d8dbb27d9ed698ea78049"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "bytes": 33227,
+      "sha256": "ef5a0aa037a390aab1bb782d9bffe6adec1b29d0e58fadf35a7d5c863c9ad1ae"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "bytes": 54084,
+      "sha256": "04a79823f49ba5ec8e9774709cc81f5f9727b57d7a680621f15d836cf358139e"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "bytes": 54644,
+      "sha256": "6aed2c14bafb2825323d84e16efccd2d6b9122f47588cd5866de43d48e88acec"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "bytes": 73080,
+      "sha256": "bb9137882f218a2da45a0f7a8244377453892e72c041e7306cb8b6e91ae8b8c3"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "bytes": 71620,
+      "sha256": "dc8234eba1dcdfd7d503eee329a4f7ec8b5a68e169c92253dd9f04c81e46d9ab"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "bytes": 111467,
+      "sha256": "27c0a5ad861d4df91678db7e1895d4344db51eb9eaa4e3233326a5e174f040ea"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "local": "evaluations/control_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "bytes": 52692,
+      "sha256": "4df0e0af6ea6ffc1e1d320e3a6106e3a8d227f6c07f7f6d15b47d78bc8b383c9"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_dynamics128/complete.json",
+      "local": "evaluations/control_dynamics128/complete.json",
+      "bytes": 182,
+      "sha256": "9245317383efc22be6ab302fcdc3b4e22ae6800c57a699e6f2da4b62236c3506"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_dynamics128/per_clip.json",
+      "local": "evaluations/control_dynamics128/per_clip.json",
+      "bytes": 844681,
+      "sha256": "803a12d5cb9e753d7935daaba991b9825af48b08b5bca4c402da5e67da9f06ab"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_dynamics128/report.json",
+      "local": "evaluations/control_dynamics128/report.json",
+      "bytes": 88843,
+      "sha256": "6bbc6a0e4991e5ca3d914fb65dd06f5bb893655d58324dcd20c653a4a8c1e1e1"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_dynamics128/state.json",
+      "local": "evaluations/control_dynamics128/state.json",
+      "bytes": 60,
+      "sha256": "beff09da93489b7de9fe903c2be176a18826df73c32ac5c9f740c708991276df"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_controls32/372dbc2a2391.json",
+      "local": "evaluations/control_controls32/372dbc2a2391.json",
+      "bytes": 6358344,
+      "sha256": "169e24bb60f0b98428c3d5a7388da88a884aa402d4055d8cde90efc75c84f0bf"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_controls32/complete.json",
+      "local": "evaluations/control_controls32/complete.json",
+      "bytes": 61,
+      "sha256": "2066db91125b571cb620d037f21a3f6391abe318f45f95b59c612f7d71a03927"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_geometry128/372dbc2a2391.json",
+      "local": "evaluations/control_geometry128/372dbc2a2391.json",
+      "bytes": 940659,
+      "sha256": "c4ebab16fa844a189db24aee9a68207380fdc7a2b6aeb72f78fc1e4528373ab3"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_geometry128/complete.json",
+      "local": "evaluations/control_geometry128/complete.json",
+      "bytes": 86,
+      "sha256": "964293d03eeac73cab54b49f62e5aa2c2eb0a8affa6668c9d27e34bbe9f84dbe"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_geometry128/state.json",
+      "local": "evaluations/control_geometry128/state.json",
+      "bytes": 141,
+      "sha256": "bf17fd56b758b19b51e7454562de01ce16131d5d14c01b994a495df9c55dd176"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_style64/372dbc2a2391.json",
+      "local": "evaluations/control_style64/372dbc2a2391.json",
+      "bytes": 694010,
+      "sha256": "a08d69a7830d6d417581229a745f1e9fa8c4ab0e95c63d9e2421c7547b6f0b95"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_style64/complete.json",
+      "local": "evaluations/control_style64/complete.json",
+      "bytes": 93,
+      "sha256": "0b88b9fc42b4385d71f59bcdc61bef7ae93f2112e60270efc4d65a3c9b5cb4e2"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/control_style64/state.json",
+      "local": "evaluations/control_style64/state.json",
+      "bytes": 139,
+      "sha256": "6720a0ab5f6726778194662265f818d53a65d1e2a218e6301801bffea23252f3"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/direct/complete.json",
+      "local": "runs/direct/complete.json",
+      "bytes": 4462,
+      "sha256": "c53f8c99c6d7441b0d8863c03e25f394908de764df775dba1e17934e6e0142b1"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/direct/final.pt",
+      "local": "runs/direct/final.pt",
+      "bytes": 10268514,
+      "sha256": "64c0cfc29a5a30ba56d6541cf581a856af9817c52f9e042ca810056582b3950e"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/direct/history.json",
+      "local": "runs/direct/history.json",
+      "bytes": 175358,
+      "sha256": "5b81d28bcd24edc4bd1745f0f14fc036db51f794e022821a7966ac20183eadc9"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/direct/protocol.json",
+      "local": "runs/direct/protocol.json",
+      "bytes": 3399,
+      "sha256": "8d657aa3e3b7ed397088ae9f06461897187bea05cc17ddf51bd68102095a48d6"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/complete.json",
+      "local": "evaluations/direct_full1367/complete.json",
+      "bytes": 126,
+      "sha256": "e54334b1462b2687231f68b24bc7cd249d675078245c4fb4f88d2e68097efa3b"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/report.json",
+      "local": "evaluations/direct_full1367/report.json",
+      "bytes": 165623,
+      "sha256": "8c224455d465024168ecfdefd329bcddb83d2a36e93450c8d405ab97856966b5"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/state.json",
+      "local": "evaluations/direct_full1367/state.json",
+      "bytes": 51,
+      "sha256": "618c631038724ad39e8ec704fadd84a1688fb665c362eed2ccbb03015df0e3ee"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "bytes": 58848,
+      "sha256": "c61824cf582f714668bd9c75ec3f30401da68130e2b4a61a770a751314ef509b"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "bytes": 33212,
+      "sha256": "a33902afd33a867a3620e573e4fbd306ad9b258fa62e8aa6d470e6ec3f7df7d6"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "bytes": 54092,
+      "sha256": "39b4d26f5a22de5fd3f8f5fb59ff809621a146e6fe8bc5b8eac5e793954e7bef"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "bytes": 54649,
+      "sha256": "098d618975201b97342d90e7a0db1d629ec1acd846ab836f69f01f50ae3101b9"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "bytes": 73107,
+      "sha256": "4f06078774a21b8f5f30ef25e20dc0f16ee5c06e9b5da6fd60d52376fc483e55"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "bytes": 71634,
+      "sha256": "de87833e3a58a7acd047aad251f4ccac83e06cafa915fabb8dbc822910720d0f"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "bytes": 111466,
+      "sha256": "49e94a8b3ab5577432e38a5ccbd64067ea1ffb1694a272b6acedd2c34d90b159"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "local": "evaluations/direct_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "bytes": 52718,
+      "sha256": "b504c5876f4538c646390a9b3f4a9d2884694ccb03943b337cf2a240627024ae"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_dynamics128/complete.json",
+      "local": "evaluations/direct_dynamics128/complete.json",
+      "bytes": 182,
+      "sha256": "2ad1728fb68a5796de6bf09314d70522bc2ecd74bb0fb91fc74097b67921667b"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_dynamics128/per_clip.json",
+      "local": "evaluations/direct_dynamics128/per_clip.json",
+      "bytes": 844641,
+      "sha256": "8adbaf117d35d1a295b10c649e6a562f74bee0f9672997d1da2b9295a4105b5a"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_dynamics128/report.json",
+      "local": "evaluations/direct_dynamics128/report.json",
+      "bytes": 89039,
+      "sha256": "7dd0bba0d84d0f4d5b4a69c4473e59288147d267f53414e76f2a1560d7a7efd2"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_dynamics128/state.json",
+      "local": "evaluations/direct_dynamics128/state.json",
+      "bytes": 60,
+      "sha256": "beff09da93489b7de9fe903c2be176a18826df73c32ac5c9f740c708991276df"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_controls32/64c0cfc29a5a.json",
+      "local": "evaluations/direct_controls32/64c0cfc29a5a.json",
+      "bytes": 6359409,
+      "sha256": "02a8adb8d9366772af5af27e86605db8f33668090b4415837a5c9a35802d8b58"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_controls32/complete.json",
+      "local": "evaluations/direct_controls32/complete.json",
+      "bytes": 61,
+      "sha256": "2066db91125b571cb620d037f21a3f6391abe318f45f95b59c612f7d71a03927"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_geometry128/64c0cfc29a5a.json",
+      "local": "evaluations/direct_geometry128/64c0cfc29a5a.json",
+      "bytes": 940590,
+      "sha256": "2be412158f5fbae556ad40dda7d5b0e8dd66f7d6d865c0b9a34f01f9d8e2fd98"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_geometry128/complete.json",
+      "local": "evaluations/direct_geometry128/complete.json",
+      "bytes": 86,
+      "sha256": "964293d03eeac73cab54b49f62e5aa2c2eb0a8affa6668c9d27e34bbe9f84dbe"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_geometry128/state.json",
+      "local": "evaluations/direct_geometry128/state.json",
+      "bytes": 141,
+      "sha256": "934b22282b4a01cadabb6e0be8c1914a9007ba01b55a6a11085390e3e334d85c"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_style64/64c0cfc29a5a.json",
+      "local": "evaluations/direct_style64/64c0cfc29a5a.json",
+      "bytes": 694100,
+      "sha256": "b78a0232cec0dd8d4401a7288ed7be8d9f5c36bb48534ca9211808bd8d699cfa"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_style64/complete.json",
+      "local": "evaluations/direct_style64/complete.json",
+      "bytes": 93,
+      "sha256": "0b88b9fc42b4385d71f59bcdc61bef7ae93f2112e60270efc4d65a3c9b5cb4e2"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/direct_style64/state.json",
+      "local": "evaluations/direct_style64/state.json",
+      "bytes": 139,
+      "sha256": "15214f290222a5fe477bf6c31533e02b88524b7719836bbfd88d703c275e1b4a"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/guided/complete.json",
+      "local": "runs/guided/complete.json",
+      "bytes": 4461,
+      "sha256": "eda56fc27bf2cc26986122617d54311e3d1d9e48a4a9a9c756976e18a23202f4"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/guided/final.pt",
+      "local": "runs/guided/final.pt",
+      "bytes": 10268514,
+      "sha256": "48d60bef56ce4ab175f4efbda8af580d836634cf20af74f0e8c47b9d5d1053a0"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/guided/history.json",
+      "local": "runs/guided/history.json",
+      "bytes": 175383,
+      "sha256": "ebcb350173bfcf9cb72dd4ea32bbafb6c94b6d93952f3b8a06769fa142a7c2ef"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/runs/guided/protocol.json",
+      "local": "runs/guided/protocol.json",
+      "bytes": 3400,
+      "sha256": "98bc99d1cb8c5338c6f97f48711d77b79223a68a8ffd22ca9b7efa94e17b2b1c"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/complete.json",
+      "local": "evaluations/guided_full1367/complete.json",
+      "bytes": 126,
+      "sha256": "0fe9ced5c8e04608cc529082fcb55d33cfeb61f4b7f7f07f76ad988ba3f488b7"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/report.json",
+      "local": "evaluations/guided_full1367/report.json",
+      "bytes": 165610,
+      "sha256": "bb9128e47535bee886a8adbfa9ba4c9499301b01632200795d78d98374299d61"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/state.json",
+      "local": "evaluations/guided_full1367/state.json",
+      "bytes": 51,
+      "sha256": "618c631038724ad39e8ec704fadd84a1688fb665c362eed2ccbb03015df0e3ee"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_angry_L3_005.npz",
+      "bytes": 58847,
+      "sha256": "1ec27c48094ec84be14f7946e2c3d500f962e46094c9054ab28849b648cc21eb"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_contempt_L3_005.npz",
+      "bytes": 33213,
+      "sha256": "6da140c157101b2deda2083689582be3b3cbb18652a7d60590b5ea2d8e953589"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_disgust_L3_005.npz",
+      "bytes": 54082,
+      "sha256": "92dbff94d384466938080b337c44061435a96085fbffc1b54f636d1e7ff4ba17"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_fear_L3_005.npz",
+      "bytes": 54643,
+      "sha256": "c6cbcc88b0d5fa4ac6e09434b34fff34c19515db2e42d1a0d4c1af8b1b9e9577"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_happy_L3_005.npz",
+      "bytes": 73089,
+      "sha256": "fb976c551534bd796e810f14282079729b32f580194ecb2e7b9d2714e28141b2"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_neutral_L1_005.npz",
+      "bytes": 71671,
+      "sha256": "e82122e7c17f068d1fe773a3c0d2011027085f14e27f27806b868cdba68fd683"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_sad_L3_005.npz",
+      "bytes": 111458,
+      "sha256": "bce572bfd2bd7f0bcb286fab38e8541c67029aa10a501cce0003663c467bd858"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "local": "evaluations/guided_full1367/render_inputs/mead_M025_surprise_L3_005.npz",
+      "bytes": 52711,
+      "sha256": "41eb17b42d4dfb1fc225cd58122f5fe4770e4016323b1c6eaceec3bef0b710c5"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_dynamics128/complete.json",
+      "local": "evaluations/guided_dynamics128/complete.json",
+      "bytes": 182,
+      "sha256": "34fc096f9bad8d7ea1a5a1a9aeb62da1553a319c759d1885e7ff82011139c9d9"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_dynamics128/per_clip.json",
+      "local": "evaluations/guided_dynamics128/per_clip.json",
+      "bytes": 844681,
+      "sha256": "414d8b48bb0653c60b9966fbbf75285fd6d6716902e07e25198db2be1a7a321f"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_dynamics128/report.json",
+      "local": "evaluations/guided_dynamics128/report.json",
+      "bytes": 89039,
+      "sha256": "f2bd911423c4ee3a1e9552bc7b588d3fb9bed3fb0abea84f22955601a460eb9e"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_dynamics128/state.json",
+      "local": "evaluations/guided_dynamics128/state.json",
+      "bytes": 60,
+      "sha256": "beff09da93489b7de9fe903c2be176a18826df73c32ac5c9f740c708991276df"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_controls32/48d60bef56ce.json",
+      "local": "evaluations/guided_controls32/48d60bef56ce.json",
+      "bytes": 6359094,
+      "sha256": "21d47d6870c95392652c5084a2b01114875e27f87f3cc39b79f117e0d3f2bcc7"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_controls32/complete.json",
+      "local": "evaluations/guided_controls32/complete.json",
+      "bytes": 61,
+      "sha256": "2066db91125b571cb620d037f21a3f6391abe318f45f95b59c612f7d71a03927"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_geometry128/48d60bef56ce.json",
+      "local": "evaluations/guided_geometry128/48d60bef56ce.json",
+      "bytes": 940562,
+      "sha256": "967d1ab29f0e44e7916d98a6f08b41861508fdfb0245e22ba72db7ec60a4986a"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_geometry128/complete.json",
+      "local": "evaluations/guided_geometry128/complete.json",
+      "bytes": 86,
+      "sha256": "964293d03eeac73cab54b49f62e5aa2c2eb0a8affa6668c9d27e34bbe9f84dbe"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_geometry128/state.json",
+      "local": "evaluations/guided_geometry128/state.json",
+      "bytes": 141,
+      "sha256": "d33caa25d428124998d263ca6b4ee50f78e1f196f3c1ac07e46e9c0d7862cecb"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_style64/48d60bef56ce.json",
+      "local": "evaluations/guided_style64/48d60bef56ce.json",
+      "bytes": 694009,
+      "sha256": "e6d293f5d25e9684d452b4c27b170e854ad351da84ad56e86c00ce18c3fd5d35"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_style64/complete.json",
+      "local": "evaluations/guided_style64/complete.json",
+      "bytes": 93,
+      "sha256": "0b88b9fc42b4385d71f59bcdc61bef7ae93f2112e60270efc4d65a3c9b5cb4e2"
+    },
+    {
+      "remote": "/root/kinetalk_v5_20261012_dual/evaluations/guided_style64/state.json",
+      "local": "evaluations/guided_style64/state.json",
+      "bytes": 139,
+      "sha256": "b67d974df317bf49aef9c91544fe02f02b23dce3b1a4b26847f96cfef152b2e6"
+    }
+  ],
+  "source_root": "/root/kinetalk_v5_20261012_dual",
+  "test_loaded": false,
+  "remote_mutated": false
+}

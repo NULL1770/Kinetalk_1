@@ -1,0 +1,37 @@
+{
+  "schema": "dual_timescale_tables_v1",
+  "matched_fields": [
+    "source_checkpoint_sha256",
+    "binding_sha256",
+    "fit_indices_sha256",
+    "training_references_sha256",
+    "initial_parent_parameters_sha256"
+  ],
+  "checkpoint_sha256": {
+    "control": "372dbc2a23913743cb67452bf6f5756e3be195f81c468f2a1f972afbb79c9add",
+    "direct": "64c0cfc29a5a30ba56d6541cf581a856af9817c52f9e042ca810056582b3950e",
+    "guided": "48d60bef56ce4ab175f4efbda8af580d836634cf20af74f0e8c47b9d5d1053a0"
+  },
+  "source_manifest_sha256": "cd345bd9a44f8553df92e5b79b60680144a834b4b46a183e0bf85e68c337be14",
+  "collection_receipt_sha256": "5da44d8465b1c643e3965595982dab033fc2ac94df9aec2d6d9718216191e1d0",
+  "training_seeds": [
+    47
+  ],
+  "sampling_seeds": [
+    47,
+    91,
+    137
+  ],
+  "development_clips": 1367,
+  "dynamic_clips": 128,
+  "style_pairs": 64,
+  "test_loaded": false,
+  "promotion": false,
+  "limits": [
+    "Same-budget continuation; added modules show negligible mouth effect.",
+    "Sampling seeds are not independent training seeds.",
+    "Shared weak event parser and whole-clip probes are not independent emotion timing truth.",
+    "Three development speakers limit style generalization.",
+    "Baseline Phase53 training budget differs; its differences are descriptive."
+  ]
+}

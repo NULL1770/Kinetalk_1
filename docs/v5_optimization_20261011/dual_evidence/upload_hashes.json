@@ -1,0 +1,23 @@
+{
+  "kinetalk_v4/acoustic_geometry.py": "78f3959e4aa7a90d5858454dc5222ba988fd7265eb4b9cc77e45dfc9b75dad06",
+  "kinetalk_v4/domain_routes.py": "623b90e8c052a61e84899de2c44ca8cc57164bcbb2d0dae594f7cc56ce0cf54e",
+  "kinetalk_v4/geometry.py": "2486ce39e189321a697ae808bc847553c3d8886e3689057467477659d862c5df",
+  "kinetalk_v4/geometry_support.py": "dc4d6f8b11117377aa9da73fce9afb9127339d9ffb819a1b7b56f6c08c41254c",
+  "kinetalk_v4/rollout_statistics.py": "6a711be2ec66d66d47fa2c15d4b23afc9ee12faf6f132509562bba1f93a6a555",
+  "kinetalk_v4/state_posture.py": "f9c78cd2fd33ac78e81d7607f3ecbbd9d3319ecda087f729c9a384e008a8a5bd",
+  "kinetalk_v4/unified_model_v4.py": "d219ea99cf149724263ac1e1ba1d18cdafaf69a5ca269f695904d1e3333f1796",
+  "kinetalk_v4/__init__.py": "70b8ddd047ca36949ab63a1008c4fad460c514ca4e9ddeaa5b147c481710c883",
+  "kinetalk_v5/dual_timescale_model.py": "c18cc6726cf4862b04fe37af912160b3b7c17eca9c441316df25e20122ead30a",
+  "kinetalk_v5/__init__.py": "712518249605f20b06f7948f872d6505a21fc1092b8f1e56fc6585c00610773f",
+  "scripts/train_dual_timescale_v5.py": "66e3a9ba14f18667e54553b65a9586bbd4f9cdc8d9fadb2cc4a4d813a03d9288",
+  "scripts/load_candidate_model.py": "7fc430b821add78eb033075562464099517fc828a8837649ae60ac6d4ec8b486",
+  "scripts/evaluate_v5_candidate.py": "359c6e59a073592827440bd5b886d4b3d85e481546bb751d05a76833717331fa",
+  "scripts/evaluate_v4_dynamics.py": "c8168e0be739bf28c4dbc5d233268f36fb47fc9a787652038ee5b0d1d6321bd5",
+  "scripts/audit_v5_controls.py": "81a9079d87bebf6205da85ed62b4de441e3e223a316c362371424f4a53c1bfad",
+  "scripts/audit_v5_state_coordinates.py": "162230917344486063b1a959354b57b75bde523bb69394c32a491703912f3d37",
+  "scripts/audit_v5_geometry.py": "64d9c49780b1737c7a3cf2964e1e7f087083075ecb10187e7b66a2152cf3fbce",
+  "scripts/audit_v5_style_targets.py": "34bd3f9d939b0932a735fbcfa7c445b8f9450ff788272c939082a31f6a3218a9",
+  "tests/test_dual_timescale_v5.py": "3f51e45ae657878833f20a2cdb0f9e5fdeb03e925034be1ad9e2d8303af42f08",
+  "scripts/run_dual_timescale_queue.py": "7128333508a1c80593a870d1705707db5488c0f5cd6539908426ee4df44474d6",
+  "scripts/prepare_dual_timescale_queue.py": "fd911dfe409a64cc94a7abae3c763a5b47389fe9bebd459b9d7cd91aba7428d6"
+}

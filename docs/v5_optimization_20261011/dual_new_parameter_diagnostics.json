@@ -1,0 +1,47 @@
+{
+  "schema": "dual_candidate_parameter_magnitude_v1",
+  "statistics": {
+    "direct": {
+      "envelope_head.weight": {
+        "rms": 0.0001556592615088448,
+        "absolute_max": 0.000657900411169976
+      },
+      "envelope_head.bias": {
+        "rms": 0.00010568585275905207,
+        "absolute_max": 0.00014977328828535974
+      },
+      "backbone.decoder.affect_adapter.weight": {
+        "rms": 0.00039832841139286757,
+        "absolute_max": 0.0034175917971879244
+      },
+      "backbone.decoder.phonetic_adapter.weight": {
+        "rms": 0.002226634183898568,
+        "absolute_max": 0.009702513925731182
+      },
+      "backbone.decoder.affect_gate": 0.11810317635536194,
+      "backbone.decoder.phonetic_gate": 0.12097819894552231
+    },
+    "guided": {
+      "envelope_head.weight": {
+        "rms": 0.0001672842918196693,
+        "absolute_max": 0.0006863881135359406
+      },
+      "envelope_head.bias": {
+        "rms": 0.00010144939733436331,
+        "absolute_max": 0.00016454682918265462
+      },
+      "backbone.decoder.affect_adapter.weight": {
+        "rms": 0.0003987267555203289,
+        "absolute_max": 0.00339468359015882
+      },
+      "backbone.decoder.phonetic_adapter.weight": {
+        "rms": 0.0022282195277512074,
+        "absolute_max": 0.009707260876893997
+      },
+      "backbone.decoder.affect_gate": 0.11810452491044998,
+      "backbone.decoder.phonetic_gate": 0.12097787857055664
+    }
+  },
+  "test_loaded": false,
+  "limits": "Parameter magnitudes verify trained nonzero heads, not their causal effect or semantic separation."
+}

@@ -1,0 +1,11 @@
+{
+  "supervisor_pid": 17970,
+  "root": "/root/kinetalk_v5_20261012_dual",
+  "jobs": 19,
+  "parent_sha256": "310fe9fa348ecb7f6210fc854f3c867dc055e470db00be1d2dc38722016df702",
+  "binding_sha256": "d30f10075b704c4cb228629549820056c952533fa5c4507666ab8640a1fa6087",
+  "source_files": 338,
+  "stages": "guided smoke16, three matched256-update arms, then full/dynamics/control/geometry/style",
+  "test_loaded": false,
+  "promotion": false
+}
