@@ -5,6 +5,9 @@ from kinetalk_v5.dual_timescale_model import DualTimescaleKineTalkV5
 
 def load_candidate_model(checkpoint, device="cpu"):
     state = checkpoint["model"]
+    if 'student_logvar.weight' in state:
+        from kinetalk_v6.factor_paths import FactorPathKineTalkV6
+        return FactorPathKineTalkV6.from_checkpoint(checkpoint, device=device)
     if "backbone.feature_mean" in state:
         return DualTimescaleKineTalkV5.from_checkpoint(checkpoint, device=device)
     model = KineTalkV4Model(KineTalkV4Config(**checkpoint["config"]),

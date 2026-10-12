@@ -1,0 +1,72 @@
+{
+  "schema": "v6_pilot_status_v1",
+  "time": 1791813433.7344284,
+  "root": "/root/kinetalk_v6_20261012_paths",
+  "queue": {
+    "status": "running",
+    "started": 1791812594.753924,
+    "supervisor_pid": 81449,
+    "jobs": [
+      {
+        "name": "direct_seed47",
+        "argv": [
+          "/root/miniconda3/bin/python",
+          "/root/kinetalk_v6_20261012_paths/scripts/train_factor_paths_v6.py",
+          "--binding",
+          "/root/kinetalk_v5_20261011/binding.json",
+          "--checkpoint",
+          "/root/kinetalk_v5_20261011/state_raw_direct/final.pt",
+          "--output",
+          "/root/kinetalk_v6_20261012_paths/runs/direct_seed47",
+          "--arm",
+          "direct",
+          "--updates",
+          "768",
+          "--batch-size",
+          "12",
+          "--seed",
+          "47",
+          "--lr",
+          "3e-4",
+          "--eval-limit",
+          "128",
+          "--bootstrap-updates",
+          "128"
+        ],
+        "marker": "/root/kinetalk_v6_20261012_paths/runs/direct_seed47/complete.json",
+        "status": "running",
+        "started": 1791812594.7654753,
+        "log": "/root/kinetalk_v6_20261012_paths/pilot_queue/direct_seed47.log",
+        "pid": 81450
+      }
+    ],
+    "test_loaded": false,
+    "promotion": false,
+    "updated": 1791813429.9292636
+  },
+  "runs": {
+    "direct_seed47": {
+      "status": "training",
+      "arm": "direct",
+      "seed": 47,
+      "total_updates": 768,
+      "elapsed_seconds": 658.5343643501401,
+      "step": 520,
+      "gradient_norm": 7.297137260437012,
+      "loss": -0.5349029898643494,
+      "motion": 0.33394089341163635,
+      "position": 0.31138697266578674,
+      "posterior": 0.32655009627342224,
+      "prior_nll": -1.8770583868026733,
+      "prior_kl": 3.1699132919311523,
+      "posterior_kl": 3.1699132919311523,
+      "content_anchor": 0.2564305067062378,
+      "relation": 0.5827333927154541,
+      "reference_consistency": 0.02076178416609764,
+      "execution": 0.04006483778357506,
+      "rollout_mean": 0.06963053345680237,
+      "bootstrap": 0.0
+    }
+  },
+  "test_loaded": false
+}

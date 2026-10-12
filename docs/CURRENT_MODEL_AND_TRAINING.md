@@ -1,5 +1,7 @@
 # 当前架构与数据：Phase53 候选，2026-10-09
 
+2026-10-12追加：新v6原型已通过真实TRAIN smoke并启动两臂两训练种子的768update可行性队列，尚无效果结果。当前新设计读[v6协议](v6_factor_paths_20261012/protocol.md)。下文继续保留Phase53真实结构作为历史基线；它不是新v6的结构。v6仅用单参考，删除旧joint output，情感和风格仍允许改变全部52D嘴部/面部输出，限制仅针对content code的输入来源。模型未推广，三项贡献仍需实测消融支持。
+
 本文按实际 Phase53 checkpoint 的 config 和现行实现更新。Phase53 两组均未通过口型、情感、风格联合验收，不是已确定的论文最终模型。最新任务状态读 CURRENT_OPTIMIZATION_STATE.md，结果读 PHASE53_RESULTS.md。旧 Phase39/flow 说明移至 archive/CURRENT_MODEL_AND_TRAINING_before_phase53_20261009.md，不要用于画当前架构图。
 
 ## 输入与实际网络

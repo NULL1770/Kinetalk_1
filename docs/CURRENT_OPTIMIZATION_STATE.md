@@ -1,5 +1,13 @@
 # Current optimization state (2026-10-11 v4 reviewed)
 
+## Active v6 redesign — 2026-10-12
+
+New isolated `/root/kinetalk_v6_20261012_paths`, supervisor81449: direct/posterior at trainingseeds47/91, each768updates;24serial train/full1367/dynamics128x3/controls32/geometry128/style64 stages. TRAIN smoke16passed, frozenB0 and new-head gradients verified;17remote targetedtests and strict checkpoint load passed. Latest collected direct_seed47 step80/768; read `v6_factor_paths_20261012/latest_status.json` and remote pilot_queue/queue_state.json for current progress. Do not relaunch completed smoke or existing pilot. No v6 quality metric/promotion yet.
+
+The v6 decoder deletes old unrestricted joint/mixedgeometry output, uses a24D content-only bottleneck, anchored full52D expression/interaction responses, and single-reference full52D posture/response modulation. TRAIN-only10D observable expression Gaussian posterior guides an audio prior with marginalNLL/KL; probabilistic duration events remain. Emotion/style may change all mouth coefficients; only the content code input is isolated. No fixed anatomical/emotion mask or text branch. This is an unvalidated modeling hypothesis. Parent is used only as a frozen TRAIN bootstrap for128updates. Protocol and recovery in `v6_factor_paths_20261012/protocol.md`/`task_plan.md`.
+
+Frozen32clip v5intervention verified weak output contribution: jointRMS~.137,low/high~.000136/.000239;removing adapters changes~.000272. It does not prove a unique cause. Source/test and all olderPhase53/v4/v5 checkpoints retained.
+
 ## Latest completed recovery — 2026-10-12 dual-timescale pilot
 
 All19stages of `/root/kinetalk_v5_20261012_dual` completed; no remaining training. Three matched256-update arms and full1367/dynamics128×3/control32/geometry128/style64 reports locally SHA-verified. New direct/guided modules give negligible extra mouth gain overcontrol; guided cosine direction error worse in all3samplingseeds. No promotion; Phase53 and all parents retained. Angry82/happy103native frames with audio rendered/decoded at25fps, zero rig coefficient error; fixed-time sheets inspected.30related tests pass. Review `v5_optimization_20261011/dual_timescale_review_20261012.md`, seven tables, `dual_evidence/collection_receipt.json`, videos `artifacts/v5_dual_timescale_review_20261012`. GitHub archive on existing `codex/experiment-snapshot-20260918` branch PUSHED and remote refverified at `9926188f54a8795db8dd91004d0c9a2768a49e8f`;255files source/tests/currentevidence/compactpriortables/verifiedvideos. Weights/rawdata preservedlocally andremotely withhashreceipts. Earlier active-worker claims below are historical.

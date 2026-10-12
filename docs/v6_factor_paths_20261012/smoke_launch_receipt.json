@@ -1,0 +1,9 @@
+{
+  "pid": 81291,
+  "root": "/root/kinetalk_v6_20261012_paths",
+  "status": "smoke_launched",
+  "source_files": 344,
+  "archive_sha256": "c9a4d531c1beb4e8cb58f56a39f65768210b147d1352af4687aa80f4eef2a817",
+  "module_tests_exit_code": 0,
+  "test_loaded": false
+}
