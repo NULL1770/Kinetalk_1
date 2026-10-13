@@ -1,0 +1,820 @@
+{
+  "schema": "v5_factor_rebuild_pilot_v1",
+  "elapsed_seconds": 191.35329604148865,
+  "base_checkpoint": "/root/kinetalk_v5_20261012_dual/runs/control/final.pt",
+  "base_sha256": "372dbc2a23913743cb67452bf6f5756e3be195f81c468f2a1f972afbb79c9add",
+  "results": {
+    "retained_v5_cross_ref": {
+      "held_sentence": {
+        "mean_mae": 0.04618385634967126,
+        "mean_mouth_mae": 0.03602437535300851,
+        "teacher_mae": 0.044546055200044066,
+        "teacher_mouth_mae": 0.03535509679932147,
+        "other_ref_mae": 0.04629802334238775,
+        "other_ref_mouth_mae": 0.036091056594159454,
+        "wrong_mae": 0.064542182139121,
+        "wrong_mouth_mae": 0.0474875794025138,
+        "sample_mae": 0.047523036191705614,
+        "sample_mouth_mae": 0.03725058049894869,
+        "sample2_mae": 0.04774434689898044,
+        "sample2_mouth_mae": 0.03712623071623966,
+        "changed_mae": 0.07194312755018473,
+        "changed_mouth_mae": 0.04534955453709699,
+        "same_style_code_distance": 0.15993933007121086,
+        "cross_style_code_distance": 1.026485238224268,
+        "reference_motion_delta": 0.003727614212039043,
+        "cross_style_motion_delta": 0.04514164716238156,
+        "seed_diversity": 0.010894812146943877,
+        "mean_speed": 0.006195202931849053,
+        "mean_acceleration": 0.006705977633828297,
+        "mean_q90_q10_range": 0.05337311513721943,
+        "sample_speed": 0.007141657992178807,
+        "sample_acceleration": 0.007655137553228997,
+        "sample_q90_q10_range": 0.06088245694991201,
+        "style_distance_ratio": 0.15581259633883512,
+        "independent_probes": {
+          "0": {
+            "gt": 0.828125,
+            "mean": 0.609375,
+            "sample": 0.625,
+            "sample2": 0.640625,
+            "teacher": 0.625,
+            "other_ref": 0.609375,
+            "wrong": 0.75,
+            "changed": 0.046875,
+            "style_class_preserved": 0.71875,
+            "reference_class_preserved": 0.96875,
+            "changed_class_correct": 0.71875
+          },
+          "1": {
+            "gt": 0.78125,
+            "mean": 0.515625,
+            "sample": 0.59375,
+            "sample2": 0.5625,
+            "teacher": 0.515625,
+            "other_ref": 0.53125,
+            "wrong": 0.65625,
+            "changed": 0.0625,
+            "style_class_preserved": 0.625,
+            "reference_class_preserved": 0.984375,
+            "changed_class_correct": 0.671875
+          },
+          "2": {
+            "gt": 0.859375,
+            "mean": 0.625,
+            "sample": 0.65625,
+            "sample2": 0.609375,
+            "teacher": 0.609375,
+            "other_ref": 0.640625,
+            "wrong": 0.71875,
+            "changed": 0.03125,
+            "style_class_preserved": 0.734375,
+            "reference_class_preserved": 0.984375,
+            "changed_class_correct": 0.734375
+          },
+          "3": {
+            "gt": 0.8125,
+            "mean": 0.59375,
+            "sample": 0.65625,
+            "sample2": 0.609375,
+            "teacher": 0.59375,
+            "other_ref": 0.59375,
+            "wrong": 0.71875,
+            "changed": 0.03125,
+            "style_class_preserved": 0.734375,
+            "reference_class_preserved": 0.921875,
+            "changed_class_correct": 0.6875
+          }
+        },
+        "style_geometry_delta": 1.6038051843643188,
+        "seed_geometry_delta": 0.4051002562046051,
+        "gt_dynamics": {
+          "speed": 0.009306269697844982,
+          "acceleration": 0.007735440041869879,
+          "q90_q10_range": 0.0896911472082138
+        },
+        "per_emotion": {
+          "0": {
+            "n": 8,
+            "mean_mae": 0.04665836598724127,
+            "sample_mae": 0.049701972398906946
+          },
+          "1": {
+            "n": 8,
+            "mean_mae": 0.0424616327509284,
+            "sample_mae": 0.0430719219148159
+          },
+          "2": {
+            "n": 8,
+            "mean_mae": 0.04820592748001218,
+            "sample_mae": 0.04772504698485136
+          },
+          "3": {
+            "n": 8,
+            "mean_mae": 0.055747023317962885,
+            "sample_mae": 0.05487089557573199
+          },
+          "4": {
+            "n": 8,
+            "mean_mae": 0.04782090219669044,
+            "sample_mae": 0.04882460925728083
+          },
+          "5": {
+            "n": 8,
+            "mean_mae": 0.03821552591398358,
+            "sample_mae": 0.0414268528111279
+          },
+          "6": {
+            "n": 8,
+            "mean_mae": 0.04609610280022025,
+            "sample_mae": 0.047854440519586205
+          },
+          "7": {
+            "n": 8,
+            "mean_mae": 0.04426537035033107,
+            "sample_mae": 0.04670855007134378
+          }
+        }
+      },
+      "unseen_speaker": {
+        "mean_mae": 0.055263746374597154,
+        "mean_mouth_mae": 0.04166469885967672,
+        "teacher_mae": 0.052686153523003064,
+        "teacher_mouth_mae": 0.04131396138109267,
+        "other_ref_mae": 0.05613782893245419,
+        "other_ref_mouth_mae": 0.04239347627541671,
+        "wrong_mae": 0.06259476176152627,
+        "wrong_mouth_mae": 0.0460734940910091,
+        "sample_mae": 0.05595919179419676,
+        "sample_mouth_mae": 0.04204805327268938,
+        "sample2_mae": 0.055557959247380495,
+        "sample2_mouth_mae": 0.042130184127017856,
+        "changed_mae": 0.08101143206780155,
+        "changed_mouth_mae": 0.05038633174262941,
+        "same_style_code_distance": 0.6196458861231804,
+        "cross_style_code_distance": 0.7649631649255753,
+        "reference_motion_delta": 0.0247925342215846,
+        "cross_style_motion_delta": 0.027259859062420826,
+        "seed_diversity": 0.007047697018909578,
+        "mean_speed": 0.0053086601935016615,
+        "mean_acceleration": 0.006035721356359621,
+        "mean_q90_q10_range": 0.04458731637957195,
+        "sample_speed": 0.005904980391884844,
+        "sample_acceleration": 0.006675277739608039,
+        "sample_q90_q10_range": 0.04836695470536748,
+        "style_distance_ratio": 0.8100336258458496,
+        "independent_probes": {
+          "0": {
+            "gt": 0.75,
+            "mean": 0.875,
+            "sample": 0.875,
+            "sample2": 0.875,
+            "teacher": 0.8333333134651184,
+            "other_ref": 0.8333333134651184,
+            "wrong": 0.8333333134651184,
+            "changed": 0.0833333358168602,
+            "style_class_preserved": 0.8333333134651184,
+            "reference_class_preserved": 0.9583333134651184,
+            "changed_class_correct": 0.7916666865348816
+          },
+          "1": {
+            "gt": 0.75,
+            "mean": 0.8333333134651184,
+            "sample": 0.875,
+            "sample2": 0.8333333134651184,
+            "teacher": 0.7916666865348816,
+            "other_ref": 0.7916666865348816,
+            "wrong": 0.8333333134651184,
+            "changed": 0.0833333358168602,
+            "style_class_preserved": 0.75,
+            "reference_class_preserved": 0.875,
+            "changed_class_correct": 0.7916666865348816
+          },
+          "2": {
+            "gt": 0.6666666865348816,
+            "mean": 0.9166666865348816,
+            "sample": 0.9166666865348816,
+            "sample2": 0.9166666865348816,
+            "teacher": 0.8333333134651184,
+            "other_ref": 0.8333333134651184,
+            "wrong": 0.875,
+            "changed": 0.0833333358168602,
+            "style_class_preserved": 0.875,
+            "reference_class_preserved": 0.9166666865348816,
+            "changed_class_correct": 0.7916666865348816
+          },
+          "3": {
+            "gt": 0.7083333134651184,
+            "mean": 0.875,
+            "sample": 0.875,
+            "sample2": 0.875,
+            "teacher": 0.7916666865348816,
+            "other_ref": 0.7916666865348816,
+            "wrong": 0.875,
+            "changed": 0.0833333358168602,
+            "style_class_preserved": 0.8333333134651184,
+            "reference_class_preserved": 0.9166666865348816,
+            "changed_class_correct": 0.7916666865348816
+          }
+        },
+        "style_geometry_delta": 0.9012965559959412,
+        "seed_geometry_delta": 0.3031030595302582,
+        "gt_dynamics": {
+          "speed": 0.0070179533213377,
+          "acceleration": 0.0055381981655955315,
+          "q90_q10_range": 0.07309750467538834
+        },
+        "per_emotion": {
+          "0": {
+            "n": 3,
+            "mean_mae": 0.04673033580183983,
+            "sample_mae": 0.04792968307932218
+          },
+          "1": {
+            "n": 3,
+            "mean_mae": 0.05746421590447426,
+            "sample_mae": 0.05623630806803703
+          },
+          "2": {
+            "n": 3,
+            "mean_mae": 0.06366062040130298,
+            "sample_mae": 0.0645818052192529
+          },
+          "3": {
+            "n": 3,
+            "mean_mae": 0.07157432536284129,
+            "sample_mae": 0.06884873037536939
+          },
+          "4": {
+            "n": 3,
+            "mean_mae": 0.05778854712843895,
+            "sample_mae": 0.05778854712843895
+          },
+          "5": {
+            "n": 3,
+            "mean_mae": 0.041982945054769516,
+            "sample_mae": 0.04250803589820862
+          },
+          "6": {
+            "n": 3,
+            "mean_mae": 0.051048806558052696,
+            "sample_mae": 0.053102354208628334
+          },
+          "7": {
+            "n": 3,
+            "mean_mae": 0.0518601747850577,
+            "sample_mae": 0.056678070376316704
+          }
+        }
+      }
+    },
+    "matched_control": {
+      "held_sentence": {
+        "mean_mae": 0.04619081021519378,
+        "mean_mouth_mae": 0.03536279848776758,
+        "teacher_mae": 0.0449312815326266,
+        "teacher_mouth_mae": 0.03507074320805259,
+        "other_ref_mae": 0.04626392194768414,
+        "other_ref_mouth_mae": 0.03547626262297854,
+        "wrong_mae": 0.06366666435496882,
+        "wrong_mouth_mae": 0.04520385779323988,
+        "sample_mae": 0.04791060634306632,
+        "sample_mouth_mae": 0.03654484424623661,
+        "sample2_mae": 0.04782958468422294,
+        "sample2_mouth_mae": 0.03612304895068519,
+        "changed_mae": 0.07169417510158382,
+        "changed_mouth_mae": 0.0445864747161977,
+        "same_style_code_distance": 0.18152269284473732,
+        "cross_style_code_distance": 1.0346371522173285,
+        "reference_motion_delta": 0.004123746858567756,
+        "cross_style_motion_delta": 0.04340406910341699,
+        "seed_diversity": 0.011554089165656478,
+        "mean_speed": 0.006029112912074197,
+        "mean_acceleration": 0.006617703082156368,
+        "mean_q90_q10_range": 0.05115716208820231,
+        "sample_speed": 0.0070717572889407165,
+        "sample_acceleration": 0.007662027746846434,
+        "sample_q90_q10_range": 0.06101267639314756,
+        "style_distance_ratio": 0.1754457516393225,
+        "independent_probes": {
+          "0": {
+            "gt": 0.828125,
+            "mean": 0.578125,
+            "sample": 0.625,
+            "sample2": 0.53125,
+            "teacher": 0.609375,
+            "other_ref": 0.5625,
+            "wrong": 0.78125,
+            "changed": 0.078125,
+            "style_class_preserved": 0.625,
+            "reference_class_preserved": 0.9375,
+            "changed_class_correct": 0.65625
+          },
+          "1": {
+            "gt": 0.78125,
+            "mean": 0.515625,
+            "sample": 0.546875,
+            "sample2": 0.515625,
+            "teacher": 0.515625,
+            "other_ref": 0.53125,
+            "wrong": 0.734375,
+            "changed": 0.09375,
+            "style_class_preserved": 0.625,
+            "reference_class_preserved": 0.953125,
+            "changed_class_correct": 0.59375
+          },
+          "2": {
+            "gt": 0.859375,
+            "mean": 0.546875,
+            "sample": 0.609375,
+            "sample2": 0.609375,
+            "teacher": 0.59375,
+            "other_ref": 0.578125,
+            "wrong": 0.78125,
+            "changed": 0.0625,
+            "style_class_preserved": 0.625,
+            "reference_class_preserved": 0.953125,
+            "changed_class_correct": 0.6875
+          },
+          "3": {
+            "gt": 0.8125,
+            "mean": 0.515625,
+            "sample": 0.53125,
+            "sample2": 0.484375,
+            "teacher": 0.5625,
+            "other_ref": 0.515625,
+            "wrong": 0.75,
+            "changed": 0.0625,
+            "style_class_preserved": 0.65625,
+            "reference_class_preserved": 0.9375,
+            "changed_class_correct": 0.625
+          }
+        },
+        "style_geometry_delta": 1.5023200511932373,
+        "seed_geometry_delta": 0.4076184928417206,
+        "gt_dynamics": {
+          "speed": 0.009306269697844982,
+          "acceleration": 0.007735440041869879,
+          "q90_q10_range": 0.0896911472082138
+        },
+        "per_emotion": {
+          "0": {
+            "n": 8,
+            "mean_mae": 0.036794676911085844,
+            "sample_mae": 0.040621868800371885
+          },
+          "1": {
+            "n": 8,
+            "mean_mae": 0.04650752083398402,
+            "sample_mae": 0.04693209729157388
+          },
+          "2": {
+            "n": 8,
+            "mean_mae": 0.05277357902377844,
+            "sample_mae": 0.05141665879637003
+          },
+          "3": {
+            "n": 8,
+            "mean_mae": 0.056075119879096746,
+            "sample_mae": 0.05925570288673043
+          },
+          "4": {
+            "n": 8,
+            "mean_mae": 0.04853576747700572,
+            "sample_mae": 0.04913380206562579
+          },
+          "5": {
+            "n": 8,
+            "mean_mae": 0.039123814553022385,
+            "sample_mae": 0.040514770429581404
+          },
+          "6": {
+            "n": 8,
+            "mean_mae": 0.04381611943244934,
+            "sample_mae": 0.045606340281665325
+          },
+          "7": {
+            "n": 8,
+            "mean_mae": 0.045899883611127734,
+            "sample_mae": 0.049803610192611814
+          }
+        }
+      },
+      "unseen_speaker": {
+        "mean_mae": 0.05693908416045209,
+        "mean_mouth_mae": 0.042335347505286336,
+        "teacher_mae": 0.05502542736940086,
+        "teacher_mouth_mae": 0.04191098924881468,
+        "other_ref_mae": 0.05398253110858301,
+        "other_ref_mouth_mae": 0.04139541508629918,
+        "wrong_mae": 0.062090093890825905,
+        "wrong_mouth_mae": 0.04482396668754518,
+        "sample_mae": 0.05742092446113626,
+        "sample_mouth_mae": 0.042317966387296714,
+        "sample2_mae": 0.058010812693585954,
+        "sample2_mouth_mae": 0.04337221279274672,
+        "changed_mae": 0.0790744754485786,
+        "changed_mouth_mae": 0.04930440588699033,
+        "same_style_code_distance": 0.5610549456129471,
+        "cross_style_code_distance": 0.6414849857489268,
+        "reference_motion_delta": 0.020557854052943487,
+        "cross_style_motion_delta": 0.024396301053153973,
+        "seed_diversity": 0.009318043293509012,
+        "mean_speed": 0.005132243464079996,
+        "mean_acceleration": 0.00592521073607107,
+        "mean_q90_q10_range": 0.04150822952700158,
+        "sample_speed": 0.00576918973820284,
+        "sample_acceleration": 0.00661581993335858,
+        "sample_q90_q10_range": 0.046494265009338655,
+        "style_distance_ratio": 0.8746189826374838,
+        "independent_probes": {
+          "0": {
+            "gt": 0.75,
+            "mean": 0.7916666865348816,
+            "sample": 0.7916666865348816,
+            "sample2": 0.7916666865348816,
+            "teacher": 0.7916666865348816,
+            "other_ref": 0.7916666865348816,
+            "wrong": 0.7083333134651184,
+            "changed": 0.1666666716337204,
+            "style_class_preserved": 0.625,
+            "reference_class_preserved": 0.8333333134651184,
+            "changed_class_correct": 0.625
+          },
+          "1": {
+            "gt": 0.75,
+            "mean": 0.7083333134651184,
+            "sample": 0.75,
+            "sample2": 0.75,
+            "teacher": 0.7083333134651184,
+            "other_ref": 0.75,
+            "wrong": 0.7083333134651184,
+            "changed": 0.125,
+            "style_class_preserved": 0.75,
+            "reference_class_preserved": 0.7916666865348816,
+            "changed_class_correct": 0.625
+          },
+          "2": {
+            "gt": 0.6666666865348816,
+            "mean": 0.75,
+            "sample": 0.7916666865348816,
+            "sample2": 0.75,
+            "teacher": 0.7916666865348816,
+            "other_ref": 0.7916666865348816,
+            "wrong": 0.75,
+            "changed": 0.1666666716337204,
+            "style_class_preserved": 0.7083333134651184,
+            "reference_class_preserved": 0.875,
+            "changed_class_correct": 0.625
+          },
+          "3": {
+            "gt": 0.7083333134651184,
+            "mean": 0.75,
+            "sample": 0.75,
+            "sample2": 0.75,
+            "teacher": 0.7083333134651184,
+            "other_ref": 0.7083333134651184,
+            "wrong": 0.7083333134651184,
+            "changed": 0.1666666716337204,
+            "style_class_preserved": 0.7083333134651184,
+            "reference_class_preserved": 0.875,
+            "changed_class_correct": 0.625
+          }
+        },
+        "style_geometry_delta": 0.702931821346283,
+        "seed_geometry_delta": 0.3486135005950928,
+        "gt_dynamics": {
+          "speed": 0.0070179533213377,
+          "acceleration": 0.0055381981655955315,
+          "q90_q10_range": 0.07309750467538834
+        },
+        "per_emotion": {
+          "0": {
+            "n": 3,
+            "mean_mae": 0.046253845716516175,
+            "sample_mae": 0.04771686221162478
+          },
+          "1": {
+            "n": 3,
+            "mean_mae": 0.06112594281633695,
+            "sample_mae": 0.0599235991636912
+          },
+          "2": {
+            "n": 3,
+            "mean_mae": 0.07440646116932233,
+            "sample_mae": 0.07511791959404945
+          },
+          "3": {
+            "n": 3,
+            "mean_mae": 0.06567279994487762,
+            "sample_mae": 0.06319896131753922
+          },
+          "4": {
+            "n": 3,
+            "mean_mae": 0.055958534280459084,
+            "sample_mae": 0.0547945499420166
+          },
+          "5": {
+            "n": 3,
+            "mean_mae": 0.04608041668931643,
+            "sample_mae": 0.04872957244515419
+          },
+          "6": {
+            "n": 3,
+            "mean_mae": 0.05320622771978378,
+            "sample_mae": 0.052633641908566155
+          },
+          "7": {
+            "n": 3,
+            "mean_mae": 0.05280844494700432,
+            "sample_mae": 0.057252289106448494
+          }
+        }
+      }
+    },
+    "repair": {
+      "held_sentence": {
+        "mean_mae": 0.04601359015214257,
+        "mean_mouth_mae": 0.035879403818398714,
+        "teacher_mae": 0.03871461341623217,
+        "teacher_mouth_mae": 0.03002280875807628,
+        "other_ref_mae": 0.0460737906396389,
+        "other_ref_mouth_mae": 0.035881000192603096,
+        "wrong_mae": 0.06427048426121473,
+        "wrong_mouth_mae": 0.04691987836849876,
+        "sample_mae": 0.047770227218279615,
+        "sample_mouth_mae": 0.037851174565730616,
+        "sample2_mae": 0.04818209933000617,
+        "sample2_mouth_mae": 0.0378647658508271,
+        "changed_mae": 0.07168318799813278,
+        "changed_mouth_mae": 0.04511684997123666,
+        "same_style_code_distance": 0.1654369158204645,
+        "cross_style_code_distance": 1.0349381202831864,
+        "reference_motion_delta": 0.003955864260205999,
+        "cross_style_motion_delta": 0.04554965108400211,
+        "seed_diversity": 0.015557660830381792,
+        "mean_speed": 0.0061608022115251515,
+        "mean_acceleration": 0.006628868941334076,
+        "mean_q90_q10_range": 0.053318779333494604,
+        "sample_speed": 0.009010077650600579,
+        "sample_acceleration": 0.011376889160601422,
+        "sample_q90_q10_range": 0.06090410542674363,
+        "style_distance_ratio": 0.1598519878417432,
+        "independent_probes": {
+          "0": {
+            "gt": 0.828125,
+            "mean": 0.65625,
+            "sample": 0.65625,
+            "sample2": 0.640625,
+            "teacher": 0.703125,
+            "other_ref": 0.65625,
+            "wrong": 0.75,
+            "changed": 0.0625,
+            "style_class_preserved": 0.765625,
+            "reference_class_preserved": 0.953125,
+            "changed_class_correct": 0.765625
+          },
+          "1": {
+            "gt": 0.78125,
+            "mean": 0.53125,
+            "sample": 0.578125,
+            "sample2": 0.5625,
+            "teacher": 0.625,
+            "other_ref": 0.53125,
+            "wrong": 0.6875,
+            "changed": 0.046875,
+            "style_class_preserved": 0.625,
+            "reference_class_preserved": 0.984375,
+            "changed_class_correct": 0.703125
+          },
+          "2": {
+            "gt": 0.859375,
+            "mean": 0.65625,
+            "sample": 0.640625,
+            "sample2": 0.65625,
+            "teacher": 0.703125,
+            "other_ref": 0.671875,
+            "wrong": 0.765625,
+            "changed": 0.03125,
+            "style_class_preserved": 0.765625,
+            "reference_class_preserved": 0.984375,
+            "changed_class_correct": 0.75
+          },
+          "3": {
+            "gt": 0.8125,
+            "mean": 0.59375,
+            "sample": 0.640625,
+            "sample2": 0.59375,
+            "teacher": 0.65625,
+            "other_ref": 0.609375,
+            "wrong": 0.71875,
+            "changed": 0.046875,
+            "style_class_preserved": 0.6875,
+            "reference_class_preserved": 0.890625,
+            "changed_class_correct": 0.6875
+          }
+        },
+        "style_geometry_delta": 1.6137025356292725,
+        "seed_geometry_delta": 0.8528565764427185,
+        "gt_dynamics": {
+          "speed": 0.009306269697844982,
+          "acceleration": 0.007735440041869879,
+          "q90_q10_range": 0.0896911472082138
+        },
+        "per_emotion": {
+          "0": {
+            "n": 8,
+            "mean_mae": 0.045200902968645096,
+            "sample_mae": 0.044802320655435324
+          },
+          "1": {
+            "n": 8,
+            "mean_mae": 0.04243726399727166,
+            "sample_mae": 0.0437999228015542
+          },
+          "2": {
+            "n": 8,
+            "mean_mae": 0.048674081452190876,
+            "sample_mae": 0.04895194200798869
+          },
+          "3": {
+            "n": 8,
+            "mean_mae": 0.05562135297805071,
+            "sample_mae": 0.0563603644259274
+          },
+          "4": {
+            "n": 8,
+            "mean_mae": 0.047710930462926626,
+            "sample_mae": 0.04997406853362918
+          },
+          "5": {
+            "n": 8,
+            "mean_mae": 0.03805493446998298,
+            "sample_mae": 0.04290655953809619
+          },
+          "6": {
+            "n": 8,
+            "mean_mae": 0.04579488420858979,
+            "sample_mae": 0.04700760613195598
+          },
+          "7": {
+            "n": 8,
+            "mean_mae": 0.04461437067948282,
+            "sample_mae": 0.04835903365164995
+          }
+        }
+      },
+      "unseen_speaker": {
+        "mean_mae": 0.05510424807046851,
+        "mean_mouth_mae": 0.04141379054635763,
+        "teacher_mae": 0.0481739918080469,
+        "teacher_mouth_mae": 0.03757134409776578,
+        "other_ref_mae": 0.05542740598320961,
+        "other_ref_mouth_mae": 0.042108227110778294,
+        "wrong_mae": 0.06267730100080371,
+        "wrong_mouth_mae": 0.04572171811014414,
+        "sample_mae": 0.05594755491862694,
+        "sample_mouth_mae": 0.04168487018129478,
+        "sample2_mae": 0.055819003687550627,
+        "sample2_mouth_mae": 0.04177607595920563,
+        "changed_mae": 0.08054008738448222,
+        "changed_mouth_mae": 0.049929018054778375,
+        "same_style_code_distance": 0.6199397419889768,
+        "cross_style_code_distance": 0.7635989884535471,
+        "reference_motion_delta": 0.024521460523828864,
+        "cross_style_motion_delta": 0.026181449725603063,
+        "seed_diversity": 0.011917910703535503,
+        "mean_speed": 0.005296482733683661,
+        "mean_acceleration": 0.00598583808944871,
+        "mean_q90_q10_range": 0.04474132678781947,
+        "sample_speed": 0.007573341717943549,
+        "sample_acceleration": 0.010092947263425836,
+        "sample_q90_q10_range": 0.04788452317006886,
+        "style_distance_ratio": 0.8118655883037361,
+        "independent_probes": {
+          "0": {
+            "gt": 0.75,
+            "mean": 0.875,
+            "sample": 0.875,
+            "sample2": 0.9166666865348816,
+            "teacher": 0.7916666865348816,
+            "other_ref": 0.8333333134651184,
+            "wrong": 0.8333333134651184,
+            "changed": 0.0833333358168602,
+            "style_class_preserved": 0.7916666865348816,
+            "reference_class_preserved": 0.9583333134651184,
+            "changed_class_correct": 0.75
+          },
+          "1": {
+            "gt": 0.75,
+            "mean": 0.8333333134651184,
+            "sample": 0.875,
+            "sample2": 0.8333333134651184,
+            "teacher": 0.7916666865348816,
+            "other_ref": 0.75,
+            "wrong": 0.75,
+            "changed": 0.0833333358168602,
+            "style_class_preserved": 0.7916666865348816,
+            "reference_class_preserved": 0.8333333134651184,
+            "changed_class_correct": 0.7916666865348816
+          },
+          "2": {
+            "gt": 0.6666666865348816,
+            "mean": 0.875,
+            "sample": 0.9166666865348816,
+            "sample2": 0.9166666865348816,
+            "teacher": 0.7916666865348816,
+            "other_ref": 0.8333333134651184,
+            "wrong": 0.8333333134651184,
+            "changed": 0.0,
+            "style_class_preserved": 0.9166666865348816,
+            "reference_class_preserved": 0.9583333134651184,
+            "changed_class_correct": 0.875
+          },
+          "3": {
+            "gt": 0.7083333134651184,
+            "mean": 0.875,
+            "sample": 0.8333333134651184,
+            "sample2": 0.875,
+            "teacher": 0.75,
+            "other_ref": 0.7916666865348816,
+            "wrong": 0.8333333134651184,
+            "changed": 0.0833333358168602,
+            "style_class_preserved": 0.875,
+            "reference_class_preserved": 0.9166666865348816,
+            "changed_class_correct": 0.7083333134651184
+          }
+        },
+        "style_geometry_delta": 0.861777126789093,
+        "seed_geometry_delta": 0.7356477975845337,
+        "gt_dynamics": {
+          "speed": 0.0070179533213377,
+          "acceleration": 0.0055381981655955315,
+          "q90_q10_range": 0.07309750467538834
+        },
+        "per_emotion": {
+          "0": {
+            "n": 3,
+            "mean_mae": 0.04628916457295418,
+            "sample_mae": 0.04782800252238909
+          },
+          "1": {
+            "n": 3,
+            "mean_mae": 0.05729661136865616,
+            "sample_mae": 0.05638153230150541
+          },
+          "2": {
+            "n": 3,
+            "mean_mae": 0.06395923594633739,
+            "sample_mae": 0.0647648461163044
+          },
+          "3": {
+            "n": 3,
+            "mean_mae": 0.06952177236477534,
+            "sample_mae": 0.06793870528539021
+          },
+          "4": {
+            "n": 3,
+            "mean_mae": 0.05747592945893606,
+            "sample_mae": 0.059010749061902366
+          },
+          "5": {
+            "n": 3,
+            "mean_mae": 0.043311080584923424,
+            "sample_mae": 0.04514720539251963
+          },
+          "6": {
+            "n": 3,
+            "mean_mae": 0.05071671927968661,
+            "sample_mae": 0.05224569762746493
+          },
+          "7": {
+            "n": 3,
+            "mean_mae": 0.05226347098747889,
+            "sample_mae": 0.05426370104153951
+          }
+        }
+      }
+    }
+  },
+  "budgets": {
+    "control": 128,
+    "visual": 192,
+    "student": 128
+  },
+  "fit_dataset_counts": {
+    "0": 256,
+    "1": 32
+  },
+  "sealed_test_loaded": false,
+  "independent_probes_used_in_training": false,
+  "paper_ready": false,
+  "limits": [
+    "short pilot, not paper evidence",
+    "v5 historical benchmark used neutral enrollment; here cross-emotion refs are matched",
+    "weak event parser reused from v5; event truth not independent psychological annotation",
+    "state flow is a distribution-learning prototype; finite seeds need visual/distribution audit",
+    "geometric deltas are not certified phonetic invariance",
+    "HDTF same-source style pairs cannot prove cross-source or cross-emotion style"
+  ]
+}

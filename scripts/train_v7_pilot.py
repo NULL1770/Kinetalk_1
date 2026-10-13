@@ -51,20 +51,40 @@ def motion_stats(y,valid):
     return {'speed':speed,'acceleration':accel,'q90_q10_range':float(torch.stack(ranges).mean())}
 
 class FixedProbe:
-    def __init__(self,binding):
-        saved=torch.load(binding['probes'][0]['path'],map_location='cpu',weights_only=False)
-        if sha(binding['probes'][0]['path'])!=binding['probes'][0]['sha256']:raise ValueError('Probe binding differs')
+    def __init__(self,binding,index=0):
+        saved=torch.load(binding['probes'][index]['path'],map_location='cpu',weights_only=False)
+        if sha(binding['probes'][index]['path'])!=binding['probes'][index]['sha256']:raise ValueError('Probe binding differs')
         self.net=MotionEmotionProbe(saved['feature_dim'],saved['hidden'],8).eval().requires_grad_(False)
         self.net.load_state_dict(saved['model'])
         self.mask=saved.get('feature_mask',torch.ones(saved['feature_dim'],dtype=torch.bool))
+    def to(self, device):
+        self.net.to(device)
+        self.mask=self.mask.to(device)
+        return self
+    def logits(self,y,valid):
+        # Keep the trained observer frozen while retaining gradients through
+        # differentiable motion statistics to the generated sequence.
+        fs=torch.stack([motion_features(x[:,:51].clamp(0,1),m)
+                        for x,m in zip(y,valid)])
+        return self.net(fs[:,self.mask])
     @torch.no_grad()
     def classes(self,y,valid):
-        fs=torch.stack([motion_features(x[:,:51].clamp(0,1).cpu(),m.cpu()) for x,m in zip(y,valid)])
-        return self.net(fs[:,self.mask]).argmax(-1).to(y.device)
+        device=next(self.net.parameters()).device
+        return self.logits(y.to(device),valid.to(device)).argmax(-1).to(y.device)
 
 @torch.no_grad()
 def evaluate(model,data,device,probe,seed,output=None,role='held_sentence'):
     model.eval();metrics=[];records=[];n=len(data['motion']);examples={}
+    from scripts.diagnose_v7_factor_routes import cross_person_donors
+    # Enrollment is encoded across the whole role, before batching queries.
+    # Sorted query batches each contain one speaker; they cannot supply valid
+    # cross-speaker donors. Match donor query emotion where possible.
+    donor_ids=cross_person_donors(data['speaker_id'],data['emotion_id'])
+    enrolled=[]
+    for start in range(0,n,8):
+        _,refs=batch(data,list(range(start,min(start+8,n))),device)
+        enrolled.append(model.encode_style(one_ref(refs,0))['mean'])
+    enrolled=torch.cat(enrolled)
     for start in range(0,n,8):
         ids=list(range(start,min(start+8,n)));b,refs=batch(data,ids,device);valid=b['valid'].bool()
         r0,r1=one_ref(refs,0),one_ref(refs,1)

@@ -1,0 +1,197 @@
+{
+  "read_only": true,
+  "results": {
+    "held_sentence": {
+      "response_mae": 0.0,
+      "response_real_recon_gain": 0.0,
+      "context_real_recon_gain": 0.00015608686953783035,
+      "teacher_noevent_recon_gain": 0.005913733039051294,
+      "teacher_correction_rms": 0.18359564989805222,
+      "flow_correction_rms": 0.2218121886253357,
+      "teacher_correction_step_rms": 0.04113678587600589,
+      "flow_correction_step_rms": 0.2675434909760952,
+      "flow_only_diversity": 0.009215012076310813,
+      "motions": {
+        "gt": {
+          "mae": 0.0,
+          "speed": 0.009306269697844982,
+          "acceleration": 0.007735440041869879,
+          "q90_q10_range": 0.0896911472082138
+        },
+        "mean": {
+          "mae": 0.04506681486964226,
+          "speed": 0.006108974106609821,
+          "acceleration": 0.0065851169638335705,
+          "q90_q10_range": 0.05337858945131302
+        },
+        "flow_only": {
+          "mae": 0.04575140029191971,
+          "speed": 0.008150359615683556,
+          "acceleration": 0.010634901002049446,
+          "q90_q10_range": 0.05338495969772339
+        },
+        "flow_only2": {
+          "mae": 0.046011943370103836,
+          "speed": 0.008179510943591595,
+          "acceleration": 0.010639484971761703,
+          "q90_q10_range": 0.05390531197190285
+        },
+        "events_only": {
+          "mae": 0.046529337763786316,
+          "speed": 0.007077316753566265,
+          "acceleration": 0.0075309993699193,
+          "q90_q10_range": 0.0611707866191864
+        },
+        "both": {
+          "mae": 0.04680807143449783,
+          "speed": 0.00900120660662651,
+          "acceleration": 0.01145972777158022,
+          "q90_q10_range": 0.060370784252882004
+        },
+        "teacher": {
+          "mae": 0.03916185721755028,
+          "speed": 0.006928619462996721,
+          "acceleration": 0.007203260902315378,
+          "q90_q10_range": 0.060052622109651566
+        }
+      },
+      "emotion_probes": {
+        "0": {
+          "gt": 0.828125,
+          "mean": 0.640625,
+          "flow_only": 0.609375,
+          "flow_only2": 0.609375,
+          "events_only": 0.65625,
+          "both": 0.609375,
+          "teacher": 0.671875
+        },
+        "1": {
+          "gt": 0.78125,
+          "mean": 0.515625,
+          "flow_only": 0.546875,
+          "flow_only2": 0.546875,
+          "events_only": 0.625,
+          "both": 0.59375,
+          "teacher": 0.5625
+        },
+        "2": {
+          "gt": 0.859375,
+          "mean": 0.640625,
+          "flow_only": 0.625,
+          "flow_only2": 0.625,
+          "events_only": 0.65625,
+          "both": 0.609375,
+          "teacher": 0.65625
+        },
+        "3": {
+          "gt": 0.8125,
+          "mean": 0.59375,
+          "flow_only": 0.59375,
+          "flow_only2": 0.578125,
+          "events_only": 0.640625,
+          "both": 0.625,
+          "teacher": 0.59375
+        }
+      }
+    },
+    "unseen_speaker": {
+      "response_mae": 0.0,
+      "response_real_recon_gain": 0.0,
+      "context_real_recon_gain": 0.00021208450198173523,
+      "teacher_noevent_recon_gain": 0.004090859244267146,
+      "teacher_correction_rms": 0.18170792857805887,
+      "flow_correction_rms": 0.2198949952920278,
+      "teacher_correction_step_rms": 0.03567600374420484,
+      "flow_correction_step_rms": 0.26609434684117633,
+      "flow_only_diversity": 0.008142416986326376,
+      "motions": {
+        "gt": {
+          "mae": 0.0,
+          "speed": 0.0070179533213377,
+          "acceleration": 0.0055381981655955315,
+          "q90_q10_range": 0.07309750467538834
+        },
+        "mean": {
+          "mae": 0.05397377908229828,
+          "speed": 0.005283781792968512,
+          "acceleration": 0.006010459735989571,
+          "q90_q10_range": 0.04475665092468262
+        },
+        "flow_only": {
+          "mae": 0.0543023981153965,
+          "speed": 0.007149702403694391,
+          "acceleration": 0.00973215140402317,
+          "q90_q10_range": 0.04528765380382538
+        },
+        "flow_only2": {
+          "mae": 0.05459817126393318,
+          "speed": 0.00729080755263567,
+          "acceleration": 0.009760983288288116,
+          "q90_q10_range": 0.04589818790555
+        },
+        "events_only": {
+          "mae": 0.05465808883309364,
+          "speed": 0.005884924437850714,
+          "acceleration": 0.00663934089243412,
+          "q90_q10_range": 0.0483565628528595
+        },
+        "both": {
+          "mae": 0.05513428524136543,
+          "speed": 0.007704438176006079,
+          "acceleration": 0.010295472107827663,
+          "q90_q10_range": 0.04843835160136223
+        },
+        "teacher": {
+          "mae": 0.049886781722307205,
+          "speed": 0.005761289037764072,
+          "acceleration": 0.006361208390444517,
+          "q90_q10_range": 0.04897969588637352
+        }
+      },
+      "emotion_probes": {
+        "0": {
+          "gt": 0.75,
+          "mean": 0.875,
+          "flow_only": 0.875,
+          "flow_only2": 0.875,
+          "events_only": 0.875,
+          "both": 0.875,
+          "teacher": 0.8333333134651184
+        },
+        "1": {
+          "gt": 0.75,
+          "mean": 0.8333333134651184,
+          "flow_only": 0.8333333134651184,
+          "flow_only2": 0.875,
+          "events_only": 0.875,
+          "both": 0.875,
+          "teacher": 0.7916666865348816
+        },
+        "2": {
+          "gt": 0.6666666865348816,
+          "mean": 0.9166666865348816,
+          "flow_only": 0.9166666865348816,
+          "flow_only2": 0.9166666865348816,
+          "events_only": 0.9166666865348816,
+          "both": 0.9166666865348816,
+          "teacher": 0.875
+        },
+        "3": {
+          "gt": 0.7083333134651184,
+          "mean": 0.875,
+          "flow_only": 0.875,
+          "flow_only2": 0.875,
+          "events_only": 0.875,
+          "both": 0.875,
+          "teacher": 0.8333333134651184
+        }
+      }
+    }
+  },
+  "test_loaded": false,
+  "limits": [
+    "short-crop diagnostics",
+    "flow seeds do not prove natural dynamics",
+    "teacher reconstruction not deployment result"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "source_hashes": {
+    "kinetalk_v5/factor_rebuild.py": "cf7e9aae59d717b3e0168de3a09202f6793b8bb135ba1a08fe55d2968c1c3098",
+    "scripts/pilot_v5_factor_rebuild.py": "3585be62c9eaf098a6d58c5cd42a5f10cb2b72cc8988c120b83c181c47a627d3",
+    "scripts/pilot_v5_flow_covariance.py": "b4919b331308e5f0fa1949671fc4d1dd291e2c4d93092443d6bfe420cf9b4608",
+    "scripts/audit_v5_rebuild_routes.py": "2f7e36c72f230d7bbda267d370a65f29741a56e39a150fd43db21cf10ced34af",
+    "scripts/summarize_v5_flow_covariance.py": "d5f86eb6e1fddaabdb833136d9411336c8b4845fc6f9d0cfcd1859ece0bcc20d",
+    "scripts/summarize_v5_rebuild.py": "677d4278821f41a8bc61fff307fcc1d77d75b5a64468b116da7c2a32699d0f6e",
+    "scripts/restore_v7_reference_anchors.py": "5698ebef353052ac825d112e9e994a0215c9fc6bf12cfae68e0be868d4de1b28",
+    "scripts/diagnose_v7_factor_routes.py": "6290ad6bdf60591cf94eb8c90a3cd67e18b21b92c6f0f2cd43d3db9856c956b6",
+    "tests/test_v5_factor_rebuild.py": "fda6e5f322900664018f3c41bc9d729e10c35e19fd22fb21acd09a65375f4bd8"
+  },
+  "runtime_helper_note": "FixedProbe index/device support is staged from train_v7_pilot; unrelated old v7 training edits remain unstaged.",
+  "local_tests": "17 passed",
+  "long_training_active": false,
+  "promotion": false,
+  "media": {
+    "angry": "artifacts/v5_rebuild_20261013/flow_cov_d/render_angry/comparison.mp4",
+    "audio": false,
+    "sha256": "0956d563257de08385847bc5e53d356a2fed2ce36264d474c3b694c3c589db07"
+  },
+  "checkpoints": {
+    "flow_cov_d/correlated.pt": "e6b86bc873e118a178eda488164ef32c43f3acdff87061625b355cdb4ac51a98",
+    "flow_cov_d/frozen_start.pt": "f5e4d9e24fb70145f2f08a0d4c1fcb1405074ca72ba8e76e9cdfbe8286c30b03",
+    "flow_cov_d/mixed.pt": "e8fcb1b0b39f084af77b4a9504884f2c0d1dbae8e371ebfe413d28c504e46151",
+    "flow_cov_d/white.pt": "9e4851714d808106558a300ee1f666709313c5696f5cc88d48f323b571db66d3"
+  }
+}
