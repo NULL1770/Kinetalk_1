@@ -1,0 +1,67 @@
+[
+  {
+    "path": "E:\\研1作业\\开题报告\\2025.11.25 赵何昊 开题报告 _第二版 - 副本.docx",
+    "bytes": 600764,
+    "sha256": "6bd48c02e053fadbcc17348d59ef65aa1d3725d097b98e2b55d550c93b62c7fa"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\configs\\current_model.json",
+    "bytes": 1581,
+    "sha256": "7ef69e5c403a58847b9b310714ec17547a29befe4e438faf98e553336570164d"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\kinetalk_v4\\unified_model_v4.py",
+    "bytes": 19091,
+    "sha256": "d219ea99cf149724263ac1e1ba1d18cdafaf69a5ca269f695904d1e3333f1796"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\kinetalk_v2\\unified_model.py",
+    "bytes": 20428,
+    "sha256": "1af06da48a55c5cec9a82906534ab1bc8ec99c44b433933e0acf78c05f15dc90"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\kinetalk_b0\\models\\dit.py",
+    "bytes": 16715,
+    "sha256": "5fb53ee775229946da557bc95eec29d70b42fa86cd3a06810c6cb62216ab6b78"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\proposal_aligned_redesign_20261013\\proposal_extracted.txt",
+    "bytes": 39875,
+    "sha256": "5c74bfce997402ce0e0d8c59f3a1c9b79b42b07c87f0a352b0db1ceac2082232"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\proposal_aligned_redesign_20261013\\architecture_spec.md",
+    "bytes": 21165,
+    "sha256": "5f149c20c13f861c73b12c2ed5be3935826ea9f90e4cf43418269635dbeca734"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\architecture_proposal_20261010_v4\\style\\destalker_p4.txt",
+    "bytes": 10750,
+    "sha256": "65474aabe2465ea1cb4b2972a71a91ee000ca8b5a5e0af96850d95569cab1057"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\architecture_upgrade_v3_20261010\\literature_style\\mimic_extracted.txt",
+    "bytes": 41968,
+    "sha256": "bd795394d1608fb87c46bed850e75438e5de195bf7622ffb2ab20a80640a02f3"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\architecture_upgrade_v3_20261010\\literature_style\\diffposetalk_extracted.txt",
+    "bytes": 51292,
+    "sha256": "59d8d2a1d3775b59eed446c4e7a42e72a68faf61ab5cd0c6b6d0d81d7cc2bfd3"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\architecture_upgrade_v3_20261010\\literature_dynamics\\medtalk.txt",
+    "bytes": 76254,
+    "sha256": "f56a91c595940a0c5c32c92990e0eb62d5a33f39ac526274c57767cff7a3aea5"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\architecture_upgrade_v3_20261010\\literature_dynamics\\subtletalk.txt",
+    "bytes": 84216,
+    "sha256": "c39d0edf9b8d8c60d0fae2c80b7210f5fdd440a20d991772b6a281e438bc5f95"
+  },
+  {
+    "path": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\docs\\architecture_upgrade_v3_20261010\\literature_dynamics\\cetalk.txt",
+    "bytes": 36349,
+    "sha256": "8d2a29724f63c19e391580fb601753f724ed24d07116a87e9e32529952d056c8"
+  }
+]
