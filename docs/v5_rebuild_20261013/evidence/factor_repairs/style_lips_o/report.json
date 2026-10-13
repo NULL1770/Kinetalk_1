@@ -1,0 +1,72 @@
+{
+  "schema": "v5_style_lip_audit_v1",
+  "elapsed_seconds": 8.146284341812134,
+  "checkpoint_sha256": "bb6f701a3db3312111a1c0a1237d43bc5fd976c45d99db65aaf213e88add1f5b",
+  "results": {
+    "held_sentence": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9984883638098836,
+        "aperture_velocity_cosine": 0.9965598173439503,
+        "low_aperture_rank_f1": 0.965851217508316,
+        "aperture_amplitude_ratio": 0.9876122940331697,
+        "width_mean_change_mm": -0.0032266523194266483,
+        "width_abs_change_mm": 0.1899469739291817,
+        "aperture_mean_change_mm": -0.04890559401974315,
+        "probe0_class_preserved": 0.96875,
+        "probe1_class_preserved": 1.0,
+        "probe2_class_preserved": 0.9375,
+        "probe3_class_preserved": 0.984375
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9093938367441297,
+        "aperture_velocity_cosine": 0.8403351409360766,
+        "low_aperture_rank_f1": 0.7650564820505679,
+        "aperture_amplitude_ratio": 1.23726917617023,
+        "width_mean_change_mm": 1.4336522075464018,
+        "width_abs_change_mm": 2.1561612812802196,
+        "aperture_mean_change_mm": 0.2553614050266333,
+        "probe0_class_preserved": 0.78125,
+        "probe1_class_preserved": 0.75,
+        "probe2_class_preserved": 0.765625,
+        "probe3_class_preserved": 0.703125
+      }
+    },
+    "unseen_speaker": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.966076135635376,
+        "aperture_velocity_cosine": 0.9187023217479388,
+        "low_aperture_rank_f1": 0.8652301132678986,
+        "aperture_amplitude_ratio": 0.980936199426651,
+        "width_mean_change_mm": -0.42507012498875457,
+        "width_abs_change_mm": 1.0188492573797703,
+        "aperture_mean_change_mm": 0.08038364661236604,
+        "probe0_class_preserved": 0.9583333333333334,
+        "probe1_class_preserved": 0.9166666666666666,
+        "probe2_class_preserved": 0.9166666666666666,
+        "probe3_class_preserved": 0.9583333333333334
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9435774485270182,
+        "aperture_velocity_cosine": 0.8718593244751295,
+        "low_aperture_rank_f1": 0.7720373633007208,
+        "aperture_amplitude_ratio": 0.9240046640237173,
+        "width_mean_change_mm": -0.24885850617041191,
+        "width_abs_change_mm": 1.0598507896065712,
+        "aperture_mean_change_mm": -0.37901772124071914,
+        "probe0_class_preserved": 0.9166666666666666,
+        "probe1_class_preserved": 0.9166666666666666,
+        "probe2_class_preserved": 0.9583333333333334,
+        "probe3_class_preserved": 0.9166666666666666
+      }
+    }
+  },
+  "sealed_test_loaded": false,
+  "read_only": true,
+  "limits": [
+    "shared rig mouth scale, not subject-specific topology",
+    "low aperture rank F1 is not a physiological or bilabial contact metric",
+    "no supplied emotion labels in deployment; query labels only match evaluation donors",
+    "high curve correlation plus amplitude change does not prove style disentanglement",
+    "class preservation is relative to own-reference predictions, not necessarily true emotion"
+  ]
+}

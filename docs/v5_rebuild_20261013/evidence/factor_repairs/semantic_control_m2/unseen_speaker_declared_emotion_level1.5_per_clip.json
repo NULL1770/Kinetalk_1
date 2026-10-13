@@ -1,0 +1,890 @@
+[
+  {
+    "row": 0,
+    "emotion": 0,
+    "person": 9,
+    "full_mae": 0.0460234098136425,
+    "mouth_mae": 0.037244148552417755,
+    "upper": {
+      "mean": 0.10766289383172989,
+      "amplitude": 0.05190398916602135,
+      "speed": 0.005431376397609711,
+      "acceleration": 0.005835126619786024
+    },
+    "mouth": {
+      "mean": 0.05757946893572807,
+      "amplitude": 0.08653314411640167,
+      "speed": 0.009916217066347599,
+      "acceleration": 0.011262443847954273
+    },
+    "gt_upper": {
+      "mean": 0.08229103684425354,
+      "amplitude": 0.059085913002491,
+      "speed": 0.003726073307916522,
+      "acceleration": 0.00249085808172822
+    },
+    "gt_mouth": {
+      "mean": 0.047124918550252914,
+      "amplitude": 0.05471325293183327,
+      "speed": 0.005361564457416534,
+      "acceleration": 0.004041696898639202
+    },
+    "geometry_mae": 1.307208776473999,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 0,
+    "probe1_correct": 0,
+    "probe2_correct": 0,
+    "probe3_correct": 0
+  },
+  {
+    "row": 1,
+    "emotion": 1,
+    "person": 9,
+    "full_mae": 0.08260305970907211,
+    "mouth_mae": 0.10735410451889038,
+    "upper": {
+      "mean": 0.1434512883424759,
+      "amplitude": 0.03641510754823685,
+      "speed": 0.0039005980361253023,
+      "acceleration": 0.0042569516226649284
+    },
+    "mouth": {
+      "mean": 0.06322063505649567,
+      "amplitude": 0.1068616434931755,
+      "speed": 0.010328194126486778,
+      "acceleration": 0.009023184888064861
+    },
+    "gt_upper": {
+      "mean": 0.17489002645015717,
+      "amplitude": 0.06469929218292236,
+      "speed": 0.006891767028719187,
+      "acceleration": 0.005495431832969189
+    },
+    "gt_mouth": {
+      "mean": 0.12377282977104187,
+      "amplitude": 0.1573878824710846,
+      "speed": 0.0166506115347147,
+      "acceleration": 0.01261343527585268
+    },
+    "geometry_mae": 4.86697244644165,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 2,
+    "emotion": 2,
+    "person": 9,
+    "full_mae": 0.08967368304729462,
+    "mouth_mae": 0.0826827809214592,
+    "upper": {
+      "mean": 0.11316484957933426,
+      "amplitude": 0.05977115407586098,
+      "speed": 0.005597240291535854,
+      "acceleration": 0.00501376623287797
+    },
+    "mouth": {
+      "mean": 0.05709410086274147,
+      "amplitude": 0.08451046049594879,
+      "speed": 0.008798183873295784,
+      "acceleration": 0.008474490605294704
+    },
+    "gt_upper": {
+      "mean": 0.12601986527442932,
+      "amplitude": 0.05021810531616211,
+      "speed": 0.00407261261716485,
+      "acceleration": 0.0028154330793768167
+    },
+    "gt_mouth": {
+      "mean": 0.086353600025177,
+      "amplitude": 0.0503375418484211,
+      "speed": 0.0048380084335803986,
+      "acceleration": 0.003655004780739546
+    },
+    "geometry_mae": 4.271064758300781,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 3,
+    "emotion": 3,
+    "person": 9,
+    "full_mae": 0.06571400165557861,
+    "mouth_mae": 0.06739039719104767,
+    "upper": {
+      "mean": 0.1516801416873932,
+      "amplitude": 0.04712165892124176,
+      "speed": 0.004219837952405214,
+      "acceleration": 0.004565034527331591
+    },
+    "mouth": {
+      "mean": 0.07022532820701599,
+      "amplitude": 0.08696303516626358,
+      "speed": 0.00822403933852911,
+      "acceleration": 0.00916659738868475
+    },
+    "gt_upper": {
+      "mean": 0.1414451152086258,
+      "amplitude": 0.0741390734910965,
+      "speed": 0.005401771515607834,
+      "acceleration": 0.004118696786463261
+    },
+    "gt_mouth": {
+      "mean": 0.10033800452947617,
+      "amplitude": 0.09739051014184952,
+      "speed": 0.00909021869301796,
+      "acceleration": 0.007081113290041685
+    },
+    "geometry_mae": 2.072813034057617,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 4,
+    "emotion": 4,
+    "person": 9,
+    "full_mae": 0.07984264940023422,
+    "mouth_mae": 0.0493076927959919,
+    "upper": {
+      "mean": 0.11256159096956253,
+      "amplitude": 0.042117685079574585,
+      "speed": 0.004533381666988134,
+      "acceleration": 0.004482789896428585
+    },
+    "mouth": {
+      "mean": 0.05138346180319786,
+      "amplitude": 0.0895378440618515,
+      "speed": 0.009336723946034908,
+      "acceleration": 0.008935250341892242
+    },
+    "gt_upper": {
+      "mean": 0.19297780096530914,
+      "amplitude": 0.08166307955980301,
+      "speed": 0.005748881492763758,
+      "acceleration": 0.004982727114111185
+    },
+    "gt_mouth": {
+      "mean": 0.051288582384586334,
+      "amplitude": 0.12007005512714386,
+      "speed": 0.013079952448606491,
+      "acceleration": 0.012423009611666203
+    },
+    "geometry_mae": 3.026390552520752,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 0
+  },
+  {
+    "row": 5,
+    "emotion": 5,
+    "person": 9,
+    "full_mae": 0.0351439043879509,
+    "mouth_mae": 0.03417510166764259,
+    "upper": {
+      "mean": 0.11874386668205261,
+      "amplitude": 0.04077404737472534,
+      "speed": 0.00457932660356164,
+      "acceleration": 0.0046811215579509735
+    },
+    "mouth": {
+      "mean": 0.11585830897092819,
+      "amplitude": 0.07729806751012802,
+      "speed": 0.010299080051481724,
+      "acceleration": 0.010985362343490124
+    },
+    "gt_upper": {
+      "mean": 0.1406424194574356,
+      "amplitude": 0.06405731290578842,
+      "speed": 0.0061300210654735565,
+      "acceleration": 0.004255778156220913
+    },
+    "gt_mouth": {
+      "mean": 0.12449264526367188,
+      "amplitude": 0.09473301470279694,
+      "speed": 0.01032096054404974,
+      "acceleration": 0.0075934515334665775
+    },
+    "geometry_mae": 0.9220352172851562,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 6,
+    "emotion": 6,
+    "person": 9,
+    "full_mae": 0.06478530168533325,
+    "mouth_mae": 0.04331296682357788,
+    "upper": {
+      "mean": 0.11631050705909729,
+      "amplitude": 0.02981664054095745,
+      "speed": 0.0031855222769081593,
+      "acceleration": 0.0038242957089096308
+    },
+    "mouth": {
+      "mean": 0.044478293508291245,
+      "amplitude": 0.06219649687409401,
+      "speed": 0.006568111479282379,
+      "acceleration": 0.007684390991926193
+    },
+    "gt_upper": {
+      "mean": 0.13265250623226166,
+      "amplitude": 0.061807431280612946,
+      "speed": 0.0045291162095963955,
+      "acceleration": 0.0033458806574344635
+    },
+    "gt_mouth": {
+      "mean": 0.04835383594036102,
+      "amplitude": 0.08254938572645187,
+      "speed": 0.007093003019690514,
+      "acceleration": 0.005799640901386738
+    },
+    "geometry_mae": 2.2081899642944336,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 0,
+    "probe3_correct": 1
+  },
+  {
+    "row": 7,
+    "emotion": 7,
+    "person": 9,
+    "full_mae": 0.062377817928791046,
+    "mouth_mae": 0.062428757548332214,
+    "upper": {
+      "mean": 0.1460418403148651,
+      "amplitude": 0.036600690335035324,
+      "speed": 0.003888070350512862,
+      "acceleration": 0.004043489694595337
+    },
+    "mouth": {
+      "mean": 0.04896937310695648,
+      "amplitude": 0.08371928334236145,
+      "speed": 0.008818298578262329,
+      "acceleration": 0.008220581337809563
+    },
+    "gt_upper": {
+      "mean": 0.15635645389556885,
+      "amplitude": 0.09110130369663239,
+      "speed": 0.00743440818041563,
+      "acceleration": 0.005485578440129757
+    },
+    "gt_mouth": {
+      "mean": 0.07753178477287292,
+      "amplitude": 0.1738768368959427,
+      "speed": 0.018022770062088966,
+      "acceleration": 0.0141640305519104
+    },
+    "geometry_mae": 2.4709010124206543,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 8,
+    "emotion": 0,
+    "person": 16,
+    "full_mae": 0.06703837215900421,
+    "mouth_mae": 0.049928002059459686,
+    "upper": {
+      "mean": 0.09875890612602234,
+      "amplitude": 0.04334164410829544,
+      "speed": 0.005455012898892164,
+      "acceleration": 0.005436808802187443
+    },
+    "mouth": {
+      "mean": 0.043614860624074936,
+      "amplitude": 0.06967262923717499,
+      "speed": 0.009568898938596249,
+      "acceleration": 0.010094544850289822
+    },
+    "gt_upper": {
+      "mean": 0.09385322779417038,
+      "amplitude": 0.10715825110673904,
+      "speed": 0.010691833682358265,
+      "acceleration": 0.008410125970840454
+    },
+    "gt_mouth": {
+      "mean": 0.0585508793592453,
+      "amplitude": 0.1272817999124527,
+      "speed": 0.015917014330625534,
+      "acceleration": 0.013907902874052525
+    },
+    "geometry_mae": 3.3966407775878906,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 0,
+    "probe2_correct": 0,
+    "probe3_correct": 0
+  },
+  {
+    "row": 9,
+    "emotion": 1,
+    "person": 16,
+    "full_mae": 0.039107631891965866,
+    "mouth_mae": 0.04483623057603836,
+    "upper": {
+      "mean": 0.13343939185142517,
+      "amplitude": 0.048675235360860825,
+      "speed": 0.004899016581475735,
+      "acceleration": 0.004810865968465805
+    },
+    "mouth": {
+      "mean": 0.06666581332683563,
+      "amplitude": 0.12230520695447922,
+      "speed": 0.01082441583275795,
+      "acceleration": 0.009213744662702084
+    },
+    "gt_upper": {
+      "mean": 0.11165758222341537,
+      "amplitude": 0.047556065022945404,
+      "speed": 0.004222176503390074,
+      "acceleration": 0.0032748833764344454
+    },
+    "gt_mouth": {
+      "mean": 0.050388842821121216,
+      "amplitude": 0.10310173779726028,
+      "speed": 0.008489393629133701,
+      "acceleration": 0.006090193521231413
+    },
+    "geometry_mae": 3.1322386264801025,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 10,
+    "emotion": 2,
+    "person": 16,
+    "full_mae": 0.05896208435297012,
+    "mouth_mae": 0.03697624057531357,
+    "upper": {
+      "mean": 0.13181224465370178,
+      "amplitude": 0.04650348424911499,
+      "speed": 0.005286251660436392,
+      "acceleration": 0.005980904679745436
+    },
+    "mouth": {
+      "mean": 0.045208901166915894,
+      "amplitude": 0.059327706694602966,
+      "speed": 0.008750888518989086,
+      "acceleration": 0.0099579943343997
+    },
+    "gt_upper": {
+      "mean": 0.11129184812307358,
+      "amplitude": 0.0669170543551445,
+      "speed": 0.006642380263656378,
+      "acceleration": 0.005084543488919735
+    },
+    "gt_mouth": {
+      "mean": 0.04793236777186394,
+      "amplitude": 0.11785034835338593,
+      "speed": 0.013959308154881,
+      "acceleration": 0.011156460270285606
+    },
+    "geometry_mae": 1.6432764530181885,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 11,
+    "emotion": 3,
+    "person": 16,
+    "full_mae": 0.04869222640991211,
+    "mouth_mae": 0.04357634484767914,
+    "upper": {
+      "mean": 0.14958353340625763,
+      "amplitude": 0.04013906419277191,
+      "speed": 0.00498594157397747,
+      "acceleration": 0.005387536250054836
+    },
+    "mouth": {
+      "mean": 0.056203220039606094,
+      "amplitude": 0.09409286826848984,
+      "speed": 0.011085485108196735,
+      "acceleration": 0.010331014171242714
+    },
+    "gt_upper": {
+      "mean": 0.18493233621120453,
+      "amplitude": 0.07192164659500122,
+      "speed": 0.006233563181012869,
+      "acceleration": 0.004709015600383282
+    },
+    "gt_mouth": {
+      "mean": 0.04786809906363487,
+      "amplitude": 0.10461630672216415,
+      "speed": 0.01114596240222454,
+      "acceleration": 0.008935198187828064
+    },
+    "geometry_mae": 2.253408193588257,
+    "audio_emotion_correct": 0,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 12,
+    "emotion": 4,
+    "person": 16,
+    "full_mae": 0.0611717514693737,
+    "mouth_mae": 0.05328312888741493,
+    "upper": {
+      "mean": 0.14821718633174896,
+      "amplitude": 0.04144350439310074,
+      "speed": 0.004425385966897011,
+      "acceleration": 0.004703387152403593
+    },
+    "mouth": {
+      "mean": 0.05275455489754677,
+      "amplitude": 0.08462204784154892,
+      "speed": 0.008928721770644188,
+      "acceleration": 0.008451882749795914
+    },
+    "gt_upper": {
+      "mean": 0.13357587158679962,
+      "amplitude": 0.08993416279554367,
+      "speed": 0.006447166670113802,
+      "acceleration": 0.004946800414472818
+    },
+    "gt_mouth": {
+      "mean": 0.039738815277814865,
+      "amplitude": 0.06610395014286041,
+      "speed": 0.007993451319634914,
+      "acceleration": 0.006538845598697662
+    },
+    "geometry_mae": 4.109705924987793,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 0,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 13,
+    "emotion": 5,
+    "person": 16,
+    "full_mae": 0.04643644765019417,
+    "mouth_mae": 0.046529266983270645,
+    "upper": {
+      "mean": 0.11132427304983139,
+      "amplitude": 0.051820747554302216,
+      "speed": 0.004678548313677311,
+      "acceleration": 0.004449480213224888
+    },
+    "mouth": {
+      "mean": 0.09324431419372559,
+      "amplitude": 0.11534322798252106,
+      "speed": 0.009642321616411209,
+      "acceleration": 0.009038551710546017
+    },
+    "gt_upper": {
+      "mean": 0.10937338322401047,
+      "amplitude": 0.06818084418773651,
+      "speed": 0.005657277535647154,
+      "acceleration": 0.00468424940481782
+    },
+    "gt_mouth": {
+      "mean": 0.06772703677415848,
+      "amplitude": 0.11619119346141815,
+      "speed": 0.011339768767356873,
+      "acceleration": 0.009236049838364124
+    },
+    "geometry_mae": 2.890000820159912,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 14,
+    "emotion": 6,
+    "person": 16,
+    "full_mae": 0.049334194511175156,
+    "mouth_mae": 0.032882239669561386,
+    "upper": {
+      "mean": 0.12303785234689713,
+      "amplitude": 0.03630185127258301,
+      "speed": 0.004123870749026537,
+      "acceleration": 0.004700849764049053
+    },
+    "mouth": {
+      "mean": 0.03422484174370766,
+      "amplitude": 0.06141041964292526,
+      "speed": 0.008557179942727089,
+      "acceleration": 0.009215151891112328
+    },
+    "gt_upper": {
+      "mean": 0.10976018756628036,
+      "amplitude": 0.06511925905942917,
+      "speed": 0.004936037119477987,
+      "acceleration": 0.003851894522085786
+    },
+    "gt_mouth": {
+      "mean": 0.029306674376130104,
+      "amplitude": 0.04813297465443611,
+      "speed": 0.005464633461087942,
+      "acceleration": 0.004166366066783667
+    },
+    "geometry_mae": 1.9562242031097412,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 15,
+    "emotion": 7,
+    "person": 16,
+    "full_mae": 0.04326513037085533,
+    "mouth_mae": 0.042924221605062485,
+    "upper": {
+      "mean": 0.164148211479187,
+      "amplitude": 0.038138497620821,
+      "speed": 0.004461283795535564,
+      "acceleration": 0.005243984516710043
+    },
+    "mouth": {
+      "mean": 0.05808841437101364,
+      "amplitude": 0.08460482209920883,
+      "speed": 0.009163269773125648,
+      "acceleration": 0.010266901925206184
+    },
+    "gt_upper": {
+      "mean": 0.14791542291641235,
+      "amplitude": 0.06832262873649597,
+      "speed": 0.0054415008053183556,
+      "acceleration": 0.004611682612448931
+    },
+    "gt_mouth": {
+      "mean": 0.026406606659293175,
+      "amplitude": 0.07335695624351501,
+      "speed": 0.008928012102842331,
+      "acceleration": 0.008521318435668945
+    },
+    "geometry_mae": 2.918452739715576,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 16,
+    "emotion": 0,
+    "person": 17,
+    "full_mae": 0.04292353242635727,
+    "mouth_mae": 0.03180886059999466,
+    "upper": {
+      "mean": 0.09384441375732422,
+      "amplitude": 0.03824605047702789,
+      "speed": 0.004546532407402992,
+      "acceleration": 0.0049700625240802765
+    },
+    "mouth": {
+      "mean": 0.04171326383948326,
+      "amplitude": 0.07699171453714371,
+      "speed": 0.009481765329837799,
+      "acceleration": 0.00905669666826725
+    },
+    "gt_upper": {
+      "mean": 0.10203219205141068,
+      "amplitude": 0.051546379923820496,
+      "speed": 0.006760737858712673,
+      "acceleration": 0.004908244591206312
+    },
+    "gt_mouth": {
+      "mean": 0.015402152203023434,
+      "amplitude": 0.030391719192266464,
+      "speed": 0.003755429293960333,
+      "acceleration": 0.003153428668156266
+    },
+    "geometry_mae": 2.8426666259765625,
+    "audio_emotion_correct": 0,
+    "probe0_correct": 0,
+    "probe1_correct": 0,
+    "probe2_correct": 0,
+    "probe3_correct": 0
+  },
+  {
+    "row": 17,
+    "emotion": 1,
+    "person": 17,
+    "full_mae": 0.04730917885899544,
+    "mouth_mae": 0.033566493541002274,
+    "upper": {
+      "mean": 0.12306299805641174,
+      "amplitude": 0.03530926629900932,
+      "speed": 0.004292151890695095,
+      "acceleration": 0.004897878970950842
+    },
+    "mouth": {
+      "mean": 0.043232761323451996,
+      "amplitude": 0.08535315096378326,
+      "speed": 0.009166201576590538,
+      "acceleration": 0.008854009211063385
+    },
+    "gt_upper": {
+      "mean": 0.16456139087677002,
+      "amplitude": 0.036226313561201096,
+      "speed": 0.002155865775421262,
+      "acceleration": 0.0016179467784240842
+    },
+    "gt_mouth": {
+      "mean": 0.019241558387875557,
+      "amplitude": 0.02697690576314926,
+      "speed": 0.003232366405427456,
+      "acceleration": 0.00257408176548779
+    },
+    "geometry_mae": 2.8714957237243652,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 18,
+    "emotion": 2,
+    "person": 17,
+    "full_mae": 0.09690070152282715,
+    "mouth_mae": 0.04892187938094139,
+    "upper": {
+      "mean": 0.142907977104187,
+      "amplitude": 0.04104571416974068,
+      "speed": 0.004674698691815138,
+      "acceleration": 0.005622603464871645
+    },
+    "mouth": {
+      "mean": 0.04825306311249733,
+      "amplitude": 0.0551765076816082,
+      "speed": 0.007713692728430033,
+      "acceleration": 0.00941767543554306
+    },
+    "gt_upper": {
+      "mean": 0.16793116927146912,
+      "amplitude": 0.05654088407754898,
+      "speed": 0.006015807390213013,
+      "acceleration": 0.004482750315219164
+    },
+    "gt_mouth": {
+      "mean": 0.03550276905298233,
+      "amplitude": 0.03645654022693634,
+      "speed": 0.003351732390001416,
+      "acceleration": 0.002681415993720293
+    },
+    "geometry_mae": 0.9472850561141968,
+    "audio_emotion_correct": 0,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 19,
+    "emotion": 3,
+    "person": 17,
+    "full_mae": 0.07699607312679291,
+    "mouth_mae": 0.054533105343580246,
+    "upper": {
+      "mean": 0.13410672545433044,
+      "amplitude": 0.04015742987394333,
+      "speed": 0.00412715831771493,
+      "acceleration": 0.004713257774710655
+    },
+    "mouth": {
+      "mean": 0.0588533878326416,
+      "amplitude": 0.07563755661249161,
+      "speed": 0.008574448525905609,
+      "acceleration": 0.008818387053906918
+    },
+    "gt_upper": {
+      "mean": 0.20263738930225372,
+      "amplitude": 0.086142398416996,
+      "speed": 0.004796947352588177,
+      "acceleration": 0.0033787277061492205
+    },
+    "gt_mouth": {
+      "mean": 0.023316960781812668,
+      "amplitude": 0.04655890166759491,
+      "speed": 0.004947169683873653,
+      "acceleration": 0.003681825241073966
+    },
+    "geometry_mae": 2.879640817642212,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 20,
+    "emotion": 4,
+    "person": 17,
+    "full_mae": 0.05986602231860161,
+    "mouth_mae": 0.03308786451816559,
+    "upper": {
+      "mean": 0.11667319387197495,
+      "amplitude": 0.030337929725646973,
+      "speed": 0.004109691362828016,
+      "acceleration": 0.004801713861525059
+    },
+    "mouth": {
+      "mean": 0.036674946546554565,
+      "amplitude": 0.05726366862654686,
+      "speed": 0.0076159583404660225,
+      "acceleration": 0.007539911661297083
+    },
+    "gt_upper": {
+      "mean": 0.10494682937860489,
+      "amplitude": 0.09232661128044128,
+      "speed": 0.008000900968909264,
+      "acceleration": 0.006524881813675165
+    },
+    "gt_mouth": {
+      "mean": 0.025945410132408142,
+      "amplitude": 0.03595643490552902,
+      "speed": 0.0035115035716444254,
+      "acceleration": 0.002839371794834733
+    },
+    "geometry_mae": 3.612255573272705,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 21,
+    "emotion": 5,
+    "person": 17,
+    "full_mae": 0.05868421867489815,
+    "mouth_mae": 0.04423196613788605,
+    "upper": {
+      "mean": 0.12657447159290314,
+      "amplitude": 0.036219850182533264,
+      "speed": 0.004361000843346119,
+      "acceleration": 0.004133161623030901
+    },
+    "mouth": {
+      "mean": 0.08713927865028381,
+      "amplitude": 0.08701925724744797,
+      "speed": 0.00964475516229868,
+      "acceleration": 0.00891275703907013
+    },
+    "gt_upper": {
+      "mean": 0.13935133814811707,
+      "amplitude": 0.1032240092754364,
+      "speed": 0.007523753214627504,
+      "acceleration": 0.005401396192610264
+    },
+    "gt_mouth": {
+      "mean": 0.05455024540424347,
+      "amplitude": 0.08599124848842621,
+      "speed": 0.007471129763871431,
+      "acceleration": 0.005019222851842642
+    },
+    "geometry_mae": 2.2521116733551025,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 22,
+    "emotion": 6,
+    "person": 17,
+    "full_mae": 0.04843197762966156,
+    "mouth_mae": 0.032172154635190964,
+    "upper": {
+      "mean": 0.11637282371520996,
+      "amplitude": 0.024817446246743202,
+      "speed": 0.0032622322905808687,
+      "acceleration": 0.003992164041846991
+    },
+    "mouth": {
+      "mean": 0.033558834344148636,
+      "amplitude": 0.0465533472597599,
+      "speed": 0.006605869624763727,
+      "acceleration": 0.008067366667091846
+    },
+    "gt_upper": {
+      "mean": 0.14384622871875763,
+      "amplitude": 0.04546470567584038,
+      "speed": 0.0028668008744716644,
+      "acceleration": 0.0020000587683171034
+    },
+    "gt_mouth": {
+      "mean": 0.01663111336529255,
+      "amplitude": 0.026819515973329544,
+      "speed": 0.003202029736712575,
+      "acceleration": 0.0026731493417173624
+    },
+    "geometry_mae": 1.5031335353851318,
+    "audio_emotion_correct": 1,
+    "probe0_correct": 1,
+    "probe1_correct": 1,
+    "probe2_correct": 1,
+    "probe3_correct": 1
+  },
+  {
+    "row": 23,
+    "emotion": 7,
+    "person": 17,
+    "full_mae": 0.07331354171037674,
+    "mouth_mae": 0.030977439135313034,
+    "upper": {
+      "mean": 0.14424338936805725,
+      "amplitude": 0.03211769834160805,
+      "speed": 0.004132465459406376,
+      "acceleration": 0.004436292219907045
+    },
+    "mouth": {
+      "mean": 0.037823308259248734,
+      "amplitude": 0.056269142776727676,
+      "speed": 0.008576842024922371,
+      "acceleration": 0.008796541951596737
+    },
+    "gt_upper": {
+      "mean": 0.09541629999876022,
+      "amplitude": 0.0433461032807827,
+      "speed": 0.0027940485160797834,
+      "acceleration": 0.002199846087023616
+    },
+    "gt_mouth": {
+      "mean": 0.026274118572473526,
+      "amplitude": 0.048471007496118546,
+      "speed": 0.005822861101478338,
+      "acceleration": 0.004350883886218071
+    },
+    "geometry_mae": 2.5537564754486084,
+    "audio_emotion_correct": 0,
+    "probe0_correct": 0,
+    "probe1_correct": 0,
+    "probe2_correct": 0,
+    "probe3_correct": 1
+  }
+]

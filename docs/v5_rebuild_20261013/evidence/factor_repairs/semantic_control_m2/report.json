@@ -1,0 +1,1171 @@
+{
+  "schema": "v5_semantic_control_audit_v1",
+  "elapsed_seconds": 30.236801624298096,
+  "checkpoint_sha256": "bb6f701a3db3312111a1c0a1237d43bc5fd976c45d99db65aaf213e88add1f5b",
+  "read_only": true,
+  "sealed_test_loaded": false,
+  "fitted_from_held_labels": false,
+  "modes": [
+    "automatic",
+    "audio_temperature0.5",
+    "audio_argmax",
+    "declared_emotion",
+    "declared_emotion_level1",
+    "declared_emotion_level1.25",
+    "declared_emotion_level1.5"
+  ],
+  "results": {
+    "held_sentence": {
+      "automatic": {
+        "full_mae": 0.046809818712063134,
+        "mouth_mae": 0.036635169948567636,
+        "geometry_mae": 1.936538421548903,
+        "audio_emotion_correct": 0.796875,
+        "probe0_correct": 0.6875,
+        "probe1_correct": 0.625,
+        "probe2_correct": 0.640625,
+        "probe3_correct": 0.671875,
+        "per_emotion": {
+          "neutral": {
+            "n": 8,
+            "mouth_mae": 0.03219142649322748,
+            "probe0_correct": 0.125,
+            "probe1_correct": 0.125,
+            "probe2_correct": 0.0,
+            "probe3_correct": 0.125
+          },
+          "angry": {
+            "n": 8,
+            "mouth_mae": 0.03758633299730718,
+            "probe0_correct": 0.875,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 8,
+            "mouth_mae": 0.03577074431814253,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.875,
+            "probe2_correct": 0.875,
+            "probe3_correct": 0.875
+          },
+          "disgust": {
+            "n": 8,
+            "mouth_mae": 0.04327977588400245,
+            "probe0_correct": 0.375,
+            "probe1_correct": 0.375,
+            "probe2_correct": 0.375,
+            "probe3_correct": 0.375
+          },
+          "fear": {
+            "n": 8,
+            "mouth_mae": 0.039557423908263445,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.75,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.875
+          },
+          "happy": {
+            "n": 8,
+            "mouth_mae": 0.03933713398873806,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.625
+          },
+          "sad": {
+            "n": 8,
+            "mouth_mae": 0.03256250522099435,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.75
+          },
+          "surprise": {
+            "n": 8,
+            "mouth_mae": 0.03279601677786559,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.5,
+            "probe3_correct": 0.75
+          }
+        },
+        "upper_seed_diversity": 0.01303982483841537,
+        "mouth_seed_diversity": 0.008690255092460575,
+        "upper_dynamics": {
+          "amplitude": {
+            "gt": 0.0825616005458869,
+            "mean": 0.03828648696071468,
+            "sample": 0.04801556671736762
+          },
+          "speed": {
+            "gt": 0.007729649852990406,
+            "mean": 0.004316753129387507,
+            "sample": 0.005522180395928444
+          },
+          "acceleration": {
+            "gt": 0.006310249231319176,
+            "mean": 0.004735109552711947,
+            "sample": 0.005952957028057426
+          }
+        }
+      },
+      "audio_temperature0.5": {
+        "full_mae": 0.04742719989735633,
+        "mouth_mae": 0.03698087512748316,
+        "geometry_mae": 1.9494656352326274,
+        "audio_emotion_correct": 0.796875,
+        "probe0_correct": 0.671875,
+        "probe1_correct": 0.609375,
+        "probe2_correct": 0.65625,
+        "probe3_correct": 0.65625,
+        "per_emotion": {
+          "neutral": {
+            "n": 8,
+            "mouth_mae": 0.03342625289224088,
+            "probe0_correct": 0.0,
+            "probe1_correct": 0.0,
+            "probe2_correct": 0.0,
+            "probe3_correct": 0.0
+          },
+          "angry": {
+            "n": 8,
+            "mouth_mae": 0.037511446280404925,
+            "probe0_correct": 0.875,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 8,
+            "mouth_mae": 0.03610358969308436,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.875,
+            "probe2_correct": 0.875,
+            "probe3_correct": 0.875
+          },
+          "disgust": {
+            "n": 8,
+            "mouth_mae": 0.04361179517582059,
+            "probe0_correct": 0.375,
+            "probe1_correct": 0.375,
+            "probe2_correct": 0.375,
+            "probe3_correct": 0.375
+          },
+          "fear": {
+            "n": 8,
+            "mouth_mae": 0.039649831131100655,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.75,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.875
+          },
+          "happy": {
+            "n": 8,
+            "mouth_mae": 0.04013486742042005,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.625
+          },
+          "sad": {
+            "n": 8,
+            "mouth_mae": 0.03263508528470993,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.75
+          },
+          "surprise": {
+            "n": 8,
+            "mouth_mae": 0.03277413314208388,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.75
+          }
+        }
+      },
+      "audio_argmax": {
+        "full_mae": 0.047770868201041594,
+        "mouth_mae": 0.03716516602435149,
+        "geometry_mae": 1.9592415569350123,
+        "audio_emotion_correct": 0.796875,
+        "probe0_correct": 0.671875,
+        "probe1_correct": 0.609375,
+        "probe2_correct": 0.65625,
+        "probe3_correct": 0.65625,
+        "per_emotion": {
+          "neutral": {
+            "n": 8,
+            "mouth_mae": 0.03377875662408769,
+            "probe0_correct": 0.0,
+            "probe1_correct": 0.0,
+            "probe2_correct": 0.0,
+            "probe3_correct": 0.0
+          },
+          "angry": {
+            "n": 8,
+            "mouth_mae": 0.03750222153030336,
+            "probe0_correct": 0.875,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 8,
+            "mouth_mae": 0.03656848915852606,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.875,
+            "probe2_correct": 0.875,
+            "probe3_correct": 0.875
+          },
+          "disgust": {
+            "n": 8,
+            "mouth_mae": 0.04379440797492862,
+            "probe0_correct": 0.375,
+            "probe1_correct": 0.375,
+            "probe2_correct": 0.375,
+            "probe3_correct": 0.375
+          },
+          "fear": {
+            "n": 8,
+            "mouth_mae": 0.03967237286269665,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.75,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.875
+          },
+          "happy": {
+            "n": 8,
+            "mouth_mae": 0.04061833559535444,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.625
+          },
+          "sad": {
+            "n": 8,
+            "mouth_mae": 0.03263826738111675,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.75
+          },
+          "surprise": {
+            "n": 8,
+            "mouth_mae": 0.032748477067798376,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.75
+          }
+        }
+      },
+      "declared_emotion": {
+        "full_mae": 0.044115396682173014,
+        "mouth_mae": 0.03457282716408372,
+        "geometry_mae": 1.873383511789143,
+        "audio_emotion_correct": 0.796875,
+        "probe0_correct": 0.796875,
+        "probe1_correct": 0.78125,
+        "probe2_correct": 0.78125,
+        "probe3_correct": 0.796875,
+        "per_emotion": {
+          "neutral": {
+            "n": 8,
+            "mouth_mae": 0.020766677102074027,
+            "probe0_correct": 0.5,
+            "probe1_correct": 0.75,
+            "probe2_correct": 0.375,
+            "probe3_correct": 0.625
+          },
+          "angry": {
+            "n": 8,
+            "mouth_mae": 0.03750222153030336,
+            "probe0_correct": 0.875,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 8,
+            "mouth_mae": 0.0365144198294729,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 8,
+            "mouth_mae": 0.0398323992267251,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.75,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.625
+          },
+          "fear": {
+            "n": 8,
+            "mouth_mae": 0.03967237286269665,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.75,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.875
+          },
+          "happy": {
+            "n": 8,
+            "mouth_mae": 0.036907782312482595,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.75,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.75
+          },
+          "sad": {
+            "n": 8,
+            "mouth_mae": 0.03263826738111675,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.75
+          },
+          "surprise": {
+            "n": 8,
+            "mouth_mae": 0.032748477067798376,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.75
+          }
+        },
+        "upper_seed_diversity": 0.013153936734852323,
+        "mouth_seed_diversity": 0.008555487744160928,
+        "upper_dynamics": {
+          "amplitude": {
+            "gt": 0.0825616005458869,
+            "mean": 0.03800285357283428,
+            "sample": 0.04802619115798734
+          },
+          "speed": {
+            "gt": 0.007729649852990406,
+            "mean": 0.0042574507897370495,
+            "sample": 0.005511250794370426
+          },
+          "acceleration": {
+            "gt": 0.006310249231319176,
+            "mean": 0.0046457157768600155,
+            "sample": 0.0059120405348949134
+          }
+        }
+      },
+      "declared_emotion_level1": {
+        "full_mae": 0.04399454494705424,
+        "mouth_mae": 0.03481387801002711,
+        "geometry_mae": 1.8655784763395786,
+        "audio_emotion_correct": 0.796875,
+        "probe0_correct": 0.765625,
+        "probe1_correct": 0.765625,
+        "probe2_correct": 0.78125,
+        "probe3_correct": 0.734375,
+        "per_emotion": {
+          "neutral": {
+            "n": 8,
+            "mouth_mae": 0.0199295524507761,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.875,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.625
+          },
+          "angry": {
+            "n": 8,
+            "mouth_mae": 0.036461514653638005,
+            "probe0_correct": 0.875,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 8,
+            "mouth_mae": 0.03831859724596143,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 8,
+            "mouth_mae": 0.03837996511720121,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.625
+          },
+          "fear": {
+            "n": 8,
+            "mouth_mae": 0.04051901865750551,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.75,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.625
+          },
+          "happy": {
+            "n": 8,
+            "mouth_mae": 0.03855516132898629,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.75,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.625
+          },
+          "sad": {
+            "n": 8,
+            "mouth_mae": 0.03355844505131245,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.5,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.625
+          },
+          "surprise": {
+            "n": 8,
+            "mouth_mae": 0.032788769574835896,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.625,
+            "probe3_correct": 0.75
+          }
+        }
+      },
+      "declared_emotion_level1.25": {
+        "full_mae": 0.04517872800352052,
+        "mouth_mae": 0.03561307553900406,
+        "geometry_mae": 1.9308894844725728,
+        "audio_emotion_correct": 0.796875,
+        "probe0_correct": 0.796875,
+        "probe1_correct": 0.75,
+        "probe2_correct": 0.78125,
+        "probe3_correct": 0.796875,
+        "per_emotion": {
+          "neutral": {
+            "n": 8,
+            "mouth_mae": 0.023506998317316175,
+            "probe0_correct": 0.375,
+            "probe1_correct": 0.5,
+            "probe2_correct": 0.375,
+            "probe3_correct": 0.5
+          },
+          "angry": {
+            "n": 8,
+            "mouth_mae": 0.039004171965643764,
+            "probe0_correct": 0.875,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 8,
+            "mouth_mae": 0.03693422814831138,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 8,
+            "mouth_mae": 0.0409645140171051,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.75,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.75
+          },
+          "fear": {
+            "n": 8,
+            "mouth_mae": 0.04025948909111321,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.75,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.875
+          },
+          "happy": {
+            "n": 8,
+            "mouth_mae": 0.03713582502678037,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.75,
+            "probe2_correct": 0.75,
+            "probe3_correct": 0.75
+          },
+          "sad": {
+            "n": 8,
+            "mouth_mae": 0.03378318389877677,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.875,
+            "probe3_correct": 0.75
+          },
+          "surprise": {
+            "n": 8,
+            "mouth_mae": 0.0333161938469857,
+            "probe0_correct": 0.75,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.5,
+            "probe3_correct": 0.75
+          }
+        }
+      },
+      "declared_emotion_level1.5": {
+        "full_mae": 0.04925327602541074,
+        "mouth_mae": 0.038613841810729355,
+        "geometry_mae": 2.17998181656003,
+        "audio_emotion_correct": 0.796875,
+        "probe0_correct": 0.78125,
+        "probe1_correct": 0.71875,
+        "probe2_correct": 0.796875,
+        "probe3_correct": 0.734375,
+        "per_emotion": {
+          "neutral": {
+            "n": 8,
+            "mouth_mae": 0.029158263932913542,
+            "probe0_correct": 0.25,
+            "probe1_correct": 0.125,
+            "probe2_correct": 0.25,
+            "probe3_correct": 0.125
+          },
+          "angry": {
+            "n": 8,
+            "mouth_mae": 0.04391501657664776,
+            "probe0_correct": 0.875,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.875
+          },
+          "contempt": {
+            "n": 8,
+            "mouth_mae": 0.03674279758706689,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 8,
+            "mouth_mae": 0.046454560942947865,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.875,
+            "probe2_correct": 0.875,
+            "probe3_correct": 0.75
+          },
+          "fear": {
+            "n": 8,
+            "mouth_mae": 0.04177995212376118,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.875,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.875
+          },
+          "happy": {
+            "n": 8,
+            "mouth_mae": 0.039701851550489664,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.75,
+            "probe2_correct": 0.875,
+            "probe3_correct": 0.75
+          },
+          "sad": {
+            "n": 8,
+            "mouth_mae": 0.035518191289156675,
+            "probe0_correct": 0.875,
+            "probe1_correct": 0.625,
+            "probe2_correct": 0.875,
+            "probe3_correct": 0.75
+          },
+          "surprise": {
+            "n": 8,
+            "mouth_mae": 0.03564010048285127,
+            "probe0_correct": 0.625,
+            "probe1_correct": 0.5,
+            "probe2_correct": 0.5,
+            "probe3_correct": 0.75
+          }
+        }
+      }
+    },
+    "unseen_speaker": {
+      "automatic": {
+        "full_mae": 0.0551700588936607,
+        "mouth_mae": 0.0426546900998801,
+        "geometry_mae": 2.105558435122172,
+        "audio_emotion_correct": 0.8333333333333334,
+        "probe0_correct": 0.875,
+        "probe1_correct": 0.875,
+        "probe2_correct": 0.9166666666666666,
+        "probe3_correct": 0.875,
+        "per_emotion": {
+          "neutral": {
+            "n": 3,
+            "mouth_mae": 0.03760683288176855,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "angry": {
+            "n": 3,
+            "mouth_mae": 0.05684808579583963,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 3,
+            "mouth_mae": 0.05080856134494146,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 3,
+            "mouth_mae": 0.04954007392128309,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          },
+          "fear": {
+            "n": 3,
+            "mouth_mae": 0.037912130976716675,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "happy": {
+            "n": 3,
+            "mouth_mae": 0.036002794901529946,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "sad": {
+            "n": 3,
+            "mouth_mae": 0.029877945159872372,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "surprise": {
+            "n": 3,
+            "mouth_mae": 0.04264109581708908,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          }
+        },
+        "upper_seed_diversity": 0.009768598494702019,
+        "mouth_seed_diversity": 0.005426916245293493,
+        "upper_dynamics": {
+          "amplitude": {
+            "gt": 0.06861245119944215,
+            "mean": 0.03286853704291085,
+            "sample": 0.038374143186956644
+          },
+          "speed": {
+            "gt": 0.005630060380402331,
+            "mean": 0.003629863048748424,
+            "sample": 0.004467035294510424
+          },
+          "acceleration": {
+            "gt": 0.004294892991310917,
+            "mean": 0.004096820601262152,
+            "sample": 0.0049798941375532495
+          }
+        }
+      },
+      "audio_temperature0.5": {
+        "full_mae": 0.05518512210498253,
+        "mouth_mae": 0.04277593774410585,
+        "geometry_mae": 2.1171558996041617,
+        "audio_emotion_correct": 0.8333333333333334,
+        "probe0_correct": 0.875,
+        "probe1_correct": 0.875,
+        "probe2_correct": 0.9166666666666666,
+        "probe3_correct": 0.875,
+        "per_emotion": {
+          "neutral": {
+            "n": 3,
+            "mouth_mae": 0.03771813710530599,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "angry": {
+            "n": 3,
+            "mouth_mae": 0.05686017187933127,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 3,
+            "mouth_mae": 0.05093679577112198,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 3,
+            "mouth_mae": 0.049698978662490845,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          },
+          "fear": {
+            "n": 3,
+            "mouth_mae": 0.03791428171098232,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "happy": {
+            "n": 3,
+            "mouth_mae": 0.036456494281689324,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "sad": {
+            "n": 3,
+            "mouth_mae": 0.029879759376247723,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "surprise": {
+            "n": 3,
+            "mouth_mae": 0.04274288316567739,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          }
+        }
+      },
+      "audio_argmax": {
+        "full_mae": 0.055462590573976435,
+        "mouth_mae": 0.043021532241255045,
+        "geometry_mae": 2.1437786320845285,
+        "audio_emotion_correct": 0.8333333333333334,
+        "probe0_correct": 0.7916666666666666,
+        "probe1_correct": 0.7916666666666666,
+        "probe2_correct": 0.8333333333333334,
+        "probe3_correct": 0.7916666666666666,
+        "per_emotion": {
+          "neutral": {
+            "n": 3,
+            "mouth_mae": 0.038053434963027634,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          },
+          "angry": {
+            "n": 3,
+            "mouth_mae": 0.05686027742922306,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 3,
+            "mouth_mae": 0.0524856373667717,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          },
+          "disgust": {
+            "n": 3,
+            "mouth_mae": 0.04970242828130722,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          },
+          "fear": {
+            "n": 3,
+            "mouth_mae": 0.037914288540681206,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "happy": {
+            "n": 3,
+            "mouth_mae": 0.03653417403499285,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "sad": {
+            "n": 3,
+            "mouth_mae": 0.029879757513602574,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "surprise": {
+            "n": 3,
+            "mouth_mae": 0.04274225980043411,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 0.6666666666666666
+          }
+        }
+      },
+      "declared_emotion": {
+        "full_mae": 0.054979501912991204,
+        "mouth_mae": 0.04210883968820175,
+        "geometry_mae": 2.0536091178655624,
+        "audio_emotion_correct": 0.8333333333333334,
+        "probe0_correct": 0.9583333333333334,
+        "probe1_correct": 0.9583333333333334,
+        "probe2_correct": 1.0,
+        "probe3_correct": 0.9583333333333334,
+        "per_emotion": {
+          "neutral": {
+            "n": 3,
+            "mouth_mae": 0.037905652076005936,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "angry": {
+            "n": 3,
+            "mouth_mae": 0.05686027742922306,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 3,
+            "mouth_mae": 0.05218510329723358,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 3,
+            "mouth_mae": 0.04713614284992218,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "fear": {
+            "n": 3,
+            "mouth_mae": 0.037914288540681206,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "happy": {
+            "n": 3,
+            "mouth_mae": 0.03653417403499285,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "sad": {
+            "n": 3,
+            "mouth_mae": 0.029879757513602574,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "surprise": {
+            "n": 3,
+            "mouth_mae": 0.038455321763952575,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          }
+        },
+        "upper_seed_diversity": 0.010009729119095331,
+        "mouth_seed_diversity": 0.00549228042170095,
+        "upper_dynamics": {
+          "amplitude": {
+            "gt": 0.06861245119944215,
+            "mean": 0.032490393690144025,
+            "sample": 0.03770038664030532
+          },
+          "speed": {
+            "gt": 0.005630060380402331,
+            "mean": 0.0035873682936653495,
+            "sample": 0.00440017701475881
+          },
+          "acceleration": {
+            "gt": 0.004294892991310917,
+            "mean": 0.00404955959917667,
+            "sample": 0.004889831693920617
+          }
+        }
+      },
+      "declared_emotion_level1": {
+        "full_mae": 0.05689691721151272,
+        "mouth_mae": 0.042575296868259706,
+        "geometry_mae": 2.0773332665363946,
+        "audio_emotion_correct": 0.8333333333333334,
+        "probe0_correct": 0.9583333333333334,
+        "probe1_correct": 0.9583333333333334,
+        "probe2_correct": 0.9583333333333334,
+        "probe3_correct": 0.9583333333333334,
+        "per_emotion": {
+          "neutral": {
+            "n": 3,
+            "mouth_mae": 0.03701054925719897,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "angry": {
+            "n": 3,
+            "mouth_mae": 0.05656849779188633,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 3,
+            "mouth_mae": 0.05215859413146973,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 3,
+            "mouth_mae": 0.050328719119230904,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "fear": {
+            "n": 3,
+            "mouth_mae": 0.03840655026336511,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "happy": {
+            "n": 3,
+            "mouth_mae": 0.038185276091098785,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "sad": {
+            "n": 3,
+            "mouth_mae": 0.030549243092536926,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "surprise": {
+            "n": 3,
+            "mouth_mae": 0.03739494519929091,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 1.0
+          }
+        }
+      },
+      "declared_emotion_level1.25": {
+        "full_mae": 0.05709018356477221,
+        "mouth_mae": 0.04399043515635034,
+        "geometry_mae": 2.2531639461716018,
+        "audio_emotion_correct": 0.8333333333333334,
+        "probe0_correct": 0.9166666666666666,
+        "probe1_correct": 0.9583333333333334,
+        "probe2_correct": 0.9583333333333334,
+        "probe3_correct": 0.9166666666666666,
+        "per_emotion": {
+          "neutral": {
+            "n": 3,
+            "mouth_mae": 0.037515140449007355,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "angry": {
+            "n": 3,
+            "mouth_mae": 0.0582842951019605,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 3,
+            "mouth_mae": 0.05362182855606079,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 3,
+            "mouth_mae": 0.05109173307816187,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "fear": {
+            "n": 3,
+            "mouth_mae": 0.04162461310625076,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "happy": {
+            "n": 3,
+            "mouth_mae": 0.03692310427625974,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "sad": {
+            "n": 3,
+            "mouth_mae": 0.032057554771502815,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "surprise": {
+            "n": 3,
+            "mouth_mae": 0.04080521191159884,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 1.0,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 1.0
+          }
+        }
+      },
+      "declared_emotion_level1.5": {
+        "full_mae": 0.060191538029660784,
+        "mouth_mae": 0.04767214118813475,
+        "geometry_mae": 2.6211612075567245,
+        "audio_emotion_correct": 0.8333333333333334,
+        "probe0_correct": 0.875,
+        "probe1_correct": 0.7916666666666666,
+        "probe2_correct": 0.7916666666666666,
+        "probe3_correct": 0.8333333333333334,
+        "per_emotion": {
+          "neutral": {
+            "n": 3,
+            "mouth_mae": 0.03966033707062403,
+            "probe0_correct": 0.3333333333333333,
+            "probe1_correct": 0.0,
+            "probe2_correct": 0.0,
+            "probe3_correct": 0.0
+          },
+          "angry": {
+            "n": 3,
+            "mouth_mae": 0.06191894287864367,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "contempt": {
+            "n": 3,
+            "mouth_mae": 0.05619363362590472,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "disgust": {
+            "n": 3,
+            "mouth_mae": 0.05516661579410235,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "fear": {
+            "n": 3,
+            "mouth_mae": 0.045226228733857475,
+            "probe0_correct": 1.0,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 1.0,
+            "probe3_correct": 0.6666666666666666
+          },
+          "happy": {
+            "n": 3,
+            "mouth_mae": 0.04164544492959976,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 1.0,
+            "probe3_correct": 1.0
+          },
+          "sad": {
+            "n": 3,
+            "mouth_mae": 0.03612245370944341,
+            "probe0_correct": 1.0,
+            "probe1_correct": 1.0,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 1.0
+          },
+          "surprise": {
+            "n": 3,
+            "mouth_mae": 0.04544347276290258,
+            "probe0_correct": 0.6666666666666666,
+            "probe1_correct": 0.6666666666666666,
+            "probe2_correct": 0.6666666666666666,
+            "probe3_correct": 1.0
+          }
+        }
+      }
+    }
+  },
+  "new_state_flow_enabled": false,
+  "limits": [
+    "automatic/audio_temperature/audio_argmax use no emotion label; latter two are declared inference calibrations",
+    "declared emotion uses held labels to represent an explicitly supplied user condition, not automatic inference",
+    "intensity levels are fixed controls, not GT fitted values",
+    "upper-face dynamics includes eyes and cheeks, not a pure framewise emotion label",
+    "seed diversity does not alone show natural plausible emotion dynamics"
+  ]
+}

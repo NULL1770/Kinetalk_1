@@ -1,0 +1,794 @@
+[
+  {
+    "row": 0,
+    "emotion": 0,
+    "donor": 8,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9953341484069824,
+        "aperture_velocity_cosine": 0.9921940565109253,
+        "low_aperture_rank_f1": 0.949999988079071,
+        "aperture_amplitude_ratio": 0.9121267795562744,
+        "width_mean_change_mm": 1.080150842666626,
+        "width_abs_change_mm": 1.080150842666626,
+        "aperture_mean_change_mm": -0.5400736331939697,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9940322041511536,
+        "aperture_velocity_cosine": 0.9939311742782593,
+        "low_aperture_rank_f1": 0.949999988079071,
+        "aperture_amplitude_ratio": 1.0115957260131836,
+        "width_mean_change_mm": 0.5629202127456665,
+        "width_abs_change_mm": 0.5629202127456665,
+        "aperture_mean_change_mm": -0.31935393810272217,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 1,
+    "emotion": 1,
+    "donor": 9,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9734205007553101,
+        "aperture_velocity_cosine": 0.9069132208824158,
+        "low_aperture_rank_f1": 0.9090909361839294,
+        "aperture_amplitude_ratio": 1.3528614044189453,
+        "width_mean_change_mm": -2.1459548473358154,
+        "width_abs_change_mm": 2.1459548473358154,
+        "aperture_mean_change_mm": 2.544915199279785,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9040864109992981,
+        "aperture_velocity_cosine": 0.8027238249778748,
+        "low_aperture_rank_f1": 0.4545454680919647,
+        "aperture_amplitude_ratio": 1.3146933317184448,
+        "width_mean_change_mm": -0.2804919481277466,
+        "width_abs_change_mm": 0.9290089011192322,
+        "aperture_mean_change_mm": 2.896043300628662,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 2,
+    "emotion": 2,
+    "donor": 10,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9414239525794983,
+        "aperture_velocity_cosine": 0.8644959926605225,
+        "low_aperture_rank_f1": 0.7647058963775635,
+        "aperture_amplitude_ratio": 0.8744044303894043,
+        "width_mean_change_mm": -2.931319236755371,
+        "width_abs_change_mm": 2.931319236755371,
+        "aperture_mean_change_mm": 1.461643099784851,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9760535955429077,
+        "aperture_velocity_cosine": 0.8688934445381165,
+        "low_aperture_rank_f1": 0.8235294222831726,
+        "aperture_amplitude_ratio": 1.4875808954238892,
+        "width_mean_change_mm": -2.4270787239074707,
+        "width_abs_change_mm": 2.4270787239074707,
+        "aperture_mean_change_mm": 1.1840910911560059,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 3,
+    "emotion": 3,
+    "donor": 11,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.8641562461853027,
+        "aperture_velocity_cosine": 0.6085447669029236,
+        "low_aperture_rank_f1": 0.699999988079071,
+        "aperture_amplitude_ratio": 0.9015191197395325,
+        "width_mean_change_mm": -0.9463057518005371,
+        "width_abs_change_mm": 1.0481972694396973,
+        "aperture_mean_change_mm": 0.7754843235015869,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9294156432151794,
+        "aperture_velocity_cosine": 0.7976140975952148,
+        "low_aperture_rank_f1": 0.75,
+        "aperture_amplitude_ratio": 1.1626975536346436,
+        "width_mean_change_mm": -1.3409996032714844,
+        "width_abs_change_mm": 1.3409996032714844,
+        "aperture_mean_change_mm": 1.4690251350402832,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 4,
+    "emotion": 4,
+    "donor": 12,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9390813708305359,
+        "aperture_velocity_cosine": 0.8713435530662537,
+        "low_aperture_rank_f1": 0.5384615659713745,
+        "aperture_amplitude_ratio": 0.8963366150856018,
+        "width_mean_change_mm": -0.31995120644569397,
+        "width_abs_change_mm": 0.5972879528999329,
+        "aperture_mean_change_mm": -3.2352116107940674,
+        "probe0_class_preserved": 0,
+        "probe1_class_preserved": 0,
+        "probe2_class_preserved": 0,
+        "probe3_class_preserved": 0
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9441622495651245,
+        "aperture_velocity_cosine": 0.9231324791908264,
+        "low_aperture_rank_f1": 0.5384615659713745,
+        "aperture_amplitude_ratio": 1.083383321762085,
+        "width_mean_change_mm": 0.27812692523002625,
+        "width_abs_change_mm": 0.5021515488624573,
+        "aperture_mean_change_mm": -2.6646313667297363,
+        "probe0_class_preserved": 0,
+        "probe1_class_preserved": 0,
+        "probe2_class_preserved": 0,
+        "probe3_class_preserved": 0
+      }
+    }
+  },
+  {
+    "row": 5,
+    "emotion": 5,
+    "donor": 13,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9667848944664001,
+        "aperture_velocity_cosine": 0.9387428164482117,
+        "low_aperture_rank_f1": 0.7857142686843872,
+        "aperture_amplitude_ratio": 1.0935444831848145,
+        "width_mean_change_mm": 0.11263852566480637,
+        "width_abs_change_mm": 0.3243556320667267,
+        "aperture_mean_change_mm": 0.3415531814098358,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9829822778701782,
+        "aperture_velocity_cosine": 0.9488966464996338,
+        "low_aperture_rank_f1": 0.7142857313156128,
+        "aperture_amplitude_ratio": 1.2963781356811523,
+        "width_mean_change_mm": -0.29270756244659424,
+        "width_abs_change_mm": 0.47895970940589905,
+        "aperture_mean_change_mm": 0.6043043732643127,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 6,
+    "emotion": 6,
+    "donor": 14,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.8447120785713196,
+        "aperture_velocity_cosine": 0.6900789737701416,
+        "low_aperture_rank_f1": 0.75,
+        "aperture_amplitude_ratio": 0.613988995552063,
+        "width_mean_change_mm": 1.624333143234253,
+        "width_abs_change_mm": 1.624333143234253,
+        "aperture_mean_change_mm": -1.9930881261825562,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 0,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9717710614204407,
+        "aperture_velocity_cosine": 0.9316232800483704,
+        "low_aperture_rank_f1": 0.8999999761581421,
+        "aperture_amplitude_ratio": 0.8648715615272522,
+        "width_mean_change_mm": 1.5845661163330078,
+        "width_abs_change_mm": 1.5845661163330078,
+        "aperture_mean_change_mm": -1.7220075130462646,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 7,
+    "emotion": 7,
+    "donor": 15,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9879492521286011,
+        "aperture_velocity_cosine": 0.9760889410972595,
+        "low_aperture_rank_f1": 0.8999999761581421,
+        "aperture_amplitude_ratio": 1.0253300666809082,
+        "width_mean_change_mm": -0.7363713979721069,
+        "width_abs_change_mm": 0.740872323513031,
+        "aperture_mean_change_mm": 0.5169998407363892,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9686015248298645,
+        "aperture_velocity_cosine": 0.9527592062950134,
+        "low_aperture_rank_f1": 0.8999999761581421,
+        "aperture_amplitude_ratio": 0.9184969067573547,
+        "width_mean_change_mm": -0.6940500140190125,
+        "width_abs_change_mm": 0.7072094678878784,
+        "aperture_mean_change_mm": -0.43559402227401733,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 8,
+    "emotion": 0,
+    "donor": 0,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9989056587219238,
+        "aperture_velocity_cosine": 0.9969772100448608,
+        "low_aperture_rank_f1": 1.0,
+        "aperture_amplitude_ratio": 0.914977490901947,
+        "width_mean_change_mm": 0.2331211268901825,
+        "width_abs_change_mm": 0.2331211268901825,
+        "aperture_mean_change_mm": -0.19579684734344482,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9986611604690552,
+        "aperture_velocity_cosine": 0.9959295392036438,
+        "low_aperture_rank_f1": 1.0,
+        "aperture_amplitude_ratio": 0.9651160836219788,
+        "width_mean_change_mm": -0.6646215915679932,
+        "width_abs_change_mm": 0.6646215915679932,
+        "aperture_mean_change_mm": 0.10542957484722137,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 9,
+    "emotion": 1,
+    "donor": 1,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9888893365859985,
+        "aperture_velocity_cosine": 0.9608545899391174,
+        "low_aperture_rank_f1": 1.0,
+        "aperture_amplitude_ratio": 0.8869938254356384,
+        "width_mean_change_mm": -1.6445155143737793,
+        "width_abs_change_mm": 1.6445155143737793,
+        "aperture_mean_change_mm": -1.4121062755584717,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9273514151573181,
+        "aperture_velocity_cosine": 0.7910401821136475,
+        "low_aperture_rank_f1": 0.800000011920929,
+        "aperture_amplitude_ratio": 0.7189446091651917,
+        "width_mean_change_mm": -0.3513292074203491,
+        "width_abs_change_mm": 0.9532054662704468,
+        "aperture_mean_change_mm": -3.4417994022369385,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 10,
+    "emotion": 2,
+    "donor": 2,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9955481290817261,
+        "aperture_velocity_cosine": 0.9872768521308899,
+        "low_aperture_rank_f1": 0.9411764740943909,
+        "aperture_amplitude_ratio": 0.9458128809928894,
+        "width_mean_change_mm": -0.4169110953807831,
+        "width_abs_change_mm": 0.4186915159225464,
+        "aperture_mean_change_mm": 0.3319090008735657,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9616537690162659,
+        "aperture_velocity_cosine": 0.8766716718673706,
+        "low_aperture_rank_f1": 0.6470588445663452,
+        "aperture_amplitude_ratio": 0.6444609761238098,
+        "width_mean_change_mm": 1.9110140800476074,
+        "width_abs_change_mm": 1.9110140800476074,
+        "aperture_mean_change_mm": -0.7134428024291992,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 11,
+    "emotion": 3,
+    "donor": 3,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9967924356460571,
+        "aperture_velocity_cosine": 0.9875562191009521,
+        "low_aperture_rank_f1": 0.949999988079071,
+        "aperture_amplitude_ratio": 1.1175987720489502,
+        "width_mean_change_mm": -0.3980695903301239,
+        "width_abs_change_mm": 0.4239767789840698,
+        "aperture_mean_change_mm": 1.457082748413086,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9468908309936523,
+        "aperture_velocity_cosine": 0.9240108132362366,
+        "low_aperture_rank_f1": 0.8500000238418579,
+        "aperture_amplitude_ratio": 0.7592270374298096,
+        "width_mean_change_mm": -0.9896085262298584,
+        "width_abs_change_mm": 1.0313618183135986,
+        "aperture_mean_change_mm": -1.5228513479232788,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 12,
+    "emotion": 4,
+    "donor": 4,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9664664268493652,
+        "aperture_velocity_cosine": 0.9473128914833069,
+        "low_aperture_rank_f1": 0.8999999761581421,
+        "aperture_amplitude_ratio": 0.9233288168907166,
+        "width_mean_change_mm": 0.5667003989219666,
+        "width_abs_change_mm": 0.5737187266349792,
+        "aperture_mean_change_mm": -0.4333071708679199,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 0,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9693516492843628,
+        "aperture_velocity_cosine": 0.9393560886383057,
+        "low_aperture_rank_f1": 0.699999988079071,
+        "aperture_amplitude_ratio": 1.202538251876831,
+        "width_mean_change_mm": -0.6112097501754761,
+        "width_abs_change_mm": 0.7314156293869019,
+        "aperture_mean_change_mm": 1.9801545143127441,
+        "probe0_class_preserved": 0,
+        "probe1_class_preserved": 0,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 0
+      }
+    }
+  },
+  {
+    "row": 13,
+    "emotion": 5,
+    "donor": 5,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9698249101638794,
+        "aperture_velocity_cosine": 0.9355459809303284,
+        "low_aperture_rank_f1": 0.7777777910232544,
+        "aperture_amplitude_ratio": 0.9532697200775146,
+        "width_mean_change_mm": -2.097832441329956,
+        "width_abs_change_mm": 2.097832441329956,
+        "aperture_mean_change_mm": 0.5920778512954712,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.958625078201294,
+        "aperture_velocity_cosine": 0.897454023361206,
+        "low_aperture_rank_f1": 0.7777777910232544,
+        "aperture_amplitude_ratio": 0.6429396271705627,
+        "width_mean_change_mm": -0.6993764638900757,
+        "width_abs_change_mm": 0.7625176906585693,
+        "aperture_mean_change_mm": -0.5562453866004944,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 14,
+    "emotion": 6,
+    "donor": 6,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9867510199546814,
+        "aperture_velocity_cosine": 0.9385599493980408,
+        "low_aperture_rank_f1": 0.8999999761581421,
+        "aperture_amplitude_ratio": 0.8733903765678406,
+        "width_mean_change_mm": -1.3714714050292969,
+        "width_abs_change_mm": 1.3740956783294678,
+        "aperture_mean_change_mm": -0.1546158790588379,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.975333034992218,
+        "aperture_velocity_cosine": 0.9257912635803223,
+        "low_aperture_rank_f1": 0.8500000238418579,
+        "aperture_amplitude_ratio": 0.9631860852241516,
+        "width_mean_change_mm": -1.6384460926055908,
+        "width_abs_change_mm": 1.6384460926055908,
+        "aperture_mean_change_mm": 1.2804555892944336,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 15,
+    "emotion": 7,
+    "donor": 7,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9924324750900269,
+        "aperture_velocity_cosine": 0.9828134775161743,
+        "low_aperture_rank_f1": 0.8999999761581421,
+        "aperture_amplitude_ratio": 1.0328134298324585,
+        "width_mean_change_mm": 0.2037416398525238,
+        "width_abs_change_mm": 0.2722257077693939,
+        "aperture_mean_change_mm": 0.5362216234207153,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9738119840621948,
+        "aperture_velocity_cosine": 0.9434128403663635,
+        "low_aperture_rank_f1": 0.75,
+        "aperture_amplitude_ratio": 0.8897068500518799,
+        "width_mean_change_mm": 0.9535040855407715,
+        "width_abs_change_mm": 0.9537040591239929,
+        "aperture_mean_change_mm": 0.7081336975097656,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 16,
+    "emotion": 0,
+    "donor": 0,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9786152839660645,
+        "aperture_velocity_cosine": 0.9443486332893372,
+        "low_aperture_rank_f1": 0.9230769276618958,
+        "aperture_amplitude_ratio": 0.9202629923820496,
+        "width_mean_change_mm": 0.5386700630187988,
+        "width_abs_change_mm": 0.5816863179206848,
+        "aperture_mean_change_mm": -0.9496793150901794,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9612089991569519,
+        "aperture_velocity_cosine": 0.9299930334091187,
+        "low_aperture_rank_f1": 0.8461538553237915,
+        "aperture_amplitude_ratio": 0.9247327446937561,
+        "width_mean_change_mm": -0.8832206726074219,
+        "width_abs_change_mm": 0.9751330614089966,
+        "aperture_mean_change_mm": -0.4552500247955322,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 17,
+    "emotion": 1,
+    "donor": 1,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9704342484474182,
+        "aperture_velocity_cosine": 0.9484803080558777,
+        "low_aperture_rank_f1": 0.9166666865348816,
+        "aperture_amplitude_ratio": 1.0874370336532593,
+        "width_mean_change_mm": 0.6460863947868347,
+        "width_abs_change_mm": 0.6554735898971558,
+        "aperture_mean_change_mm": 0.0824371874332428,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.8743700385093689,
+        "aperture_velocity_cosine": 0.7332514524459839,
+        "low_aperture_rank_f1": 0.6666666865348816,
+        "aperture_amplitude_ratio": 0.9083371758460999,
+        "width_mean_change_mm": 0.9408735632896423,
+        "width_abs_change_mm": 0.9524701237678528,
+        "aperture_mean_change_mm": -1.7053098678588867,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 18,
+    "emotion": 2,
+    "donor": 2,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9752039909362793,
+        "aperture_velocity_cosine": 0.9285393953323364,
+        "low_aperture_rank_f1": 0.8461538553237915,
+        "aperture_amplitude_ratio": 1.1621395349502563,
+        "width_mean_change_mm": -0.08371389657258987,
+        "width_abs_change_mm": 0.15010586380958557,
+        "aperture_mean_change_mm": 1.3843518495559692,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9049509763717651,
+        "aperture_velocity_cosine": 0.705092191696167,
+        "low_aperture_rank_f1": 0.692307710647583,
+        "aperture_amplitude_ratio": 0.5477321147918701,
+        "width_mean_change_mm": 1.1625365018844604,
+        "width_abs_change_mm": 1.1653927564620972,
+        "aperture_mean_change_mm": -0.8424756526947021,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 19,
+    "emotion": 3,
+    "donor": 3,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.96957927942276,
+        "aperture_velocity_cosine": 0.9141121506690979,
+        "low_aperture_rank_f1": 0.8666666746139526,
+        "aperture_amplitude_ratio": 0.9459142088890076,
+        "width_mean_change_mm": -0.5912308692932129,
+        "width_abs_change_mm": 1.0526777505874634,
+        "aperture_mean_change_mm": -0.08057175576686859,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9719316363334656,
+        "aperture_velocity_cosine": 0.867597758769989,
+        "low_aperture_rank_f1": 0.800000011920929,
+        "aperture_amplitude_ratio": 0.5991287231445312,
+        "width_mean_change_mm": 0.19737981259822845,
+        "width_abs_change_mm": 0.43337997794151306,
+        "aperture_mean_change_mm": -4.181499004364014,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 20,
+    "emotion": 4,
+    "donor": 4,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9722355604171753,
+        "aperture_velocity_cosine": 0.9322779178619385,
+        "low_aperture_rank_f1": 0.8888888955116272,
+        "aperture_amplitude_ratio": 1.1427799463272095,
+        "width_mean_change_mm": 0.4780419170856476,
+        "width_abs_change_mm": 0.48624369502067566,
+        "aperture_mean_change_mm": 0.3512710928916931,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9146212935447693,
+        "aperture_velocity_cosine": 0.8590081334114075,
+        "low_aperture_rank_f1": 0.8888888955116272,
+        "aperture_amplitude_ratio": 1.1050432920455933,
+        "width_mean_change_mm": -1.8897171020507812,
+        "width_abs_change_mm": 1.8897171020507812,
+        "aperture_mean_change_mm": 1.0633622407913208,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 21,
+    "emotion": 5,
+    "donor": 5,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9584894776344299,
+        "aperture_velocity_cosine": 0.9348661303520203,
+        "low_aperture_rank_f1": 1.0,
+        "aperture_amplitude_ratio": 0.8287948966026306,
+        "width_mean_change_mm": -2.2749927043914795,
+        "width_abs_change_mm": 2.2749927043914795,
+        "aperture_mean_change_mm": 1.844431757926941,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.9589188694953918,
+        "aperture_velocity_cosine": 0.9019691944122314,
+        "low_aperture_rank_f1": 0.6363636255264282,
+        "aperture_amplitude_ratio": 0.7184606194496155,
+        "width_mean_change_mm": 0.10312455147504807,
+        "width_abs_change_mm": 0.5294679999351501,
+        "aperture_mean_change_mm": -0.21207726001739502,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 22,
+    "emotion": 6,
+    "donor": 6,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9730004072189331,
+        "aperture_velocity_cosine": 0.929011344909668,
+        "low_aperture_rank_f1": 0.800000011920929,
+        "aperture_amplitude_ratio": 1.3536769151687622,
+        "width_mean_change_mm": -0.7235403060913086,
+        "width_abs_change_mm": 0.7235403060913086,
+        "aperture_mean_change_mm": 1.477436900138855,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.988561749458313,
+        "aperture_velocity_cosine": 0.9395805597305298,
+        "low_aperture_rank_f1": 0.949999988079071,
+        "aperture_amplitude_ratio": 1.0166099071502686,
+        "width_mean_change_mm": -1.600630521774292,
+        "width_abs_change_mm": 1.600630521774292,
+        "aperture_mean_change_mm": 1.1808786392211914,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  },
+  {
+    "row": 23,
+    "emotion": 7,
+    "donor": 7,
+    "changes": {
+      "same_person_other_emotion_ref": {
+        "aperture_pattern_correlation": 0.9797961711883545,
+        "aperture_velocity_cosine": 0.9319203495979309,
+        "low_aperture_rank_f1": 0.8571428656578064,
+        "aperture_amplitude_ratio": 0.7831660509109497,
+        "width_mean_change_mm": 0.9970132112503052,
+        "width_abs_change_mm": 0.9970132112503052,
+        "aperture_mean_change_mm": -2.7741575241088867,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      },
+      "different_person_ref": {
+        "aperture_pattern_correlation": 0.688511312007904,
+        "aperture_velocity_cosine": 0.47489088773727417,
+        "low_aperture_rank_f1": 0.6428571343421936,
+        "aperture_amplitude_ratio": 0.4302504062652588,
+        "width_mean_change_mm": 0.6968377828598022,
+        "width_abs_change_mm": 0.7110466957092285,
+        "aperture_mean_change_mm": -2.7957658767700195,
+        "probe0_class_preserved": 1,
+        "probe1_class_preserved": 1,
+        "probe2_class_preserved": 1,
+        "probe3_class_preserved": 1
+      }
+    }
+  }
+]

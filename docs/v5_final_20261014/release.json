@@ -1,0 +1,24 @@
+{
+  "schema": "kinetalk_frozen_release_v1",
+  "selected_checkpoint_sha256": "bb6f701a3db3312111a1c0a1237d43bc5fd976c45d99db65aaf213e88add1f5b",
+  "remote_checkpoint": "/root/kinetalk_v5_rebuild_20261013/joint_eval_j/style_weight_0.25.pt",
+  "local_checkpoint": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\model.pt",
+  "style_weight": 0.25,
+  "semantic_modes": {
+    "automatic": "native audio state/probabilities, no query emotion label",
+    "explicit_user_control": "user supplies desired emotion, separately evaluated"
+  },
+  "emotion_temperature": 1.0,
+  "new_state_flow_enabled": false,
+  "personal_response_enabled": false,
+  "dynamics": "original v5 state trajectories and hazard/duration/amplitude event sampling",
+  "ref_count_deployment": 1,
+  "ref_own_audio_required": true,
+  "hidden_postprocessing": false,
+  "selection_scope": "development crops: held sentence64/unseen people24, not a sealed-test winner",
+  "why_selected": "weak reference repair retains more donor-direction than strong repair; aggressive receiver/calibration rejected",
+  "paper_ready": false,
+  "three_novel_contributions_validated": false,
+  "media_audio": false,
+  "report_sha256": "faf4a6410679c083e6ba8903b49c28ed3129b36713be4e2a79c4cfa1621e3f6a"
+}

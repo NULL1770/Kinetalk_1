@@ -1,0 +1,42 @@
+{
+  "render_angry": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_angry\\comparison.mp4",
+    "sha256": "b44afc46df2c10851e82dcacb852cd37bb39bef8cb3084622f547b8abfead29e",
+    "audio": false
+  },
+  "render_contempt": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_contempt\\comparison.mp4",
+    "sha256": "8967f88e34a90c69d265178ce42ba1ae2ce316c6a5186d3b690badbc78a4e249",
+    "audio": false
+  },
+  "render_disgust": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_disgust\\comparison.mp4",
+    "sha256": "610f597ab6b2a2e14d319c4edc3391605c445a2e95690ad2b89b2cc1d5e2b88f",
+    "audio": false
+  },
+  "render_fear": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_fear\\comparison.mp4",
+    "sha256": "ddae406cac0df8058073f101260c0ceed3e2b677ed0f57ad8f0b1e9a9a63a586",
+    "audio": false
+  },
+  "render_happy": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_happy\\comparison.mp4",
+    "sha256": "d6f2e71ec5f18c364141c823035eb794ff0ef85746ed3a5872e4e67ef2abaeb6",
+    "audio": false
+  },
+  "render_neutral": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_neutral\\comparison.mp4",
+    "sha256": "c35d88023b0a196334bd6e3fe6abe13fffa9429c7a604fb23eb757a63d7c8515",
+    "audio": false
+  },
+  "render_sad": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_sad\\comparison.mp4",
+    "sha256": "5926831a03120827b5aa5b96b6a0571c9df8682fc82d37af5b156b198aa30e99",
+    "audio": false
+  },
+  "render_surprise": {
+    "local_video": "D:\\实验室项目\\新实验\\kinetalk_b0_residual_train\\artifacts\\v5_final_20261014\\render_surprise\\comparison.mp4",
+    "sha256": "592d20516ba777fb888a5bee63bb12422740e9d2015ed11c7856d5db70cf3a7f",
+    "audio": false
+  }
+}
