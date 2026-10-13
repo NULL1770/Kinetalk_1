@@ -1,0 +1,69 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% Chinese XeLaTeX preview based on the supplied IEEE conference template.
+% Compile with XeLaTeX. The font fallbacks keep the source portable.
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \usepackage{xeCJK}
+  \IfFontExistsTF{Times New Roman}
+    {\setmainfont{Times New Roman}}
+    {\setmainfont{TeX Gyre Termes}}
+  \IfFontExistsTF{Microsoft YaHei}
+    {\setCJKmainfont{Microsoft YaHei}}
+    {\setCJKmainfont{Noto Serif CJK SC}}
+\else
+  \PackageError{KineTalk}{This Chinese preview must be compiled with XeLaTeX}{Use xelatex, not pdflatex.}
+\fi
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+
+\title{KineTalk 结合参考身份建模与情感表征迁移的语音驱动三维面部动画}
+
+% Replace the placeholders before submission.
+\author{\IEEEauthorblockN{作者姓名}
+\IEEEauthorblockA{\textit{学院或研究机构}\\
+城市，国家\\
+email@example.com}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+语音驱动的三维人脸动画旨在生成与语音内容同步、具有个体特征和情感表现的面部运动。然而，发音变化、个体表达习惯与情感共同作用于面部运动，使参考个体特征提取与音频情感建模面临因素混杂的问题。为此，本文提出 KineTalk，一种面向 ARKit 混合形状系数的参考条件残差生成框架。具体而言，我们首先利用音频发音基座预测口部运动，再从参考动作中扣除其配对语音对应的发音预测，聚合多段参考的残差统计，学习跨句共享的身份相关风格条件。随后构建残差运动情感教师，从扣除发音预测与个体静态偏移的动作中学习全局情感表征，并将其迁移至音频分支。条件残差生成器融合个体与情感条件，通过静态口部校准和非口部残差约束，在保留发音基座时间变化的同时合成个性化面部表达。推理阶段仅需目标语音和预登记参考条件，无需目标动作或目标情感标签。
+\end{abstract}
+
+\begin{IEEEkeywords}
+语音驱动三维人脸动画，参考条件生成，身份相关风格，情感表征迁移，混合形状
+\end{IEEEkeywords}
+
+\section{引言}
+语音驱动的三维人脸动画旨在根据语音生成连续的面部运动，是数字人交互、虚拟角色制作与沉浸式通信的重要技术。自然的说话动画不仅要求唇部动作与发音同步，还需要保留说话人的个体特征，并呈现与语音相符的情感。身份一致性关注同一说话人跨语句的稳定特征，表达风格则体现其习惯性的运动方式；二者与情感共同影响面部表现。如何在准确发音的基础上协调这些因素，是生成个性化情感动画的重要问题。
+
+现有研究已从语音与口型的对应关系拓展到情感和风格控制。FaceFormer~\cite{faceformer} 利用预训练语音表示与 Transformer 建模语音和面部运动的时序关系；MEDTalk~\cite{medtalk} 分离内容与情感表示，结合多模态条件和逐帧情感强度生成富有表现力的动画；DESTalker~\cite{destalker} 进一步区分内容、情感和风格，并在中性口型基底上生成表达残差。这些工作为多因素建模提供了基础。然而，在利用参考动作实现个性化时，参考序列同时包含发音变化和个体运动习惯，直接编码可能将参考语句的信息带入个体条件；类似地，目标动作中的发音与静态偏移也会影响情感表征的学习。本文聚焦于如何组织这些条件的学习来源，并明确表达生成对口部输出的作用范围。
+
+为此，本文提出 KineTalk，一种面向 ARKit52 混合形状系数的参考条件残差生成框架。其核心思路是先建模语音对应的发音运动，再从参考残差中提取个体条件，并利用残差运动学习情感表征。具体而言，音频发音基座首先预测口部系数；对于参考动作及其配对语音，参考分支扣除相应的发音预测，聚合多段参考的残差统计，通过跨参考学习提取共享的身份相关风格条件与静态偏移。这里的个体条件描述系数偏移和运动习惯，不涉及几何身份重建。合成时，模型对口部施加由训练集拟合的静态校准，并根据预设残差支持控制表达分支的作用通道，使口部的时间变化主要由发音基座承担。
+
+为使训练阶段可用的动作信息服务于语音驱动的情感生成，我们进一步构建残差运动情感教师。教师以扣除发音预测和个体静态偏移后的目标运动为输入，结合情感类别、强度监督与条件流匹配目标学习片级全局情感表征，再将该全局表征迁移至音频学生。音频学生从语音特征中预测全局情感语义和原生时序上下文，条件残差生成器融合个体条件、全局情感语义和音频时序条件，生成表达残差；教师不提供逐帧眉眼轨迹监督。该设计为个体特征、情感学习与发音预测分配不同的信息来源和输出职责；推理阶段仅需目标语音及预先由配对音频—动作编码的参考条件，无需目标动作、目标情感标签或文本。
+
+本文的主要贡献如下：
+\begin{itemize}
+  \item \textbf{提出 KineTalk}，一种结合参考残差建模与情感迁移的语音驱动三维面部动画框架。
+  \item \textbf{引入发音基座约束的参考残差身份建模}，从跨语句参考中提取个体执行特征并减少语音内容泄漏。
+  \item \textbf{构建残差运动教师—音频学生的情感迁移机制}，以全局情感蒸馏和音频时序条件驱动条件流生成表达动态。
+\end{itemize}
+
+\begin{thebibliography}{00}
+\bibitem{faceformer} Y. Fan, Z. Lin, J. Saito, W. Wang, and T. Komura, ``FaceFormer: Speech-Driven 3D Facial Animation With Transformers,'' in \emph{Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition (CVPR)}, 2022, pp. 18770--18780, doi: 10.1109/CVPR52688.2022.01821.
+
+\bibitem{medtalk} C. Liu, Y. Pan, C. Ding, S. Rahardja, and X. Yang, ``MEDTalk: Multimodal Controlled 3D Facial Animation with Dynamic Emotions by Disentangled Embedding,'' 2025, doi: 10.1145/3746027.3754933.
+\end{thebibliography}
+
+\end{document}
+

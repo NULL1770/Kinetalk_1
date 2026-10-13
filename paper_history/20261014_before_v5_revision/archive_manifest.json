@@ -1,0 +1,508 @@
+{
+  "schema": "author_manuscript_archive_v1",
+  "source": "D:\\科研\\小论文",
+  "purpose": "Original documents before frozen-v5 rewrite",
+  "excluded": [
+    ".architecture_build",
+    "__pycache__",
+    "node_modules",
+    "ppt_refactor_build"
+  ],
+  "files": [
+    {
+      "path": "00_会议信息与分节写作计划.md",
+      "bytes": 6122,
+      "sha256": "e99e64777feedf888b915e03c204403a5c9313dece9e848a9c920de8e71e8321"
+    },
+    {
+      "path": "00_摘要_写作核对.md",
+      "bytes": 5147,
+      "sha256": "4886404a7bd8717afd7d7eb46dde95fff75861dd390e1831ae5726c4cc09e3c0"
+    },
+    {
+      "path": "01_Abstract_English.md",
+      "bytes": 1784,
+      "sha256": "49e4f49295b9a8bd1d92e8701293bed56d5e5750dc12a0221f86a71df8bf089e"
+    },
+    {
+      "path": "01_引言_中文版.md",
+      "bytes": 3876,
+      "sha256": "6a078844a8fd09127c93736a1404f4715bd5eaef33731c5a702c0d96fe923779"
+    },
+    {
+      "path": "01_引言_写作核对.md",
+      "bytes": 8025,
+      "sha256": "f3d387e17eda4c6a34d954e375e51dcdce4e57de09b6ba664d3440605d76153e"
+    },
+    {
+      "path": "01_摘要_中文版.md",
+      "bytes": 1380,
+      "sha256": "9819ed059057e34dd4bc391bdd046b807f6e3026b205601ba079373d01e2a34d"
+    },
+    {
+      "path": "02_相关工作_中文版.md",
+      "bytes": 4437,
+      "sha256": "8037dc1e36e6022aef6077c0ba9dfda99147acacaa03de4c853c0a2f04492651"
+    },
+    {
+      "path": "02_相关工作_写作核对.md",
+      "bytes": 3420,
+      "sha256": "1fc2064676d946b9cbd0bd73210c69d3b23fc99ef9e31f417de1285f7d176101"
+    },
+    {
+      "path": "02_贡献定位与引言结构分析.md",
+      "bytes": 8759,
+      "sha256": "eaf75274dbbccf33eafd81b358ff3b81ac0e7a264de72aff076eed96414fe00a"
+    },
+    {
+      "path": "03_后续章节写作核对.md",
+      "bytes": 13349,
+      "sha256": "d23594589905a745bc6ff00ce261429b0c03f4e7952c77c6f996afe25e671f28"
+    },
+    {
+      "path": "03_方法_中文版.md",
+      "bytes": 10505,
+      "sha256": "3796416b98029983896b929588e01579fbcb60bbacf056c15c616644ac056f01"
+    },
+    {
+      "path": "03_方法代码核对_20260922.md",
+      "bytes": 16589,
+      "sha256": "8410d2ca58fb3ab650dd82d9ddc5b24d0a808dc5b0ce3f2dbcdf049f5b4ccc11"
+    },
+    {
+      "path": "04_实验_中文版.md",
+      "bytes": 12095,
+      "sha256": "b0eaae3a5c2c96b72b203a25dfca10403bb12eae2e424a1a24c6f67d0d545e2e"
+    },
+    {
+      "path": "05_讨论与结论_中文版.md",
+      "bytes": 656,
+      "sha256": "fa74261240a9dfe5210192d72e85a41e7061df3cd35ca74f7b466c94652da00b"
+    },
+    {
+      "path": "06_会议与EmoTalk核对_20260922.md",
+      "bytes": 10850,
+      "sha256": "a15a0a4c8f5c22e2f7f00f0ea8052c58f2702b4946c476acd5aef38dba8f1139"
+    },
+    {
+      "path": "06_附录_中文版.md",
+      "bytes": 4048,
+      "sha256": "36ff60979798dfe642f6af2fd97b1482c689909a31cded632ef48d567541c70d"
+    },
+    {
+      "path": "07_正式实验补全协议.md",
+      "bytes": 6878,
+      "sha256": "afe214ceb5c59bf76d119321afb5b957e00c0ba669c1f19184fc742d4982483d"
+    },
+    {
+      "path": "08_方法实验改写记录_20260923.md",
+      "bytes": 1195,
+      "sha256": "be256bcf29544269a6321498350fc4916037f65cbbc0cc70a5a68dca2d9a1270"
+    },
+    {
+      "path": "latex_preview/ARFTalk_paper.tex",
+      "bytes": 18787,
+      "sha256": "d5276ecde11b945d595325969b35521c9ca012ab364d922c3075aebb25b59b7e"
+    },
+    {
+      "path": "latex_preview/KineTalk_abstract_intro_english_pdflatex.tex",
+      "bytes": 7623,
+      "sha256": "417b2da02506e1a05c523613e85b6cceacd985a8c468088f0f9ecf80fed6b24a"
+    },
+    {
+      "path": "latex_preview/KineTalk_摘要引言_试排版.tex",
+      "bytes": 6418,
+      "sha256": "e87e623a694cdc0b51c19fc52be9d37e6e01395488c1737b8de9b4019b05a310"
+    },
+    {
+      "path": "latex_preview/test3.tex",
+      "bytes": 68,
+      "sha256": "263ad24f299f04f86e815eda0c0b2f434e03329355712570de19b52bb6ff8939"
+    },
+    {
+      "path": "README_当前稿件.md",
+      "bytes": 1590,
+      "sha256": "7bee1bca4d721b908025ecbac880cea76f309b636f87e3568ead5870959a35b4"
+    },
+    {
+      "path": "related_work_references.bib",
+      "bytes": 10022,
+      "sha256": "8e88564a6445a5f3f4fef8a951db3f71b8dac42cc7830412ca4f930814f70af8"
+    },
+    {
+      "path": "Templates/Checking list.pdf",
+      "bytes": 181759,
+      "sha256": "914ee810cb101d4c9e543763798abe4bcf9b1b0d490db8593d3c0afaee212e56"
+    },
+    {
+      "path": "Templates/Conference-LaTeX-template_10-17-19/conference_101719.pdf",
+      "bytes": 135559,
+      "sha256": "b731dfe72a937b5023b8aec3d7fbe69877baeb0e477d92af70731eb914281a79"
+    },
+    {
+      "path": "Templates/Conference-LaTeX-template_10-17-19/conference_101719.tex",
+      "bytes": 15421,
+      "sha256": "8a429be6029dbb7b82fe2fc43d2d823a93aa5672c46d8a62fe167c1715ceabc9"
+    },
+    {
+      "path": "Templates/Conference-LaTeX-template_10-17-19/fig1.png",
+      "bytes": 4535,
+      "sha256": "db271171f451b1585286b0fe118ac924dd1de227bb587121c408b34f1cb00846"
+    },
+    {
+      "path": "Templates/Conference-LaTeX-template_10-17-19/IEEEtran_HOWTO.pdf",
+      "bytes": 671626,
+      "sha256": "462b4d99a973a5433ffa42de4d96e25c90e87fc44c2ebe598270af8cfd932922"
+    },
+    {
+      "path": "Templates/Conference-template-letter.docx",
+      "bytes": 33788,
+      "sha256": "8a2eb3467b19a909a5a431be2f2e9f6ba3a512a9b3be8ad04aa8ee7a12a5416c"
+    },
+    {
+      "path": "Templates/文件3：关于学术会议投稿须知.pdf",
+      "bytes": 191680,
+      "sha256": "8cd10d472971b64e6cf461ad7c820fe19f42263c71510a6194a62a8bad7a64c0"
+    },
+    {
+      "path": "作者记录_20261010/sync_manifest.json",
+      "bytes": 5463,
+      "sha256": "360155578ff1d7eb6e23e80c4b996e6a2671c29bc5a994256a584ffa96ea8869"
+    },
+    {
+      "path": "作者记录_20261010/tables/dynamics.csv",
+      "bytes": 530,
+      "sha256": "7ffd49e31bd048aa2b0610c6eac90db544d643f1187037139e721047f1f6f844"
+    },
+    {
+      "path": "作者记录_20261010/tables/emotion_breakdown.csv",
+      "bytes": 709,
+      "sha256": "20f1974ebb364bd8c71bed05cff2092350ba1cb4986ad80342dfeffd690adf71"
+    },
+    {
+      "path": "作者记录_20261010/tables/geometry.csv",
+      "bytes": 545,
+      "sha256": "78179ace1a1039776d5c2920517b8c261b1e05a00e8d8830bc7a7ab5b1a98fec"
+    },
+    {
+      "path": "作者记录_20261010/tables/interventions.csv",
+      "bytes": 429,
+      "sha256": "23590faf2b8724a1c65b8f1c5550f988ac496171003715a58064746dd7e1adb9"
+    },
+    {
+      "path": "作者记录_20261010/tables/provenance.json",
+      "bytes": 16339,
+      "sha256": "3b537c66c5609d56bb19f98a865a5ab86ca3dc422eb4337dac0feff2cc176f94"
+    },
+    {
+      "path": "作者记录_20261010/tables/reference_ablation.csv",
+      "bytes": 234,
+      "sha256": "5f5cd10c484047b1a56a1baec83b28ed7c4b2777a9a285f0963c9724bf65e774"
+    },
+    {
+      "path": "作者记录_20261010/tables/scope_ablation.csv",
+      "bytes": 265,
+      "sha256": "47677cc0bc6570daafc79672d3bf019a26965d5dee5c408c4d1ca11109c73640"
+    },
+    {
+      "path": "作者记录_20261010/tables/semantics.csv",
+      "bytes": 682,
+      "sha256": "ee3aec27529f45e36dd135ae00506d02566576fa7e07c85591d4d189558bbb2d"
+    },
+    {
+      "path": "作者记录_20261010/tables/style_stability.csv",
+      "bytes": 280,
+      "sha256": "55957c34d31651e37ccffb8593d92000a4e214ee829168dfbc8fb08adfa9706a"
+    },
+    {
+      "path": "作者记录_20261010/tables/style_target.csv",
+      "bytes": 348,
+      "sha256": "9e1a6ab66d878e0c681b75fb550833eb1ae30a70d5a2b5d0cd6ca3b711cdc7a9"
+    },
+    {
+      "path": "作者记录_20261010/tables/supplementary_geometry.csv",
+      "bytes": 1951,
+      "sha256": "3faa033cbdc5b80d965eecfd7a4b73b4135d44e0d1b13bd8ae26d9ec9989dba0"
+    },
+    {
+      "path": "作者记录_20261010/validation.json",
+      "bytes": 804,
+      "sha256": "00f139fa573b5210192a56ebea29f0a18849e1ad972485be065e2b2d341c5afa"
+    },
+    {
+      "path": "作者记录_20261010/修订核对与证据.md",
+      "bytes": 8626,
+      "sha256": "f108e042f01068a7df366c8266aaa040ae1e657ca764e95c208375577fbc6803"
+    },
+    {
+      "path": "作者记录_20261010/原文学习与章节提纲.md",
+      "bytes": 5842,
+      "sha256": "8fc2508742abfdb88abb1c916bc787565a2316984c294e5024625aae41df02a0"
+    },
+    {
+      "path": "历史版本/00_会议信息与分节写作计划_v0.1_20260921.md",
+      "bytes": 4976,
+      "sha256": "22036729f58981198253356ba90f5582b2135ba8d41c5e6f622d0c5f1adfb28f"
+    },
+    {
+      "path": "历史版本/01_引言_中文版_v0.1_20260921.md",
+      "bytes": 8817,
+      "sha256": "94ec4772dfc3c95e05c29a28566b974eab367634696bfbfb9d1a38b8edca6dc4"
+    },
+    {
+      "path": "历史版本/01_引言_写作核对_v0.1_20260921.md",
+      "bytes": 9015,
+      "sha256": "ce824d0e87414512aa578220fd9efc4edfef08da7c821f8f6ac076c82df0d7c5"
+    },
+    {
+      "path": "历史版本/KineTalk_学术架构图_修改前_20260923_180406.pptx",
+      "bytes": 31229,
+      "sha256": "01f4b1d940198b2578eecadca1c7afe6d8c37279412f7c3e2d36cab77eb18a9f"
+    },
+    {
+      "path": "历史版本/v0.2_before_abstract_20260921_122020/00_会议信息与分节写作计划.md",
+      "bytes": 5908,
+      "sha256": "a2785b5ab8267a8bff761235686741ca7de1e470d364b509873a2c21d3f789cd"
+    },
+    {
+      "path": "历史版本/v0.2_before_abstract_20260921_122020/01_引言_中文版.md",
+      "bytes": 4107,
+      "sha256": "7a7575fb5ca8b9717c3b043491bc60317c59ee2d37be6368cdeb2768c31b23d2"
+    },
+    {
+      "path": "历史版本/v0.2_before_abstract_20260921_122020/01_引言_写作核对.md",
+      "bytes": 7760,
+      "sha256": "8d80d8e88fd1b44c5ca827f1609b3c84a443964f70b9b85473e99a102abafa3b"
+    },
+    {
+      "path": "历史版本/v0.2_before_abstract_20260921_122020/02_贡献定位与引言结构分析.md",
+      "bytes": 7652,
+      "sha256": "5addaa320736f8e698b7e942f3b065d34c9e21a6eb0b5e513bccdbe2a8e7a86f"
+    },
+    {
+      "path": "文献参考目录/文献参考.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/display_report.json",
+      "bytes": 5651,
+      "sha256": "cd4851397427b845b1dd7ed18b44b4c82ad1158961dc9809da4c74f59b6e460f"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/frames/000001.png",
+      "bytes": 173255,
+      "sha256": "f9faf74d31ec2d9987ba1d3f2a1df71cce145cbdc504f8a426fa0ebe914c38ae"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/frames/000002.png",
+      "bytes": 173386,
+      "sha256": "a6196650430e3c42de714f22c22cde0d34d8ed6535eab50453ce3ec17f75de39"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/frames/000003.png",
+      "bytes": 173838,
+      "sha256": "ccd94059fc7724d7824ac0cd9bec9286dac0e8757784e116162fa9b15938d705"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/frames/000004.png",
+      "bytes": 173087,
+      "sha256": "8ad9d2b01d16e630df1f4a5b693a82ddc8265f4c37eb57eb1dd867412dace154"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/frames/000005.png",
+      "bytes": 173441,
+      "sha256": "ede945f7322914ac5e96fb1569ec38226e181779bf512c71912cd1d594fd9077"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/preview.png",
+      "bytes": 173255,
+      "sha256": "f9faf74d31ec2d9987ba1d3f2a1df71cce145cbdc504f8a426fa0ebe914c38ae"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_01/rig_audit.json",
+      "bytes": 3307,
+      "sha256": "7269d742f277b89a3320e9d7652d353c5082d4dd62ee9dce8edfe16a858a056b"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/display_report.json",
+      "bytes": 5651,
+      "sha256": "a9ffdd36a74b333163bdf0f7c976a5ad2b5eb1fde15221b402f9a22a71b67403"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/frames/000001.png",
+      "bytes": 39565,
+      "sha256": "da3bef2d7d17de9e6ce5371e85790e68946ef543fd4976399ab064c92bb076cd"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/frames/000002.png",
+      "bytes": 39432,
+      "sha256": "af584af1d1fc38c44098d30bb25828e83072f0aa562c7b99f413523f6c8529c7"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/frames/000003.png",
+      "bytes": 39949,
+      "sha256": "8490eec30af2c65010c45f9b766f66db855853dac1201e8171db417e31c267ff"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/frames/000004.png",
+      "bytes": 39276,
+      "sha256": "e13c40f2c0a9cdeb37cf1a8c0796e015a7569c23825e5ed6940d05b9930cd63a"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/frames/000005.png",
+      "bytes": 39688,
+      "sha256": "c18f51bfaefbf02c79e982e50885e2ea9f6ab8cbf9f4ff5a05324858e9bcac36"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/preview.png",
+      "bytes": 39565,
+      "sha256": "da3bef2d7d17de9e6ce5371e85790e68946ef543fd4976399ab064c92bb076cd"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_02/rig_audit.json",
+      "bytes": 3307,
+      "sha256": "7269d742f277b89a3320e9d7652d353c5082d4dd62ee9dce8edfe16a858a056b"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/display_report.json",
+      "bytes": 5651,
+      "sha256": "132d918dc4fab0e32165a21e48185bce596a047705d513c25d1e0e6b884ae865"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/frames/000001.png",
+      "bytes": 173860,
+      "sha256": "88d9ddfbd74c10351af71734af65730a560670fe3a5376538f63eead408d8e85"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/frames/000002.png",
+      "bytes": 173948,
+      "sha256": "4695a53fbcc7928e5aa24303745a76ab49714b4575a7d3c739b8137a45217187"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/frames/000003.png",
+      "bytes": 174198,
+      "sha256": "6911fbe506ffebf073282977f452e5f92c8fde0fdb4ea0b24457b132fa8ff6fd"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/frames/000004.png",
+      "bytes": 173357,
+      "sha256": "88af7e6ffe9ef627d20ab399151e44819753f824ef1e1aa069f081de98f7c068"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/frames/000005.png",
+      "bytes": 174098,
+      "sha256": "9d9c4f4fdf7439c907d7442dc0217d258effdbb172dff9eb9938c74939a1ff64"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/preview.png",
+      "bytes": 173860,
+      "sha256": "88d9ddfbd74c10351af71734af65730a560670fe3a5376538f63eead408d8e85"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_03/rig_audit.json",
+      "bytes": 3307,
+      "sha256": "7269d742f277b89a3320e9d7652d353c5082d4dd62ee9dce8edfe16a858a056b"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/display_report.json",
+      "bytes": 5651,
+      "sha256": "9ad3a1c576a3d0a73c60bf51c38041b27bb8ce05f1afd4c7ce1567983204753c"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/frames/000001.png",
+      "bytes": 170604,
+      "sha256": "ecfb5751c79c5c506c047d8d429e5aee2d1bee2419c3297f3fc01f8aff808ae0"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/frames/000002.png",
+      "bytes": 170598,
+      "sha256": "29d7a3ae8c0942afd2e8402612ed5a16be58b78d9cf96709d448d54838e47718"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/frames/000003.png",
+      "bytes": 170811,
+      "sha256": "b681624901c8d1ef8aad3bd2bb99ebbf13eb83e661582f7ec2eb964a8d235ae2"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/frames/000004.png",
+      "bytes": 170204,
+      "sha256": "e6e1a9ce106edff817130f11a03872b37b1be5613364b949aec08927c6dc57fa"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/frames/000005.png",
+      "bytes": 170606,
+      "sha256": "6092db3eba42ee48fddcbeb31516f281a6d77ab0fdc7e336167dcfda5c43e274"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/preview.png",
+      "bytes": 170604,
+      "sha256": "ecfb5751c79c5c506c047d8d429e5aee2d1bee2419c3297f3fc01f8aff808ae0"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_04/rig_audit.json",
+      "bytes": 3307,
+      "sha256": "7269d742f277b89a3320e9d7652d353c5082d4dd62ee9dce8edfe16a858a056b"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/display_report.json",
+      "bytes": 5651,
+      "sha256": "4b595e1aa173d6d27f6a7e5e7010ec9034fcd863c5c7b551f00c0bb2c82f9bfc"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/frames/000001.png",
+      "bytes": 173853,
+      "sha256": "d674e2bb16bfdc0e9f07a88b9c0805c6c0860ea08c2a2276884da2341fac8805"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/frames/000002.png",
+      "bytes": 173714,
+      "sha256": "36e0fbc77bd692cdc1a6ada12fb5baa2f2d4985587602462e95a872de7109b23"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/frames/000003.png",
+      "bytes": 173622,
+      "sha256": "54ca957d3d93dd254c86c846cd9cc065a909ad2bcae08be678a4d4bd5156487d"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/frames/000004.png",
+      "bytes": 173438,
+      "sha256": "88e58d7613cdb1067f629b93180d1a76859c59dc73941c7d56b9128bb3d280d4"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/frames/000005.png",
+      "bytes": 173769,
+      "sha256": "40d67c220710d57c5c3e88c55398dacc43a6bf70c325f9b369ea29a1fd26cfe1"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/preview.png",
+      "bytes": 173853,
+      "sha256": "d674e2bb16bfdc0e9f07a88b9c0805c6c0860ea08c2a2276884da2341fac8805"
+    },
+    {
+      "path": "架构图/arkit_sequence_assets/rendered_20260923_05/rig_audit.json",
+      "bytes": 3307,
+      "sha256": "7269d742f277b89a3320e9d7652d353c5082d4dd62ee9dce8edfe16a858a056b"
+    },
+    {
+      "path": "架构图/KineTalk_学术架构图_可编辑 - 副本.pptx",
+      "bytes": 69639,
+      "sha256": "48743f54262c424ebb0cd4ac71513a422efbffdc303347cf5aa76fb76de178bd"
+    },
+    {
+      "path": "架构图/KineTalk_学术架构图_可编辑.pptx",
+      "bytes": 69639,
+      "sha256": "48743f54262c424ebb0cd4ac71513a422efbffdc303347cf5aa76fb76de178bd"
+    },
+    {
+      "path": "架构图/KineTalk_学术架构图_新版.pptx",
+      "bytes": 72989,
+      "sha256": "4f8b00bd08e5076f7da545835d379e3af9d44c4dc2ab31f42b917216996f08b6"
+    },
+    {
+      "path": "论文_当前中文版.md",
+      "bytes": 37089,
+      "sha256": "4918f469a9716b4c3dc308a371163e20f21ae30425a53ae9877fe96827b4abec"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% IEEE conference preview. This file is intended for pdfLaTeX.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+
+\title{KineTalk for Personalized Emotional 3D Facial Animation}
+
+% Replace the placeholders before submission.
+\author{\IEEEauthorblockN{Author Name}
+\IEEEauthorblockA{\textit{Department or Institution}\\
+City, Country\\
+author@example.com}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Speech-driven 3D facial animation must synchronize articulation with speech while preserving speaker-specific motion tendencies and producing expressive facial behavior. These factors are entangled in paired speech-motion data: a reference clip contains both sentence-specific articulation and person-specific execution patterns, while motion-based affect features may also include content and static offsets. We present KineTalk, a reference-conditioned residual framework for ARKit-based facial animation. A frozen articulation backbone predicts the content-dependent base motion. Given several neutral reference clips, we subtract the corresponding base motion and aggregate residual statistics to obtain a speaker-specific execution condition. A motion teacher then learns global and low-rate affective conditions from residual motion after removing articulation and the reference offset, and an audio student distills these conditions for inference from speech. A conditional flow-based residual generator combines articulation, reference execution, and audio affect features, while an output support mask restricts generated residuals to the selected non-mouth channels. Inference requires target speech and registered neutral references, without target motion, emotion labels, or text. We evaluate articulation, speaker consistency, affective expressiveness, and temporal behavior on an ARKit-based benchmark.
+\end{abstract}
+
+\begin{IEEEkeywords}
+speech-driven facial animation, ARKit blendshapes, reference conditioning, affective motion, residual generation
+\end{IEEEkeywords}
+
+\section{Introduction}
+Speech-driven 3D facial animation aims to generate continuous facial motion from speech. A usable talking face must align mouth movements with articulation, preserve motion tendencies associated with a speaker, and express affective behavior that is compatible with the utterance. These requirements are coupled in the observed motion sequence: articulation changes with linguistic content, speaker-specific execution patterns persist across utterances, and affect changes both the magnitude and coordination of facial movements. Separating these factors while retaining a coherent output remains a central challenge for personalized facial animation.
+
+Recent work has improved the speech-to-motion mapping with pretrained speech representations, long temporal context, and structured motion spaces. FaceFormer uses a Transformer to model long-range dependencies between speech and 3D facial motion \cite{faceformer}. MeshTalk studies cross-modal disentanglement between speech-correlated and weakly speech-correlated motion \cite{meshtalk}. CodeTalker introduces a discrete motion prior to reduce the difficulty of predicting continuous facial trajectories \cite{codetalker}. FaceDiffuser further uses diffusion-based generation to represent multiple plausible facial motions under the same speech condition \cite{facediffuser}. Emotional talking-face methods introduce affective representations or dynamic expression controls; EmoTalk disentangles speech content and emotion, while MEDTalk predicts frame-level emotional intensity for controllable 3D facial animation \cite{emotalk,medtalk}. However, a reference motion sequence still contains the articulation of its particular sentence together with speaker-specific execution patterns. Directly encoding the full sequence can therefore leak sentence-dependent motion into a supposedly reusable reference condition.
+
+KineTalk addresses this entanglement with a reference-conditioned residual formulation. The system first obtains a content-dependent base motion from a frozen articulation backbone. For each neutral reference pair, the corresponding base motion is subtracted from the observed motion before a shared encoder extracts residual statistics. Multiple independent references are then aggregated into a speaker-specific execution condition. In parallel, a motion teacher learns affective conditions from motion residuals after removing the base motion and the reference offset. An audio student is trained to predict the same inference-time conditions from speech. A conditional flow-based residual generator combines the base motion, reference execution, and audio affect features. The selected output support restricts the residual path so that the articulation path remains responsible for the protected mouth channels under the chosen training protocol. At inference time, the system takes target speech and registered neutral references; it does not require target motion, emotion labels, or text.
+
+Our contributions are summarized as follows:
+\begin{itemize}
+  \item We present a reference-conditioned residual framework that assigns speech articulation, speaker-specific execution characteristics, and affective expression to separate information sources and generation paths in an ARKit blendshape representation.
+  \item We design an articulation-protected composition strategy that combines residual reference encoding, reference-based mouth calibration, and an output-side support mask to limit interference from the expression branch.
+  \item We establish a motion-teacher to audio-student transfer path that uses motion supervision during training while producing inference-time affective conditions from speech and registered neutral references.
+\end{itemize}
+
+\begin{thebibliography}{00}
+\bibitem{faceformer} Y. Fan, Z. Lin, J. Saito, W. Wang, and T. Komura, ``FaceFormer: Speech-Driven 3D Facial Animation With Transformers,'' in \emph{Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition (CVPR)}, 2022, pp. 18770--18780, doi: 10.1109/CVPR52688.2022.01821.
+
+\bibitem{meshtalk} A. Richard, M. Zollhofer, Y. Wen, F. de la Torre, and Y. Sheikh, ``MeshTalk: 3D Face Animation from Speech Using Cross-Modality Disentanglement,'' in \emph{Proc. IEEE/CVF Int. Conf. Computer Vision (ICCV)}, 2021, pp. 1173--1182, doi: 10.1109/ICCV48922.2021.00121.
+
+\bibitem{codetalker} J. Xing, M. Xia, Y. Zhang, X. Cun, J. Wang, and T.-T. Wong, ``CodeTalker: Speech-Driven 3D Facial Animation with Discrete Motion Prior,'' in \emph{Proc. IEEE/CVF Conf. Computer Vision and Pattern Recognition (CVPR)}, 2023, pp. 12780--12790, doi: 10.1109/CVPR52729.2023.01229.
+
+\bibitem{medtalk} C. Liu, Y. Pan, C. Ding, S. Rahardja, and X. Yang, ``MEDTalk: Multimodal Controlled 3D Facial Animation with Dynamic Emotions by Disentangled Embedding,'' 2025, doi: 10.1145/3746027.3754933.
+
+\bibitem{facediffuser} S. Stan, K. I. Haque, and Z. Yumak, ``FaceDiffuser: Speech-Driven 3D Facial Animation Synthesis Using Diffusion,'' in \emph{Proc. ACM Int. Conf. Motion, Interaction and Games (MIG)}, 2023, doi: 10.1145/3623264.3624447.
+
+\bibitem{emotalk} Z. Peng, H. Wu, Z. Song, H. Xu, X. Zhu, J. He, H. Liu, and Z. Fan, ``EmoTalk: Speech-Driven Emotional Disentanglement for 3D Face Animation,'' in \emph{Proc. IEEE/CVF Int. Conf. Computer Vision (ICCV)}, 2023, doi: 10.1109/ICCV51070.2023.01891.
+\end{thebibliography}
+
+\end{document}

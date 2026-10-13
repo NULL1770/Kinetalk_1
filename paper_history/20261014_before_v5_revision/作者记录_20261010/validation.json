@@ -1,0 +1,26 @@
+{
+  "validation_date": "2026-10-10",
+  "checks": {
+    "source_hashes": true,
+    "csv_hashes": true,
+    "ten_csv_tables": true,
+    "equations_1_to_12": true,
+    "math_delimiters": true,
+    "abstract_single_paragraph": true,
+    "abstract_no_metric_list": true,
+    "no_body_control_chars": true,
+    "no_internal_phase_in_body": true,
+    "all_references_defined": true,
+    "no_unresolved_placeholders": true,
+    "correct_main_checkpoint": true,
+    "development_only": true,
+    "joint_figure_identified": true,
+    "mean_distance_separate": true,
+    "diffposetalk_bib": true,
+    "bib_unique_keys": true
+  },
+  "manuscript_sha256": "4918f469a9716b4c3dc308a371163e20f21ae30425a53ae9877fe96827b4abec",
+  "model_changed": false,
+  "new_training_started": false,
+  "new_scoring_performed": false
+}
